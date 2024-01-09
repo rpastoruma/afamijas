@@ -1,0 +1,314 @@
+	[
+		{
+			"id": 4122,
+			"name": "Albacete",
+			"localcode": "02",
+			"idcountry": 205
+		},
+		{
+			"id": 4123,
+			"name": "Alicante/Alacant",
+			"localcode": "03",
+			"idcountry": 205
+		},
+		{
+			"id": 4124,
+			"name": "Almería",
+			"localcode": "04",
+			"idcountry": 205
+		},
+		{
+			"id": 4125,
+			"name": "Araba/Álava",
+			"localcode": "01",
+			"idcountry": 205
+		},
+		{
+			"id": 4126,
+			"name": "Asturias",
+			"localcode": "33",
+			"idcountry": 205
+		},
+		{
+			"id": 4127,
+			"name": "Ávila",
+			"localcode": "05",
+			"idcountry": 205
+		},
+		{
+			"id": 4128,
+			"name": "Badajoz",
+			"localcode": "06",
+			"idcountry": 205
+		},
+		{
+			"id": 4129,
+			"name": "Balears, Illes",
+			"localcode": "07",
+			"idcountry": 205
+		},
+		{
+			"id": 4130,
+			"name": "Barcelona",
+			"localcode": "08",
+			"idcountry": 205
+		},
+		{
+			"id": 4131,
+			"name": "Bizkaia",
+			"localcode": "48",
+			"idcountry": 205
+		},
+		{
+			"id": 4132,
+			"name": "Burgos",
+			"localcode": "09",
+			"idcountry": 205
+		},
+		{
+			"id": 4133,
+			"name": "Cáceres",
+			"localcode": "10",
+			"idcountry": 205
+		},
+		{
+			"id": 4134,
+			"name": "Cádiz",
+			"localcode": "11",
+			"idcountry": 205
+		},
+		{
+			"id": 4135,
+			"name": "Cantabria",
+			"localcode": "39",
+			"idcountry": 205
+		},
+		{
+			"id": 4136,
+			"name": "Castellón/Castelló",
+			"localcode": "12",
+			"idcountry": 205
+		},
+		{
+			"id": 4137,
+			"name": "Ciudad Real",
+			"localcode": "13",
+			"idcountry": 205
+		},
+		{
+			"id": 4138,
+			"name": "Córdoba",
+			"localcode": "14",
+			"idcountry": 205
+		},
+		{
+			"id": 4139,
+			"name": "Coruña, A",
+			"localcode": "15",
+			"idcountry": 205
+		},
+		{
+			"id": 4140,
+			"name": "Cuenca",
+			"localcode": "16",
+			"idcountry": 205
+		},
+		{
+			"id": 4141,
+			"name": "Gipuzkoa",
+			"localcode": "20",
+			"idcountry": 205
+		},
+		{
+			"id": 4142,
+			"name": "Girona",
+			"localcode": "17",
+			"idcountry": 205
+		},
+		{
+			"id": 4143,
+			"name": "Granada",
+			"localcode": "18",
+			"idcountry": 205
+		},
+		{
+			"id": 4144,
+			"name": "Guadalajara",
+			"localcode": "19",
+			"idcountry": 205
+		},
+		{
+			"id": 4145,
+			"name": "Huelva",
+			"localcode": "21",
+			"idcountry": 205
+		},
+		{
+			"id": 4146,
+			"name": "Huesca",
+			"localcode": "22",
+			"idcountry": 205
+		},
+		{
+			"id": 4147,
+			"name": "Jaén",
+			"localcode": "23",
+			"idcountry": 205
+		},
+		{
+			"id": 4148,
+			"name": "León",
+			"localcode": "24",
+			"idcountry": 205
+		},
+		{
+			"id": 4149,
+			"name": "Lleida",
+			"localcode": "25",
+			"idcountry": 205
+		},
+		{
+			"id": 4150,
+			"name": "Lugo",
+			"localcode": "27",
+			"idcountry": 205
+		},
+		{
+			"id": 4151,
+			"name": "Madrid",
+			"localcode": "28",
+			"idcountry": 205
+		},
+		{
+			"id": 4152,
+			"name": "Málaga",
+			"localcode": "29",
+			"idcountry": 205
+		},
+		{
+			"id": 4153,
+			"name": "Murcia",
+			"localcode": "30",
+			"idcountry": 205
+		},
+		{
+			"id": 4154,
+			"name": "Navarra",
+			"localcode": "31",
+			"idcountry": 205
+		},
+		{
+			"id": 4155,
+			"name": "Ourense",
+			"localcode": "32",
+			"idcountry": 205
+		},
+		{
+			"id": 4156,
+			"name": "Palencia",
+			"localcode": "34",
+			"idcountry": 205
+		},
+		{
+			"id": 4157,
+			"name": "Palmas, Las",
+			"localcode": "35",
+			"idcountry": 205
+		},
+		{
+			"id": 4158,
+			"name": "Pontevedra",
+			"localcode": "36",
+			"idcountry": 205
+		},
+		{
+			"id": 4159,
+			"name": "Rioja, La",
+			"localcode": "26",
+			"idcountry": 205
+		},
+		{
+			"id": 4160,
+			"name": "Salamanca",
+			"localcode": "37",
+			"idcountry": 205
+		},
+		{
+			"id": 4161,
+			"name": "Santa Cruz de Tenerife",
+			"localcode": "38",
+			"idcountry": 205
+		},
+		{
+			"id": 4162,
+			"name": "Segovia",
+			"localcode": "40",
+			"idcountry": 205
+		},
+		{
+			"id": 4163,
+			"name": "Sevilla",
+			"localcode": "41",
+			"idcountry": 205
+		},
+		{
+			"id": 4164,
+			"name": "Soria",
+			"localcode": "42",
+			"idcountry": 205
+		},
+		{
+			"id": 4165,
+			"name": "Tarragona",
+			"localcode": "43",
+			"idcountry": 205
+		},
+		{
+			"id": 4166,
+			"name": "Teruel",
+			"localcode": "44",
+			"idcountry": 205
+		},
+		{
+			"id": 4167,
+			"name": "Toledo",
+			"localcode": "45",
+			"idcountry": 205
+		},
+		{
+			"id": 4168,
+			"name": "Valencia/València",
+			"localcode": "46",
+			"idcountry": 205
+		},
+		{
+			"id": 4169,
+			"name": "Valladolid",
+			"localcode": "47",
+			"idcountry": 205
+		},
+		{
+			"id": 4170,
+			"name": "Zamora",
+			"localcode": "49",
+			"idcountry": 205
+		},
+		{
+			"id": 4171,
+			"name": "Zaragoza",
+			"localcode": "50",
+			"idcountry": 205
+		},
+		{
+			"id": 4172,
+			"name": "Ceuta",
+			"localcode": "51",
+			"idcountry": 205
+		},
+		{
+			"id": 4173,
+			"name": "Melilla",
+			"localcode": "52",
+			"idcountry": 205
+		}
+	]
