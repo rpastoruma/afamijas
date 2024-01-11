@@ -2,7 +2,6 @@ package afamijas.security;
 
 
 import java.io.Serializable;
-import java.util.List;
 
 public class JwtAuthenticationResponse implements Serializable
 {
@@ -11,30 +10,26 @@ public class JwtAuthenticationResponse implements Serializable
 
     private final String token;
 
-    private final List<String> roles;
+    private final String role;
 
     private final String userId;
 
     private final String username;
 
-    private final String apikey;
+    private final String dni;
 
-    public JwtAuthenticationResponse(String token, List<String> roles, String userId, String username, String apikey)
+    public JwtAuthenticationResponse(String token, String role, String userId, String username, String dni)
     {
         this.token=token;
-        this.roles=roles;
+        this.role=role;
         this.userId=userId;
         this.username=username;
-        this.apikey=apikey;
+        this.dni=dni;
     }
 
 
     public String getToken() {
         return token;
-    }
-
-    public List<String> getRoles() {
-        return roles;
     }
 
     public String getUserId() {
@@ -45,7 +40,11 @@ public class JwtAuthenticationResponse implements Serializable
         return username;
     }
 
-    public String getApikey() {
-        return apikey;
+    public String getRole() {
+        return role;
+    }
+
+    public String getDni() {
+        return dni;
     }
 }

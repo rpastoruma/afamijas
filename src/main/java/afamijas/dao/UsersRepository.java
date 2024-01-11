@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Repository
@@ -14,20 +13,23 @@ public interface UsersRepository extends MongoRepository<User, String>
 {
 
 	@Query("{ '_id' : ?0 }")
-	Optional<User> findById(String id);
+	User findOne(String id);
+
+	@Query("{ '_id' : ?0, 'status' : ?1 }")
+	User findOne(String id, String status);
 
 	@Query("{ 'username' : ?0 }")
-	Optional<User> findByUsername(String username);
-
-	@Query("{ 'email' : ?0 }")
-	List<User> findByEmail(String email);
-
-	@Query("{ 'apikey' : ?0, 'status' : 'A' }")
-	Optional<User> findByApikey(String apikey);
-
+	User findUserByUsername(String username);
 
 	@Query("{ 'username' : ?0, 'status' : ?1 }")
-	Optional<User> findByUsernameAndStatus(String username, String status);
+	User findUserByUsername(String username, String status);
 
-	
+	@Query("{ 'email' : ?0 }")
+	List<User> findUserByEmail(String email);
+
+	@Query("{ 'email' : ?0, 'status' : ?1  }")
+	List<User> findUserByEmail(String email, String status);
+
+
+
 }

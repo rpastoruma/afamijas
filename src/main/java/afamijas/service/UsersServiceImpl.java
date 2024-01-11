@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UsersServiceImpl implements UsersService 
@@ -19,52 +18,55 @@ public class UsersServiceImpl implements UsersService
 	{
 		this.usersRepository = usersRepository;
 	}
- 
-	public User findById(String id)
+
+	@Override
+	public User findOne(String id)
 	{
-		Optional<User> oitem = this.usersRepository.findById(id);
-		if(oitem.isPresent()) return oitem.get();
-		else return null;
+		return this.usersRepository.findOne(id);
 	}
 
+	@Override
+	public User findOne(String id, String status)
+	{
+		return this.usersRepository.findOne(id, status);
+	}
+
+	@Override
 	public User findByUsername(String username)
 	{
-		Optional<User> oitem = this.usersRepository.findByUsername(username);
-		if(oitem.isPresent()) return oitem.get();
-		else return null;
+		return this.usersRepository.findUserByUsername(username);
 	}
 
+	@Override
+	public User findByUsername(String username, String status)
+	{
+		return this.usersRepository.findUserByUsername(username, status);
+	}
+
+	@Override
 	public List<User> findByEmail(String email)
 	{
-		return this.usersRepository.findByEmail(email);
+		return this.usersRepository.findUserByEmail(email);
 	}
 
-	public User findByApikey(String apikey)
+	@Override
+	public List<User> findByEmail(String email, String status)
 	{
-		Optional<User> oitem = this.usersRepository.findByApikey(apikey);
-		if(oitem.isPresent()) return oitem.get();
-		else return null;
+		return this.usersRepository.findUserByEmail(email, status);
 	}
 
-	public User findByUsernameAndStatus(String system, String status)
-	{
-		Optional<User> oitem = this.usersRepository.findByUsernameAndStatus(system, status);
-		if(oitem.isPresent()) return oitem.get();
-		else return null;
-	}
-	
+	@Override
 	public User save(User user)
 	{
 		user.setModified(LocalDateTime.now());
 		return this.usersRepository.save(user);
 	}
-	
+
+	@Override
 	public void delete(String id)
 	{
-		User user = null;
-		Optional<User> val = this.usersRepository.findById(id);
-		if(val.isPresent()) user = val.get();
-		else return;
+		User user = this.usersRepository.findOne(id);
+		if(user==null) return;
 
 		user.setStatus("D");
 		user.setModified(LocalDateTime.now());

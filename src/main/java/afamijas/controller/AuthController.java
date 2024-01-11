@@ -5,13 +5,17 @@ import afamijas.queuemail.model.dto.SendingResultDTO;
 import afamijas.queuemail.services.QueuemailHardyService;
 import afamijas.security.JwtAuthenticationResponse;
 import afamijas.security.JwtFilter;
-import afamijas.service.*;
+import afamijas.service.CaptchaService;
+import afamijas.service.ConfigurationService;
+import afamijas.service.ErrorsService;
+import afamijas.service.UsersService;
 import afamijas.utils.PasswordPolicy;
 import afamijas.utils.SendMail;
 import afamijas.utils.Template;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.TextCodec;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,11 +26,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
@@ -92,11 +94,11 @@ public class AuthController
  		    	
  		    final Instant now = Instant.now();
 
-			JwtAuthenticationResponse response = new JwtAuthenticationResponse(Jwts.builder().setId(""+user.get_id()).setSubject(username).setAudience(user.getRole()).setIssuer("geocod").setIssuedAt(Date.from(now)).setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS))).signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.encode(JwtFilter.SECRET )).compact(),
-					Arrays.asList(user.getRole().split("\\s*,\\s*")),
+			JwtAuthenticationResponse response = new JwtAuthenticationResponse(Jwts.builder().setId(""+user.get_id()).setSubject(username).setAudience(user.getRole()).setIssuer("afamijas").setIssuedAt(Date.from(now)).setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS))).signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.encode(JwtFilter.SECRET )).compact(),
+					user.getRole(),
 					user.get_id(),
 					user.getUsername(),
-					user.getApikey());
+					user.getDni());
 
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}
@@ -136,7 +138,6 @@ public class AuthController
 				user.setPassword(new BCryptPasswordEncoder().encode(PasswordPolicy.generate()));
 				user.setEmail(email);
 				user.setRole("normal");
-				user.setApikey(UUID.randomUUID().toString());
 				user.setToken(UUID.randomUUID().toString());
 				user.setCreated(LocalDateTime.now());
 				user.setModified(LocalDateTime.now());
@@ -261,7 +262,7 @@ public class AuthController
 	private void sendConfirmLink(User user) throws Exception
 	{
 		//String fromemail = this.configurationService.value("fromemail");
-		String fromemail = "info@geocod.xyz";
+		String fromemail = "info@afamijas.org";
 		String mainurl = this.configurationService.value("mainurl");
 
 		HashMap<String, String> values = new HashMap<String, String>();
@@ -272,7 +273,7 @@ public class AuthController
 
 
 		//ENVIAMOS POR QUEUEMAIL CON SERVICIO REBUSTO QUE IMPLEMENTA COLA LOCAL DE EMAILS FALLIDOS
-		SendingResultDTO sendingResultDTO = this.queuemailHardyService.sendEmail(null, fromemail, "GeoCod",  user.getEmail(), user.getEmail(), null, null, fromemail,
+		SendingResultDTO sendingResultDTO = this.queuemailHardyService.sendEmail(null, fromemail, "AFA Mijas",  user.getEmail(), user.getEmail(), null, null, fromemail,
 				this.configurationService.value("signupsubject"), "UTF-8", body, "UTF-8", "text/html",
 				null, null, null,
 				true, false,
@@ -281,7 +282,7 @@ public class AuthController
 		if(sendingResultDTO==null || (sendingResultDTO.getLocalqueued()!=null && sendingResultDTO.getLocalqueued()==false) )
 		{
 			this.errorsService.sendWarning("Email local-queuing failed", sendingResultDTO==null?"NULL":sendingResultDTO.getError());
-			this.sendMail.send(fromemail, user.getEmail(), "GeoCod", user.getEmail(), null, null, fromemail, this.configurationService.value("signupsubject"), "UTF-8", body, "UTF-8", null, "html");
+			this.sendMail.send(fromemail, user.getEmail(), "AFA Mijas", user.getEmail(), null, null, fromemail, this.configurationService.value("signupsubject"), "UTF-8", body, "UTF-8", null, "html");
 		}
 
 		this.errorsService.sendWarning("New API Key requested", user.getEmail() + " has requested and API Key.");
@@ -290,17 +291,16 @@ public class AuthController
 	private void sendWelcomeEmail(User user) throws Exception
 	{
 		//String fromemail = this.configurationService.value("fromemail");
-		String fromemail = "info@geocod.xyz";
+		String fromemail = "info@afamijas.org";
 		String mainurl = this.configurationService.value("mainurl");
 
 		HashMap<String, String> values = new HashMap<String, String>();
-		values.put("apikey", user.getApikey());
 		values.put("mainurl", mainurl);
 		values.put("logo", this.configurationService.value("logo"));
 		String body = template.parse("mail_welcome.html", values);
 
 		//ENVIAMOS POR QUEUEMAIL CON SERVICIO REBUSTO QUE IMPLEMENTA COLA LOCAL DE EMAILS FALLIDOS
-		SendingResultDTO sendingResultDTO = this.queuemailHardyService.sendEmail(null, fromemail, "GeoCod",  user.getEmail(), user.getEmail(), null, null, fromemail,
+		SendingResultDTO sendingResultDTO = this.queuemailHardyService.sendEmail(null, fromemail, "AFA Mijas",  user.getEmail(), user.getEmail(), null, null, fromemail,
 				this.configurationService.value("welcomesubject"), "UTF-8", body, "UTF-8", "text/html",
 				null, null, null,
 				true, false,
@@ -309,7 +309,7 @@ public class AuthController
 		if(sendingResultDTO==null || (sendingResultDTO.getLocalqueued()!=null && sendingResultDTO.getLocalqueued()==false) )
 		{
 			this.errorsService.sendWarning("Email local-queuing failed", sendingResultDTO==null?"NULL":sendingResultDTO.getError());
-			this.sendMail.send(fromemail, user.getEmail(), "GeoCod", user.getEmail(), null, null, fromemail, this.configurationService.value("welcomesubject"), "UTF-8", body, "UTF-8", null, "html");
+			this.sendMail.send(fromemail, user.getEmail(), "AFA Mijas", user.getEmail(), null, null, fromemail, this.configurationService.value("welcomesubject"), "UTF-8", body, "UTF-8", null, "html");
 		}
 
 
@@ -320,7 +320,7 @@ public class AuthController
 	private void sendRememberPasswordLink(User user) throws Exception
 	{
 		//String fromemail = this.configurationService.value("fromemail");
-		String fromemail = "info@geocod.xyz";
+		String fromemail = "info@afamijas.org";
 		String mainurl = this.configurationService.value("mainurl");
 
 		HashMap<String, String> values = new HashMap<String, String>();
@@ -333,7 +333,7 @@ public class AuthController
 
 
 		//ENVIAMOS POR QUEUEMAIL CON SERVICIO REBUSTO QUE IMPLEMENTA COLA LOCAL DE EMAILS FALLIDOS
-		SendingResultDTO sendingResultDTO = this.queuemailHardyService.sendEmail(null, fromemail, "GeoCod",  user.getEmail(), user.getEmail(), null, null, fromemail,
+		SendingResultDTO sendingResultDTO = this.queuemailHardyService.sendEmail(null, fromemail, "AFA Mijas",  user.getEmail(), user.getEmail(), null, null, fromemail,
 				this.configurationService.value("rememberpasswordsubject"), "UTF-8", body, "UTF-8", "text/html",
 				null, null, null,
 				true, false,
@@ -342,7 +342,7 @@ public class AuthController
 		if(sendingResultDTO==null || (sendingResultDTO.getLocalqueued()!=null && sendingResultDTO.getLocalqueued()==false) )
 		{
 			this.errorsService.sendWarning("Email local-queuing failed", sendingResultDTO==null?"NULL":sendingResultDTO.getError());
-			this.sendMail.send(fromemail, user.getEmail(), "GeoCod", user.getEmail(), null, null, fromemail, this.configurationService.value("rememberpasswordsubject"), "UTF-8", body, "UTF-8", null, "html");
+			this.sendMail.send(fromemail, user.getEmail(), "AFA Mijas", user.getEmail(), null, null, fromemail, this.configurationService.value("rememberpasswordsubject"), "UTF-8", body, "UTF-8", null, "html");
 		}
 
 	}
@@ -350,7 +350,7 @@ public class AuthController
 	private void sendNewPassword(User user) throws Exception
 	{
 		//String fromemail = this.configurationService.value("fromemail");
-		String fromemail = "info@geocod.xyz";
+		String fromemail = "info@afamijas.org";
 		String mainurl = this.configurationService.value("mainurl");
 
 		String newpassword = PasswordPolicy.generate();
@@ -365,7 +365,7 @@ public class AuthController
 		String body = template.parse("mail_sendnewpassword.html", values);
 
 		//ENVIAMOS POR QUEUEMAIL CON SERVICIO REBUSTO QUE IMPLEMENTA COLA LOCAL DE EMAILS FALLIDOS
-		SendingResultDTO sendingResultDTO = this.queuemailHardyService.sendEmail(null, fromemail, "GeoCod",  user.getEmail(), user.getEmail(), null, null, fromemail,
+		SendingResultDTO sendingResultDTO = this.queuemailHardyService.sendEmail(null, fromemail, "AFA Mijas",  user.getEmail(), user.getEmail(), null, null, fromemail,
 				this.configurationService.value("newpasswordsubject"), "UTF-8", body, "UTF-8", "text/html",
 				null, null, null,
 				true, false,
@@ -374,7 +374,7 @@ public class AuthController
 		if(sendingResultDTO==null || (sendingResultDTO.getLocalqueued()!=null && sendingResultDTO.getLocalqueued()==false) )
 		{
 			this.errorsService.sendWarning("Email local-queuing failed", sendingResultDTO==null?"NULL":sendingResultDTO.getError());
-			this.sendMail.send(fromemail, user.getEmail(), "GeoCod", user.getEmail(), null, null, fromemail, this.configurationService.value("newpasswordsubject"), "UTF-8", body, "UTF-8", null, "html");
+			this.sendMail.send(fromemail, user.getEmail(), "AFA Mijas", user.getEmail(), null, null, fromemail, this.configurationService.value("newpasswordsubject"), "UTF-8", body, "UTF-8", null, "html");
 		}
 
 	}

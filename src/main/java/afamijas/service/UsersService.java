@@ -10,16 +10,19 @@ import java.util.List;
 @Component
 public interface UsersService 
 {
-	User findById(String id);
+	User findOne(String id);
+
+	User findOne(String id, String status);
 
 	User findByUsername(String username);
 
+	User findByUsername(String username, String status);
+
 	List<User> findByEmail(String email);
 
-	User findByApikey(String apikey);
+	List<User> findByEmail(String email, String status);
 
-	User findByUsernameAndStatus(String username, String status);
-	
+
 	User save(User user);
 
 	void delete(String id);

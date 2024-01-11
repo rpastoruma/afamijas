@@ -1,14 +1,18 @@
 package afamijas.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Document(collection = "users")
 public class User 
 {
+	// COMMON:
+
 	@Id
 	private String _id;
 	
@@ -17,13 +21,12 @@ public class User
 	@JsonIgnore
 	private String password;
 
-	private String role;
+	private String role;  // (admin), relative, patient, member
 
 	private String email;
 
 	private String token;
 
-	//RELATIVES:
 	private String name;
 
 	private String surname1;
@@ -42,6 +45,65 @@ public class User
 
 	private String postalcode;
 
+	private String signature;
+
+	private String photo_url;
+
+	private String gender;
+
+	private LocalDateTime created;
+
+	private LocalDateTime modified;
+
+	private String status;
+
+
+	//RELATIVES:
+
+	private String relative_type;
+
+	private Boolean is_principal_keeper;
+
+	private String principal_keeper_fullname;
+
+	private String principal_keeper_phone;
+
+
+	// PATIENTS:
+
+	private String idrelative;
+
+	private String idroute;
+
+	private String idroutestop;
+
+	private String idroutestop_especial;
+
+	private LocalDateTime routestop_especial_from; // day + 00
+
+	private LocalDateTime routestop_especial_to;  // day +  59
+
+
+
+	public String getIdRouteStopForDay(LocalDateTime thetime)
+	{
+		if(this.idroutestop_especial==null) return idroutestop;
+
+		if(routestop_especial_from!=null && routestop_especial_to!=null)
+		{
+			if(thetime.isAfter(this.routestop_especial_from) && thetime.isBefore(routestop_especial_to))
+				return idroutestop_especial;
+			else
+				return idroutestop;
+		}
+
+		return idroutestop;
+	}
+
+
+
+	// MEMBERS:
+
 	private String fee_euros;
 
 	private String fee_period;  //mes, trimestre...
@@ -56,15 +118,7 @@ public class User
 
 	private String bank_account_iban;
 
-	private String relative_signature;
 
-	private LocalDateTime created;  // fecha de alta
-
-	private LocalDateTime modified;
-
-	private String status;
-	
-	
 	public User()
 	{
 		this.created = this.modified = LocalDateTime.now();
@@ -98,6 +152,14 @@ public class User
 		return role;
 	}
 
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
 	public void setRole(String role) {
 		this.role = role;
 	}
@@ -110,36 +172,12 @@ public class User
 		this.email = email;
 	}
 
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
 	public String getToken() {
 		return token;
 	}
 
 	public void setToken(String token) {
 		this.token = token;
-	}
-
-	public LocalDateTime getCreated() {
-		return created;
-	}
-
-	public void setCreated(LocalDateTime created) {
-		this.created = created;
-	}
-
-	public LocalDateTime getModified() {
-		return modified;
-	}
-
-	public void setModified(LocalDateTime modified) {
-		this.modified = modified;
 	}
 
 	public String getName() {
@@ -151,7 +189,7 @@ public class User
 	}
 
 	public String getSurname1() {
-		return surname1;
+		return surname1==null?"":surname1;
 	}
 
 	public void setSurname1(String surname1) {
@@ -159,7 +197,7 @@ public class User
 	}
 
 	public String getSurname2() {
-		return surname2;
+		return surname2==null?"":surname2;
 	}
 
 	public void setSurname2(String surname2) {
@@ -212,6 +250,70 @@ public class User
 
 	public void setPostalcode(String postalcode) {
 		this.postalcode = postalcode;
+	}
+
+	public String getSignature() {
+		return signature;
+	}
+
+	public void setSignature(String signature) {
+		this.signature = signature;
+	}
+
+	public LocalDateTime getCreated() {
+		return created;
+	}
+
+	public void setCreated(LocalDateTime created) {
+		this.created = created;
+	}
+
+	public LocalDateTime getModified() {
+		return modified;
+	}
+
+	public void setModified(LocalDateTime modified) {
+		this.modified = modified;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getRelative_type() {
+		return relative_type;
+	}
+
+	public void setRelative_type(String relative_type) {
+		this.relative_type = relative_type;
+	}
+
+	public Boolean getIs_principal_keeper() {
+		return is_principal_keeper;
+	}
+
+	public void setIs_principal_keeper(Boolean is_principal_keeper) {
+		this.is_principal_keeper = is_principal_keeper;
+	}
+
+	public String getPrincipal_keeper_fullname() {
+		return principal_keeper_fullname;
+	}
+
+	public void setPrincipal_keeper_fullname(String principal_keeper_fullname) {
+		this.principal_keeper_fullname = principal_keeper_fullname;
+	}
+
+	public String getPrincipal_keeper_phone() {
+		return principal_keeper_phone;
+	}
+
+	public void setPrincipal_keeper_phone(String principal_keeper_phone) {
+		this.principal_keeper_phone = principal_keeper_phone;
 	}
 
 	public String getFee_euros() {
@@ -270,12 +372,60 @@ public class User
 		this.bank_account_iban = bank_account_iban;
 	}
 
-	public String getRelative_signature() {
-		return relative_signature;
+	public String getIdroute() {
+		return idroute;
 	}
 
-	public void setRelative_signature(String relative_signature) {
-		this.relative_signature = relative_signature;
+	public void setIdroute(String idroute) {
+		this.idroute = idroute;
+	}
+
+	public String getIdroutestop() {
+		return idroutestop;
+	}
+
+	public void setIdroutestop(String idroutestop) {
+		this.idroutestop = idroutestop;
+	}
+
+	public String getIdroutestop_especial() {
+		return idroutestop_especial;
+	}
+
+	public void setIdroutestop_especial(String idroutestop_especial) {
+		this.idroutestop_especial = idroutestop_especial;
+	}
+
+	public LocalDateTime getRoutestop_especial_from() {
+		return routestop_especial_from;
+	}
+
+	public void setRoutestop_especial_from(LocalDateTime routestop_especial_from) {
+		this.routestop_especial_from = routestop_especial_from;
+	}
+
+	public LocalDateTime getRoutestop_especial_to() {
+		return routestop_especial_to;
+	}
+
+	public void setRoutestop_especial_to(LocalDateTime routestop_especial_to) {
+		this.routestop_especial_to = routestop_especial_to;
+	}
+
+	public String getPhoto_url() {
+		return photo_url;
+	}
+
+	public void setPhoto_url(String photo_url) {
+		this.photo_url = photo_url;
+	}
+
+	public String getIdrelative() {
+		return idrelative;
+	}
+
+	public void setIdrelative(String idrelative) {
+		this.idrelative = idrelative;
 	}
 
 	@Override

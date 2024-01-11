@@ -80,11 +80,16 @@
 			<artifactId>httpmime</artifactId>
 			<version>4.5.14</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>3.9.0</version>
+		</dependency>
 
 	</dependencies>
 
 	<build>
-		<finalName>geocod</finalName>
+		<finalName>afamijas</finalName>
 		<plugins>
 			<!-- Package as an executable jar/war -->
 			<plugin>

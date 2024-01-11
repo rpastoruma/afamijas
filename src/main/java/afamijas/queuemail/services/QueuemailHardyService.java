@@ -1,14 +1,14 @@
 package afamijas.queuemail.services;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import afamijas.queuemail.repositories.QueueEmailAttachmentsRepository;
-import afamijas.queuemail.repositories.QueueEmailsRepository;
 import afamijas.queuemail.model.QueueEmail;
 import afamijas.queuemail.model.QueueEmailAttachment;
 import afamijas.queuemail.model.dto.LoginResponseDTO;
 import afamijas.queuemail.model.dto.SendingResultDTO;
+import afamijas.queuemail.repositories.QueueEmailAttachmentsRepository;
+import afamijas.queuemail.repositories.QueueEmailsRepository;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Form;

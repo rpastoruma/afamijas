@@ -1,13 +1,20 @@
 package afamijas.utils;
 
+import afamijas.queuemail.model.QueueEmail;
+import afamijas.queuemail.model.QueueEmailAttachment;
 import afamijas.queuemail.model.dto.SendingResultDTO;
 import afamijas.queuemail.repositories.QueueEmailAttachmentsRepository;
 import afamijas.queuemail.repositories.QueueEmailsRepository;
-import afamijas.queuemail.model.QueueEmail;
-import afamijas.queuemail.model.QueueEmailAttachment;
 import afamijas.queuemail.services.QueuemailHardyService;
 import afamijas.service.ConfigurationService;
 import afamijas.service.LogsService;
+import jakarta.activation.DataHandler;
+import jakarta.activation.FileDataSource;
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,13 +23,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import jakarta.activation.DataHandler;
-import jakarta.activation.FileDataSource;
-import jakarta.mail.*;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeBodyPart;
-import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.internet.MimeMultipart;
 import java.io.File;
 import java.net.FileNameMap;
 import java.net.URLConnection;
