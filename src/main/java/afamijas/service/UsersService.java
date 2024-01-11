@@ -12,7 +12,7 @@ public interface UsersService
 {
 	User findOne(String id);
 
-	User findOne(String id, String status);
+	User findOne(String id, String role, String status);
 
 	User findByUsername(String username);
 

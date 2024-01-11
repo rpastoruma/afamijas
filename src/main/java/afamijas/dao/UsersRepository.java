@@ -15,8 +15,8 @@ public interface UsersRepository extends MongoRepository<User, String>
 	@Query("{ '_id' : ?0 }")
 	User findOne(String id);
 
-	@Query("{ '_id' : ?0, 'status' : ?1 }")
-	User findOne(String id, String status);
+	@Query("{ '_id' : ?0, 'role' : ?1, 'status' : ?2 }")
+	User findOne(String id, String role, String status);
 
 	@Query("{ 'username' : ?0 }")
 	User findUserByUsername(String username);

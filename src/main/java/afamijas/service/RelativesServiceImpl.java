@@ -50,7 +50,7 @@ public class RelativesServiceImpl implements RelativesService
 	@Override
 	public RouteDTO getRoute(String idpatient)
 	{
-		User patient = this.usersRepository.findOne(idpatient, "A");
+		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
 		if(patient==null) return null;
 
 		if((patient.getIdroute()==null)) return null;
@@ -97,7 +97,7 @@ public class RelativesServiceImpl implements RelativesService
 	@Override
 	public RouteDTO changeRouteStop(String idpatient, String idroutestop, LocalDate from, LocalDate to)
 	{
-		User patient = this.usersRepository.findOne(idpatient, "A");
+		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
 		if(patient==null) return null;
 
 		if(from==null && to==null)
@@ -122,7 +122,7 @@ public class RelativesServiceImpl implements RelativesService
 	@Override
 	public AbsenceDTO addAbsence(String idpatient, LocalDate day, String comment)
 	{
-		User patient = this.usersRepository.findOne(idpatient, "A");
+		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
 		if(patient==null) return null;
 
 		Absence absence = new Absence();
@@ -147,7 +147,7 @@ public class RelativesServiceImpl implements RelativesService
 	@Override
 	public MenuDTO getMenu(String idpatient)
 	{
-		User patient = this.usersRepository.findOne(idpatient, "A");
+		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
 		if(patient==null) return null;
 
 		return new MenuDTO(this.menusRepository.findMenuByPatient(idpatient), patient);
@@ -157,10 +157,10 @@ public class RelativesServiceImpl implements RelativesService
 	@Override
 	public List<PermissionDTO> getPendingPermissions(String idrelative)
 	{
-		User relative = this.usersRepository.findOne(idrelative, "A");
+		User relative = this.usersRepository.findOne(idrelative, "RELATIVE", "A");
 		if(relative==null) return null;
 
-		return this.permissionsRepository.findPendingPermissionsByRelative(idrelative).stream().map(x -> new PermissionDTO(x, relative, this.usersRepository.findOne(x.getIdpatient(), "A") )).toList();
+		return this.permissionsRepository.findPendingPermissionsByRelative(idrelative).stream().map(x -> new PermissionDTO(x, relative, this.usersRepository.findOne(x.getIdpatient(), "PATIENT", "A") )).toList();
 	}
 
 
@@ -169,10 +169,10 @@ public class RelativesServiceImpl implements RelativesService
 	{
 		Permission permission = this.permissionsRepository.findOne(idpermission, "A");
 
-		User relative = this.usersRepository.findOne(permission.getIdrelative(), "A");
+		User relative = this.usersRepository.findOne(permission.getIdrelative(), "RELATIVE", "A");
 		if(relative==null) return null;
 
-		User patient = this.usersRepository.findOne(permission.getIdpatient(), "A");
+		User patient = this.usersRepository.findOne(permission.getIdpatient(),"PATIENT",  "A");
 		if(patient==null) return null;
 
 		Media media = this.mediaService.create(idpermission, "permission", "signed", file);

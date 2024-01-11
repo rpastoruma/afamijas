@@ -26,9 +26,9 @@ public class UsersServiceImpl implements UsersService
 	}
 
 	@Override
-	public User findOne(String id, String status)
+	public User findOne(String id, String role, String status)
 	{
-		return this.usersRepository.findOne(id, status);
+		return this.usersRepository.findOne(id, role, status);
 	}
 
 	@Override
