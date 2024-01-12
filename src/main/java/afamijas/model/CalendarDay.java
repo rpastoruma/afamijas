@@ -23,15 +23,16 @@ public class CalendarDay
 
 	private String desciption;
 
-	private List<String> forroles;
+	private String role;
+
+	private String iduser;
 
 	private LocalDateTime created;
 
 	private LocalDateTime modified;
 
-	private String status;
 
-	public CalendarDay() { this.created = this.modified = LocalDateTime.now(); this.status = "A"; }
+	public CalendarDay() { this.created = this.modified = LocalDateTime.now();  }
 
 	public String get_id() {
 		return _id;
@@ -73,12 +74,12 @@ public class CalendarDay
 		this.desciption = desciption;
 	}
 
-	public List<String> getForroles() {
-		return forroles;
+	public String getRole() {
+		return role;
 	}
 
-	public void setForroles(List<String> forroles) {
-		this.forroles = forroles;
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	public LocalDateTime getCreated() {
@@ -97,12 +98,13 @@ public class CalendarDay
 		this.modified = modified;
 	}
 
-	public String getStatus() {
-		return status;
+
+	public String getIduser() {
+		return iduser;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setIduser(String iduser) {
+		this.iduser = iduser;
 	}
 
 	@Override

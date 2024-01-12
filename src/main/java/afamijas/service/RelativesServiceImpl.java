@@ -31,18 +31,21 @@ public class RelativesServiceImpl implements RelativesService
 
 	final MenusRepository menusRepository;
 
+	final CalendarDaysRepository calendarDaysRepository;
+
 	final PermissionsRepository permissionsRepository;
 
 	final MediaService mediaService;
 
 	@Autowired
-	public RelativesServiceImpl(UsersRepository usersRepository, RoutesRepository routesRepository, RouteStopsRepository routeStopsRepository, AbsencesRepository absencesRepository, MenusRepository menusRepository, PermissionsRepository permissionsRepository, MediaService mediaService)
+	public RelativesServiceImpl(UsersRepository usersRepository, RoutesRepository routesRepository, RouteStopsRepository routeStopsRepository, AbsencesRepository absencesRepository, MenusRepository menusRepository, CalendarDaysRepository calendarDaysRepository, PermissionsRepository permissionsRepository, MediaService mediaService)
 	{
 		this.usersRepository = usersRepository;
 		this.routesRepository = routesRepository;
 		this.routeStopsRepository = routeStopsRepository;
 		this.absencesRepository = absencesRepository;
 		this.menusRepository = menusRepository;
+		this.calendarDaysRepository = calendarDaysRepository;
 		this.permissionsRepository = permissionsRepository;
 		this.mediaService = mediaService;
 	}
@@ -100,7 +103,12 @@ public class RelativesServiceImpl implements RelativesService
 		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
 		if(patient==null) return null;
 
-		if(from==null && to==null)
+		RouteStop routeStop = this.routeStopsRepository.findOne(idroutestop, "A");
+		if(routeStop==null) return null;
+
+		if(!patient.getIdroute().equals(routeStop.getIdroute())) return null; // se está intentando asignar una parada que no corresponde a la ruta del paciente
+
+		if(from==null || to==null)
 		{
 			patient.setIdroutestop(idroutestop);
 			this.usersRepository.save(patient);
@@ -137,11 +145,19 @@ public class RelativesServiceImpl implements RelativesService
 
 
 	@Override
-	public void deleteAbsence(String idabsence)
+	public void deleteAbsence(String idpatient, String idabsence)
 	{
-		//TODO: EMAIL A QUIEN CORRESPONDA ANUNCIANDO ELIMINACIÓN DE AUSENCIA PARA ESTE PACIENTE
+		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
+		if(patient==null) return;
+
+		Absence absence = this.absencesRepository.findOne(idabsence);
+		if(absence==null) return;
+
+		if(!absence.getIdpatient().equals(idpatient)) return;
 
 		this.absencesRepository.deleteById(idabsence);
+
+		//TODO: EMAIL A QUIEN CORRESPONDA ANUNCIANDO ELIMINACIÓN DE AUSENCIA PARA ESTE PACIENTE
 	}
 
 	@Override
@@ -165,9 +181,11 @@ public class RelativesServiceImpl implements RelativesService
 
 
 	@Override
-	public PermissionDTO signPermission(String idpermission, MultipartFile file) throws Exception
+	public PermissionDTO signPermission(String idpermission, String idpatient, MultipartFile file) throws Exception
 	{
 		Permission permission = this.permissionsRepository.findOne(idpermission, "A");
+
+		if(!permission.getIdpatient().equals(idpatient)) return null;
 
 		User relative = this.usersRepository.findOne(permission.getIdrelative(), "RELATIVE", "A");
 		if(relative==null) return null;
@@ -177,8 +195,21 @@ public class RelativesServiceImpl implements RelativesService
 
 		Media media = this.mediaService.create(idpermission, "permission", "signed", file);
 		permission.setPermission_signed_url(media.getUrl());
+		permission.setStatus("A");
 
 		return new PermissionDTO(this.permissionsRepository.save(permission), relative, patient);
+
+		//TODO: EMAIL A QUIEN CORRESPONDA INDICANDO QUE SE HA FIRMADO PERMISO
+	}
+
+	@Override
+	public List<CalendarDay> getCalendar(String idrelative, LocalDate day, Integer numdays)
+	{
+		List<CalendarDay> alldays = this.calendarDaysRepository.findCalendarDaysByRole("RELATIVE");
+		alldays.addAll(this.calendarDaysRepository.findCalendarDaysByUser(idrelative));
+		alldays.addAll(this.calendarDaysRepository.findGeneric());
+		Collections.sort(alldays, Comparator.comparing(CalendarDay::getDay));
+		return alldays;
 	}
 
 

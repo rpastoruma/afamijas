@@ -1,5 +1,6 @@
 package afamijas.service;
 
+import afamijas.model.CalendarDay;
 import afamijas.model.dto.AbsenceDTO;
 import afamijas.model.dto.MenuDTO;
 import afamijas.model.dto.PermissionDTO;
@@ -20,14 +21,15 @@ public interface RelativesService
 
     AbsenceDTO addAbsence(String idpatient, LocalDate day, String comment);
 
-    void deleteAbsence(String idabsence);
+    void deleteAbsence(String idpatient, String idabsence);
 
     MenuDTO getMenu(String idpatient);
 
     List<PermissionDTO> getPendingPermissions(String idrelative);
 
-    PermissionDTO signPermission(String idpermission, MultipartFile file) throws Exception;
+    PermissionDTO signPermission(String idpermission, String idpatient, MultipartFile file) throws Exception;
 
+    List<CalendarDay> getCalendar(String idrelative, LocalDate day, Integer numdays);
 
 
 }

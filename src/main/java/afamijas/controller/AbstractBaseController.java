@@ -1,6 +1,7 @@
 package afamijas.controller;
 
 
+import afamijas.model.User;
 import afamijas.security.JwtUser;
 import afamijas.service.UsersService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,8 +31,36 @@ public abstract class AbstractBaseController
 
     protected boolean isRelative()
     {
-        return this.getRole().equals("relative");
+        return this.getRole().equals("RELATIVE");
     }
+
+
+    protected boolean isPatientForRelative(String idpatient)
+    {
+        User patient = this.usersService.findOne(idpatient, "PATIENT", "A");
+        if(patient==null) return false;
+
+        if(patient.getIdrelative().equals(this.getId())) return true;
+        else return false;
+    }
+
+
+
+    protected String getId()
+    {
+        try
+        {
+            JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if(user==null) return null;
+            else return user.getId();
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+
 
     private String getRole()
     {
@@ -46,6 +75,7 @@ public abstract class AbstractBaseController
             return null;
         }
     }
+
 
 
     protected String getParameters(HttpServletRequest httpServletRequest)

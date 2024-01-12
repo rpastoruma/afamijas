@@ -27,9 +27,12 @@ public class Permission
 
 	private LocalDateTime created;
 
+	private String status;
+
 	public Permission()
 	{
 		this.created = LocalDateTime.now();
+		this.status = "P";
 	}
 
 	public String get_id() {
@@ -94,6 +97,14 @@ public class Permission
 
 	public void setCreated(LocalDateTime created) {
 		this.created = created;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	@Override
