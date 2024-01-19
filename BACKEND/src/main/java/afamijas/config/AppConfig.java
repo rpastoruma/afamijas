@@ -13,6 +13,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
@@ -36,6 +37,12 @@ public class AppConfig implements WebMvcConfigurer
                 .build();
     }
 
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry){
+		registry.addResourceHandler("/**")
+				.addResourceLocations("/")
+				.setCachePeriod(0);
+	}
 	    /*
 
     @Override

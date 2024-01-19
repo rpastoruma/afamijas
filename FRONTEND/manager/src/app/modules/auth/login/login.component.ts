@@ -65,7 +65,8 @@ export class LoginComponent implements OnInit
       });
   }
 
-  getValuesConfig() {
+  getValuesConfig() 
+  {
       this.frontValuesService.getFrontEndValuesCall().subscribe(
         result => {
           for (const item of result) {

@@ -4,7 +4,7 @@
     <img src="../../../../../assets/logo.png" />
 </div>
 
-<h1 id="title" class="title">Conéctate, por favor</h1>
+<h3 id="title" class="title">Conéctate, por favor</h3>
 <p class="sub-title">Inicia sesión con tu nombre de usuario y contraseña</p>
 
 <nb-alert *ngIf="messageError!=''" outline="danger" role="alert">
@@ -68,10 +68,8 @@
     </ng-container>
   </div>
 
-  <div class="form-control-group accept-group">
-    <div></div>
-    <a class="forgot-password" routerLink="../request-password">¿Olvidó la contraseña?</a>
-  </div>
+
+
 
   <button nbButton
           fullWidth
@@ -82,5 +80,7 @@
   </button>
 </form>
 
-
+<section class="sign-in-or-up" aria-label="¿Olvidó la contraseña?">
+  <p style="text-align: center; margin-top: 1em"><a class="text-link" routerLink="../request-password">¿Olvidó la contraseña?</a></p>
+</section>
 

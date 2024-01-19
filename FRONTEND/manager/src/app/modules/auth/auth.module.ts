@@ -5,7 +5,8 @@ import { LoginComponent } from './login/login.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { NgxAuthRoutingModule } from './auth-routing.module';
 import { NbAuthModule } from '@nebular/auth';
-
+import { RequestPasswordComponent } from './request-password/request-password.component';
+import { RecaptchaModule, RecaptchaFormsModule, RECAPTCHA_LANGUAGE } from 'ng-recaptcha';
 
 @NgModule({
   imports: [
@@ -15,12 +16,21 @@ import { NbAuthModule } from '@nebular/auth';
     NbAuthModule,
     NgxAuthRoutingModule,
     NbAuthModule,
+    RecaptchaModule,
+    RecaptchaFormsModule
   ],
   declarations: [
     // ... here goes our new components
   
-    LoginComponent
+    LoginComponent,
+    RequestPasswordComponent
   ],
+  providers: [
+    {
+      provide: RECAPTCHA_LANGUAGE,
+      useValue: 'es',
+    },
+  ]
 })
 export class AuthModule {
 }

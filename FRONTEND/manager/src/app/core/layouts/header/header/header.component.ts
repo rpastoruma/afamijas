@@ -52,9 +52,7 @@ export class HeaderComponent implements OnInit {
       );
   }
 
-  getImg() {
-    return this.authenticationService.getUserImg();
-  }
+
 
   toggleSidebar(): boolean {
     this.sidebarService.toggle(true, 'menu-sidebar');
