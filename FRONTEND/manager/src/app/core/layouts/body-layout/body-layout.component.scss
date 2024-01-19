@@ -1,0 +1,118 @@
+// @import '../../../../themes';
+//@import '~bootstrap/scss/mixins/breakpoints'; //TODO: ver pq no carga
+@import '@nebular/theme/styles/global/breakpoints';
+
+::ng-deep .menu-title {
+  width: 20px;
+  font-size: 16px;
+}
+
+::ng-deep .menu-icon {
+  font-size: 2rem !important;
+}
+
+::ng-deep .nb-theme-corporate nb-menu .menu-item .menu-icon {
+  font-size: 1.7rem !important;
+  color: #a4abb3 !important;
+}
+
+::ng-deep .nb-theme-corporate nb-menu .menu-item a.active .menu-icon {
+  color: #181818 !important;
+}
+
+::ng-deep .nb-theme-corporate nb-menu .menu-item a.active .chevron, .nb-theme-corporate nb-menu .menu-item a.active .menu-icon, .nb-theme-corporate nb-menu .menu-item a:hover .chevron, .nb-theme-corporate nb-menu .menu-item a:hover .menu-icon {
+  color: #181818 !important;
+}
+
+::ng-deep .nb-theme-corporate nb-menu>ul>li.menu-item>a:hover, ::ng-deep .nb-theme-corporate nb-menu .menu-item a.active {
+  background-color: #f5f5f5!important;
+  color: #181818 !important;
+  .menu-icon {
+    color: #181818 !important;
+  }
+}
+
+::ng-deep .nb-theme-corporate nb-menu ul ul li.menu-item  {
+  border: none !important;
+}
+
+::ng-deep .menu-title {
+  color: black;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.footer {
+  display: flex;
+  width: 100%;
+}
+
+@media (max-width: 380px) {
+  .footer {
+      display: block !important;
+  }
+}
+
+.footerCenter {
+  text-align: center;
+}
+
+.tooltiptext {
+  margin-left: -33px;
+  color: black;
+  background-color: white;
+  font-weight: bold;
+  border: 2px solid #73a1ff;
+  border-radius: 0.17rem;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.tooltiptext::after {
+  border-color: #73a1ff transparent transparent transparent;
+  top: 101%;
+}
+
+::ng-deep .nb-theme-corporate  nb-sidebar.menu-sidebar .main-container {
+  border: 1px solid #cdd5dc;
+  height: calc(100vh - 4.75rem)!important;
+}
+
+::ng-deep .nb-theme-corporate nb-sidebar.menu-sidebar .scrollable {
+  padding-top: 0;
+}
+
+::ng-deep .nb-theme-corporate nb-sidebar.compacted nb-menu .menu-item a.active::before {
+  background: #a4abb3;
+}
+
+::ng-deep .nb-theme-corporate nb-sidebar .main-container {
+  height: calc(100vh - 4.75rem)!important;
+  width: 16rem;
+  background: #e3e9ee;
+}
+
+::ng-deep .nb-theme-corporate nb-layout .layout .layout-container .content nb-layout-footer nav {
+  padding: 1.25rem;
+  background: #fff;
+  color: #181818;
+  border-top: 1px solid #d5dbe0;
+}
+
+::ng-deep .nb-theme-corporate nb-menu .menu-item>.menu-items>.menu-item a.active {
+  border: 0.125rem solid #cdd5dc !important;
+  margin: 4px;
+  box-shadow: none;
+}
+
+::ng-deep .nb-theme-corporate nb-menu .menu-item>.menu-items>.menu-item a:not(.active) {
+  margin: 4px !important;
+  border: 0.125rem solid transparent !important;
+}
+
+::ng-deep .nb-theme-corporate nb-menu .menu-item>.menu-items>.menu-item a:hover {
+  border: 0.125rem solid #cdd5dc !important;
+  margin: 4px;
+  box-shadow: none;
+  background-color: #f5f5f5!important;
+}

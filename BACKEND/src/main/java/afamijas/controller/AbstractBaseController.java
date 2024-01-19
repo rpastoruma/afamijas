@@ -24,9 +24,9 @@ public abstract class AbstractBaseController
         this.usersService = usersService;
     }
 
-    protected boolean isAdmin()
+    protected boolean isRoot()
     {
-        return this.getRole().equals("admin");
+        return this.getRole().equals("ROOT");
     }
 
     protected boolean isRelative()
@@ -68,7 +68,7 @@ public abstract class AbstractBaseController
         {
             JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if(user==null) return null;
-            else return user.getRoles();
+            else return user.getRole();
         }
         catch (Exception e)
         {

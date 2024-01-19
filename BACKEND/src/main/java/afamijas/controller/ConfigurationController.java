@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @Validated
-@RequestMapping("/private/configuration")
+@RequestMapping("/configuration")
 public class ConfigurationController extends AbstractBaseController
 {
 	final ConfigurationService configurationService;
@@ -35,6 +35,7 @@ public class ConfigurationController extends AbstractBaseController
     }
 
 
+	/* TODO: Mover estas llamadas a un controlador que empiece por /private
 
 	@CrossOrigin
 	@RequestMapping(method=RequestMethod.POST, value="/save", produces="application/json")
@@ -48,7 +49,7 @@ public class ConfigurationController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isAdmin()) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			if(!this.isRoot()) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 			return new ResponseEntity<>(this.configurationService.updateValue(key, value, type, front, admin), HttpStatus.OK);
 		}
 		catch(Exception e)
@@ -68,12 +69,27 @@ public class ConfigurationController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isAdmin()) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			if(!this.isRoot()) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 			return new ResponseEntity<>(this.configurationService.addValue(key, value), HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
 			this.errorsService.sendError(e, key + "-" + value);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	*/
+
+	@RequestMapping(method=RequestMethod.GET, value="/getFrontEndValues", produces="application/json")
+	public ResponseEntity<?> getFrontEndValues()
+	{
+		try
+		{
+			return new ResponseEntity<>(configurationService.getFrontConfiguration(), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

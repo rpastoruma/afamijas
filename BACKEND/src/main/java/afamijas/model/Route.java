@@ -23,6 +23,9 @@ public class Route
 
 	public Route() { this.created = this.modified = LocalDateTime.now(); this.status = "A";  }
 
+	public Route(String name) { this(); this.name = name;  }
+
+
 	public String get_id() {
 		return _id;
 	}

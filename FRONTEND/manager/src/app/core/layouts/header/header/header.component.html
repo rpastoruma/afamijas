@@ -1,0 +1,21 @@
+<div class="header-container"
+     [class.left]="true"
+     [class.right]="false">
+  <div class="logo-containter">
+    <nb-icon (click)="toggleSidebar()" class="sidebar-toggle" icon="menu-2-outline"></nb-icon>
+  </div>
+</div>
+
+<div class="header-container">
+    <app-notifications></app-notifications>
+  <nb-actions
+    size="medium"
+    [class.right]="true"
+    [class.left]="false">
+    <nb-action>
+        <nb-user class="user" shape="rectangle" name="{{user?.name}}" title="{{user?.role}}" picture="{{user?.photo_url}}" [nbContextMenu]="items" nbContextMenuTag="my-context-menu"> 
+            
+        </nb-user>
+    </nb-action>
+  </nb-actions> 
+</div>

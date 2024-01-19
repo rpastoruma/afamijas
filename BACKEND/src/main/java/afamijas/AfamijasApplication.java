@@ -1,5 +1,9 @@
 package afamijas;
 
+import afamijas.dao.RouteStopsRepository;
+import afamijas.dao.RoutesRepository;
+import afamijas.model.Route;
+import afamijas.model.RouteStop;
 import afamijas.model.User;
 import afamijas.security.JwtFilter;
 import afamijas.service.UsersService;
@@ -20,10 +24,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class AfamijasApplication extends SpringBootServletInitializer implements ApplicationRunner
 {
 
-	//* FIRST RUN
+	//TODO: DESHABILITAR ESTO CUANDO TODA LA CARGA INCIAL ESTÉ COMPLETA
 	@Autowired
 	private UsersService usersService;
-    //*/
+
+	@Autowired
+	private RoutesRepository routesRepository;
+
+	@Autowired
+	private RouteStopsRepository routeStopsRepository;
+
+
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application)
@@ -50,20 +61,113 @@ public class AfamijasApplication extends SpringBootServletInitializer implements
 	public void run(ApplicationArguments args) throws Exception
 	{
 
-		//* FIRST RUN
-    	User admin = this.usersService.findByUsername("rootAFA");
+		/* FIRST RUN
+    	User admin = this.usersService.findByUsername("rootafa");
 		if(admin==null)
 		{
 			User user = new User();
-			user.setUsername("rootAFA");
+			user.setUsername("rootafa");
 			user.setPassword(new BCryptPasswordEncoder().encode("AFA_2018"));
-			user.setEmail("sicuma.test@gmail.com");
-			user.setRole("admin");
+			user.setEmail("rpastor@uma.es");
+			user.setRole("ROOT");
 			user.setStatus("A");
 
 			this.usersService.save(user);
 		}
-		 //*/
+		/* FIN FIRST RUN */
+
+
+		/* CARGA DE RUTAS *
+
+		Route route = new Route("RUTA A");
+		route = this.routesRepository.save(route);
+
+		RouteStop routeStop = new RouteStop(route.get_id());
+		routeStop.setName("CALAHONDA");
+		routeStop.setOrder(1);
+		this.routeStopsRepository.save(routeStop);
+
+		routeStop = new RouteStop(route.get_id());
+		routeStop.setName("CALA DE MIJAS");
+		routeStop.setOrder(2);
+		this.routeStopsRepository.save(routeStop);
+
+		routeStop = new RouteStop(route.get_id());
+		routeStop.setName("CALLE SANTA MARÍA (LAS LAGUNAS)");
+		routeStop.setOrder(3);
+		this.routeStopsRepository.save(routeStop);
+
+
+		route = new Route("RUTA B");
+		route = this.routesRepository.save(route);
+
+		routeStop = new RouteStop(route.get_id());
+		routeStop.setName("FARMACIA CAMINO VIEJO DE COÍN");
+		routeStop.setOrder(1);
+		this.routeStopsRepository.save(routeStop);
+
+		routeStop = new RouteStop(route.get_id());
+		routeStop.setName("BP AJOLI");
+		routeStop.setOrder(2);
+		this.routeStopsRepository.save(routeStop);
+
+
+
+		route = new Route("RUTA C");
+		route = this.routesRepository.save(route);
+
+		routeStop = new RouteStop(route.get_id());
+		routeStop.setName("ROTONDA GUARDIA CIVIL");
+		routeStop.setOrder(1);
+		this.routeStopsRepository.save(routeStop);
+
+		routeStop = new RouteStop(route.get_id());
+		routeStop.setName("ROTONDA FORD");
+		routeStop.setOrder(2);
+		this.routeStopsRepository.save(routeStop);
+
+		routeStop = new RouteStop(route.get_id());
+		routeStop.setName("FARMACIA CARRETERA DE MIJAS");
+		routeStop.setOrder(3);
+		this.routeStopsRepository.save(routeStop);
+
+
+
+		route = new Route("RUTA D");
+		route = this.routesRepository.save(route);
+
+		routeStop = new RouteStop(route.get_id());
+		routeStop.setName("CASA MUSEO");
+		routeStop.setOrder(1);
+		this.routeStopsRepository.save(routeStop);
+
+		routeStop = new RouteStop(route.get_id());
+		routeStop.setName("BAR MIRLO");
+		routeStop.setOrder(2);
+		this.routeStopsRepository.save(routeStop);
+
+		routeStop = new RouteStop(route.get_id());
+		routeStop.setName("POSADA");
+		routeStop.setOrder(3);
+		this.routeStopsRepository.save(routeStop);
+
+		routeStop = new RouteStop(route.get_id());
+		routeStop.setName("FRAGUA");
+		routeStop.setOrder(4);
+		this.routeStopsRepository.save(routeStop);
+
+		routeStop = new RouteStop(route.get_id());
+		routeStop.setName("BAR NIÑO");
+		routeStop.setOrder(5);
+		this.routeStopsRepository.save(routeStop);
+
+		*/
+
+
+		/* FIN CARGA DE RUTAS */
+
+
+
 	}
 
 

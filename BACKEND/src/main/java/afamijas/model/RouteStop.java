@@ -41,6 +41,7 @@ public class RouteStop
 
 	public RouteStop() { this.created = this.modified = LocalDateTime.now(); this.status = "A"; }
 
+	public RouteStop(String idroute) { this(); this.idroute = idroute; }
 
 	public String get_id() {
 		return _id;

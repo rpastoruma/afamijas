@@ -1,0 +1,64 @@
+<div style="position: relative;">
+    <div class="circle" *ngIf="hasNotification() !== 0" id="num"><span class="num">{{hasNotification()}}</span></div>
+    <a class="buttonEdit" style="position: absolute; top: -13px; right: 5px;">
+
+        <nb-icon icon="bell-outline" class="bell-outline" [ngClass]="hasNotification() !== 0 && hiddenPopover ? 'animated' : ''" #popover  
+            nbPopoverPlacement="bottom" nbPopoverTrigger="noop" style="cursor: pointer;"
+            [nbPopover]="list"
+            (click)="setpopover()"
+        >
+        </nb-icon>   
+    </a>
+</div>
+<!-- <div class="circle" *ngIf="hasNotification() !== 0" id="num"><span class="num">{{hasNotification()}}</span></div> -->
+<ng-template #list>
+    <nb-card style="min-width: 330px !important; min-height: 0px !important; margin-bottom: 0px !important; max-width: 430px !important;">
+        <nb-card-header style="font-size: 1.2rem !important;">
+            <div class="row">
+                <!--span style="padding-left: 0.5em;">Notificaciones</span-->
+                <div class="markAll" (click)="markAsReadAll()">Descartar todas</div>
+            </div>
+        </nb-card-header>
+        <nb-list style="max-height: 260px !important" *ngIf="notifications && notifications.length > 0">
+            <nb-list-item *ngFor="let notification of notifications" [ngClass]="notification.status === 'A' ? 'noread' : 'read'" style="cursor: pointer;">
+                <div class="row" style="min-width: 320px; padding-left: 0.2em; padding-right: 0.2em;" *ngIf="notification.closetype !== 'PERMANENT'" (click)="redirect(notification)">
+                    <div class="col-auto position-static" style="margin-top: auto; margin-bottom: auto">
+                        <div class="d-flex align-items-center" style="font-size: 20px; color: #73a1ff">
+                          <div class="avatar avatar-sm avatar-circle">
+                            <i class="{{getClass(notification.closetype)}}"></i>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="col ml-n3">
+                        <span class="card-title h5" style="font-size: 1rem !important; line-height: 1.5rem !important;">{{notification.title}}</span>
+                        <p class="card-text font-size-sm" style="font-size:12px; line-height: 13px;">{{notification.message}}</p>
+                        <small>{{notification.userfrom}}</small>
+                    </div>
+                    <small style="margin-top: auto; margin-bottom: auto;" class="col-auto text-muted text-cap">{{ notification.created | amTimeAgo: true }}</small>
+                </div>
+                <div class="row" style="min-width: 320px; padding-left: 0.2em; padding-right: 0.2em;" *ngIf="notification.closetype === 'PERMANENT'">
+                    <div class="col-auto position-static">
+                      <div class="d-flex align-items-center" style="font-size: 20px; color: #73a1ff">
+                        <div class="avatar avatar-sm avatar-circle">
+                          <i class="{{getClass(notification.closetype)}}"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col ml-n3" (click)="redirect(notification)">
+                      <span class="card-title h5" style="font-size: 1rem !important; line-height: 1.5rem !important;">{{notification.title}}</span>
+                      <p class="card-text font-size-sm" style="font-size:12px; line-height: 13px;">{{notification?.message}}</p>
+                      <small>{{notification?.userfrom}}</small>
+                    </div>
+                    <small style="margin-top: auto; margin-bottom: auto;" class="col-auto text-muted text-cap">{{ notification.created | amTimeAgo: true }}</small>
+                    <i *ngIf="notification.closetype === 'PERMANENT' && notification.status === 'A'" class="close fa fa-times" (click)="markAsRead(notification.id)"></i>
+                </div>
+            </nb-list-item>
+        </nb-list>
+        <nb-list style="max-height: 260px !important" *ngIf="!notifications || notifications.length === 0">
+            <nb-list-item style="display: block !important; text-align: center;">
+                No hay notificaciones
+            </nb-list-item>
+        </nb-list>
+    </nb-card>
+</ng-template>
+

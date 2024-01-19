@@ -1,0 +1,86 @@
+
+
+<div style="display: flex; justify-content: center; margin-bottom: 2em;">
+    <img src="../../../../../assets/logo.png" />
+</div>
+
+<h1 id="title" class="title">Conéctate, por favor</h1>
+<p class="sub-title">Inicia sesión con tu nombre de usuario y contraseña</p>
+
+<nb-alert *ngIf="messageError!=''" outline="danger" role="alert">
+  <p class="alert-title"><b>¡Oh! ¡Vaya!</b></p>
+  <ul class="alert-message-list">
+    <li class="alert-message">{{messageError}}</li>
+  </ul>
+</nb-alert>
+
+<nb-alert *ngIf="messageOk!=''" outline="success" role="alert">
+  <p class="alert-title"><b>¡Inicio correcto!</b></p>
+  <ul class="alert-message-list">
+    <li class="alert-message">{{messageOk}}</li>
+  </ul>
+</nb-alert>
+
+<form (ngSubmit)="login()" #form="ngForm" aria-labelledby="title">
+
+  <div class="form-control-group">
+    <label class="label" for="input-email">Usuario:</label>
+    <input nbInput
+           fullWidth
+           [(ngModel)]="username"
+           #user="ngModel"
+           name="username"
+           id="input-username"
+           placeholder="Usuario"
+           autofocus
+           [status]="user.dirty ? (user.invalid  ? 'danger' : 'success') : ''"
+           [required]="true"
+           [attr.aria-invalid]="user.invalid && user.touched ? true : null">
+    <ng-container *ngIf="user.invalid && user.touched">
+
+      <p class="error-message" *ngIf="user.errors?.required">
+        Debe introducir su nombre de usuario
+      </p>
+
+
+    </ng-container>
+  </div>
+
+  <div class="form-control-group">
+    <label class="label" for="input-password">Contraseña:</label>
+    <input nbInput
+           fullWidth
+           [(ngModel)]="password"
+           #pass="ngModel"
+           name="password"
+           type="password"
+           id="input-password"
+           placeholder="Password"
+           [status]="pass.dirty ? (pass.invalid  ? 'danger' : 'success') : ''"
+           [required]="true"
+           [minlength]="1"
+           [maxlength]="100"
+           [attr.aria-invalid]="pass.invalid && pass.touched ? true : null">
+    <ng-container *ngIf="pass.invalid && pass.touched ">
+      <p class="error-message" *ngIf="pass.errors?.required">
+        Debe introducir su contraseña
+      </p>
+    </ng-container>
+  </div>
+
+  <div class="form-control-group accept-group">
+    <div></div>
+    <a class="forgot-password" routerLink="../request-password">¿Olvidó la contraseña?</a>
+  </div>
+
+  <button nbButton
+          fullWidth
+          status="success"
+          [disabled]="submitted || !form.valid"
+          [class.btn-pulse]="submitted">
+    Conectarse
+  </button>
+</form>
+
+
+

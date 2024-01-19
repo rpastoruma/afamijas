@@ -98,7 +98,9 @@ public class AuthController
 					user.getRole(),
 					user.get_id(),
 					user.getUsername(),
-					user.getDni());
+					user.getDni(),
+					user.getFullname(),
+					user.getPhoto_url());
 
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}

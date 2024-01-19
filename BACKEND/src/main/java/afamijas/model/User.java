@@ -3,6 +3,7 @@ package afamijas.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -426,6 +427,16 @@ public class User
 
 	public void setIdrelative(String idrelative) {
 		this.idrelative = idrelative;
+	}
+
+	@Transient
+	public String getFullname()
+	{
+		String n = this.name == null?"": this.name;
+		String s1 = this.surname1 == null?"": this.surname1;
+		String s2 = this.surname2 == null?"": this.surname2;
+		String fullname = ((n + " " + s1).trim() + " " + s2).trim();
+		return fullname.equals("")?this.username:fullname;
 	}
 
 	@Override

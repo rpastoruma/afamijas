@@ -13,20 +13,20 @@ public class JwtUser implements UserDetails
 
     private final String id;
     private final String username;
-    private final String roles;
+    private final String role;
     private final String email;
     private final String password;
 
     public JwtUser(
             String id,
             String username,
-            String roles,
+            String role,
             String email,
             String password)
     {
         this.id = id;
         this.username = username;
-        this.roles = roles;
+        this.role = role;
         this.email = email;
         this.password = password;
 
@@ -71,8 +71,8 @@ public class JwtUser implements UserDetails
         return password;
     }
 
-    public String getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
 
     @Override
