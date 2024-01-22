@@ -34,6 +34,38 @@ public abstract class AbstractBaseController
         return this.getRole().equals("RELATIVE");
     }
 
+    protected boolean isAdmin()
+    {
+        return this.getRole().equals("ADMIN");
+    }
+
+    protected boolean isKitchen()
+    {
+        return this.getRole().equals("KITCHEN");
+    }
+
+    protected boolean isManager()
+    {
+        return this.getRole().equals("MANAGER");
+    }
+
+    protected boolean isNursing()
+    {
+        return this.getRole().equals("NURSING");
+    }
+
+    protected boolean isNursingAssistant()
+    {
+        return this.getRole().equals("NURSING_ASSISTANT");
+    }
+
+
+    protected boolean isMonitor()
+    {
+        return this.getRole().equals("MONITOR");
+    }
+
+
 
     protected boolean isPatientForRelative(String idpatient)
     {

@@ -30,6 +30,17 @@ public interface UsersRepository extends MongoRepository<User, String>
 	@Query("{ 'email' : ?0, 'status' : ?1  }")
 	List<User> findUserByEmail(String email, String status);
 
+	@Query("{ 'name' : ?0, 'status' : ?1  }")
+	List<User> findUserByName(String name, String status);
+
+	@Query("{ 'surname1' : ?0, 'status' : ?1  }")
+	List<User> findUserBySurname1(String surname1, String status);
+
+	@Query("{ 'surname2' : ?0, 'status' : ?1  }")
+	List<User> findUserBySurname2(String surname2, String status);
+
+	@Query("{ 'dni' : ?0, 'status' : ?1  }")
+	List<User> findUserByDNI(String dni, String status);
 
 
 }

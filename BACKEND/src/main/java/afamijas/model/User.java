@@ -84,6 +84,15 @@ public class User
 
 	private LocalDateTime routestop_especial_to;  // day +  59
 
+	private String menu_type;
+
+	private String breakfast_description;
+
+	private String medication_description_morning;
+
+	private String medication_description_evening;
+
+	private String groupcode;
 
 
 	public String getIdRouteStopForDay(LocalDateTime thetime)
@@ -427,6 +436,46 @@ public class User
 
 	public void setIdrelative(String idrelative) {
 		this.idrelative = idrelative;
+	}
+
+	public String getMenu_type() {
+		return menu_type;
+	}
+
+	public void setMenu_type(String menu_type) {
+		this.menu_type = menu_type;
+	}
+
+	public String getBreakfast_description() {
+		return breakfast_description;
+	}
+
+	public void setBreakfast_description(String breakfast_description) {
+		this.breakfast_description = breakfast_description;
+	}
+
+	public String getMedication_description_morning() {
+		return medication_description_morning;
+	}
+
+	public void setMedication_description_morning(String medication_description_morning) {
+		this.medication_description_morning = medication_description_morning;
+	}
+
+	public String getMedication_description_evening() {
+		return medication_description_evening;
+	}
+
+	public void setMedication_description_evening(String medication_description_evening) {
+		this.medication_description_evening = medication_description_evening;
+	}
+
+	public String getGroupcode() {
+		return groupcode;
+	}
+
+	public void setGroupcode(String groupcode) {
+		this.groupcode = groupcode;
 	}
 
 	@Transient

@@ -18,6 +18,8 @@ public class Menu
 
 	private String name;
 
+	private String type; // BASAL, TRITURADO, HIPOSÓDICO
+
 	private String description;
 
 	private String menu_url;
@@ -54,6 +56,14 @@ public class Menu
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getDescription() {

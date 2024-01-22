@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 //import { NgSelectModule } from '@ng-select/ng-select';
 //import { SelectorCountriesComponent } from './components/selector-countries/selector-countries.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { SigningPadComponent } from './components/signing-pad/signing-pad.component';
 //import { DeleteConfirmComponent } from './components/delete-confirm/delete-confirm.component';
 //import { TableFieldListModalComponent } from './components/table-field-list-modal/table-field-list-modal.component';
 
@@ -23,7 +24,11 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
       //FillPipe,
       //ResearchersSelectorComponent,
       //DeleteConfirmComponent,
-    ],
+    
+    
+  
+    SigningPadComponent
+  ],
     imports: [
       CommonModule,
       SharedRoutingModule,
@@ -74,6 +79,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     //entryComponents: [
       //DeleteConfirmComponent,
       //TableFieldListModalComponent,
-    //]
+    //] 
 })
 export class SharedModule { }

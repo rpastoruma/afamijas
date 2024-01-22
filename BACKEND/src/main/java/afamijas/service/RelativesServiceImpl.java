@@ -6,6 +6,8 @@ import afamijas.model.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -98,6 +100,7 @@ public class RelativesServiceImpl implements RelativesService
 
 
 	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public RouteDTO changeRouteStop(String idpatient, String idroutestop, LocalDate from, LocalDate to)
 	{
 		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
@@ -128,6 +131,7 @@ public class RelativesServiceImpl implements RelativesService
 
 
 	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public AbsenceDTO addAbsence(String idpatient, LocalDate day, String comment)
 	{
 		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
@@ -145,6 +149,7 @@ public class RelativesServiceImpl implements RelativesService
 
 
 	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public void deleteAbsence(String idpatient, String idabsence)
 	{
 		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
@@ -181,6 +186,7 @@ public class RelativesServiceImpl implements RelativesService
 
 
 	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public PermissionDTO signPermission(String idpermission, String idpatient, MultipartFile file) throws Exception
 	{
 		Permission permission = this.permissionsRepository.findOne(idpermission, "A");

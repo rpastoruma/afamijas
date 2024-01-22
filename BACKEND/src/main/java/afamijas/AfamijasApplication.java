@@ -1,7 +1,9 @@
 package afamijas;
 
+import afamijas.dao.PostalcodesRepository;
 import afamijas.dao.RouteStopsRepository;
 import afamijas.dao.RoutesRepository;
+import afamijas.model.PostalCode;
 import afamijas.model.Route;
 import afamijas.model.RouteStop;
 import afamijas.model.User;
@@ -19,6 +21,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.List;
+
 @EnableScheduling
 @SpringBootApplication
 public class AfamijasApplication extends SpringBootServletInitializer implements ApplicationRunner
@@ -33,6 +37,9 @@ public class AfamijasApplication extends SpringBootServletInitializer implements
 
 	@Autowired
 	private RouteStopsRepository routeStopsRepository;
+
+	@Autowired
+	private PostalcodesRepository postalcodesRepository;
 
 
 
@@ -167,6 +174,22 @@ public class AfamijasApplication extends SpringBootServletInitializer implements
 		/* FIN CARGA DE RUTAS */
 
 
+
+		/* CORRECCIÓN DE CÓDIGOS POSTALES
+
+		List<PostalCode> postalCodeList = this.postalcodesRepository.findAll();
+		for(PostalCode pc : postalCodeList)
+		{
+			if(pc.getCode().length()==4)
+			{
+				pc.setCode("0" + pc.getCode());
+				this.postalcodesRepository.save(pc);
+			}
+		}
+
+
+
+		/* FIN CORRECCIÓN DE CÓDIGOS POSTALES */
 
 	}
 

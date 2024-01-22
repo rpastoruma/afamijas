@@ -1,0 +1,18 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  button {
+    background-color: #1976d2;
+    color: white;
+    font-weight: 600;
+    height: 35px;
+    border-radius: 3px;
+    border: none;
+  }
+
+  canvas {
+    border: 1px solid;
+  }
