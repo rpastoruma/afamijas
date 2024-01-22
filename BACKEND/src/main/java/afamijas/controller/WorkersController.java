@@ -88,5 +88,76 @@ public class WorkersController extends AbstractBaseController
 	}
 
 
+	@RequestMapping(method=RequestMethod.POST, value="registerTempFridge", produces="application/json")
+	public ResponseEntity<?> registerTempFridge(
+			@RequestParam(value = "tempfridge", required = true) Double tempfridge,
+			@RequestParam(value = "tempfreezer", required = true) Double tempfreezer,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isKitchen()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.registerTempFridge(this.getId(), tempfridge, tempfreezer);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+	@RequestMapping(method=RequestMethod.POST, value="registerTempService", produces="application/json")
+	public ResponseEntity<?> registerTempService(
+			@RequestParam(value = "dish", required = true) String dish,
+			@RequestParam(value = "dishtype", required = true) String dishtype,
+			@RequestParam(value = "tempreception", required = false) Double tempreception,
+			@RequestParam(value = "tempservice", required = false) Double tempservice,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isKitchen()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(tempservice==null && tempreception==null) return new ResponseEntity<>("Se necesita indicar temperatura.", HttpStatus.BAD_REQUEST);
+
+			this.workersService.registerTempService(this.getId(), dish, dishtype,  tempreception, tempservice);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+	@RequestMapping(method=RequestMethod.POST, value="registerMealSample", produces="application/json")
+	public ResponseEntity<?> registerMealSample(
+			@RequestParam(value = "dish", required = true) String dish,
+			@RequestParam(value = "organoleptico", required = true) Boolean organoleptico,
+			@RequestParam(value = "cuerposextra", required = true) Boolean cuerposextra,
+			@RequestParam(value = "comments", required = false) String comments,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isKitchen()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.registerMealSample(this.getId(), dish, organoleptico, cuerposextra, comments);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
 }
 

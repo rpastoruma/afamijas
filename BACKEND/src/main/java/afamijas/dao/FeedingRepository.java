@@ -13,7 +13,6 @@ import java.util.List;
 @Repository
 public interface FeedingRepository extends MongoRepository<Feeding, String>
 {
-	//RELATIVES:
 
 	@Query("{ '_id' : ?0 }")
 	Feeding findOne(String id);
@@ -21,8 +20,7 @@ public interface FeedingRepository extends MongoRepository<Feeding, String>
 	@Query("{ 'idpatient' : ?0 }")
 	List<Feeding> findFeedingByPatient(String idpatient);
 
-
-	@Query("{ 'idpatient' : ?0 }")
+	@Query("{ 'idpatient' : ?0, 'day' : ?1, 'daymeal' : ?2, 'dish' : ?3  }")
 	Feeding findFeedingByPatientDayDaymealAndDish(String idpatient, LocalDate day, String daymeal, String dish);
 
 

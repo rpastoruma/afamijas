@@ -32,15 +32,24 @@ public class WorkersServiceImpl implements WorkersService
 
 	final FeedingRepository feedingRepository;
 
+	final TempFridgeRepository tempFridgeRepository;
+
+	final TempServicesRepository tempServicesRepository;
+
+	final MealSamplesRepository mealSamplesRepository;
+
 	final MediaService mediaService;
 
 
 	@Autowired
-	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, MediaService mediaService)
+	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, MediaService mediaService)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
 		this.feedingRepository = feedingRepository;
+		this.tempFridgeRepository = tempFridgeRepository;
+		this.tempServicesRepository = tempServicesRepository;
+		this.mealSamplesRepository = mealSamplesRepository;
 		this.mediaService = mediaService;
 	}
 
@@ -87,6 +96,73 @@ public class WorkersServiceImpl implements WorkersService
 
 		this.feedingRepository.save(feeding);
 	}
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void registerTempFridge(String idworker, Double tempfridge, Double tempfreezer)
+	{
+		TempFridge tempFridge = this.tempFridgeRepository.findOne(LocalDate.now());
+		if(tempFridge==null) tempFridge = new TempFridge();
+
+		tempFridge.setTemperature_fridge(tempfridge);
+		tempFridge.setTemperature_freezer(tempfreezer);
+		tempFridge.setDay(LocalDate.now());
+		tempFridge.setIdworker(idworker);
+		tempFridge.setOk(true);
+
+		if(tempfridge>4.0) tempFridge.setOk(false);
+		if(tempfreezer>-18.0) tempFridge.setOk(false);
+
+		//TODO: ¿NOTIFICAR SI UNA TEMPERATURA ESTÁ MAL?
+
+		this.tempFridgeRepository.save(tempFridge);
+	}
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void registerTempService(String idworker, String dish, String dishtype, Double tempreception, Double tempservice)
+	{
+		TempService tempService = this.tempServicesRepository.findOneByDayAndDish(LocalDate.now(), dish);
+		if(tempService==null) tempService = new TempService();
+
+		tempService.setTemperature_service(tempservice);
+		tempService.setTemperature_reception(tempreception);
+		tempService.setDish(dish);
+		tempService.setDish_type(dishtype);
+		tempService.setIdworker(idworker);
+		tempService.setDay(LocalDate.now());
+		tempService.setOk(true);
+
+		if(tempreception>4.0) tempService.setOk(false);
+		if(dishtype.equals("COLD") && tempservice>8.0) tempService.setOk(false);
+		if(dishtype.equals("HOT") && tempservice<65.0) tempService.setOk(false);
+
+		//TODO: ¿NOTIFICAR SI UNA TEMPERATURA ESTÁ MAL?
+
+		this.tempServicesRepository.save(tempService);
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void registerMealSample(String idworker, String dish, Boolean organoletico, Boolean cuerposextra, String comments)
+	{
+		MealSample mealSample = this.mealSamplesRepository.findOneByDayAndDish(LocalDate.now(), dish);
+		if(mealSample==null) mealSample = new MealSample();
+
+		mealSample.setOrgenolepticoOk(organoletico);
+		mealSample.setCuerposExtraOk(cuerposextra);
+		mealSample.setComments(comments);
+		mealSample.setDish(dish);
+		mealSample.setDay(LocalDate.now());
+		mealSample.setIdworker(idworker);
+
+		//TODO: ¿NOTIFICAR SI UNA MUESTRA ESTÁ MAL?
+
+		this.mealSamplesRepository.save(mealSample);
+	}
+
 
 
 }

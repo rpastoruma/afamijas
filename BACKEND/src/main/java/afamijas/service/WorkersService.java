@@ -17,4 +17,10 @@ public interface WorkersService
 
     void registerFeeding(String idpatient, String idworker, String dish, String result, String daymeal);
 
+    void registerTempFridge(String idworker, Double tempfridge, Double tempfreezer);
+
+    void registerTempService(String idworker, String dish, String dishtype, Double tempreception, Double tempservice);
+
+    void registerMealSample(String idworker, String dish, Boolean organoletico, Boolean cuerposextra, String comments);
+
 }
