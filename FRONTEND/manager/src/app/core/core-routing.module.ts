@@ -54,7 +54,7 @@ const routes: Routes = [
       path : 'calendar', 
       component: BodyLayoutComponent,
       canActivate : [canViewCalendarGuard],
-      loadChildren: () => import('../modules/calendar/calendar.module').then(m => m.CalendarModule) 
+      loadChildren: () => import('../modules/calendar/mycalendar.module').then(m => m.MyCalendarModule) 
     },    
     {
       path : 'absences', 

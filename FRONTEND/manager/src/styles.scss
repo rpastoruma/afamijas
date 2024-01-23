@@ -3,9 +3,12 @@
 // framework component styles
 @use '@nebular/theme/styles/globals' as *;
 @use '@nebular/auth/styles/globals' as *;
+@import "../node_modules/angular-calendar/css/angular-calendar.css";
 
 // install the framework styles
 @include nb-install() {
   @include nb-theme-global();
   @include nb-auth-global(); // append the install mixin inside of the nb-install
 }
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';

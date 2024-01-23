@@ -12,4 +12,4 @@ const routes: Routes = [
     exports: [RouterModule],
     //providers: [CanUpdateAcademicTitle]
 })
-export class CalendarRoutingModule { }
+export class MyCalendarRoutingModule { }

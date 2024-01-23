@@ -7,6 +7,7 @@ import { NbAuthModule } from '@nebular/auth';
 import { NbIconLibraries } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbIconModule } from '@nebular/theme';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { NbIconModule } from '@nebular/theme';
     CoreModule, // core
     NbAuthModule.forRoot({}),
     NbEvaIconsModule,
-    NbIconModule
+    NbIconModule,
+    NgbModule,
   ],
   providers: [
   ],
