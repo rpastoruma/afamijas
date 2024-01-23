@@ -8,17 +8,23 @@ import { FormsModule } from '@angular/forms';
 
 import { FlatpickrModule } from 'angularx-flatpickr';
 
+import { SharedModule } from 'src/app/shared/shared.module';
+import { MyCalendarRoutingModule  } from './mycalendar.routing.module';
+
 @NgModule({
   declarations: [
     CalendarViewComponent
   ],
   imports: [
     CommonModule,
+    SharedModule,
+    MyCalendarRoutingModule,
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory,
           }),
-          FormsModule,FlatpickrModule.forRoot()
+          FormsModule,FlatpickrModule.forRoot(),
+
   ]
 })
 export class MyCalendarModule { }
