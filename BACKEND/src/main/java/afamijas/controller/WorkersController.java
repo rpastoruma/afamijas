@@ -1,14 +1,18 @@
 package afamijas.controller;
 
 
+import afamijas.model.Media;
+import afamijas.model.dto.PermissionDTO;
 import afamijas.service.ErrorsService;
+import afamijas.service.MediaService;
 import afamijas.service.UsersService;
 import afamijas.service.WorkersService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
+import java.util.UUID;
 
 @RestController
 @Validated
@@ -27,12 +31,15 @@ public class WorkersController extends AbstractBaseController
 
 	final WorkersService workersService;
 
+	final MediaService mediaService;
+
 	@Autowired
-	public WorkersController(UsersService usersService, ErrorsService errorsService, WorkersService workersService)
+	public WorkersController(UsersService usersService, ErrorsService errorsService, WorkersService workersService, MediaService mediaService)
 	{
 		super(usersService);
 		this.errorsService = errorsService;
 		this.workersService = workersService;
+		this.mediaService = mediaService;
 	}
 
 	@RequestMapping(method=RequestMethod.GET, value="getActivePatients", produces="application/json")
@@ -182,6 +189,71 @@ public class WorkersController extends AbstractBaseController
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="registerWC", produces="application/json")
+	public ResponseEntity<?> registerWC(
+			@RequestParam(value = "point", required = true) String point,
+			@RequestParam(value = "signature", required = true) String signature,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isLegionellaControl()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.registerWC(this.getId(), point, signature);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="uploadTimetable", produces="application/json")
+	public ResponseEntity<?> uploadTimetable(
+			@RequestParam(value = "file", required = true) MultipartFile file,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isAdmin()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			this.workersService.uploadTimetable(file);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@RequestMapping(method=RequestMethod.POST, value="uploadActivities", produces="application/json")
+	public ResponseEntity<?> uploadActivities(
+			@RequestParam(value = "file", required = true) MultipartFile file,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isAdmin()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			this.workersService.uploadActivities(file);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
 
 
 

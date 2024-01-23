@@ -16,6 +16,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,11 +42,13 @@ public class WorkersServiceImpl implements WorkersService
 
 	final LegionellaLogRepository legionellaLogRepository;
 
+	final WCLogRepository wcLogRepository;
+
 	final MediaService mediaService;
 
 
 	@Autowired
-	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, MediaService mediaService)
+	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, MediaService mediaService)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -54,6 +57,7 @@ public class WorkersServiceImpl implements WorkersService
 		this.tempServicesRepository = tempServicesRepository;
 		this.mealSamplesRepository = mealSamplesRepository;
 		this.legionellaLogRepository = legionellaLogRepository;
+		this.wcLogRepository = wcLogRepository;
 		this.mediaService = mediaService;
 	}
 
@@ -194,6 +198,45 @@ public class WorkersServiceImpl implements WorkersService
 
 		this.legionellaLogRepository.save(legionellaLog);
 
+	}
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void registerWC(String idworker, String point, String signature)
+	{
+		WCLog wcLog = new WCLog();
+		wcLog.setIdworker(idworker);
+		wcLog.setPoint(point);
+		wcLog.setWhen(LocalDateTime.now());
+		wcLog.setSignature(signature);
+		this.wcLogRepository.save(wcLog);
+	}
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public String uploadTimetable(MultipartFile file) throws Exception
+	{
+		Media media = this.mediaService.create(UUID.randomUUID().toString(), "timetable", "file", file);
+
+		return media.getUrl();
+
+		//TODO ¿Eliminar anterior?
+		//TODO: ENVIAR NOTIFICACIÓN ??
+	}
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public String uploadActivities(MultipartFile file) throws Exception
+	{
+		Media media = this.mediaService.create(UUID.randomUUID().toString(), "activities", "file", file);
+
+		return media.getUrl();
+
+		//TODO ¿Eliminar anterior?
+		//TODO: ENVIAR NOTIFICACIÓN ??
 	}
 
 

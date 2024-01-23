@@ -25,4 +25,11 @@ public interface WorkersService
 
     void registerLegionella(String idworker, Double value, String point, String signature);
 
+    void registerWC(String idworker, String point, String signature);
+
+    String uploadTimetable(MultipartFile file) throws Exception;
+
+    String uploadActivities(MultipartFile file) throws Exception;
+
+
 }
