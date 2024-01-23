@@ -159,5 +159,31 @@ public class WorkersController extends AbstractBaseController
 	}
 
 
+
+
+	@RequestMapping(method=RequestMethod.POST, value="registerLegionella", produces="application/json")
+	public ResponseEntity<?> registerLegionella(
+			@RequestParam(value = "value", required = true) Double value,
+			@RequestParam(value = "point", required = true) String point,
+			@RequestParam(value = "signature", required = true) String signature,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isLegionellaControl()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.registerLegionella(this.getId(), value, point, signature);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
 }
 

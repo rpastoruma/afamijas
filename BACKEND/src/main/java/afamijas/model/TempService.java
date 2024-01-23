@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Document(collection = "tempservices")
@@ -26,6 +27,21 @@ public class TempService
 	private Double temperature_service;
 
 	private Boolean isOk;
+
+
+
+	private LocalDateTime when;
+
+	public TempService() { this.when = LocalDateTime.now(); }
+
+	public LocalDateTime getWhen() {
+		return when;
+	}
+
+	public void setWhen(LocalDateTime when) {
+		this.when = when;
+	}
+
 
 	public String get_id() {
 		return _id;

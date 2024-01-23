@@ -23,4 +23,6 @@ public interface WorkersService
 
     void registerMealSample(String idworker, String dish, Boolean organoletico, Boolean cuerposextra, String comments);
 
+    void registerLegionella(String idworker, Double value, String point, String signature);
+
 }

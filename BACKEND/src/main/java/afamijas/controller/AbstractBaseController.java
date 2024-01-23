@@ -59,6 +59,11 @@ public abstract class AbstractBaseController
         return this.getRole().equals("NURSING_ASSISTANT");
     }
 
+    protected boolean isLegionellaControl()
+    {
+        return this.getRole().equals("LEGIONELLA_CONTROL");
+    }
+
 
     protected boolean isMonitor()
     {

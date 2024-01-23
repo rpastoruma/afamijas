@@ -8,8 +8,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Document(collection = "mealsamples")
-public class MealSample
+@Document(collection = "legionellalog")
+public class LegionellaLog
 {
 	@Id
 	private String _id;
@@ -18,19 +18,18 @@ public class MealSample
 
 	private LocalDate day;
 
-	private String dish;
+	private Double value;
 
-	private Boolean orgenolepticoOk;
+	private String point;
 
-	private Boolean cuerposExtraOk;
-
-	private String comments;
+	private String signature;
 
 
+	private Boolean isOk;
 
 	private LocalDateTime when;
 
-	public MealSample() { this.when = LocalDateTime.now(); }
+	public LegionellaLog() { this.when = LocalDateTime.now(); }
 
 	public LocalDateTime getWhen() {
 		return when;
@@ -64,36 +63,36 @@ public class MealSample
 		this.day = day;
 	}
 
-	public String getDish() {
-		return dish;
+	public Double getValue() {
+		return value;
 	}
 
-	public void setDish(String dish) {
-		this.dish = dish;
+	public void setValue(Double value) {
+		this.value = value;
 	}
 
-	public Boolean getOrgenolepticoOk() {
-		return orgenolepticoOk;
+	public String getPoint() {
+		return point;
 	}
 
-	public void setOrgenolepticoOk(Boolean orgenolepticoOk) {
-		this.orgenolepticoOk = orgenolepticoOk;
+	public void setPoint(String point) {
+		this.point = point;
 	}
 
-	public Boolean getCuerposExtraOk() {
-		return cuerposExtraOk;
+	public String getSignature() {
+		return signature;
 	}
 
-	public void setCuerposExtraOk(Boolean cuerposExtraOk) {
-		this.cuerposExtraOk = cuerposExtraOk;
+	public void setSignature(String signature) {
+		this.signature = signature;
 	}
 
-	public String getComments() {
-		return comments;
+	public Boolean getOk() {
+		return isOk;
 	}
 
-	public void setComments(String comments) {
-		this.comments = comments;
+	public void setOk(Boolean ok) {
+		isOk = ok;
 	}
 
 	@Override
@@ -101,7 +100,7 @@ public class MealSample
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		MealSample log = (MealSample) o;
+		LegionellaLog log = (LegionellaLog) o;
 
 		return _id.equals(log._id);
 	}

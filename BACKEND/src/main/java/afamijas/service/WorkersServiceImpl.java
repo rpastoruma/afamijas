@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -38,11 +39,13 @@ public class WorkersServiceImpl implements WorkersService
 
 	final MealSamplesRepository mealSamplesRepository;
 
+	final LegionellaLogRepository legionellaLogRepository;
+
 	final MediaService mediaService;
 
 
 	@Autowired
-	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, MediaService mediaService)
+	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, MediaService mediaService)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -50,6 +53,7 @@ public class WorkersServiceImpl implements WorkersService
 		this.tempFridgeRepository = tempFridgeRepository;
 		this.tempServicesRepository = tempServicesRepository;
 		this.mealSamplesRepository = mealSamplesRepository;
+		this.legionellaLogRepository = legionellaLogRepository;
 		this.mediaService = mediaService;
 	}
 
@@ -93,6 +97,7 @@ public class WorkersServiceImpl implements WorkersService
 		feeding.setResult(result);
 		feeding.setDaymeal(daymeal);
 		feeding.setDay(LocalDate.now());
+		feeding.setWhen(LocalDateTime.now());
 
 		this.feedingRepository.save(feeding);
 	}
@@ -110,6 +115,7 @@ public class WorkersServiceImpl implements WorkersService
 		tempFridge.setDay(LocalDate.now());
 		tempFridge.setIdworker(idworker);
 		tempFridge.setOk(true);
+		tempFridge.setWhen(LocalDateTime.now());
 
 		if(tempfridge>4.0) tempFridge.setOk(false);
 		if(tempfreezer>-18.0) tempFridge.setOk(false);
@@ -134,6 +140,7 @@ public class WorkersServiceImpl implements WorkersService
 		tempService.setIdworker(idworker);
 		tempService.setDay(LocalDate.now());
 		tempService.setOk(true);
+		tempService.setWhen(LocalDateTime.now());
 
 		if(tempreception>4.0) tempService.setOk(false);
 		if(dishtype.equals("COLD") && tempservice>8.0) tempService.setOk(false);
@@ -157,12 +164,37 @@ public class WorkersServiceImpl implements WorkersService
 		mealSample.setDish(dish);
 		mealSample.setDay(LocalDate.now());
 		mealSample.setIdworker(idworker);
+		mealSample.setWhen(LocalDateTime.now());
 
 		//TODO: ¿NOTIFICAR SI UNA MUESTRA ESTÁ MAL?
 
 		this.mealSamplesRepository.save(mealSample);
 	}
 
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void registerLegionella(String idworker, Double value, String point, String signature)
+	{
+		LegionellaLog legionellaLog = this.legionellaLogRepository.findOne(LocalDate.now());
+		if(legionellaLog==null) legionellaLog = new LegionellaLog();
+
+		legionellaLog.setDay(LocalDate.now());
+		legionellaLog.setPoint(point);
+		legionellaLog.setIdworker(idworker);
+		legionellaLog.setSignature(signature);
+		legionellaLog.setValue(value);
+		legionellaLog.setWhen(LocalDateTime.now());
+		legionellaLog.setOk(true);
+
+		if(value<0.2 || value>1.0)  legionellaLog.setOk(false);
+
+		//TODO: ¿NOTIFICAR SI UNA MUESTRA ESTÁ MAL?
+
+		this.legionellaLogRepository.save(legionellaLog);
+
+	}
 
 
 }

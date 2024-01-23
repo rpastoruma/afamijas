@@ -26,6 +26,17 @@ public class Feeding
 
 	private String result; // COMPLETO, PARCIAL, NADA
 
+	private LocalDateTime when;
+
+	public Feeding() { this.when = LocalDateTime.now(); }
+
+	public LocalDateTime getWhen() {
+		return when;
+	}
+
+	public void setWhen(LocalDateTime when) {
+		this.when = when;
+	}
 
 	public String get_id() {
 		return _id;
