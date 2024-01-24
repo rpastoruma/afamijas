@@ -16,11 +16,21 @@ public class Absence
 
 	private String idpatient;
 
-	private String idroutestop;  //para notificar al conductor
+	private String idrelative;
+
+	private String idworker;
+
+	private String idroutestop;  // tendría valor si no va a ser recogido en la parada estipulada (indicado por familiar) o no ha sido recogido sin que lo indicara el familiar (indicado por trabajador)
 
 	private String comment;
 
 	private LocalDate day;
+
+	private Boolean allday;
+
+	private LocalDateTime from;
+
+	private LocalDateTime to;
 
 	private LocalDateTime created;
 
@@ -75,6 +85,46 @@ public class Absence
 
 	public void setCreated(LocalDateTime created) {
 		this.created = created;
+	}
+
+	public String getIdrelative() {
+		return idrelative;
+	}
+
+	public void setIdrelative(String idrelative) {
+		this.idrelative = idrelative;
+	}
+
+	public String getIdworker() {
+		return idworker;
+	}
+
+	public void setIdworker(String idworker) {
+		this.idworker = idworker;
+	}
+
+	public Boolean getAllday() {
+		return allday;
+	}
+
+	public void setAllday(Boolean allday) {
+		this.allday = allday;
+	}
+
+	public LocalDateTime getFrom() {
+		return from;
+	}
+
+	public void setFrom(LocalDateTime from) {
+		this.from = from;
+	}
+
+	public LocalDateTime getTo() {
+		return to;
+	}
+
+	public void setTo(LocalDateTime to) {
+		this.to = to;
 	}
 
 	@Override

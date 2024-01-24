@@ -94,6 +94,26 @@ public class User
 
 	private String groupcode;
 
+	private String L_site_turn1; // MIJASPUEBLO, LACALA, LASLAGUNAS, CERAMICA
+
+	private String L_site_turn2; // MIJASPUEBLO, LACALA, LASLAGUNAS, CERAMICA
+
+	private String M_site_turn1; // MIJASPUEBLO, LACALA, LASLAGUNAS, CERAMICA
+
+	private String M_site_turn2; // MIJASPUEBLO, LACALA, LASLAGUNAS, CERAMICA
+
+	private String X_site_turn1; // MIJASPUEBLO, LACALA, LASLAGUNAS, CERAMICA
+
+	private String X_site_turn2; // MIJASPUEBLO, LACALA, LASLAGUNAS, CERAMICA
+
+	private String J_site_turn1; // MIJASPUEBLO, LACALA, LASLAGUNAS, CERAMICA
+
+	private String J_site_turn2; // MIJASPUEBLO, LACALA, LASLAGUNAS, CERAMICA
+
+	private String V_site_turn1; // MIJASPUEBLO, LACALA, LASLAGUNAS, CERAMICA
+
+	private String V_site_turn2; // MIJASPUEBLO, LACALA, LASLAGUNAS, CERAMICA
+
 
 	public String getIdRouteStopForDay(LocalDateTime thetime)
 	{
@@ -476,6 +496,86 @@ public class User
 
 	public void setGroupcode(String groupcode) {
 		this.groupcode = groupcode;
+	}
+
+	public String getL_site_turn1() {
+		return L_site_turn1;
+	}
+
+	public void setL_site_turn1(String l_site_turn1) {
+		L_site_turn1 = l_site_turn1;
+	}
+
+	public String getL_site_turn2() {
+		return L_site_turn2;
+	}
+
+	public void setL_site_turn2(String l_site_turn2) {
+		L_site_turn2 = l_site_turn2;
+	}
+
+	public String getM_site_turn1() {
+		return M_site_turn1;
+	}
+
+	public void setM_site_turn1(String m_site_turn1) {
+		M_site_turn1 = m_site_turn1;
+	}
+
+	public String getM_site_turn2() {
+		return M_site_turn2;
+	}
+
+	public void setM_site_turn2(String m_site_turn2) {
+		M_site_turn2 = m_site_turn2;
+	}
+
+	public String getX_site_turn1() {
+		return X_site_turn1;
+	}
+
+	public void setX_site_turn1(String x_site_turn1) {
+		X_site_turn1 = x_site_turn1;
+	}
+
+	public String getX_site_turn2() {
+		return X_site_turn2;
+	}
+
+	public void setX_site_turn2(String x_site_turn2) {
+		X_site_turn2 = x_site_turn2;
+	}
+
+	public String getJ_site_turn1() {
+		return J_site_turn1;
+	}
+
+	public void setJ_site_turn1(String j_site_turn1) {
+		J_site_turn1 = j_site_turn1;
+	}
+
+	public String getJ_site_turn2() {
+		return J_site_turn2;
+	}
+
+	public void setJ_site_turn2(String j_site_turn2) {
+		J_site_turn2 = j_site_turn2;
+	}
+
+	public String getV_site_turn1() {
+		return V_site_turn1;
+	}
+
+	public void setV_site_turn1(String v_site_turn1) {
+		V_site_turn1 = v_site_turn1;
+	}
+
+	public String getV_site_turn2() {
+		return V_site_turn2;
+	}
+
+	public void setV_site_turn2(String v_site_turn2) {
+		V_site_turn2 = v_site_turn2;
 	}
 
 	@Transient

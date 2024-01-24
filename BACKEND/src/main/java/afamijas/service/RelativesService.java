@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,7 +20,7 @@ public interface RelativesService
 
     RouteDTO changeRouteStop(String idpatient, String idroutestop, LocalDate from, LocalDate to);
 
-    AbsenceDTO addAbsence(String idpatient, LocalDate day, String comment);
+    AbsenceDTO addAbsenceByRelative(String idpatient, String idrelative, LocalDate day, LocalDateTime from, LocalDateTime to, Boolean notransport, String comment);
 
     void deleteAbsence(String idpatient, String idabsence);
 

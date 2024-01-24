@@ -200,18 +200,15 @@ export class CalendarViewComponent {
 
   /** MARCADO DE FESTIVOS */
   beforeMonthViewRender(renderEvent: CalendarMonthViewBeforeRenderEvent): void {
-    console.log("ROSA");
     renderEvent.body.forEach((day) => {
       const dayOfMonth = day.date.getDate();
       if (dayOfMonth > 5 && dayOfMonth < 10 && day.inMonth) {
-        console.log("ROSA");
         day.cssClass = 'bg-pink';
       }
     });
   }
 
   beforeWeekViewRender(renderEvent: CalendarWeekViewBeforeRenderEvent) {
-    console.log("ROSA 2");
     renderEvent.hourColumns.forEach((hourColumn) => {
       hourColumn.hours.forEach((hour) => {
         hour.segments.forEach((segment) => {
@@ -228,7 +225,6 @@ export class CalendarViewComponent {
   }
 
   beforeDayViewRender(renderEvent: CalendarDayViewBeforeRenderEvent) {
-    console.log("ROSA 3");
     
     renderEvent.hourColumns.forEach((hourColumn) => {
       hourColumn.hours.forEach((hour) => {

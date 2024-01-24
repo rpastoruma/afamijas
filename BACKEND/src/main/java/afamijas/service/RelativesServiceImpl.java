@@ -132,19 +132,29 @@ public class RelativesServiceImpl implements RelativesService
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public AbsenceDTO addAbsence(String idpatient, LocalDate day, String comment)
+	public AbsenceDTO addAbsenceByRelative(String idpatient, String idrelative, LocalDate day, LocalDateTime from, LocalDateTime to, Boolean notransport, String comment)
 	{
 		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
 		if(patient==null) return null;
+		Boolean allday = false; if(from==null && to==null) allday = true;
 
 		Absence absence = new Absence();
 		absence.setIdpatient(idpatient);
+		absence.setIdrelative(idrelative);
+		absence.setIdworker(null);
 		absence.setDay(day);
+		absence.setAllday(allday);
+		absence.setFrom(from);
+		absence.setTo(to);
 		absence.setComment(comment);
+
+		RouteStop routeStop = null;
+		if(notransport) routeStop = this.routeStopsRepository.findOne(patient.getIdRouteStopForDay(day.atTime(12, 0, 0)), "A");
+		if(routeStop!=null) absence.setIdroutestop(routeStop.get_id());
 
 		//TODO: EMAIL A QUIEN CORRESPONDA ANUNCIANDO AUSENCIA PARA ESTE PACIENTE
 
-		return new AbsenceDTO(this.absencesRepository.save(absence), patient, this.routeStopsRepository.findOne(patient.getIdRouteStopForDay(day.atTime(12, 0, 0)), "A"));
+		return new AbsenceDTO(this.absencesRepository.save(absence), patient, notransport?routeStop:null);
 	}
 
 

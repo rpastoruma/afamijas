@@ -5,6 +5,7 @@ import afamijas.model.RouteStop;
 import afamijas.model.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class AbsenceDTO
 {
@@ -12,6 +13,10 @@ public class AbsenceDTO
     private String id;
 
     private String idpatient;
+
+    private String idrelative;
+
+    private String idworker;
 
     private String patient_fullname;
 
@@ -23,16 +28,27 @@ public class AbsenceDTO
 
     private LocalDate day;
 
+    private Boolean allday;
+
+    private LocalDateTime from;
+
+    private LocalDateTime to;
 
     public AbsenceDTO(Absence absence, User patient, RouteStop routeStop)
     {
         this.id = absence.get_id();
         this.idpatient = absence.getIdpatient();
-        this.patient_fullname = ((patient.getName() + " " + patient.getSurname1()).trim() + " " + patient.getSurname2()).trim();
-        this.idroutestop = routeStop.get_id();
-        this.routestop_name = routeStop.getName();
+        if(patient!=null)  this.patient_fullname = ((patient.getName() + " " + patient.getSurname1()).trim() + " " + patient.getSurname2()).trim();
+        if(routeStop!=null) this.idroutestop = routeStop.get_id();
+        if(routeStop!=null) this.routestop_name = routeStop.getName();
         this.comment = absence.getComment();
         this.day = absence.getDay();
+
+        this.idrelative = absence.getIdrelative();
+        this.idworker = absence.getIdworker();
+        this.allday = absence.getAllday();
+        this.from = absence.getFrom();
+        this.to = absence.getTo();
     }
 
     public String getId() {

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -85,11 +86,15 @@ public class RelativesController extends AbstractBaseController
 		}
 	}
 
-
-	@RequestMapping(method=RequestMethod.POST, value="addAbsence", produces="application/json")
-	public ResponseEntity<?> addAbsence(
+  	// si marca día entero solo se envía day (día puntual entero) --> si quisiera un intervalo de fechas se haría bucle con esto
+	// si entra un intervalo de fecha/horo se envía from-to y esto indicaría una falta puntual un día de tal a tal hora
+	@RequestMapping(method=RequestMethod.POST, value="addAbsenceByRelative", produces="application/json")
+	public ResponseEntity<?> addAbsenceByRelative(
 			@RequestParam(value = "idpatient", required = true) String idpatient,
-			@RequestParam(value = "day", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate day,
+			@RequestParam(value = "day", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate day,
+			@RequestParam(value = "from", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime from,
+			@RequestParam(value = "to", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime to,
+			@RequestParam(value = "notransport", required = true)  Boolean notransport,
 			@RequestParam(value = "comment", required = false) String comment,
 			HttpServletRequest request
 	)
@@ -98,7 +103,7 @@ public class RelativesController extends AbstractBaseController
 		{
 			if(!this.isRelative()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
-			return new ResponseEntity<>(this.relativesService.addAbsence(idpatient, day, comment), HttpStatus.OK);
+			return new ResponseEntity<>(this.relativesService.addAbsenceByRelative(idpatient, this.getId(), day, from , to, notransport, comment), HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
