@@ -6,6 +6,7 @@ import { map, catchError } from 'rxjs/operators';
 import { environment as ENV } from '../../environments/environment'; 
 import { LocalStorageService } from './local-storage.service';
 import { LoginResponse } from 'src/app/shared/models/models';
+import { hasRole, RoleCode } from 'src/app/shared/models/models';
 
 @Injectable()
 export class AuthService {
@@ -40,9 +41,9 @@ export class AuthService {
     return data.userId;
   }
 
-  getRole() {
+  getRoles() {
     const data: LoginResponse = this.localStorageService.getObject('logged');
-    return data.role;
+    return data.roles;
   }
 
   getUsername() {
@@ -65,16 +66,19 @@ export class AuthService {
     return data.photo_url==null?'/assets/generic-user-avatar.jpg':data.photo_url;
   }
 
+
+
   isRoot()
   {
-    return this.getRole() === 'ROOT';
+    return hasRole(this.getRoles(),  RoleCode.ROOT);
   }
 
 
   isRelative()
   {
-    return this.getRole() === 'RELATIVE';
+    return hasRole(this.getRoles(),  RoleCode.RELATIVE);
   }
+
 
 
 
@@ -91,7 +95,7 @@ export class AuthService {
         // login successful if there's a jwt token in the response
         try 
         {
-          if (data.token && data.role) 
+          if (data.token && data.roles) 
           {
             // store username and jwt token in local storage to keep user logged in between page refreshes
             this.localStorageService.setObject('logged', data);

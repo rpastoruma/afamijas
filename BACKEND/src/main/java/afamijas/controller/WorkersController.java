@@ -56,7 +56,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isAdmin() && !this.isKitchen() && !isManager() && !isNursing() && !isNursingAssistant()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isADMIN() && !this.isKITCHEN() && !isMANAGER() && !isNURSING() && !isNURSING_ASSISTANT()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			if(order==null) order = "name";
 			if(orderasc==null) orderasc = "ASC";
@@ -82,7 +82,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isMonitor()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isMONITOR()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.registerFeeding(idpatient, this.getId(), dish, result, daymeal);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -104,7 +104,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isKitchen()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.registerTempFridge(this.getId(), tempfridge, tempfreezer);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -128,7 +128,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isKitchen()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			if(tempservice==null && tempreception==null) return new ResponseEntity<>("Se necesita indicar temperatura.", HttpStatus.BAD_REQUEST);
 
 			this.workersService.registerTempService(this.getId(), dish, dishtype,  tempreception, tempservice);
@@ -153,7 +153,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isKitchen()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.registerMealSample(this.getId(), dish, organoleptico, cuerposextra, comments);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -178,7 +178,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isLegionellaControl()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isLEGIONELLA_CONTROL()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.registerLegionella(this.getId(), value, point, signature);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -201,7 +201,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isLegionellaControl()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isCLEANING()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.registerWC(this.getId(), point, signature);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -223,7 +223,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isAdmin()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isADMIN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			this.workersService.uploadTimetable(file);
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
@@ -242,7 +242,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isAdmin()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isADMIN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			this.workersService.uploadActivities(file);
 			return new ResponseEntity<>(HttpStatus.OK);
 		}

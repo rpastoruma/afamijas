@@ -102,8 +102,8 @@ public class AuthController
  		    	
  		    final Instant now = Instant.now();
 
-			JwtAuthenticationResponse response = new JwtAuthenticationResponse(Jwts.builder().setId(""+user.get_id()).setSubject(username).setAudience(user.getRole()).setIssuer("afamijas").setIssuedAt(Date.from(now)).setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS))).signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.encode(JwtFilter.SECRET )).compact(),
-					user.getRole(),
+			JwtAuthenticationResponse response = new JwtAuthenticationResponse(Jwts.builder().setId(""+user.get_id()).setSubject(username).setAudience(String.join(",", user.getRoles())).setIssuer("afamijas").setIssuedAt(Date.from(now)).setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS))).signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.encode(JwtFilter.SECRET )).compact(),
+					user.getRoles(),
 					user.get_id(),
 					user.getUsername(),
 					user.getDni(),

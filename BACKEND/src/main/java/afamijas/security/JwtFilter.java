@@ -13,6 +13,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @WebFilter(urlPatterns = "/private/*")
 public class JwtFilter implements Filter 
@@ -58,8 +61,8 @@ public class JwtFilter implements Filter
         final Claims claims = Jwts.parser().setSigningKey(TextCodec.BASE64.encode(JwtFilter.SECRET)).parseClaimsJws(token).getBody();
         String username = claims.getSubject();
         String id = claims.getId();
-        String role = claims.getAudience();
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(new JwtUser(id, username, role, "", ""), null,	null);
+        List<String> roles = Arrays.asList(claims.getAudience().split("\\s*,\\s*"));
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(new JwtUser(id, username, roles, "", ""), null,	null);
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
       catch (final JwtException e) 

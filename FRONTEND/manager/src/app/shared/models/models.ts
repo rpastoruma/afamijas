@@ -1,7 +1,7 @@
 // Respuesta del login:
 export interface LoginResponse {
     token: string;
-    role: string;
+    roles: string[];
     userId: string;
     username: string;
     dni: string;
@@ -22,6 +22,7 @@ export function reviver(key: string, value: any): any {
 type RolesT = {
     [key: string]: string
 }
+/*
 
 export const RoleTranslate: RolesT = {
     ROOT: 'Super Administrador',
@@ -30,22 +31,35 @@ export const RoleTranslate: RolesT = {
     ADMIN :'Administrador/a',
     SOCIALWORKER : 'Trabajador/a social',
     PSYCHO : 'Psicólogo/a'
-}
+} */
 
 export enum RoleCode 
 {
     ROOT = 'ROOT',
     RELATIVE = 'RELATIVE',
-    WORKER = 'WORKER',
+    TRANSPORT = 'TRANSPORT',
     ADMIN = 'ADMIN',
-    SOCIALWORKER = 'SOCIALWORKER',
-    PSYCHO = 'PSYCHO'
+    CLEANING = 'CLEANING',
+    NURSING = 'NURSING',
+    NURSING_ASSISTANT = 'NURSING_ASSISTANT',
+    LEGIONELLA_CONTROL = 'LEGIONELLA_CONTROL',
+    KITCHEN = 'KITCHEN',
+    MONITOR = 'MONITOR',
+    SOCIAL_WORKER = 'SOCIAL_WORKER',
+    PSYCHOLOGIST = 'PSYCHOLOGIST',
+    MANAGER = 'MANAGER',
+    PHYSIOTHERAPIST = 'PHYSIOTHERAPIST',
+    OCCUPATIONAL_THERAPIST = 'OCCUPATIONAL_THERAPIST',
+    OPERATOR_EXTRA_1 = 'OPERATOR_EXTRA_1'
 }
 
-export function hasRole(role, roleCompare: RoleCode) 
-{
-    return role === roleCompare;
+
+
+export function hasRole(userRoles: string[], roleCompare: RoleCode) {
+    return userRoles.includes(roleCompare);
 }
+
+
 
 // Tiempo notificaciones flotantse
 export enum ToastTime {

@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 public class JwtUser implements UserDetails
 {
@@ -13,20 +14,20 @@ public class JwtUser implements UserDetails
 
     private final String id;
     private final String username;
-    private final String role;
+    private final List<String> roles;
     private final String email;
     private final String password;
 
     public JwtUser(
             String id,
             String username,
-            String role,
+            List<String> roles,
             String email,
             String password)
     {
         this.id = id;
         this.username = username;
-        this.role = role;
+        this.roles = roles;
         this.email = email;
         this.password = password;
 
@@ -71,8 +72,8 @@ public class JwtUser implements UserDetails
         return password;
     }
 
-    public String getRole() {
-        return role;
+    public List<String> getRoles() {
+        return roles;
     }
 
     @Override

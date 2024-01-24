@@ -5,6 +5,8 @@ import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { FrontValuesService } from 'src/app/core/services/front-values.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 
+
+
 @Component({
   selector: 'ngx-login',
   templateUrl: './login.component.html',
@@ -50,9 +52,7 @@ export class LoginComponent implements OnInit
         this.messageOk = '¡Has conectado con éxito!';
         this.submitted = true;
 
-        if(this.authService.isRoot)  this.router.navigate(['/calendar']);
-
-
+        if(this.authService.isAuthenticated()) this.router.navigate(['/calendar']);
       }, 
       error => 
       {

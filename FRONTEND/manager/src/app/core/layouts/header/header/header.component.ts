@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbMenuService, NbSidebarService } from '@nebular/theme';
 import { filter, map } from 'rxjs';
-import { RoleTranslate } from 'src/app/shared/models/models';
+//import { RoleTranslate } from 'src/app/shared/models/models';
 import { AuthService } from 'src/app/core/services/auth.service'; 
 
 @Component({
@@ -31,7 +31,7 @@ export class HeaderComponent implements OnInit {
     this.user = {
       id: this.authenticationService.getUserId(),
       name: this.authenticationService.getFullname(),
-      role: this.authenticationService.getRole() ? RoleTranslate[this.authenticationService.getRole()] : '',
+      roles: this.authenticationService.getRoles(), 
       dni:  this.authenticationService.getDni(),
       photo_url:  this.authenticationService.getPhotoURL(),
     };

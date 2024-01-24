@@ -50,7 +50,7 @@ public class RelativesController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isRelative()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
 			return new ResponseEntity<>(this.relativesService.getRoute(idpatient), HttpStatus.OK);
 		}
@@ -75,7 +75,7 @@ public class RelativesController extends AbstractBaseController
 		try
 		{
 			if(from!=null && to==null) to = from; //solo para un día
-			if(!this.isRelative()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
 			return new ResponseEntity<>(this.relativesService.changeRouteStop(idpatient, idroutestop, from, to), HttpStatus.OK);
 		}
@@ -101,7 +101,7 @@ public class RelativesController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isRelative()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
 			return new ResponseEntity<>(this.relativesService.addAbsenceByRelative(idpatient, this.getId(), day, from , to, notransport, comment), HttpStatus.OK);
 		}
@@ -124,7 +124,7 @@ public class RelativesController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isRelative()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
 			this.relativesService.deleteAbsence(idpatient, idabsence);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -145,7 +145,7 @@ public class RelativesController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isRelative()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
 			return new ResponseEntity<>(this.relativesService.getMenu(idpatient), HttpStatus.OK);
 		}
@@ -166,7 +166,7 @@ public class RelativesController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isRelative()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
 			return new ResponseEntity<>(this.relativesService.getCalendar(idpatient, day, numdays), HttpStatus.OK);
 		}
@@ -185,7 +185,7 @@ public class RelativesController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isRelative()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			return new ResponseEntity<>(this.relativesService.getPendingPermissions(this.getId()), HttpStatus.OK);
 		}
 		catch(Exception e)
@@ -206,7 +206,7 @@ public class RelativesController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isRelative()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
 			this.relativesService.signPermission(idpatient, idpatient, file);
 			return new ResponseEntity<>(HttpStatus.OK);

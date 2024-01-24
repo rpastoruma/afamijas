@@ -20,10 +20,10 @@ export class BodyLayoutComponent implements OnInit {
 
   setMenuData() 
   {
-    const role = this.authenticationService.getRole();
-    if (role) 
+    const roles = this.authenticationService.getRoles();
+    if (roles) 
     {
-      if (hasRole(role, RoleCode.RELATIVE) || hasRole(role, RoleCode.ROOT) ) 
+      if (hasRole(roles, RoleCode.RELATIVE) || hasRole(roles, RoleCode.ROOT) ) 
       {
         this.menu = this.menu.concat(MENU_RELATIVE_ITEMS);
       } 

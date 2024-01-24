@@ -1,6 +1,7 @@
 package afamijas.controller;
 
 
+import afamijas.model.Roles;
 import afamijas.model.User;
 import afamijas.security.JwtUser;
 import afamijas.service.UsersService;
@@ -8,9 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -24,51 +23,87 @@ public abstract class AbstractBaseController
         this.usersService = usersService;
     }
 
-    protected boolean isRoot()
+    protected boolean isROOT()
     {
-        return this.getRole().equals("ROOT");
+        return this.getRoles().contains(Roles.ROOT);
     }
 
-    protected boolean isRelative()
+    protected boolean isRELATIVE()
     {
-        return this.getRole().equals("RELATIVE");
+        return this.getRoles().contains(Roles.RELATIVE);
     }
 
-    protected boolean isAdmin()
+    protected boolean isTRANSPORT()
     {
-        return this.getRole().equals("ADMIN");
+        return this.getRoles().contains(Roles.TRANSPORT);
     }
 
-    protected boolean isKitchen()
+    protected boolean isADMIN()
     {
-        return this.getRole().equals("KITCHEN");
+        return this.getRoles().contains(Roles.ADMIN);
     }
 
-    protected boolean isManager()
+    protected boolean isCLEANING()
     {
-        return this.getRole().equals("MANAGER");
+        return this.getRoles().contains(Roles.CLEANING);
     }
 
-    protected boolean isNursing()
+    protected boolean isNURSING()
     {
-        return this.getRole().equals("NURSING");
+        return this.getRoles().contains(Roles.NURSING);
     }
 
-    protected boolean isNursingAssistant()
+    protected boolean isNURSING_ASSISTANT()
     {
-        return this.getRole().equals("NURSING_ASSISTANT");
+        return this.getRoles().contains(Roles.NURSING_ASSISTANT);
     }
 
-    protected boolean isLegionellaControl()
+    protected boolean isLEGIONELLA_CONTROL()
     {
-        return this.getRole().equals("LEGIONELLA_CONTROL");
+        return this.getRoles().contains(Roles.LEGIONELLA_CONTROL);
+    }
+
+    protected boolean isKITCHEN()
+    {
+        return this.getRoles().contains(Roles.KITCHEN);
+    }
+
+    protected boolean isMONITOR()
+    {
+        return this.getRoles().contains(Roles.MONITOR);
+    }
+
+    protected boolean isSOCIAL_WORKER()
+    {
+        return this.getRoles().contains(Roles.SOCIAL_WORKER);
+    }
+
+    protected boolean isPSYCHOLOGIST()
+    {
+        return this.getRoles().contains(Roles.PSYCHOLOGIST);
+    }
+
+    protected boolean isMANAGER()
+    {
+        return this.getRoles().contains(Roles.MANAGER);
+    }
+
+    protected boolean isPHYSIOTHERAPIST()
+    {
+        return this.getRoles().contains(Roles.PHYSIOTHERAPIST);
+    }
+
+    protected boolean isOCCUPATIONAL_THERAPIST()
+    {
+        return this.getRoles().contains(Roles.OCCUPATIONAL_THERAPIST);
+    }
+
+    protected boolean isOPERATOR_EXTRA_1()
+    {
+        return this.getRoles().contains(Roles.OPERATOR_EXTRA_1);
     }
 
 
-    protected boolean isMonitor()
-    {
-        return this.getRole().equals("MONITOR");
-    }
 
 
 
@@ -99,17 +134,17 @@ public abstract class AbstractBaseController
 
 
 
-    private String getRole()
+    private List<String> getRoles()
     {
         try
         {
             JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if(user==null) return null;
-            else return user.getRole();
+            if(user==null) return new ArrayList<>();
+            else return user.getRoles();
         }
         catch (Exception e)
         {
-            return null;
+            return new ArrayList<>();
         }
     }
 

@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Document(collection = "users")
@@ -22,7 +23,7 @@ public class User
 	@JsonIgnore
 	private String password;
 
-	private String role;  // (admin), relative, patient, member
+	private ArrayList<String> roles;
 
 	private String email;
 
@@ -178,9 +179,7 @@ public class User
 		this.password = password;
 	}
 
-	public String getRole() {
-		return role;
-	}
+
 
 	public String getGender() {
 		return gender;
@@ -190,9 +189,6 @@ public class User
 		this.gender = gender;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
-	}
 
 	public String getEmail() {
 		return email;
@@ -576,6 +572,14 @@ public class User
 
 	public void setV_site_turn2(String v_site_turn2) {
 		V_site_turn2 = v_site_turn2;
+	}
+
+	public ArrayList<String> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(ArrayList<String> roles) {
+		this.roles = roles;
 	}
 
 	@Transient
