@@ -3,7 +3,7 @@ import { NbMenuItem } from '@nebular/theme';
 //MENÚ PARA TODOS LOS PERFILES
 export const MENU_ITEMS: NbMenuItem[] = [
   {
-    title: 'Calendar',
+    title: 'Calendario',
     icon: { icon: 'fa-calendar', pack: 'fas' },
     link: '/calendar',
     data: 'menu.calendar',

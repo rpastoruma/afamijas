@@ -1,9 +1,12 @@
-import {  Component,  ChangeDetectionStrategy,  ViewChild,  TemplateRef,} from '@angular/core';
+import {  Component,  ChangeDetectionStrategy,  ViewChild,  TemplateRef, ViewEncapsulation,} from '@angular/core';
 import {  startOfDay,  endOfDay,  subDays,  addDays,  endOfMonth,  isSameDay,  isSameMonth,  addHours,} from 'date-fns';
 import { Subject } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {  CalendarEvent,  CalendarEventAction,  CalendarEventTimesChangedEvent,  CalendarView,} from 'angular-calendar';
+import {  CalendarEvent,  CalendarEventAction,  CalendarEventTimesChangedEvent,  CalendarView, CalendarDateFormatter,  DAYS_OF_WEEK, CalendarMonthViewBeforeRenderEvent, CalendarWeekViewBeforeRenderEvent, CalendarDayViewBeforeRenderEvent} from 'angular-calendar';
 import { EventColor } from 'calendar-utils';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+import { CustomDateFormatter } from './custom-date-formatter.provider';
 
 const colors: Record<string, EventColor> = {
   red: {
@@ -24,16 +27,30 @@ const colors: Record<string, EventColor> = {
   selector: 'app-calendar-view',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calendar-view.component.html',
-  styleUrls: ['./calendar-view.component.scss']
+  encapsulation: ViewEncapsulation.None,
+  styleUrls: ['./calendar-view.component.scss'],
+  providers: [
+    {
+      provide: CalendarDateFormatter,
+      useClass: CustomDateFormatter,
+    },
+  ],
 })
 export class CalendarViewComponent {
   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
 
   view: CalendarView = CalendarView.Month;
 
-  CalendarView = CalendarView;
 
   viewDate: Date = new Date();
+
+  locale: string = 'es';
+
+  weekStartsOn: number = DAYS_OF_WEEK.MONDAY;
+
+  CalendarView = CalendarView;
+
+  
 
   modalData: {
     action: string;
@@ -62,6 +79,7 @@ export class CalendarViewComponent {
 
   events: CalendarEvent[] = [
     {
+      id: 1,
       start: subDays(startOfDay(new Date()), 1),
       end: addDays(new Date(), 1),
       title: 'A 3 day event',
@@ -75,10 +93,12 @@ export class CalendarViewComponent {
       draggable: true,
     },
     {
+      id: 2,
       start: startOfDay(new Date()),
       title: 'An event with no end date',
       color: { ...colors.yellow },
       actions: this.actions,
+
     },
     {
       start: subDays(endOfMonth(new Date()), 3),
@@ -88,6 +108,8 @@ export class CalendarViewComponent {
       allDay: true,
     },
     {
+      id: 3,
+
       start: addHours(startOfDay(new Date()), 2),
       end: addHours(new Date(), 2),
       title: 'A draggable and resizable event',
@@ -103,7 +125,10 @@ export class CalendarViewComponent {
 
   activeDayIsOpen: boolean = true;
 
-  constructor(private modal: NgbModal) {}
+  constructor(private modal: NgbModal) 
+  {
+    registerLocaleData(localeEs);
+  }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
@@ -138,6 +163,7 @@ export class CalendarViewComponent {
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
+    console.log(JSON.stringify(event));
     this.modalData = { event, action };
     this.modal.open(this.modalContent, { size: 'lg' });
   }
@@ -155,6 +181,7 @@ export class CalendarViewComponent {
           beforeStart: true,
           afterEnd: true,
         },
+        
       },
     ];
   }
@@ -170,4 +197,51 @@ export class CalendarViewComponent {
   closeOpenMonthViewDay() {
     this.activeDayIsOpen = false;
   }
+
+  /** MARCADO DE FESTIVOS */
+  beforeMonthViewRender(renderEvent: CalendarMonthViewBeforeRenderEvent): void {
+    console.log("ROSA");
+    renderEvent.body.forEach((day) => {
+      const dayOfMonth = day.date.getDate();
+      if (dayOfMonth > 5 && dayOfMonth < 10 && day.inMonth) {
+        console.log("ROSA");
+        day.cssClass = 'bg-pink';
+      }
+    });
+  }
+
+  beforeWeekViewRender(renderEvent: CalendarWeekViewBeforeRenderEvent) {
+    console.log("ROSA 2");
+    renderEvent.hourColumns.forEach((hourColumn) => {
+      hourColumn.hours.forEach((hour) => {
+        hour.segments.forEach((segment) => {
+          if (
+            segment.date.getHours() >= 2 &&
+            segment.date.getHours() <= 5 &&
+            segment.date.getDay() === 2
+          ) {
+            segment.cssClass = 'bg-pink';
+          }
+        });
+      });
+    });
+  }
+
+  beforeDayViewRender(renderEvent: CalendarDayViewBeforeRenderEvent) {
+    console.log("ROSA 3");
+    
+    renderEvent.hourColumns.forEach((hourColumn) => {
+      hourColumn.hours.forEach((hour) => {
+        hour.segments.forEach((segment) => {
+          if (segment.date.getHours() >= 2 && segment.date.getHours() <= 5) {
+            segment.cssClass = 'bg-pink';
+          }
+        });
+      });
+    });
+  }
+
+
+
+
 }

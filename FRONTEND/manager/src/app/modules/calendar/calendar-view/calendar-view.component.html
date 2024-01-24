@@ -8,14 +8,14 @@
           [(viewDate)]="viewDate"
           (viewDateChange)="closeOpenMonthViewDay()"
         >
-          Previous
+          Anterior
         </div>
         <div
           class="btn btn-outline-secondary"
           mwlCalendarToday
           [(viewDate)]="viewDate"
         >
-          Today
+          Hoy
         </div>
         <div
           class="btn btn-primary"
@@ -24,12 +24,16 @@
           [(viewDate)]="viewDate"
           (viewDateChange)="closeOpenMonthViewDay()"
         >
-          Next
+          Siguiente
         </div>
       </div>
     </div>
     <div class="col-md-4">
-      <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
+
+      <h3>
+        {{ viewDate | calendarDate:(view + 'ViewTitle'):locale:weekStartsOn }}
+      </h3>
+
     </div>
     <div class="col-md-4">
       <div class="btn-group">
@@ -38,21 +42,21 @@
           (click)="setView(CalendarView.Month)"
           [class.active]="view === CalendarView.Month"
         >
-          Month
+          Mes
         </div>
         <div
           class="btn btn-primary"
           (click)="setView(CalendarView.Week)"
           [class.active]="view === CalendarView.Week"
         >
-          Week
+          Semana
         </div>
         <div
           class="btn btn-primary"
           (click)="setView(CalendarView.Day)"
           [class.active]="view === CalendarView.Day"
         >
-          Day
+          Día
         </div>
       </div>
     </div>
@@ -68,6 +72,9 @@
       (dayClicked)="dayClicked($event.day)"
       (eventClicked)="handleEvent('Clicked', $event.event)"
       (eventTimesChanged)="eventTimesChanged($event)"
+      [locale]="locale"
+    [weekStartsOn]="weekStartsOn"
+    (beforeViewRender)="beforeMonthViewRender($event)"
     >
     </mwl-calendar-month-view>
     <mwl-calendar-week-view
@@ -77,6 +84,8 @@
       [refresh]="refresh"
       (eventClicked)="handleEvent('Clicked', $event.event)"
       (eventTimesChanged)="eventTimesChanged($event)"
+      [locale]="locale"
+    [weekStartsOn]="weekStartsOn"
     >
     </mwl-calendar-week-view>
     <mwl-calendar-day-view
@@ -86,16 +95,16 @@
       [refresh]="refresh"
       (eventClicked)="handleEvent('Clicked', $event.event)"
       (eventTimesChanged)="eventTimesChanged($event)"
+      [locale]="locale"
     >
     </mwl-calendar-day-view>
   </div>
   
-  <!-- Everything you see below is just for the demo, you don't need to include it in your app -->
+  <!-- Everything you see below is just for the demo, 
   
   <br /><br /><br />
   
   <h3>
-    Edit events
     <button class="btn btn-primary float-end" (click)="addEvent()">
       Add new
     </button>
@@ -184,7 +193,7 @@
       </tbody>
     </table>
   </div>
-  
+  you don't need to include it in your app -->
   <ng-template #modalContent let-close="close">
     <div class="modal-header">
       <h5 class="modal-title">Event action occurred</h5>
