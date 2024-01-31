@@ -1,0 +1,15 @@
+<nb-card *ngIf="text" style="width: 480px; z-index: 999999999 !important;">
+    <nb-card-header style="font-family: 'Segoe UI'">Confirmación requerida</nb-card-header>
+    <nb-card-body>
+      <span>
+        <span *ngIf="!value" class="innerText" innerHTML="{{text}}"></span>
+        <span *ngIf="value" class="innerText" innerHTML="{{text}}"></span>
+        <span style="color:red; font-weight: bold;" *ngIf="value" class="innerText" innerHTML="{{value}}"></span>
+      </span>
+    </nb-card-body>
+    <nb-card-footer style="display: flex; justify-content: flex-end;">
+      <button nbButton class="btn-delete" status="danger" (click)="confirm()" style="margin-right: 1em">ELIMINAR</button>
+      <button nbButton class="btn-cancel" status="warning" (click)="dismiss()">CANCELAR</button>
+    </nb-card-footer>
+  </nb-card>  
+   

@@ -61,7 +61,7 @@ public class MediaServiceImpl implements MediaService
         query.addCriteria(Criteria.where("status").is("A").and("idobject").is(idobject).and("objecttype").is(objecttype));
 
 
-        return mongoTemplate.find(query, Media.class);
+        return this.mongoTemplate.find(query, Media.class);
     }
 
 
@@ -73,7 +73,7 @@ public class MediaServiceImpl implements MediaService
         query.addCriteria(Criteria.where("status").is("A").and("idobject").is(idobject).and("objecttype").is(objecttype).and("mediatype").is(mediatype));
 
 
-        return mongoTemplate.find(query, Media.class);
+        return this.mongoTemplate.find(query, Media.class);
     }
 
 

@@ -1,10 +1,7 @@
 package afamijas.controller;
 
 
-import afamijas.model.CalendarDay;
-import afamijas.model.dto.AbsenceDTO;
-import afamijas.model.dto.MenuDTO;
-import afamijas.model.dto.PermissionDTO;
+import afamijas.model.dto.CalendarEventDTO;
 import afamijas.service.ErrorsService;
 
 import afamijas.service.RelativesService;
@@ -23,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @Validated
@@ -156,19 +152,15 @@ public class RelativesController extends AbstractBaseController
 		}
 	}
 
-	@RequestMapping(method=RequestMethod.GET, value="getCalendar", produces="application/json")
-	public ResponseEntity<?> getCalendar(
-			@RequestParam(value = "idpatient", required = true) String idpatient,
-			@RequestParam(value = "day", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate day,
-			@RequestParam(value = "numdays", required = true) Integer numdays,
+	@RequestMapping(method=RequestMethod.GET, value="getCalendarEvents", produces="application/json")
+	public ResponseEntity<?> getCalendarEvents(
 			HttpServletRequest request
 	)
 	{
 		try
 		{
 			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
-			return new ResponseEntity<>(this.relativesService.getCalendar(idpatient, day, numdays), HttpStatus.OK);
+			return new ResponseEntity<>(this.relativesService.getCalendarEvents(this.getId()), HttpStatus.OK);
 		}
 		catch(Exception e)
 		{

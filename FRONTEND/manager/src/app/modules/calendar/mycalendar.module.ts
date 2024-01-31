@@ -10,6 +10,9 @@ import { FlatpickrModule } from 'angularx-flatpickr';
 
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MyCalendarRoutingModule  } from './mycalendar.routing.module';
+import flatpickr from 'flatpickr';
+import { Spanish } from 'flatpickr/dist/l10n/es';
+import { NbContextMenuModule } from '@nebular/theme';
 
 @NgModule({
   declarations: [
@@ -24,7 +27,13 @@ import { MyCalendarRoutingModule  } from './mycalendar.routing.module';
       useFactory: adapterFactory,
           }),
           FormsModule,FlatpickrModule.forRoot(),
+          NbContextMenuModule
 
   ]
 })
 export class MyCalendarModule { }
+
+export function flatpickrFactory() { 
+  flatpickr.localize(Spanish);
+  return flatpickr;
+}

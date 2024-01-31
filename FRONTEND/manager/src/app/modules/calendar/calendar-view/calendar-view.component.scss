@@ -12,3 +12,59 @@ h3 {
   .cal-day-view .bg-pink {
     background-color: hotpink !important;
   }
+
+  .cdk-global-overlay-wrapper, .cdk-overlay-container {
+    z-index: 99999 !important;
+  }
+
+  .form-control { margin-bottom: 20px !important;}
+
+  .modal-content { z-index: 999999 !important;}
+
+  .dotred {
+    height: 10px;
+    width: 10px;
+    background-color: #AD2121;
+    border-radius: 50%;
+    display: inline-block;
+    color: "#AD2121"
+  }
+
+  .dotgreen {
+    height: 10px;
+    width: 10px;
+    background-color: #9bf542;
+    border-radius: 50%;
+    display: inline-block;
+    color: "#9bf542"
+  }
+
+  .dotblue {
+    height: 10px;
+    width: 10px;
+    background-color: #1f6fbf;
+    border-radius: 50%;
+    display: inline-block;
+    color: "#1f6fbf"
+  }
+
+  .dotorange {
+    height: 10px;
+    width: 10px;
+    background-color: #f5ad1d;
+    border-radius: 50%;
+    display: inline-block;
+    color: "#f5ad1d"
+  }
+
+  .dotblack {
+    height: 10px;
+    width: 10px;
+    background-color: #0a051a;
+    border-radius: 50%;
+    display: inline-block;
+    color: "#0a051a"
+
+
+  }
+

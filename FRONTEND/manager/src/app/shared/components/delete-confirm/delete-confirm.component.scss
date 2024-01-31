@@ -1,0 +1,14 @@
+::ng-deep span.innerText p {
+    display: inline !important;
+}
+
+nb-card {
+    min-height: unset !important;
+}
+
+::ng-deep app-delete-confirm
+{
+    z-index: 999999999999999999999 !important;
+    position:relative !important;
+}
+

@@ -9,6 +9,12 @@ export interface LoginResponse {
     photo_url : string;
 }
 
+export interface UserDTO {
+    id : string;
+    fullname : string;
+    roles : string[]
+}
+
 //TODO: Revisar si se está haciendo bien ya que es copiada de proyectos antiguos
 //Parseo como fecha: 
 export function reviver(key: string, value: any): any {
@@ -52,6 +58,32 @@ export enum RoleCode
     OCCUPATIONAL_THERAPIST = 'OCCUPATIONAL_THERAPIST',
     OPERATOR_EXTRA_1 = 'OPERATOR_EXTRA_1'
 }
+
+
+export function rolName(theRole)  
+{
+    const roleNames = new Map();
+    //roleNames.set("ROOT", "SuperAdmin");
+    roleNames.set("RELATIVE", "Familiar");
+    roleNames.set("WORKER", "Todos los trabajadores");
+    roleNames.set("TRANSPORT", "Transporte");
+    roleNames.set("ADMIN", "Administración");
+    roleNames.set("CLEANING", "Limpieza");
+    roleNames.set("NURSING", "Enfermería");
+    roleNames.set("NURSING_ASSISTANT", "Auxiliar de enfermería");
+    roleNames.set("LEGIONELLA_CONTROL", "Control de Legionella");
+    roleNames.set("KITCHEN", "Cocina");
+    roleNames.set("MONITOR", "Monitor/a");
+    roleNames.set("SOCIAL_WORKER", "Trabajo social");
+    roleNames.set("PSYCHOLOGIST", "Piscología");
+    roleNames.set("MANAGER", "Dirección");
+    roleNames.set("PHYSIOTHERAPIST", "Fisioterapia");
+    roleNames.set("OCCUPATIONAL_THERAPIST", "Terapia ocupacional");
+    roleNames.set("OPERATOR_EXTRA_1", "Operaciones extra (1)");
+
+    return roleNames.get(theRole);
+}
+
 
 
 

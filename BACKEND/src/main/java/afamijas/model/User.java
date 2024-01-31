@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Document(collection = "users")
@@ -23,7 +24,7 @@ public class User
 	@JsonIgnore
 	private String password;
 
-	private ArrayList<String> roles;
+	private List<String> roles;
 
 	private String email;
 
@@ -574,11 +575,11 @@ public class User
 		V_site_turn2 = v_site_turn2;
 	}
 
-	public ArrayList<String> getRoles() {
+	public List<String> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(ArrayList<String> roles) {
+	public void setRoles(List<String> roles) {
 		this.roles = roles;
 	}
 

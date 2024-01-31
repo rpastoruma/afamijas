@@ -10,10 +10,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 //import { FillPipe } from './pipes/fill.pipe';
 //import {MatDatepickerModule} from '@angular/material/datepicker';
 //import { MatSelectModule } from '@angular/material/select';
-//import { NgSelectModule } from '@ng-select/ng-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 //import { SelectorCountriesComponent } from './components/selector-countries/selector-countries.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SigningPadComponent } from './components/signing-pad/signing-pad.component';
+import { DeleteConfirmComponent } from './components/delete-confirm/delete-confirm.component';
 //import { DeleteConfirmComponent } from './components/delete-confirm/delete-confirm.component';
 //import { TableFieldListModalComponent } from './components/table-field-list-modal/table-field-list-modal.component';
 
@@ -27,7 +28,8 @@ import { SigningPadComponent } from './components/signing-pad/signing-pad.compon
     
     
   
-    SigningPadComponent
+    SigningPadComponent,
+      DeleteConfirmComponent
   ],
     imports: [
       CommonModule,
@@ -48,7 +50,7 @@ import { SigningPadComponent } from './components/signing-pad/signing-pad.compon
       NbTooltipModule,
       //MatDatepickerModule,
       //MatSelectModule,
-      //NgSelectModule,
+      NgSelectModule,
       NbPopoverModule,
       DragDropModule,
       NbSpinnerModule
@@ -69,7 +71,7 @@ import { SigningPadComponent } from './components/signing-pad/signing-pad.compon
       NbCheckboxModule,
       NbActionsModule,
       NbIconModule,
-      //NgSelectModule,
+      NgSelectModule,
       //MatDatepickerModule,
       //SelectorCountriesComponent,
       NbPopoverModule,

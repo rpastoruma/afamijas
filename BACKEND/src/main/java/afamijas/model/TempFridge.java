@@ -18,9 +18,7 @@ public class TempFridge
 
 	private LocalDate day;
 
-	private Double temperature_fridge;
-
-	private Double temperature_freezer;
+	private Double temperature;
 
 	private Boolean isOk;
 
@@ -64,20 +62,12 @@ public class TempFridge
 		this.day = day;
 	}
 
-	public Double getTemperature_fridge() {
-		return temperature_fridge;
+	public Double getTemperature() {
+		return temperature;
 	}
 
-	public void setTemperature_fridge(Double temperature_fridge) {
-		this.temperature_fridge = temperature_fridge;
-	}
-
-	public Double getTemperature_freezer() {
-		return temperature_freezer;
-	}
-
-	public void setTemperature_freezer(Double temperature_freezer) {
-		this.temperature_freezer = temperature_freezer;
+	public void setTemperature(Double temperature) {
+		this.temperature = temperature;
 	}
 
 	public Boolean getOk() {

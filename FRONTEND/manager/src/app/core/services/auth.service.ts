@@ -80,6 +80,15 @@ export class AuthService {
   }
 
 
+  isAdmin()
+  {
+    return hasRole(this.getRoles(),  RoleCode.ADMIN);
+  }
+
+  isManager()
+  {
+    return hasRole(this.getRoles(),  RoleCode.MANAGER);
+  }
 
 
   login(username: string, password: string): Observable<string | null> 

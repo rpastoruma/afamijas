@@ -134,7 +134,7 @@ public abstract class AbstractBaseController
 
 
 
-    private List<String> getRoles()
+    protected List<String> getRoles()
     {
         try
         {

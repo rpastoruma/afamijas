@@ -21,7 +21,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @EnableScheduling
 @SpringBootApplication
@@ -76,8 +79,9 @@ public class AfamijasApplication extends SpringBootServletInitializer implements
 			user.setUsername("rootafa");
 			user.setPassword(new BCryptPasswordEncoder().encode("AFA_2018"));
 			user.setEmail("rpastor@uma.es");
-			user.setRole("ROOT");
+			user.setRoles((Arrays.asList(new String[]{"ROOT", "RELATIVE", "TRANSPORT"})));
 			user.setStatus("A");
+			user.setToken(UUID.randomUUID().toString());
 
 			this.usersService.save(user);
 		}

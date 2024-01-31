@@ -1,10 +1,7 @@
 package afamijas.service;
 
-import afamijas.model.CalendarDay;
-import afamijas.model.dto.AbsenceDTO;
-import afamijas.model.dto.MenuDTO;
-import afamijas.model.dto.PermissionDTO;
-import afamijas.model.dto.RouteDTO;
+import afamijas.model.CalendarEvent;
+import afamijas.model.dto.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +27,7 @@ public interface RelativesService
 
     PermissionDTO signPermission(String idpermission, String idpatient, MultipartFile file) throws Exception;
 
-    List<CalendarDay> getCalendar(String idrelative, LocalDate day, Integer numdays);
+    List<CalendarEventDTO> getCalendarEvents(String idrelative);
 
 
 }

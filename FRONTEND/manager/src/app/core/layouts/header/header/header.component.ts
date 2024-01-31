@@ -36,7 +36,7 @@ export class HeaderComponent implements OnInit {
       photo_url:  this.authenticationService.getPhotoURL(),
     };
 
-    console.log(JSON.stringify(this.user));
+   // console.log(JSON.stringify(this.user));
 
     this.menuService.onItemClick()
       .pipe(

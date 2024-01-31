@@ -1,31 +1,25 @@
-import {  Component,  ChangeDetectionStrategy,  ViewChild,  TemplateRef, ViewEncapsulation,} from '@angular/core';
-import {  startOfDay,  endOfDay,  subDays,  addDays,  endOfMonth,  isSameDay,  isSameMonth,  addHours,} from 'date-fns';
+import { Component,  ChangeDetectionStrategy,  ViewChild,  TemplateRef, ViewEncapsulation, OnInit } from '@angular/core';
+import { startOfDay,  endOfDay,  subDays,  addDays,  endOfMonth,  isSameDay,  isSameMonth,  addHours,} from 'date-fns';
 import { Subject } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {  CalendarEvent,  CalendarEventAction,  CalendarEventTimesChangedEvent,  CalendarView, CalendarDateFormatter,  DAYS_OF_WEEK, CalendarMonthViewBeforeRenderEvent, CalendarWeekViewBeforeRenderEvent, CalendarDayViewBeforeRenderEvent} from 'angular-calendar';
+import {  CalendarEventTimesChangedEvent,  CalendarView, CalendarDateFormatter,  DAYS_OF_WEEK, CalendarMonthViewBeforeRenderEvent, CalendarWeekViewBeforeRenderEvent, CalendarDayViewBeforeRenderEvent, CalendarEvent} from 'angular-calendar';
 import { EventColor } from 'calendar-utils';
 import { registerLocaleData } from '@angular/common';
-import localeEs from '@angular/common/locales/es';
 import { CustomDateFormatter } from './custom-date-formatter.provider';
+import { CalendarService } from 'src/app/core/services/calendar.service';
+import { hasRole, RoleCode, rolName, UserDTO } from 'src/app/shared/models/models';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { flatpickrFactory } from '../mycalendar.module';
+import localeEs from '@angular/common/locales/es';
+import { UsersService } from 'src/app/core/services/users.service';
+import { NbDialogService } from '@nebular/theme';
+import { DeleteConfirmComponent } from 'src/app/shared/components/delete-confirm/delete-confirm.component';
 
-const colors: Record<string, EventColor> = {
-  red: {
-    primary: '#ad2121',
-    secondary: '#FAE3E3',
-  },
-  blue: {
-    primary: '#1e90ff',
-    secondary: '#D1E8FF',
-  },
-  yellow: {
-    primary: '#e3bc08',
-    secondary: '#FDF1BA',
-  },
-};
+
 
 @Component({
   selector: 'app-calendar-view',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  //changeDetection: ChangeDetectionStrategy.OnPush,  // si se activa hay que pulsar para que se detecten los cambios
   templateUrl: './calendar-view.component.html',
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['./calendar-view.component.scss'],
@@ -36,7 +30,39 @@ const colors: Record<string, EventColor> = {
     },
   ],
 })
-export class CalendarViewComponent {
+export class CalendarViewComponent implements OnInit {
+
+  constructor(
+    private modal: NgbModal, 
+    private calendarService : CalendarService,
+    private usersService : UsersService,
+    private authService : AuthService,
+    private dialogService: NbDialogService,
+  ) 
+  {
+    registerLocaleData(localeEs);
+  }
+
+
+  ngOnInit(): void 
+  {
+    this.getAllUsers([""]);
+    this.getCalendarEvents();
+    flatpickrFactory();
+  }
+
+
+  processing : boolean = false;
+
+  thestart : string;
+
+  theend : string;
+
+  thetitle : string;
+
+  thedescription : string;
+
+
   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
 
   view: CalendarView = CalendarView.Month;
@@ -57,6 +83,13 @@ export class CalendarViewComponent {
     event: CalendarEvent;
   };
 
+  refresh = new Subject<void>();
+
+  events: CalendarEvent[] = [];
+
+  users : UserDTO[] = [];
+
+  /*
   actions: CalendarEventAction[] = [
     {
       label: '<i class="fas fa-fw fa-pencil-alt"></i>',
@@ -75,11 +108,10 @@ export class CalendarViewComponent {
     },
   ];
 
-  refresh = new Subject<void>();
 
-  events: CalendarEvent[] = [
+  test_events: CalendarEvent[] = [ 
     {
-      id: 1,
+      id: "1",
       start: subDays(startOfDay(new Date()), 1),
       end: addDays(new Date(), 1),
       title: 'A 3 day event',
@@ -91,24 +123,33 @@ export class CalendarViewComponent {
         afterEnd: true,
       },
       draggable: true,
+
+      dayoff : false,
+      description: "",
     },
     {
-      id: 2,
+      id: "2",
       start: startOfDay(new Date()),
       title: 'An event with no end date',
       color: { ...colors.yellow },
       actions: this.actions,
 
+      dayoff : false,
+      description: "",
     },
     {
+      id : "3",
       start: subDays(endOfMonth(new Date()), 3),
       end: addDays(endOfMonth(new Date()), 3),
       title: 'A long event that spans 2 months',
       color: { ...colors.blue },
       allDay: true,
+
+      dayoff : false,
+      description: "",
     },
     {
-      id: 3,
+      id: "4",
 
       start: addHours(startOfDay(new Date()), 2),
       end: addHours(new Date(), 2),
@@ -120,15 +161,260 @@ export class CalendarViewComponent {
         afterEnd: true,
       },
       draggable: true,
-    },
-  ];
 
+      dayoff : false,
+      description: "",
+    }, 
+  ];
+*/
   activeDayIsOpen: boolean = true;
 
-  constructor(private modal: NgbModal) 
+
+  days_offs = [];
+
+  allRoles : string[] = [ "RELATIVE", "WORKER", "TRANSPORT", "ADMIN", "CLEANING", "NURSING" , "NURSING_ASSISTANT" , "LEGIONELLA_CONTROL" , "KITCHEN" , "MONITOR" , "SOCIAL_WORKER" , "PSYCHOLOGIST" , "MANAGER" , "PHYSIOTHERAPIST", "OCCUPATIONAL_THERAPIST", "OPERATOR_EXTRA_1" ];
+
+  formatDate(thedate : Date)
   {
-    registerLocaleData(localeEs);
+    return this.completeZeros(thedate.getDate()) + "/" + this.completeZeros(thedate.getMonth()+1) + "/" + (thedate.getFullYear()+"") +  " " + this.completeZeros(thedate.getHours()) + ":" + this.completeZeros(thedate.getMinutes()) ;
   }
+
+  formatDate2(thedate : Date)
+  {
+    return (thedate.getFullYear()+"")  + "-" + this.completeZeros(thedate.getMonth()+1) + "-" + this.completeZeros(thedate.getDate()) + " "  + this.completeZeros(thedate.getHours()) + ":" + this.completeZeros(thedate.getMinutes()) + ":00" ;
+  }
+
+  
+
+
+
+  completeZeros(x : number) : string
+  {
+    if(x<=9) return "0" + x;
+    else return ""+x;
+  }
+
+  roleName(therole) { return rolName(therole); }
+
+  getCalendarEvents()
+  {
+    this.days_offs = [];
+    const currentRoles = this.authService.getRoles();
+
+    if(hasRole(currentRoles, RoleCode.RELATIVE))
+    {
+      this.calendarService.getCalendarEventsForRelatives().subscribe(
+        res => {
+          this.events = [];
+          this.events = res.map(x => this.wrapCalendarEvent(x));
+          //this.events = this.events.concat(this.test_events);
+          console.log("this.events=>" +  JSON.stringify(this.events));
+        },
+        error => {
+
+          //console.log("ERROR=>" + JSON.stringify(error));
+
+          /*
+          const config: Partial<NbToastrConfig> = {
+            status: 'danger', destroyByClick: true, duration: ToastTime.TIME,
+            hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false
+          };
+          this.toastService.show(this.translateService.instant('notifications.errorGet'),
+          this.translateService.instant('error.errorGet'), config);
+          */
+
+
+        }
+      );
+    }
+    else
+    {
+      this.calendarService.getCalendarEventsForWorkers().subscribe(
+        res => {
+          this.events = [];
+          this.events = res.map(x => this.wrapCalendarEvent(x));
+          //this.events = this.events.concat(this.test_events);
+          console.log("this.events=>" +  JSON.stringify(this.events));
+        },
+        error => {
+
+          //console.log("ERROR=>" + JSON.stringify(error));
+
+          /*
+          const config: Partial<NbToastrConfig> = {
+            status: 'danger', destroyByClick: true, duration: ToastTime.TIME,
+            hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false
+          };
+          this.toastService.show(this.translateService.instant('notifications.errorGet'),
+          this.translateService.instant('error.errorGet'), config);
+          */
+
+
+        }
+      );
+    }
+
+  }
+
+
+
+  getAllUsers(roles? : string[])
+  {
+      //if(this.modalData && this.modalData.event) this.modalData.event.idsusers = []; //PARA QUE SE RESETEEN LOS USUARIOS CONCRETOS SI CAMBIAN LOS ROLES
+      if(!roles) roles = this.modalData.event.roles;
+
+      this.usersService.getAllUsers(roles).subscribe(
+        res => {
+          this.users = res.map(x => this.wrapUser(x));
+          //this.events = this.events.concat(this.test_events);
+          console.log("this.users=>" +  JSON.stringify(this.users));
+        },
+        error => {
+
+          //console.log("ERROR=>" + JSON.stringify(error));
+
+          /*
+          const config: Partial<NbToastrConfig> = {
+            status: 'danger', destroyByClick: true, duration: ToastTime.TIME,
+            hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false
+          };
+          this.toastService.show(this.translateService.instant('notifications.errorGet'),
+          this.translateService.instant('error.errorGet'), config);
+          */
+
+
+        }
+      );
+  }
+  
+
+  wrapUser(x)
+  {
+    let wrapped : UserDTO = x;
+
+    let rolenames : string[] = [];
+
+    for(let coderole of x.roles)
+      rolenames.push(this.roleName(coderole));
+
+    wrapped.roles = rolenames;
+      
+
+    return wrapped;
+  }
+
+
+
+  wrapCalendarEvent(x)
+  {
+    let wrapped : CalendarEvent = x;
+
+    wrapped.start = new Date(x.start);
+    if(x.end) wrapped.end = new Date(x.end);
+    if(x.publishdate) wrapped.publishdate = new Date(x.publishdate);
+
+    if(wrapped.dayoff == true) 
+      for (var d = new Date(wrapped.start); d <= wrapped.end; d.setDate(d.getDate() + 1)) 
+        this.days_offs.push(new Date(d));
+    
+
+    return wrapped;
+  }
+
+
+  saveCalendarEvent(event : CalendarEvent)
+  {
+    if(!event.start) { alert("Debes indicar un título para el evento."); return; } // TODO: INDICAR ERROR
+
+    let fstart : string = this.formatDate2(event.start);
+    let fend : string = event.end?this.formatDate2(event.end):null;
+    let fpublishdate : string = event.publishdate?this.formatDate2(event.publishdate):null;
+
+    if(event.end && event.end < event.start) { alert("La fecha de inicio del evento no puede ser posterior a la de su fin."); return; } // TODO: INDICAR ERROR
+
+    this.processing = true;
+
+
+    this.calendarService.saveCalendarEvent(event.id, fstart, fend, event.title, event.description, event.dayoff, event.roles, event.idsusers, fpublishdate).subscribe(
+      res => {
+        this.processing = false;
+        this.getCalendarEvents();
+
+      },
+      error => {
+        this.processing = false;
+          //console.log("ERROR=>" + JSON.stringify(error));
+
+          /*
+          const config: Partial<NbToastrConfig> = {
+            status: 'danger', destroyByClick: true, duration: ToastTime.TIME,
+            hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false
+          };
+          this.toastService.show(this.translateService.instant('notifications.errorGet'),
+          this.translateService.instant('error.errorGet'), config);
+          */
+      }
+    );
+
+  }
+
+
+  deleteCalendarEvent(event :CalendarEvent) {
+    const dialogRef = this.dialogService.open(DeleteConfirmComponent, {
+      autoFocus: true,
+      hasScroll: true,
+      closeOnBackdropClick: false,
+      closeOnEsc: true,
+      context: {
+        text: 'Por favor, confirma que deseas eliminar el evento ',
+        value: event.title 
+      }
+    });
+    dialogRef.onClose.subscribe(
+      res => {
+        if (res === 'confirm') {
+          this.processing = true;
+
+          this.calendarService.deleteCalendarEvent(event.id).subscribe(
+            result => {
+              this.processing = false;
+
+             console.log("OK=>" + JSON.stringify(result));
+             this.getCalendarEvents();
+
+          /*
+          const config: Partial<NbToastrConfig> = {
+            status: 'danger', destroyByClick: true, duration: ToastTime.TIME,
+            hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false
+          };
+          this.toastService.show(this.translateService.instant('notifications.errorGet'),
+          this.translateService.instant('error.errorGet'), config);
+          */
+            },
+            error => {
+              this.processing = false;
+
+              console.log("ERROR=>" + JSON.stringify(error));
+
+          /*
+          const config: Partial<NbToastrConfig> = {
+            status: 'danger', destroyByClick: true, duration: ToastTime.TIME,
+            hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false
+          };
+          this.toastService.show(this.translateService.instant('notifications.errorGet'),
+          this.translateService.instant('error.errorGet'), config);
+          */
+            }
+          );
+        }
+        else //cancelamos eliminación
+        {
+          this.handleEvent('Clicked', event);
+        }
+      }
+    );
+  }
+
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
@@ -166,24 +452,41 @@ export class CalendarViewComponent {
     console.log(JSON.stringify(event));
     this.modalData = { event, action };
     this.modal.open(this.modalContent, { size: 'lg' });
+    //this.getAllUsers();
   }
 
-  addEvent(): void {
+  resetEvent()
+  {
+    this.getCalendarEvents();
+
+  }
+
+  addEvent(): void 
+  {
+    let newevent : CalendarEvent = {
+      title: '',
+      start: startOfDay(new Date()),
+      end: endOfDay(new Date()),
+      dayoff : false,
+      description: ''
+
+    };
+
+    this.handleEvent('Clicked', newevent);
+
+    /*
     this.events = [
       ...this.events,
       {
-        title: 'New event',
+        title: '',
         start: startOfDay(new Date()),
         end: endOfDay(new Date()),
-        color: colors.red,
-        draggable: true,
-        resizable: {
-          beforeStart: true,
-          afterEnd: true,
-        },
-        
+        color: colors.black,
+        dayoff : false,
+        description: '',
+
       },
-    ];
+    ];*/
   }
 
   deleteEvent(eventToDelete: CalendarEvent) {
@@ -201,13 +504,27 @@ export class CalendarViewComponent {
   /** MARCADO DE FESTIVOS */
   beforeMonthViewRender(renderEvent: CalendarMonthViewBeforeRenderEvent): void {
     renderEvent.body.forEach((day) => {
-      const dayOfMonth = day.date.getDate();
-      if (dayOfMonth > 5 && dayOfMonth < 10 && day.inMonth) {
-        day.cssClass = 'bg-pink';
-      }
+      if (this.isDayOff(day.date))   day.cssClass = 'bg-pink';
     });
   }
 
+ 
+  isDayOff(d : Date) : boolean
+  {
+    const dayOfMonth = d.getDate();
+    const month = d.getMonth();
+    const year = d.getFullYear();
+
+    if(d.getDay()==0 || d.getDay()==6) return true;
+    
+    for(let thedayoff of this.days_offs)
+      if(thedayoff.getDate() == dayOfMonth && thedayoff.getMonth() == month && thedayoff.getFullYear() == year)
+       return true;
+    
+    return false;
+  }
+
+  /** MARCADO DE FESTIVOS PARA SEMANA Y DÍA 
   beforeWeekViewRender(renderEvent: CalendarWeekViewBeforeRenderEvent) {
     renderEvent.hourColumns.forEach((hourColumn) => {
       hourColumn.hours.forEach((hour) => {
@@ -236,8 +553,67 @@ export class CalendarViewComponent {
       });
     });
   }
+*/
+
+    canModifyEvent() : boolean
+    {
+      return this.authService.isAdmin() || this.authService.isManager();
+    }
 
 
+    formatGC(start : Date, end : Date)
+    {
+      if(!end) end = start;
+      if(end.getFullYear()==start.getFullYear() && end.getMonth()==start.getMonth() && end.getDate()==start.getDate())
+        end = new Date(start.getTime() + (1000 * 60 * 60 * 24));
+      else
+        end = new Date(end.getTime() + (1000 * 60 * 60 * 24));
 
+  
+  
+      return (start.getFullYear()+"")  + this.completeZeros(start.getMonth()+1) +  this.completeZeros(start.getDate()) + "/" + 
+             (end.getFullYear()+"")  + this.completeZeros(end.getMonth()+1) +  this.completeZeros(end.getDate());
+    }
+  
+    exportGC(event : CalendarEvent) {
+      const url = 'http://www.google.com/calendar/event?' +
+      'action=TEMPLATE&dates=' + this.formatGC(event.start, event.end) +
+      '&text=' + event.title;
+      window.open(url, '_blank');
+    }
+  
+    
+    exportICS(event : CalendarEvent) 
+    {
+      if(!event.start) return;
+
+      let thestart : Date = new Date( event.start );
+      let theend : Date = event.end?new Date(event.end.getTime() + (1000 * 60 * 60 * 24)):new Date(thestart.getTime() + (1000 * 60 * 60 * 24));
+
+      const blob = new Blob([
+        'BEGIN:VCALENDAR\r\n' +
+        'VERSION:2.0\r\n' +
+        'BEGIN:VEVENT\r\n' +
+        'URL:\r\n' +
+        'DTSTART;VALUE=DATE:' + (thestart.getFullYear()+"")  + this.completeZeros(thestart.getMonth()+1) +  this.completeZeros(thestart.getDate()) + '\r\n' +
+        'DTEND;VALUE=DATE:' + (theend.getFullYear()+"")  + this.completeZeros(theend.getMonth()+1) +  this.completeZeros(theend.getDate()) + '\r\n' +
+        'SUMMARY:' + event.title + '\r\n' +
+        'DESCRIPTION:' + (event.description?event.description:event.title) + '\r\n' +
+        'LOCATION:\r\n' +
+        'END:VEVENT\r\n' +
+        'END:VCALENDAR\r\n'
+      ], { type: 'text/plain' });
+  
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.setAttribute('style', 'display: none');
+      a.setAttribute('download', 'event.ics');
+      const url = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = 'event.ics';
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    }
 
 }

@@ -1,18 +1,20 @@
 package afamijas.controller;
 
 
-import afamijas.model.Media;
-import afamijas.model.dto.PermissionDTO;
+import afamijas.model.CalendarEvent;
+import afamijas.model.dto.CalendarEventDTO;
 import afamijas.service.ErrorsService;
 import afamijas.service.MediaService;
 import afamijas.service.UsersService;
 import afamijas.service.WorkersService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @Validated
@@ -82,7 +86,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isMONITOR()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isNURSING_ASSISTANT()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.registerFeeding(idpatient, this.getId(), dish, result, daymeal);
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -97,8 +101,7 @@ public class WorkersController extends AbstractBaseController
 
 	@RequestMapping(method=RequestMethod.POST, value="registerTempFridge", produces="application/json")
 	public ResponseEntity<?> registerTempFridge(
-			@RequestParam(value = "tempfridge", required = true) Double tempfridge,
-			@RequestParam(value = "tempfreezer", required = true) Double tempfreezer,
+			@RequestParam(value = "temperature", required = true) Double temperature,
 			HttpServletRequest request
 	)
 	{
@@ -106,7 +109,7 @@ public class WorkersController extends AbstractBaseController
 		{
 			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-			this.workersService.registerTempFridge(this.getId(), tempfridge, tempfreezer);
+			this.workersService.registerTempFridge(this.getId(), temperature);
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		catch(Exception e)
@@ -223,7 +226,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isADMIN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			this.workersService.uploadTimetable(file);
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
@@ -242,7 +245,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isADMIN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			this.workersService.uploadActivities(file);
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
@@ -255,6 +258,127 @@ public class WorkersController extends AbstractBaseController
 
 
 
+
+	@RequestMapping(method=RequestMethod.POST, value="saveCalendarEvent", produces="application/json")
+	public ResponseEntity<?> saveCalendarEvent(
+			@RequestParam(value = "idcalendarevent", required = false) String idcalendarevent,
+
+			@RequestParam(value = "start", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
+			@RequestParam(value = "end", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
+
+			@RequestParam(value = "title", required = true) String title,
+			@RequestParam(value = "description", required = false) String description,
+
+			@RequestParam(value = "dayoff", required = false) Boolean dayoff,
+
+			@RequestParam(value = "roles", required = false) List<String> roles,
+			@RequestParam(value = "idsusers", required = false) List<String> idsusers,
+
+			@RequestParam(value = "publishdate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime publishdate,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			if(title.trim().equals("")) return new ResponseEntity<>("Se debe aportar un título para el evento.", HttpStatus.BAD_REQUEST);
+
+			if(end==null) end = LocalDateTime.of(start.getYear(), start.getMonth(), start.getDayOfMonth(), 23, 59, 59, 999999999);
+
+			if(end.isBefore(start)) return new ResponseEntity<>("La fecha de finalización del evento no puede ser anterior a la de su comienzo.", HttpStatus.BAD_REQUEST);
+
+			Boolean allDay = false;
+			if(start.getHour()==0 && start.getMinute()==0 && end.getHour()==23 && end.getMinute()==59) allDay = true;
+
+			if(dayoff==null) dayoff = false;
+			if(dayoff)
+			{
+				allDay = true;
+				roles = null;
+				idsusers = null;
+				publishdate = null;
+				end = LocalDateTime.of(end.getYear(), end.getMonth(), end.getDayOfMonth(), 23, 59, 59, 999999999);
+				start = LocalDateTime.of(start.getYear(), start.getMonth(), start.getDayOfMonth(), 0, 0, 0);
+			}
+
+			if(idsusers!=null && idsusers.size()>0) roles = null; //SI ES PARA USUARIOS ESPECÍFICOS NO SE PONE ROL
+
+			this.workersService.saveCalendarEvent(this.getId(), idcalendarevent, start, end, allDay, title, dayoff, description, roles, idsusers, publishdate);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteCalendarEvent", produces="application/json")
+	public ResponseEntity<?> deleteCalendarEvent(
+			@RequestParam(value = "idcalendarevent", required = true) String idcalendarevent,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.deleteCalendarEvent(idcalendarevent);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getAllUsers", produces="application/json")
+	public ResponseEntity<?> getAllUsers(
+			@RequestParam(value = "roles", required = false) List<String> roles,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			return new ResponseEntity<>(this.workersService.getAllUsers(roles), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getCalendarEvents", produces="application/json")
+	public ResponseEntity<?> getCalendarEvents(
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);  // SOLO WORKERS
+
+			return new ResponseEntity<>(this.workersService.getCalendarEvents(this.getId(), this.getRoles(), this.isADMIN() || this.isMANAGER() ), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 
 }

@@ -100,6 +100,27 @@
     </mwl-calendar-day-view>
   </div>
   
+  <br/>
+
+  
+  <div [hidden]="!canModifyEvent()" style="font-size: 11px; line-height: 11px;" class="float-start">
+    <span class="dotred"></span>&nbsp;Festivo&nbsp;&nbsp;
+    <span class="dotgreen"></span>&nbsp;Evento general&nbsp;&nbsp;
+    <span class="dotorange"></span>&nbsp;Evento para familiares&nbsp;&nbsp;
+    <span class="dotblue"></span>&nbsp;Evento solo para trabajadores&nbsp;&nbsp;
+    <span class="dotblack"></span>&nbsp;Evento para usuario específico&nbsp;&nbsp;
+  </div>
+
+
+
+
+
+  <button [hidden]="!canModifyEvent()" class="btn btn-primary float-end" (click)="addEvent()">
+    Añadir evento
+  </button>
+
+
+
   <!-- Everything you see below is just for the demo, 
   
   <br /><br /><br />
@@ -194,27 +215,148 @@
     </table>
   </div>
   you don't need to include it in your app -->
+
+
+
   <ng-template #modalContent let-close="close">
+  
+
+
+
     <div class="modal-header">
-      <h5 class="modal-title">Event action occurred</h5>
-      <button type="button" class="close" (click)="close()">
-        <span aria-hidden="true">&times;</span>
-      </button>
+        <h5>Datos del evento:</h5>
+        <button type="button" class="close" (click)="resetEvent();close();">
+          <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-    <div class="modal-body">
-      <div>
-        Action:
-        <pre>{{ modalData?.action }}</pre>
+
+
+
+    <div  class="modal-body">
+        <div>
+               <div [hidden]="!canModifyEvent()" class="float-end" ><input  type="checkbox" [(ngModel)]="modalData?.event.dayoff" [ngModelOptions]="{standalone: true}"/> - Día festivo</div>
+
+                Nombre del evento: 
+                <input
+                class="form-control"
+                type="text"
+                [(ngModel)]="modalData?.event.title"
+                placeholder="Título del evento"
+                required
+                [disabled]="!canModifyEvent()"
+                />
+            
+                Desde: <input
+                class="form-control"
+                type="text"
+                mwlFlatpickr
+                [(ngModel)]="modalData?.event.start"
+                (ngModelChange)="refresh.next()"
+                [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="true"
+                dateFormat="YY-m-dTH:i"
+                altFormat="d/m/Y H:i"
+                placeholder="Indique cuando empieza el evento"
+                required
+                [disabled]="!canModifyEvent()"
+                [defaultHour]="0"
+                [time24hr]="true"
+                />
+
+                Hasta: <input
+                class="form-control"
+                type="text"
+                mwlFlatpickr
+                [(ngModel)]="modalData?.event.end"
+                (ngModelChange)="refresh.next()"
+                [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="true"
+                dateFormat="YY-m-dTH:i"
+                altFormat="d/m/Y H:i"
+                placeholder="Si abarca más de un día indique cuando finaliza el evento"
+                [disabled]="!canModifyEvent()"
+                [defaultHour]="0"
+                [time24hr]="true"
+                />
+            
+                Descripción del evento: 
+                <textarea 
+                class="form-control" 
+                [(ngModel)]="modalData?.event.description" 
+                placeholder="Opcionalmente detalle más el evento"             
+                [disabled]="!canModifyEvent()">
+                </textarea>
+ 
+
+
+                <div [hidden]="modalData?.event.dayoff || !canModifyEvent()">
+
+                    Visible a partir de: <input
+                    class="form-control"
+                    type="text"
+                    mwlFlatpickr
+                    [(ngModel)]="modalData?.event.publishdate"
+                    (ngModelChange)="refresh.next()"
+                    [altInput]="true"
+                    [convertModelValue]="true"
+                    [enableTime]="true"
+                    dateFormat="YY-m-dTH:i"
+                    altFormat="d/m/Y H:i"
+                    placeholder="Ahora mismo"
+                    [disabled]="!canModifyEvent()"
+                    [defaultHour]="0"
+                    [time24hr]="true"
+                    />
+
+                    Tipos de usuario que pueden ver este evento:
+                    <ng-select [multiple]="true" [(ngModel)]="modalData?.event.roles" name="roles" placeholder="Para todos los tipos de usuario" notFoundText="Tipo de usuario no encontrado" #roles="ngModel" (change)="modalData?.event.idsusers=[]; getAllUsers()">
+                                    <ng-option *ngFor="let role of allRoles"  [value]="role">{{roleName(role)}}</ng-option>
+                    </ng-select>
+    
+                    <br/>
+                    
+                    Usuarios concretos que pueden ver este evento:
+                    <ng-select [multiple]="true" [(ngModel)]="modalData?.event.idsusers" name="users" placeholder="Para todos los usuarios de los tipos de usuario seleccionados" notFoundText="Usuario no encontrado" #theusers="ngModel">
+                                    <ng-option *ngFor="let u of users" [value]="u.id">{{u.fullname}} - ({{u.roles}})</ng-option>
+                    </ng-select>
+                    <br/>
+                </div>
+
+                
+                
+
+        </div>
       </div>
-      <div>
-        Event:
-        <pre>{{ modalData?.event | json }}</pre>
-      </div>
-    </div>
+  
+
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-secondary" (click)="close()">
-        OK
-      </button>
+
+        <button *ngIf="modalData?.event.id" nbButton status="warning" type="button" class="btn btn-outline-secondary" (click)="exportICS(modalData?.event);">
+            ICS <nb-icon icon="share-outline"></nb-icon>   
+        </button>
+
+        <button *ngIf="modalData?.event.id" nbButton status="warning" type="button" class="btn btn-outline-secondary" (click)="exportGC(modalData?.event);">
+            GOOGLE <nb-icon icon="share-outline"></nb-icon>   
+        </button>
+
+        <button *ngIf="canModifyEvent() && modalData?.event.id" nbButton status="danger" type="button" class="btn btn-outline-secondary" (click)="close(); deleteCalendarEvent(modalData?.event)">
+            ELIMINAR EVENTO
+        </button>
+
+        <button [disabled]="processing" *ngIf="canModifyEvent() && modalData?.event.id" nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveCalendarEvent(modalData?.event); ">
+            GUARDAR CAMBIOS
+        </button>
+
+        <button [disabled]="processing || !modalData?.event.title || !modalData?.event.start ||(modalData?.event.end && modalData?.event.end<modalData?.event.start)" *ngIf="canModifyEvent() && !modalData?.event.id" nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveCalendarEvent(modalData?.event); close();">
+            CREAR EVENTO
+        </button>
     </div>
+
+
+    
+
   </ng-template>
   
+

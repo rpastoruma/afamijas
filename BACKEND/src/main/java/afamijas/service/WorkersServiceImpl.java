@@ -44,11 +44,17 @@ public class WorkersServiceImpl implements WorkersService
 
 	final WCLogRepository wcLogRepository;
 
+	final RouteStopsRepository routeStopsRepository;
+
+	final AbsencesRepository absencesRepository;
+	
+	final CalendarEventsRepository calendarEventsRepository;
+
 	final MediaService mediaService;
 
 
 	@Autowired
-	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, MediaService mediaService)
+	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, AbsencesRepository absencesRepository, CalendarEventsRepository calendarEventsRepository, MediaService mediaService)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -58,6 +64,9 @@ public class WorkersServiceImpl implements WorkersService
 		this.mealSamplesRepository = mealSamplesRepository;
 		this.legionellaLogRepository = legionellaLogRepository;
 		this.wcLogRepository = wcLogRepository;
+		this.routeStopsRepository = routeStopsRepository;
+		this.absencesRepository = absencesRepository;
+		this.calendarEventsRepository = calendarEventsRepository;
 		this.mediaService = mediaService;
 	}
 
@@ -80,12 +89,12 @@ public class WorkersServiceImpl implements WorkersService
 		if(dni!=null) query.addCriteria(Criteria.where("dni").is(dni));
 		if(groupcode!=null) query.addCriteria(Criteria.where("groupcode").is(groupcode));
 
-		List<PatientDTO> list = mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
+		List<PatientDTO> list = this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
 
 		return PageableExecutionUtils.getPage(
 				list,
 				pageable,
-				() -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), User.class));
+				() -> this.mongoTemplate.count(Query.of(query).limit(-1).skip(-1), User.class));
 	}
 
 	@Override
@@ -109,20 +118,18 @@ public class WorkersServiceImpl implements WorkersService
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void registerTempFridge(String idworker, Double tempfridge, Double tempfreezer)
+	public void registerTempFridge(String idworker, Double temperature)
 	{
 		TempFridge tempFridge = this.tempFridgeRepository.findOne(LocalDate.now());
 		if(tempFridge==null) tempFridge = new TempFridge();
 
-		tempFridge.setTemperature_fridge(tempfridge);
-		tempFridge.setTemperature_freezer(tempfreezer);
+		tempFridge.setTemperature(temperature);
 		tempFridge.setDay(LocalDate.now());
 		tempFridge.setIdworker(idworker);
 		tempFridge.setOk(true);
 		tempFridge.setWhen(LocalDateTime.now());
 
-		if(tempfridge>4.0) tempFridge.setOk(false);
-		if(tempfreezer>-18.0) tempFridge.setOk(false);
+		if(temperature>4.0) tempFridge.setOk(false);
 
 		//TODO: ¿NOTIFICAR SI UNA TEMPERATURA ESTÁ MAL?
 
@@ -237,6 +244,153 @@ public class WorkersServiceImpl implements WorkersService
 
 		//TODO ¿Eliminar anterior?
 		//TODO: ENVIAR NOTIFICACIÓN ??
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public AbsenceDTO addAbsenceByWorker(String idpatient, String idworker, LocalDate day, String comment)
+	{
+		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
+		if(patient==null) return null;
+
+		Absence absence = new Absence();
+		absence.setIdpatient(idpatient);
+		absence.setIdrelative(null);
+		absence.setIdworker(idworker);
+		absence.setDay(day);
+		absence.setAllday(null);
+		absence.setFrom(null);
+		absence.setTo(null);
+		absence.setComment(comment);
+
+		RouteStop routeStop = this.routeStopsRepository.findOne(patient.getIdRouteStopForDay(day.atTime(12, 0, 0)), "A");
+		if(routeStop!=null) absence.setIdroutestop(routeStop.get_id());
+
+		//TODO: EMAIL/NOTIFICACIÓN A QUIEN CORRESPONDA ANUNCIANDO AUSENCIA PARA ESTE PACIENTE
+
+		return new AbsenceDTO(this.absencesRepository.save(absence), patient, routeStop);	}
+
+	@Override
+	public void deleteAbsence(String idpatient, String idabsence) {
+
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void saveCalendarEvent(String idworker, String idcalendarevent, LocalDateTime start, LocalDateTime end, Boolean allDay, String title, Boolean dayoff, String description, List<String> roles, List<String> idsusers, LocalDateTime publishdate)
+	{
+		CalendarEvent calendarEvent = null;
+		
+		if(idcalendarevent!=null)
+		{
+			calendarEvent= this.calendarEventsRepository.findOne(idcalendarevent);
+			if(calendarEvent==null) return;
+		}
+		else 
+			calendarEvent = new CalendarEvent();
+
+		if(publishdate==null) publishdate = LocalDateTime.now();
+		
+		calendarEvent.setStart(start);
+		calendarEvent.setEnd(end);
+		calendarEvent.setAllDay(allDay);
+		calendarEvent.setTitle(title);
+		calendarEvent.setDayoff(dayoff);
+		calendarEvent.setDescription(description);
+		calendarEvent.setRoles(roles);
+		calendarEvent.setIdsusers(idsusers);
+		calendarEvent.setPublishdate(publishdate);
+
+		this.calendarEventsRepository.save(calendarEvent);
+
+		// TODO: GESTIONAR QUÉ HACER CON idworker (log, etc.)
+
+		//TODO: EMAIL/NOTIFICACIÓN A QUIEN CORRESPONDA ANUNCIANDO NUEVO EVENTO O MODIFICACIÓN DEL MISMO
+	}
+
+
+
+	@Override
+	public List<CalendarEventDTO> getCalendarEvents(String idworker, List<String> roles, Boolean admin)
+	{
+		Query query = new Query();
+
+		Criteria criteria = new Criteria();
+
+		if(!admin)
+		{
+			criteria.orOperator(Criteria.where("roles").in(roles),
+					Criteria.where("idsusers").in(Arrays.asList(idworker)),
+					new Criteria().andOperator(
+							new Criteria().orOperator(Criteria.where("roles").is(null), Criteria.where("roles").size(0)),
+							new Criteria().orOperator(Criteria.where("idsusers").is(null), Criteria.where("idsusers").size(0))
+					)
+
+			).and("publishdate").lte(LocalDateTime.now());
+		}
+
+
+		query.addCriteria(criteria);
+		try { System.out.println(query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		List<CalendarEvent> calendarEventList = this.mongoTemplate.find(query, CalendarEvent.class);
+
+		return calendarEventList.stream().map(x -> new CalendarEventDTO(x)).toList();
+	}
+
+
+	@Override
+	public List<UserDTO> getAllUsers(List<String> roles)
+	{
+		if(roles==null || roles.size()==0)
+		{
+			roles = new ArrayList<>();
+			roles.add("RELATIVE");
+			roles.add("WORKER");
+		}
+
+		if(roles.contains("WORKER"))
+		{
+			if(!roles.contains("TRANSPORT")) roles.add("TRANSPORT");
+			if(!roles.contains("ADMIN")) roles.add("ADMIN");
+			if(!roles.contains("CLEANING")) roles.add("CLEANING");
+			if(!roles.contains("NURSING")) roles.add("NURSING");
+			if(!roles.contains("NURSING_ASSISTANT")) roles.add("NURSING_ASSISTANT");
+			if(!roles.contains("LEGIONELLA_CONTROL")) roles.add("LEGIONELLA_CONTROL");
+			if(!roles.contains("KITCHEN")) roles.add("KITCHEN");
+			if(!roles.contains("MONITOR")) roles.add("MONITOR");
+			if(!roles.contains("SOCIAL_WORKER")) roles.add("SOCIAL_WORKER");
+			if(!roles.contains("PSYCHOLOGIST")) roles.add("PSYCHOLOGIST");
+			if(!roles.contains("MANAGER")) roles.add("MANAGER");
+			if(!roles.contains("PHYSIOTHERAPIST")) roles.add("PHYSIOTHERAPIST");
+			if(!roles.contains("OCCUPATIONAL_THERAPIST")) roles.add("OCCUPATIONAL_THERAPIST");
+			if(!roles.contains("OPERATOR_EXTRA_1")) roles.add("OPERATOR_EXTRA_1");
+		}
+
+		Query query = new Query();
+
+		Criteria criteria = new Criteria();
+		criteria.andOperator(Criteria.where("roles").in(roles),
+				Criteria.where("roles").nin(Arrays.asList("ROOT"))
+		).and("status").is("A");
+
+
+		query.addCriteria(criteria);
+
+		System.out.println("getAllUsers: " + query.getQueryObject().toJson());
+		List<User> userList = this.mongoTemplate.find(query, User.class);
+
+
+
+
+
+		return userList.stream().map(x -> new UserDTO(x)).toList();
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void deleteCalendarEvent(String idcalendarevent)
+	{
+		this.calendarEventsRepository.deleteById(idcalendarevent);
 	}
 
 

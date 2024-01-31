@@ -5,6 +5,9 @@ import afamijas.model.*;
 import afamijas.model.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -33,22 +37,25 @@ public class RelativesServiceImpl implements RelativesService
 
 	final MenusRepository menusRepository;
 
-	final CalendarDaysRepository calendarDaysRepository;
+	final CalendarEventsRepository calendarEventsRepository;
 
 	final PermissionsRepository permissionsRepository;
+
+	final MongoTemplate mongoTemplate;
 
 	final MediaService mediaService;
 
 	@Autowired
-	public RelativesServiceImpl(UsersRepository usersRepository, RoutesRepository routesRepository, RouteStopsRepository routeStopsRepository, AbsencesRepository absencesRepository, MenusRepository menusRepository, CalendarDaysRepository calendarDaysRepository, PermissionsRepository permissionsRepository, MediaService mediaService)
+	public RelativesServiceImpl(UsersRepository usersRepository, RoutesRepository routesRepository, RouteStopsRepository routeStopsRepository, AbsencesRepository absencesRepository, MenusRepository menusRepository, CalendarEventsRepository calendarEventsRepository, PermissionsRepository permissionsRepository, MongoTemplate mongoTemplate, MediaService mediaService)
 	{
 		this.usersRepository = usersRepository;
 		this.routesRepository = routesRepository;
 		this.routeStopsRepository = routeStopsRepository;
 		this.absencesRepository = absencesRepository;
 		this.menusRepository = menusRepository;
-		this.calendarDaysRepository = calendarDaysRepository;
+		this.calendarEventsRepository = calendarEventsRepository;
 		this.permissionsRepository = permissionsRepository;
+		this.mongoTemplate = mongoTemplate;
 		this.mediaService = mediaService;
 	}
 
@@ -123,7 +130,7 @@ public class RelativesServiceImpl implements RelativesService
 			patient.setRoutestop_especial_to(to.atTime(LocalTime.MAX));
 			this.usersRepository.save(patient);
 
-			//TODO: EMAIL A QUIEN CORRESPONDA ANUNCIANDO CAMBIO DE PARADA PARA ESTE PACIENTE
+			//TODO: EMAIL/NOTIFICACIÓN A QUIEN CORRESPONDA ANUNCIANDO CAMBIO DE PARADA PARA ESTE PACIENTE
 		}
 
 		return this.getRoute(idpatient);
@@ -152,7 +159,7 @@ public class RelativesServiceImpl implements RelativesService
 		if(notransport) routeStop = this.routeStopsRepository.findOne(patient.getIdRouteStopForDay(day.atTime(12, 0, 0)), "A");
 		if(routeStop!=null) absence.setIdroutestop(routeStop.get_id());
 
-		//TODO: EMAIL A QUIEN CORRESPONDA ANUNCIANDO AUSENCIA PARA ESTE PACIENTE
+		//TODO: EMAIL/NOTIFICACIÓN A QUIEN CORRESPONDA ANUNCIANDO AUSENCIA PARA ESTE PACIENTE
 
 		return new AbsenceDTO(this.absencesRepository.save(absence), patient, notransport?routeStop:null);
 	}
@@ -172,7 +179,7 @@ public class RelativesServiceImpl implements RelativesService
 
 		this.absencesRepository.deleteById(idabsence);
 
-		//TODO: EMAIL A QUIEN CORRESPONDA ANUNCIANDO ELIMINACIÓN DE AUSENCIA PARA ESTE PACIENTE
+		//TODO: EMAIL/NOTIFICACIÓN A QUIEN CORRESPONDA ANUNCIANDO ELIMINACIÓN DE AUSENCIA PARA ESTE PACIENTE
 	}
 
 	@Override
@@ -215,17 +222,31 @@ public class RelativesServiceImpl implements RelativesService
 
 		return new PermissionDTO(this.permissionsRepository.save(permission), relative, patient);
 
-		//TODO: EMAIL A QUIEN CORRESPONDA INDICANDO QUE SE HA FIRMADO PERMISO
+		//TODO: EMAIL/NOTIFICACIÓN A QUIEN CORRESPONDA INDICANDO QUE SE HA FIRMADO PERMISO
 	}
 
 	@Override
-	public List<CalendarDay> getCalendar(String idrelative, LocalDate day, Integer numdays)
+	public List<CalendarEventDTO> getCalendarEvents(String idrelative)
 	{
-		List<CalendarDay> alldays = this.calendarDaysRepository.findCalendarDaysByRole("RELATIVE");
-		alldays.addAll(this.calendarDaysRepository.findCalendarDaysByUser(idrelative));
-		alldays.addAll(this.calendarDaysRepository.findGeneric());
-		Collections.sort(alldays, Comparator.comparing(CalendarDay::getDay));
-		return alldays;
+		Query query = new Query();
+
+		Criteria criteria = new Criteria();
+
+		criteria.orOperator(Criteria.where("roles").in(Arrays.asList("RELATIVE")),
+							Criteria.where("idsusers").in(Arrays.asList(idrelative)),
+							new Criteria().andOperator(
+									new Criteria().orOperator(Criteria.where("roles").is(null), Criteria.where("roles").size(0)),
+									new Criteria().orOperator(Criteria.where("idsusers").is(null), Criteria.where("idsusers").size(0))
+							)
+
+				).and("publishdate").lte(LocalDateTime.now());
+
+
+		query.addCriteria(criteria);
+		try { System.out.println(query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		List<CalendarEvent> calendarEventList = this.mongoTemplate.find(query, CalendarEvent.class);
+
+		return calendarEventList.stream().map(x -> new CalendarEventDTO(x)).toList();
 	}
 
 
