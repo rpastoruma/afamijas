@@ -30,4 +30,5 @@ public interface RelativesService
     List<CalendarEventDTO> getCalendarEvents(String idrelative);
 
 
+    List<PatientDTO> getPatients(String idrelative);
 }

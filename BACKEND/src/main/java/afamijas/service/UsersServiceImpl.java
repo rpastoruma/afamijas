@@ -28,7 +28,9 @@ public class UsersServiceImpl implements UsersService
 	@Override
 	public User findOne(String id, String role, String status)
 	{
-		return this.usersRepository.findOne(id, role, status);
+		User user =  this.usersRepository.findOne(id, status);
+		if(role!=null && user.getRoles().contains(role)) return user;
+		return null;
 	}
 
 	@Override

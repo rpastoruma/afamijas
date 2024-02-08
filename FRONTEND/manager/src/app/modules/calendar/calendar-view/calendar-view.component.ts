@@ -12,10 +12,10 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { flatpickrFactory } from '../mycalendar.module';
 import localeEs from '@angular/common/locales/es';
 import { UsersService } from 'src/app/core/services/users.service';
-import { NbDialogService } from '@nebular/theme';
+import { NbDialogService, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { DeleteConfirmComponent } from 'src/app/shared/components/delete-confirm/delete-confirm.component';
 
-
+import { NbToastrService } from '@nebular/theme';
 
 @Component({
   selector: 'app-calendar-view',
@@ -38,6 +38,7 @@ export class CalendarViewComponent implements OnInit {
     private usersService : UsersService,
     private authService : AuthService,
     private dialogService: NbDialogService,
+    private toastService: NbToastrService
   ) 
   {
     registerLocaleData(localeEs);
@@ -88,6 +89,7 @@ export class CalendarViewComponent implements OnInit {
   events: CalendarEvent[] = [];
 
   users : UserDTO[] = [];
+  
 
   /*
   actions: CalendarEventAction[] = [
@@ -208,21 +210,14 @@ export class CalendarViewComponent implements OnInit {
           this.events = [];
           this.events = res.map(x => this.wrapCalendarEvent(x));
           //this.events = this.events.concat(this.test_events);
-          console.log("this.events=>" +  JSON.stringify(this.events));
+          //console.log("this.events=>" +  JSON.stringify(this.events));
         },
         error => {
-
-          //console.log("ERROR=>" + JSON.stringify(error));
-
-          /*
-          const config: Partial<NbToastrConfig> = {
-            status: 'danger', destroyByClick: true, duration: ToastTime.TIME,
-            hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false
-          };
-          this.toastService.show(this.translateService.instant('notifications.errorGet'),
-          this.translateService.instant('error.errorGet'), config);
-          */
-
+          console.error("getCalendarEventsForRelatives():"+JSON.stringify(error));
+          this.toastService.show("No se han podido cargar los eventos del calendario.",
+          "¡Ups!", 
+          { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+         );
 
         }
       );
@@ -234,22 +229,14 @@ export class CalendarViewComponent implements OnInit {
           this.events = [];
           this.events = res.map(x => this.wrapCalendarEvent(x));
           //this.events = this.events.concat(this.test_events);
-          console.log("this.events=>" +  JSON.stringify(this.events));
+          //console.log("this.events=>" +  JSON.stringify(this.events));
         },
         error => {
-
-          //console.log("ERROR=>" + JSON.stringify(error));
-
-          /*
-          const config: Partial<NbToastrConfig> = {
-            status: 'danger', destroyByClick: true, duration: ToastTime.TIME,
-            hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false
-          };
-          this.toastService.show(this.translateService.instant('notifications.errorGet'),
-          this.translateService.instant('error.errorGet'), config);
-          */
-
-
+          console.error("getCalendarEventsForWorkers():"+JSON.stringify(error));
+          this.toastService.show("No se han podido cargar los eventos del calendario.",
+          "¡Ups!", 
+          { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+         );
         }
       );
     }
@@ -263,27 +250,19 @@ export class CalendarViewComponent implements OnInit {
       //if(this.modalData && this.modalData.event) this.modalData.event.idsusers = []; //PARA QUE SE RESETEEN LOS USUARIOS CONCRETOS SI CAMBIAN LOS ROLES
       if(!roles) roles = this.modalData.event.roles;
 
-      this.usersService.getAllUsers(roles).subscribe(
+      this.usersService.getAllUsersByWorker(roles).subscribe(
         res => {
           this.users = res.map(x => this.wrapUser(x));
           //this.events = this.events.concat(this.test_events);
           console.log("this.users=>" +  JSON.stringify(this.users));
         },
         error => {
-
-          //console.log("ERROR=>" + JSON.stringify(error));
-
-          /*
-          const config: Partial<NbToastrConfig> = {
-            status: 'danger', destroyByClick: true, duration: ToastTime.TIME,
-            hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false
-          };
-          this.toastService.show(this.translateService.instant('notifications.errorGet'),
-          this.translateService.instant('error.errorGet'), config);
-          */
-
-
-        }
+          console.error("getAllUsers():"+JSON.stringify(error));
+          this.toastService.show("No se han podido cargar los usuarios.",
+                                 "¡Ups!", 
+                                 { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+                                );
+          }
       );
   }
   
@@ -324,13 +303,27 @@ export class CalendarViewComponent implements OnInit {
 
   saveCalendarEvent(event : CalendarEvent)
   {
-    if(!event.start) { alert("Debes indicar un título para el evento."); return; } // TODO: INDICAR ERROR
+    if(!event.start) 
+    { 
+      this.toastService.show("Debes indicar un título para el evento.",
+      "¡Ups!", 
+      { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+      );
+      return; 
+    }
 
     let fstart : string = this.formatDate2(event.start);
     let fend : string = event.end?this.formatDate2(event.end):null;
     let fpublishdate : string = event.publishdate?this.formatDate2(event.publishdate):null;
 
-    if(event.end && event.end < event.start) { alert("La fecha de inicio del evento no puede ser posterior a la de su fin."); return; } // TODO: INDICAR ERROR
+    if(event.end && event.end < event.start) 
+    { 
+      this.toastService.show("La fecha de inicio del evento no puede ser posterior a la de su fin.",
+      "¡Ups!", 
+      { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+      );
+      return;
+    } 
 
     this.processing = true;
 
@@ -338,21 +331,20 @@ export class CalendarViewComponent implements OnInit {
     this.calendarService.saveCalendarEvent(event.id, fstart, fend, event.title, event.description, event.dayoff, event.roles, event.idsusers, fpublishdate).subscribe(
       res => {
         this.processing = false;
+        this.toastService.show("Evento guardado correctamente.",
+                               "¡Ok!", 
+                               { status: 'success', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+                              );
         this.getCalendarEvents();
-
       },
       error => {
         this.processing = false;
-          //console.log("ERROR=>" + JSON.stringify(error));
+        console.error("saveCalendarEvent():"+JSON.stringify(error));
+        this.toastService.show("No se ha podido guardar el evento.",
+                               "¡Ups!", 
+                               { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+                              );
 
-          /*
-          const config: Partial<NbToastrConfig> = {
-            status: 'danger', destroyByClick: true, duration: ToastTime.TIME,
-            hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false
-          };
-          this.toastService.show(this.translateService.instant('notifications.errorGet'),
-          this.translateService.instant('error.errorGet'), config);
-          */
       }
     );
 
@@ -379,31 +371,25 @@ export class CalendarViewComponent implements OnInit {
             result => {
               this.processing = false;
 
-             console.log("OK=>" + JSON.stringify(result));
-             this.getCalendarEvents();
+             //console.log("OK=>" + JSON.stringify(result));
 
-          /*
-          const config: Partial<NbToastrConfig> = {
-            status: 'danger', destroyByClick: true, duration: ToastTime.TIME,
-            hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false
-          };
-          this.toastService.show(this.translateService.instant('notifications.errorGet'),
-          this.translateService.instant('error.errorGet'), config);
-          */
+             this.toastService.show("Evento eliminado correctamente.",
+             "¡Ok!", 
+             { status: 'success', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+            );
+            this.getCalendarEvents();
+
             },
             error => {
               this.processing = false;
 
-              console.log("ERROR=>" + JSON.stringify(error));
 
-          /*
-          const config: Partial<NbToastrConfig> = {
-            status: 'danger', destroyByClick: true, duration: ToastTime.TIME,
-            hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false
-          };
-          this.toastService.show(this.translateService.instant('notifications.errorGet'),
-          this.translateService.instant('error.errorGet'), config);
-          */
+              console.error("getCalendarEventsForWorkers():"+JSON.stringify(error));
+              this.toastService.show("No se ha podido eliminar el evento.",
+                                     "¡Ups!", 
+                                     { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+                                    );
+      
             }
           );
         }
@@ -578,7 +564,8 @@ export class CalendarViewComponent implements OnInit {
     exportGC(event : CalendarEvent) {
       const url = 'http://www.google.com/calendar/event?' +
       'action=TEMPLATE&dates=' + this.formatGC(event.start, event.end) +
-      '&text=' + event.title;
+      '&text=' + encodeURIComponent(event.title) +
+      '&details=' + (event.description?encodeURIComponent(event.description):'');
       window.open(url, '_blank');
     }
   
@@ -604,11 +591,12 @@ export class CalendarViewComponent implements OnInit {
         'END:VCALENDAR\r\n'
       ], { type: 'text/plain' });
   
+      const url = window.URL.createObjectURL(blob);
+
       const a = document.createElement('a');
       document.body.appendChild(a);
       a.setAttribute('style', 'display: none');
       a.setAttribute('download', 'event.ics');
-      const url = window.URL.createObjectURL(blob);
       a.href = url;
       a.download = 'event.ics';
       a.click();

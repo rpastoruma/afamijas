@@ -11,7 +11,7 @@ public class PatientDTO
 
 
     @Id
-    private String _id;
+    private String id;
 
     private String username;
 
@@ -76,7 +76,7 @@ public class PatientDTO
 
     public PatientDTO(User user, City city, State state, User relative, RouteDTO routeDTO)
     {
-        this._id = user.get_id();
+        this.id = user.get_id();
         this.username = user.getUsername();
         this.email = user.getEmail();
         this.name = user.getName();
@@ -119,12 +119,20 @@ public class PatientDTO
     }
 
 
-    public String get_id() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getGroupcode() {
+        return groupcode;
+    }
+
+    public void setGroupcode(String groupcode) {
+        this.groupcode = groupcode;
     }
 
     public String getUsername() {

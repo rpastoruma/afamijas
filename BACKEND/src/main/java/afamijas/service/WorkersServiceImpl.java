@@ -250,8 +250,8 @@ public class WorkersServiceImpl implements WorkersService
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public AbsenceDTO addAbsenceByWorker(String idpatient, String idworker, LocalDate day, String comment)
 	{
-		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
-		if(patient==null) return null;
+		User patient = this.usersRepository.findOne(idpatient, "A");
+		if(patient==null || !patient.getRoles().contains("PATIENT")) return null;
 
 		Absence absence = new Absence();
 		absence.setIdpatient(idpatient);

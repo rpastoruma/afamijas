@@ -3,6 +3,8 @@ package afamijas.model.dto;
 import afamijas.model.Route;
 import afamijas.model.User;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class RouteDTO
@@ -20,11 +22,11 @@ public class RouteDTO
 
     private String idroutestop_selected_today;
 
-    private String routestop_name_selected_today;
-
     private String idroutestop_selected_tomorrow;
 
-    private String routestop_name_selected_tomorrow;
+    private String routestop_especial_from; // day + 00
+
+    private String routestop_especial_to;  // day +  59
 
     public RouteDTO(Route route, User patient)
     {
@@ -32,8 +34,15 @@ public class RouteDTO
         this.route_name = route.getName();
         this.idpatient = patient.get_id();
         this.patient_fullname = ((patient.getName() + " " + patient.getSurname1()).trim() + " " + patient.getSurname2()).trim();
+        this.routestop_especial_from = this.formatDate(patient.getRoutestop_especial_from());
+        this.routestop_especial_to = this.formatDate(patient.getRoutestop_especial_to());
     }
 
+    private String formatDate(LocalDateTime thedate)
+    {
+        if(thedate==null) return null;
+        else return thedate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
 
     public String getIdroute() {
         return idroute;
@@ -91,19 +100,19 @@ public class RouteDTO
         this.idroutestop_selected_tomorrow = idroutestop_selected_tomorrow;
     }
 
-    public String getRoutestop_name_selected_today() {
-        return routestop_name_selected_today;
+    public String getRoutestop_especial_from() {
+        return routestop_especial_from;
     }
 
-    public void setRoutestop_name_selected_today(String routestop_name_selected_today) {
-        this.routestop_name_selected_today = routestop_name_selected_today;
+    public void setRoutestop_especial_from(String routestop_especial_from) {
+        this.routestop_especial_from = routestop_especial_from;
     }
 
-    public String getRoutestop_name_selected_tomorrow() {
-        return routestop_name_selected_tomorrow;
+    public String getRoutestop_especial_to() {
+        return routestop_especial_to;
     }
 
-    public void setRoutestop_name_selected_tomorrow(String routestop_name_selected_tomorrow) {
-        this.routestop_name_selected_tomorrow = routestop_name_selected_tomorrow;
+    public void setRoutestop_especial_to(String routestop_especial_to) {
+        this.routestop_especial_to = routestop_especial_to;
     }
 }

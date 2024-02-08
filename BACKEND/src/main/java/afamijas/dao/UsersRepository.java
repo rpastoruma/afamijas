@@ -15,8 +15,8 @@ public interface UsersRepository extends MongoRepository<User, String>
 	@Query("{ '_id' : ?0 }")
 	User findOne(String id);
 
-	@Query("{ '_id' : ?0, 'role' : ?1, 'status' : ?2 }")
-	User findOne(String id, String role, String status);
+	@Query("{ '_id' : ?0, 'status' : ?1 }")
+	User findOne(String id, String status);
 
 	@Query("{ 'username' : ?0 }")
 	User findUserByUsername(String username);
@@ -41,6 +41,9 @@ public interface UsersRepository extends MongoRepository<User, String>
 
 	@Query("{ 'dni' : ?0, 'status' : ?1  }")
 	List<User> findUserByDNI(String dni, String status);
+
+	@Query("{ 'idrelative' : ?0, 'status' : ?1  }")
+	List<User> findByIdRelative(String idrelative, String status);
 
 
 }

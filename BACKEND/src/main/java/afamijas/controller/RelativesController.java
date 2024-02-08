@@ -210,7 +210,22 @@ public class RelativesController extends AbstractBaseController
 		}
 	}
 
-
+	@RequestMapping(method=RequestMethod.GET, value="getPatients", produces="application/json")
+	public ResponseEntity<?> getPatients(
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(this.relativesService.getPatients(this.getId()), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 
 }

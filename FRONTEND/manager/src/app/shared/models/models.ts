@@ -15,6 +15,70 @@ export interface UserDTO {
     roles : string[]
 }
 
+export interface PatientDTO {
+    id : string;
+    username : string;
+    email : string;
+    name : string;
+    surname1 : string;
+    surname2 : string;
+    dni : string;
+    phone : string;
+    postaladdres : string;
+    idcity : string;
+    cityname : string;
+    idstate : string;
+    statename : string;
+    postalcode : string;
+    signature : string;
+    photo_url : string;
+    gender : string;
+
+    idrelative : string;
+    relativefullname : string;
+    is_principal_keeper : string;
+    principal_keeper_fullname : string;
+    principal_keeper_phone : string;
+
+
+    routeDTO : RouteDTO;
+
+    menu_type : string;
+    breakfast_description : string;
+    medication_description_morning : string;
+    medication_description_evening : string;
+    groupcode : string;
+}
+
+export interface RouteDTO {
+    idroute : string;
+    route_name : string;
+    idpatient : string;
+    patient_fullname : string;
+    routestops : RouteStopDTO[];
+    idroutestop_selected_today : string;
+    idroutestop_selected_tomorrow : string;
+    routestop_especial_from : string;
+    routestop_especial_to : string;
+}
+
+
+export interface RouteStopDTO {
+    idroutestop : string;
+    order : number;
+    name : string;
+    hour : string;
+    postaladdress : RouteStopDTO[];
+    idcity : string;
+    idstate : string;
+    postalcode : string;
+    lat : number;
+    lon : number;
+}
+
+
+
+
 //TODO: Revisar si se está haciendo bien ya que es copiada de proyectos antiguos
 //Parseo como fecha: 
 export function reviver(key: string, value: any): any {

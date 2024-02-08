@@ -23,6 +23,7 @@ import { CanAccessUser } from './guards/user/canAccessUser';
 import { BodyLayoutComponent } from './layouts/body-layout/body-layout.component'; 
 import { canViewCalendarGuard } from './guards/can-view-calendar.guard';
 import { canViewAbsencesGuard } from './guards/can-view-absences.guard';
+import { canViewRouteGuard } from './guards/can-view-route.guard';
 
 const routes: Routes = [
     /*
@@ -55,6 +56,12 @@ const routes: Routes = [
       component: BodyLayoutComponent,
       canActivate : [canViewCalendarGuard],
       loadChildren: () => import('../modules/calendar/mycalendar.module').then(m => m.MyCalendarModule) 
+    },    
+    {
+      path : 'routes', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewRouteGuard],
+      loadChildren: () => import('../modules/routes/routes.module').then(m => m.RoutesModule) 
     },    
     {
       path : 'absences', 

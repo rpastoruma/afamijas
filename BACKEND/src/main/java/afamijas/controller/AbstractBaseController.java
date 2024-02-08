@@ -104,7 +104,10 @@ public abstract class AbstractBaseController
     }
 
 
-
+    protected boolean isPATIENT()
+    {
+        return this.getRoles().contains(Roles.PATIENT);
+    }
 
 
     protected boolean isPatientForRelative(String idpatient)

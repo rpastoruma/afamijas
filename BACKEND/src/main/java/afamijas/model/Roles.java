@@ -19,6 +19,8 @@ public class Roles {
     public static final String OCCUPATIONAL_THERAPIST = "OCCUPATIONAL_THERAPIST";
     public static final String OPERATOR_EXTRA_1 = "OPERATOR_EXTRA_1";
 
+    public static final String PATIENT = "PATIENT";
+
     private Roles() { }
 
 

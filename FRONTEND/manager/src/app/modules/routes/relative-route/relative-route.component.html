@@ -1,0 +1,156 @@
+    <nb-card>
+
+        <nb-card-header>
+            <h4>Información de la ruta de transporte</h4>
+        </nb-card-header>
+
+        <nb-card-body>
+            Para el usuario:
+            <ng-select (change)="getRoute(idpatient)" [multiple]="false" [(ngModel)]="idpatient" name="idpatient" [clearable]="false" notFoundText="No tienes usuarios asociados">
+                <ng-option *ngFor="let u of allPatients" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}}</ng-option>
+            </ng-select>
+
+            <hr/>
+
+            Ruta asignada:
+            <div class="routestop_hour">{{route.route_name}}</div>
+
+
+            <div style="margin-top:20px;" *ngIf="route.routestops.length>0">
+                Paradas de la ruta:
+                <ul style="margin-top:10px;" *ngFor="let routestop of route.routestops">
+                    <li class="routestop_hour"><nb-icon icon="clock-outline"></nb-icon> {{routestop.hour}}</li>
+                    <li class="routestop_name">{{routestop.name}}</li>
+                    <li class="routestop_postaladdress"><small>{{routestop.postaladdress}}</small></li>
+                </ul>
+            </div>
+
+            <div style="color:green" *ngIf="myroutestop_today && myroutestop_today.idroutestop!=''">
+                Parada asignada para hoy:
+                <ul style="margin-top:10px;">
+                    <li style="color:green" class="routestop_hour"><nb-icon icon="clock-outline"></nb-icon> {{myroutestop_today.hour}}</li>
+                    <li style="color:green" class="routestop_name">{{myroutestop_today.name}}</li>
+                    <li style="color:green" class="routestop_postaladdress"><small>{{myroutestop_today.postaladdress}}</small></li>
+                </ul>
+            </div>
+
+            <div style="{{myroutestop_tomorrow.idroutestop!=myroutestop_today.idroutestop?'color: red':'color: green'}}" *ngIf="myroutestop_tomorrow && myroutestop_tomorrow.idroutestop!=''">
+                Parada asignada para mañana:
+                <ul  style="margin-top:10px;">
+                    <li style="{{myroutestop_tomorrow.idroutestop!=myroutestop_today.idroutestop?'color: red':'color: green'}}" class="routestop_hour"><nb-icon icon="clock-outline"></nb-icon> {{myroutestop_tomorrow.hour}}</li>
+                    <li style="{{myroutestop_tomorrow.idroutestop!=myroutestop_today.idroutestop?'color: red':'color: green'}}" class="routestop_name">{{myroutestop_tomorrow.name}}</li>
+                    <li style="{{myroutestop_tomorrow.idroutestop!=myroutestop_today.idroutestop?'color: red':'color: green'}}" class="routestop_postaladdress"><small>{{myroutestop_tomorrow.postaladdress}}</small></li>
+                </ul>
+            </div>
+
+            <div style="color:red;" *ngIf="myroutestop_tomorrow.idroutestop!=myroutestop_today.idroutestop">
+                <small *ngIf="route.routestop_especial_from != route.routestop_especial_to">La parada de mañana difiere a la de hoy debido a un cambio puntual que has establecido desde el {{this.formatDate(route.routestop_especial_from)}} al {{this.formatDate(route.routestop_especial_to)}}.</small>   
+                <small *ngIf="route.routestop_especial_from == route.routestop_especial_to">La parada de mañana difiere a la de hoy debido a un cambio puntual que has establecido para el día {{this.formatDate(route.routestop_especial_from)}}.</small>   
+           </div>
+
+        </nb-card-body>
+
+        <nb-card-footer>
+
+
+        <button nbButton class="float-end" fullWidth status="primary"  (click)="openChangeRouteStopModal()">Cambiar parada</button>
+
+
+
+
+
+        </nb-card-footer>
+
+    </nb-card>
+
+
+
+
+    
+
+
+  <ng-template #modalContent let-close="close">
+  
+
+
+
+    <div class="modal-header">
+        <h5>Cambio de parada:</h5>
+        <button type="button" class="close" (click)="close();">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+
+
+    <div  class="modal-body">
+        <div>
+               <div  class="float-end" ><input  type="checkbox" [(ngModel)]="cambioPuntual" [ngModelOptions]="{standalone: true}"/> - Cambio puntual</div>
+
+               <span [hidden]="cambioPuntual">Parada habitual:</span>
+               <span [hidden]="!cambioPuntual">Parada para estos días:</span>
+               <ng-select [clearable]="false" [multiple]="false" [(ngModel)]="newRouteStop" name="roles" #newRouteStop1="ngModel">
+                               <ng-option *ngFor="let routestop of route.routestops"  [value]="routestop.idroutestop">{{routestop.name}}</ng-option>
+               </ng-select>
+
+               <br/>
+
+               <div [hidden]="cambioPuntual" style="color:red;"> <nb-icon icon="alert-triangle-outline"></nb-icon>&nbsp;Se cambiará su parada habitual. Si no desea cambiar su parada habitual sino solamente realizar un cambio para uno o varios días marque la casilla <b>Cambio puntual</b>.</div>
+
+                <div [hidden]="!cambioPuntual">
+
+                    Desde: <input
+                    class="form-control"
+                    type="text"
+                    mwlFlatpickr
+                    [(ngModel)]="from"
+                    [altInput]="true"
+                    [convertModelValue]="true"
+                    [enableTime]="false"
+                    dateFormat="YY-m-d"
+                    altFormat="d/m/Y"
+                    placeholder="Indique desde qué día quiere usar esta parada"
+                    [disable]="[disabledDay]"
+                    />
+    
+                    Hasta: <input
+                    class="form-control"
+                    type="text"
+                    mwlFlatpickr
+                    [(ngModel)]="to"
+                    [altInput]="true"
+                    [convertModelValue]="true"
+                    [enableTime]="false"
+                    dateFormat="YY-m-d"
+                    altFormat="d/m/Y"
+                    placeholder="Indique hasta qué día (incluido) quiere usar esta parada"
+                    [disable]="[disabledDay]"
+                    />
+
+                    <br/>
+
+                    <div style="color:red;"> <nb-icon icon="alert-triangle-outline"></nb-icon>&nbsp;Tenga en cuenta que este cambio puntual sustituirá a cualquier otro que tuviera establecido previamente.</div>
+                </div>
+
+                
+                
+
+        </div>
+      </div>
+  
+
+    <div class="modal-footer">
+
+
+        <button [disabled]="processing || (cambioPuntual && !from && !to)   || (cambioPuntual && from > to)  "  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="changeRouteStop(idpatient, newRouteStop, from, to, cambioPuntual); ">
+            GUARDAR CAMBIOS
+        </button>
+
+    </div>
+
+
+    
+
+  </ng-template>
+  
+

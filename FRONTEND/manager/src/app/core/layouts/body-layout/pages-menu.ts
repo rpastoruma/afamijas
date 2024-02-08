@@ -18,7 +18,7 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
   {
     title: 'Ruta',
     icon: { icon: 'fa-route', pack: 'fas' },
-    link: '/route',
+    link: '/routes/relative-route',
     data: 'menu.route',
     expanded: false,
   },

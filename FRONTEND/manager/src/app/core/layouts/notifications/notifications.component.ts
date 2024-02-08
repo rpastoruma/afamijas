@@ -43,14 +43,8 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       res => {
         this.notifications = res;
       },
-      _ => { 
-        /*
-        const config: Partial<NbToastrConfig> = {
-          status: 'danger', destroyByClick: true, duration: ToastTime.TIME,
-          hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false
-        };
-        this.toastService.show("MESSAGE",  "TITLE", config);
-        */
+      error => { 
+        console.error("getNotifications():" + JSON.stringify(error));
       }
     );
   }

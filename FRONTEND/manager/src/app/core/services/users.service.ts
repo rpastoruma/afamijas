@@ -11,12 +11,19 @@ export class UsersService {
   constructor(private http: HttpClient,) { }
 
   
-  getAllUsers(roles : string[]) 
+  getAllUsersByWorker(roles : string[]) 
   {
     if(!roles) roles = [];
     const url = ENV.url.workers + `/getAllUsers?roles=${roles.toString()}`;
     return this.http.get<any>(url, {});
    }
 
+
+   getPatientsByRelative() 
+   {
+     const url = ENV.url.relatives + `/getPatients`;
+     return this.http.get<any>(url, {});
+    }
+ 
 
 }

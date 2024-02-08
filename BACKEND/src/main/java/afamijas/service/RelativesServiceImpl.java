@@ -62,8 +62,8 @@ public class RelativesServiceImpl implements RelativesService
 	@Override
 	public RouteDTO getRoute(String idpatient)
 	{
-		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
-		if(patient==null) return null;
+		User patient = this.usersRepository.findOne(idpatient, "A");
+		if(patient==null || !patient.getRoles().contains("PATIENT")) return null;
 
 		if((patient.getIdroute()==null)) return null;
 
@@ -79,27 +79,15 @@ public class RelativesServiceImpl implements RelativesService
 
 		RouteStop routeStopForToday = this.routeStopsRepository.findOne(patient.getIdRouteStopForDay(LocalDateTime.now()), "A");
 		if(routeStopForToday!=null)
-		{
 			routeDTO.setIdroutestop_selected_today(routeStopForToday.get_id());
-			routeDTO.setRoutestop_name_selected_today(routeStopForToday.getName());
-		}
 		else
-		{
 			routeDTO.setIdroutestop_selected_today(null);
-			routeDTO.setRoutestop_name_selected_today("**SIN PARADA ASIGNADA**");
-		}
 
 		RouteStop routeStopForTomorrow = this.routeStopsRepository.findOne(patient.getIdRouteStopForDay(LocalDateTime.now().plusDays(1)), "A");
-		if(routeStopForToday!=null)
-		{
-			routeDTO.setIdroutestop_selected_today(routeStopForTomorrow.get_id());
-			routeDTO.setRoutestop_name_selected_today(routeStopForTomorrow.getName());
-		}
+		if(routeStopForTomorrow!=null)
+			routeDTO.setIdroutestop_selected_tomorrow(routeStopForTomorrow.get_id());
 		else
-		{
-			routeDTO.setIdroutestop_selected_today(null);
-			routeDTO.setRoutestop_name_selected_today("**SIN PARADA ASIGNADA**");
-		}
+			routeDTO.setIdroutestop_selected_tomorrow(null);
 
 		return routeDTO;
 	}
@@ -110,8 +98,8 @@ public class RelativesServiceImpl implements RelativesService
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public RouteDTO changeRouteStop(String idpatient, String idroutestop, LocalDate from, LocalDate to)
 	{
-		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
-		if(patient==null) return null;
+		User patient = this.usersRepository.findOne(idpatient, "A");
+		if(patient==null || !patient.getRoles().contains("PATIENT")) return null;
 
 		RouteStop routeStop = this.routeStopsRepository.findOne(idroutestop, "A");
 		if(routeStop==null) return null;
@@ -141,8 +129,8 @@ public class RelativesServiceImpl implements RelativesService
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public AbsenceDTO addAbsenceByRelative(String idpatient, String idrelative, LocalDate day, LocalDateTime from, LocalDateTime to, Boolean notransport, String comment)
 	{
-		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
-		if(patient==null) return null;
+		User patient = this.usersRepository.findOne(idpatient, "A");
+		if(patient==null || !patient.getRoles().contains("PATIENT")) return null;
 		Boolean allday = false; if(from==null && to==null) allday = true;
 
 		Absence absence = new Absence();
@@ -169,8 +157,8 @@ public class RelativesServiceImpl implements RelativesService
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public void deleteAbsence(String idpatient, String idabsence)
 	{
-		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
-		if(patient==null) return;
+		User patient = this.usersRepository.findOne(idpatient, "A");
+		if(patient==null || !patient.getRoles().contains("PATIENT")) return;
 
 		Absence absence = this.absencesRepository.findOne(idabsence);
 		if(absence==null) return;
@@ -185,8 +173,8 @@ public class RelativesServiceImpl implements RelativesService
 	@Override
 	public MenuDTO getMenu(String idpatient)
 	{
-		User patient = this.usersRepository.findOne(idpatient, "PATIENT", "A");
-		if(patient==null) return null;
+		User patient = this.usersRepository.findOne(idpatient, "A");
+		if(patient==null || !patient.getRoles().contains("PATIENT")) return null;
 
 		return new MenuDTO(this.menusRepository.findMenuByPatient(idpatient), patient);
 	}
@@ -195,10 +183,10 @@ public class RelativesServiceImpl implements RelativesService
 	@Override
 	public List<PermissionDTO> getPendingPermissions(String idrelative)
 	{
-		User relative = this.usersRepository.findOne(idrelative, "RELATIVE", "A");
-		if(relative==null) return null;
+		User relative = this.usersRepository.findOne(idrelative, "A");
+		if(relative==null || !relative.getRoles().contains("RELATIVE")) return null;
 
-		return this.permissionsRepository.findPendingPermissionsByRelative(idrelative).stream().map(x -> new PermissionDTO(x, relative, this.usersRepository.findOne(x.getIdpatient(), "PATIENT", "A") )).toList();
+		return this.permissionsRepository.findPendingPermissionsByRelative(idrelative).stream().map(x -> new PermissionDTO(x, relative, this.usersRepository.findOne(x.getIdpatient(), "A") )).toList();
 	}
 
 
@@ -210,11 +198,11 @@ public class RelativesServiceImpl implements RelativesService
 
 		if(!permission.getIdpatient().equals(idpatient)) return null;
 
-		User relative = this.usersRepository.findOne(permission.getIdrelative(), "RELATIVE", "A");
-		if(relative==null) return null;
+		User relative = this.usersRepository.findOne(permission.getIdrelative(), "A");
+		if(relative==null || !relative.getRoles().contains("RELATIVE")) return null;
 
-		User patient = this.usersRepository.findOne(permission.getIdpatient(),"PATIENT",  "A");
-		if(patient==null) return null;
+		User patient = this.usersRepository.findOne(permission.getIdpatient(), "A");
+		if(patient==null || !patient.getRoles().contains("PATIENT")) return null;
 
 		Media media = this.mediaService.create(idpermission, "permission", "signed", file);
 		permission.setPermission_signed_url(media.getUrl());
@@ -247,6 +235,13 @@ public class RelativesServiceImpl implements RelativesService
 		List<CalendarEvent> calendarEventList = this.mongoTemplate.find(query, CalendarEvent.class);
 
 		return calendarEventList.stream().map(x -> new CalendarEventDTO(x)).toList();
+	}
+
+
+	@Override
+	public List<PatientDTO> getPatients(String idrelative)
+	{
+		return this.usersRepository.findByIdRelative(idrelative, "A").stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
 	}
 
 

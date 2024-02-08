@@ -14,7 +14,6 @@ import { RecaptchaModule, RecaptchaFormsModule, RECAPTCHA_LANGUAGE } from 'ng-re
     SharedModule,
     NgxAuthRoutingModule,
     NbAuthModule,
-    NgxAuthRoutingModule,
     NbAuthModule,
     RecaptchaModule,
     RecaptchaFormsModule
