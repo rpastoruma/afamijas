@@ -109,7 +109,7 @@ export class RelativeRouteComponent implements OnInit {
           console.error("getPatients():"+JSON.stringify(error));
           this.toastService.show("No se pueden obtener los usuarios asociados a este familiar.",
           "¡Ups!", 
-          { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
         }
       );
@@ -142,7 +142,7 @@ export class RelativeRouteComponent implements OnInit {
         console.error("getRoute():"+JSON.stringify(error));
         this.toastService.show("No se puede obtener la ruta.",
                                "¡Ups!", 
-                               { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+                               { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
                               );
       }
     );
@@ -167,7 +167,7 @@ export class RelativeRouteComponent implements OnInit {
     { 
       this.toastService.show("La fecha de inicio del cambio no puede ser posterior a la de su fin.",
       "¡Ups!", 
-      { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+      { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
       );
       return; 
     } 
@@ -183,7 +183,7 @@ export class RelativeRouteComponent implements OnInit {
         this.getRoute(idpatient);
         this.toastService.show("Ruta cambiada correctamente.",
                                "¡Ok!", 
-                               { status: 'success', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+                               { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
                               );
 
       },
@@ -192,7 +192,7 @@ export class RelativeRouteComponent implements OnInit {
         this.processing = false;
         this.toastService.show("Ha habido un error al cambiar la ruta.",
                                "¡Ups!", 
-                               { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+                               { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
                               );
       }
     );

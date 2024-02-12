@@ -1,0 +1,199 @@
+.form-group {
+    margin-bottom: 0em;
+    margin-top: 0.5em;
+    width: 100% !important;
+}
+
+table {
+    width: 94% !important;
+    line-height: 1.5em;
+    border-collapse: collapse;
+    border-spacing: 0;
+    display: table;
+    overflow: auto;
+    word-break: normal;
+    word-break: keep-all;
+    color: #212529;
+    clear: both;
+    margin: 6px auto !important;
+    max-width: none !important;
+    border-color: grey;
+  }
+  
+  .thTable th {
+    position: relative;
+    border: 1px solid #cdd5dc;
+    box-sizing: content-box;
+    vertical-align: bottom;
+    padding: 0.75rem;
+  }
+  
+  .tbodyTable td, .tbodyTable2 td, .tbodyTableWithoutEven td {
+    border: 1px solid #cdd5dc;
+    padding: 0.75rem;
+    // vertical-align: top; 
+    text-align: center;
+  }
+  
+  .tbodyTable tr:nth-child(even), .tbodyTable2 tr:nth-child(even) {
+    background-color: #f5f7fc;
+  }
+  
+th {
+    position: relative;
+    box-sizing: content-box;
+    vertical-align: bottom;
+    padding: 0.75rem;
+}
+
+.th2 {
+    padding: 0.45rem;
+    padding-bottom: 0px;
+}
+
+/* estilos inputs */
+.inputDate, .my-form-control {
+    border: 2px solid #dadfe6!important;
+}
+.inpWidth {
+    width: 100%;
+    font-family: "Segoe UI";
+    line-height: 1.5;
+}
+.my-form-control {
+    display: block;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    padding: 0.375rem 0;
+    margin: 0 -2px;
+}
+
+.searchButton {
+  text-align: center;
+}
+
+.filter-btn {
+  border-radius: 5px;
+  border: 1px solid #7f7f7f;
+}
+
+#filter {
+  width: 33px;
+  color: #4c4b4b;
+  font-size: 1.75rem;
+  padding: 4px 0;
+}
+
+// ::ng-deep .selectFilter {
+//   border: 2px solid #dadfe6 !important;
+//   border-radius: .25rem;
+//   font-size: 1rem;
+//   font-weight: 400;
+//   line-height: 1.5;
+//   padding: 0.375rem 6px;
+//   margin: 8px -7px 0 -7px;
+//   width: 98%;
+// }
+
+.dateFilter {
+  width: calc(100% - 60px);
+  border: 2px solid #dadfe6 !important;
+  border-radius: .25rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  padding: 0.375rem 6px;
+  margin: 8px 0px 0 0px;
+}
+
+.dateFilterRange {
+  width: 100%;
+  border: 2px solid #dadfe6 !important;
+  border-radius: .25rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  padding: 0.375rem 6px;
+  margin: 8px 0px 0 0px;
+}
+
+::ng-deep .mat-datepicker-content .mat-calendar {
+  width: auto !important;
+  height: auto !important;
+}
+
+::ng-deep .mat-form-field-type-mat-date-range-input .mat-form-field-infix {
+  width: auto !important;
+}
+
+::ng-deep .mat-form-field-type-mat-date-range-input {
+  display: block !important;
+  width: 260px !important;
+}
+
+::ng-deep .dateFullWidth .mat-form-field-type-mat-date-range-input {
+  width: 100% !important;
+}
+
+::ng-deep .mat-form-field-type-mat-date-range-input.mat-form-field-appearance-legacy .mat-form-field-suffix .mat-datepicker-toggle-default-icon {
+  height: 24px;
+  width: 24px;
+}
+
+::ng-deep mat-datepicker-toggle .mat-focus-indicator.mat-icon-button.mat-button-base:focus{
+  outline: none;
+}
+
+::ng-deep mat-datepicker-toggle .mat-button-focus-overlay {
+  opacity: 0 !important;
+}
+
+th.date-rage-width {
+  width: 260px !important;
+}
+
+.fa-sort, .fa-sort-up, .fa-sort-down {
+  cursor: pointer;
+}
+
+::ng-deep .mat-icon-button {
+  width: 44px !important;
+  text-align: end !important;
+}
+
+.date-width {
+  width: 165px;
+}
+
+#statuspending, #noactivate {
+  color: red !important;
+}
+
+#statusaccept, #activate {
+  color: green !important;
+}
+
+::ng-deep .mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+}
+
+::ng-deep .mat-form-field-underline {
+  display: none;
+}
+
+::ng-deep .mat-form-field-infix {
+  margin: 0 !important;
+  padding: 0 !important;
+  border-top: 0 !important;
+}
+
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-suffix .mat-datepicker-toggle-default-icon {
+  width: 2em;
+}
+
+::ng-deep .ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+  white-space: normal !important;
+}

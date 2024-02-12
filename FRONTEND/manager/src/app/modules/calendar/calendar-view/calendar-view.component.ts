@@ -216,7 +216,7 @@ export class CalendarViewComponent implements OnInit {
           console.error("getCalendarEventsForRelatives():"+JSON.stringify(error));
           this.toastService.show("No se han podido cargar los eventos del calendario.",
           "¡Ups!", 
-          { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
 
         }
@@ -235,7 +235,7 @@ export class CalendarViewComponent implements OnInit {
           console.error("getCalendarEventsForWorkers():"+JSON.stringify(error));
           this.toastService.show("No se han podido cargar los eventos del calendario.",
           "¡Ups!", 
-          { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
         }
       );
@@ -247,8 +247,9 @@ export class CalendarViewComponent implements OnInit {
 
   getAllUsers(roles? : string[])
   {
-      //if(this.modalData && this.modalData.event) this.modalData.event.idsusers = []; //PARA QUE SE RESETEEN LOS USUARIOS CONCRETOS SI CAMBIAN LOS ROLES
-      if(!roles) roles = this.modalData.event.roles;
+    if(!this.canModifyEvent()) return;
+
+    if(!roles) roles = this.modalData.event.roles;
 
       this.usersService.getAllUsersByWorker(roles).subscribe(
         res => {
@@ -260,7 +261,7 @@ export class CalendarViewComponent implements OnInit {
           console.error("getAllUsers():"+JSON.stringify(error));
           this.toastService.show("No se han podido cargar los usuarios.",
                                  "¡Ups!", 
-                                 { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+                                 { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
                                 );
           }
       );
@@ -307,7 +308,7 @@ export class CalendarViewComponent implements OnInit {
     { 
       this.toastService.show("Debes indicar un título para el evento.",
       "¡Ups!", 
-      { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+      { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
       );
       return; 
     }
@@ -320,7 +321,7 @@ export class CalendarViewComponent implements OnInit {
     { 
       this.toastService.show("La fecha de inicio del evento no puede ser posterior a la de su fin.",
       "¡Ups!", 
-      { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+      { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
       );
       return;
     } 
@@ -333,7 +334,7 @@ export class CalendarViewComponent implements OnInit {
         this.processing = false;
         this.toastService.show("Evento guardado correctamente.",
                                "¡Ok!", 
-                               { status: 'success', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+                               { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
                               );
         this.getCalendarEvents();
       },
@@ -342,7 +343,7 @@ export class CalendarViewComponent implements OnInit {
         console.error("saveCalendarEvent():"+JSON.stringify(error));
         this.toastService.show("No se ha podido guardar el evento.",
                                "¡Ups!", 
-                               { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+                               { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
                               );
 
       }
@@ -375,7 +376,7 @@ export class CalendarViewComponent implements OnInit {
 
              this.toastService.show("Evento eliminado correctamente.",
              "¡Ok!", 
-             { status: 'success', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+             { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
             );
             this.getCalendarEvents();
 
@@ -387,7 +388,7 @@ export class CalendarViewComponent implements OnInit {
               console.error("getCalendarEventsForWorkers():"+JSON.stringify(error));
               this.toastService.show("No se ha podido eliminar el evento.",
                                      "¡Ups!", 
-                                     { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+                                     { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
                                     );
       
             }

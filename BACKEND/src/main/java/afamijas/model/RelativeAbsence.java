@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Document(collection = "absences")
-public class Absence
+@Document(collection = "relative_absences")
+public class RelativeAbsence
 {
 	@Id
 	private String _id;
@@ -18,23 +17,19 @@ public class Absence
 
 	private String idrelative;
 
-	private String idworker;
-
-	private String idroutestop;  // tendría valor si no va a ser recogido en la parada estipulada (indicado por familiar) o no ha sido recogido sin que lo indicara el familiar (indicado por trabajador)
+	private String transport; // SOLO IDA, SOLO VUELTA, IDA Y VUELTA, NO
 
 	private String comment;
-
-	private LocalDate day;
-
-	private Boolean allday;
 
 	private LocalDateTime from;
 
 	private LocalDateTime to;
 
+	private Boolean allday;
+
 	private LocalDateTime created;
 
-	public Absence()
+	public RelativeAbsence()
 	{
 		this.created = LocalDateTime.now();
 	}
@@ -55,38 +50,6 @@ public class Absence
 		this.idpatient = idpatient;
 	}
 
-	public String getIdroutestop() {
-		return idroutestop;
-	}
-
-	public void setIdroutestop(String idroutestop) {
-		this.idroutestop = idroutestop;
-	}
-
-	public String getComment() {
-		return comment;
-	}
-
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-
-	public LocalDate getDay() {
-		return day;
-	}
-
-	public void setDay(LocalDate day) {
-		this.day = day;
-	}
-
-	public LocalDateTime getCreated() {
-		return created;
-	}
-
-	public void setCreated(LocalDateTime created) {
-		this.created = created;
-	}
-
 	public String getIdrelative() {
 		return idrelative;
 	}
@@ -95,20 +58,20 @@ public class Absence
 		this.idrelative = idrelative;
 	}
 
-	public String getIdworker() {
-		return idworker;
+	public String getTransport() {
+		return transport;
 	}
 
-	public void setIdworker(String idworker) {
-		this.idworker = idworker;
+	public void setTransport(String transport) {
+		this.transport = transport;
 	}
 
-	public Boolean getAllday() {
-		return allday;
+	public String getComment() {
+		return comment;
 	}
 
-	public void setAllday(Boolean allday) {
-		this.allday = allday;
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	public LocalDateTime getFrom() {
@@ -127,12 +90,28 @@ public class Absence
 		this.to = to;
 	}
 
+	public Boolean getAllday() {
+		return allday;
+	}
+
+	public void setAllday(Boolean allday) {
+		this.allday = allday;
+	}
+
+	public LocalDateTime getCreated() {
+		return created;
+	}
+
+	public void setCreated(LocalDateTime created) {
+		this.created = created;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		Absence user = (Absence) o;
+		RelativeAbsence user = (RelativeAbsence) o;
 
 		return _id.equals(user._id);
 	}

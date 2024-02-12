@@ -5,11 +5,11 @@ import { NbActionsModule, NbAlertModule, NbButtonModule, NbCardModule, NbCheckbo
   NbInputModule, NbLayoutModule, NbPopoverModule, NbSelectModule, NbSpinnerModule, NbTooltipModule } from '@nebular/theme';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-//import { CustomTableComponent } from './components/custom-table/custom-table.component';
+
 //import { PaginationComponent } from './components/pagination/pagination.component';
 //import { FillPipe } from './pipes/fill.pipe';
-//import {MatDatepickerModule} from '@angular/material/datepicker';
-//import { MatSelectModule } from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatSelectModule } from '@angular/material/select';
 import { NgSelectModule } from '@ng-select/ng-select';
 //import { SelectorCountriesComponent } from './components/selector-countries/selector-countries.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -18,9 +18,16 @@ import { DeleteConfirmComponent } from './components/delete-confirm/delete-confi
 //import { DeleteConfirmComponent } from './components/delete-confirm/delete-confirm.component';
 //import { TableFieldListModalComponent } from './components/table-field-list-modal/table-field-list-modal.component';
 
+
+import { FlatpickrModule } from 'angularx-flatpickr';
+import flatpickr from 'flatpickr';
+import { Spanish } from 'flatpickr/dist/l10n/es';
+import { CustomTableComponent } from './components/custom-table/custom-table.component';
+import { PaginationComponent } from './components/pagination/pagination.component';
+
+
 @NgModule({
     declarations: [
-      //CustomTableComponent,
       //PaginationComponent,
       //FillPipe,
       //ResearchersSelectorComponent,
@@ -29,7 +36,9 @@ import { DeleteConfirmComponent } from './components/delete-confirm/delete-confi
     
   
     SigningPadComponent,
-      DeleteConfirmComponent
+      DeleteConfirmComponent,
+      CustomTableComponent,
+      PaginationComponent,
   ],
     imports: [
       CommonModule,
@@ -39,7 +48,7 @@ import { DeleteConfirmComponent } from './components/delete-confirm/delete-confi
       NbCardModule,
       RouterModule,
       NbAlertModule,
-      FormsModule,
+      FormsModule,FlatpickrModule.forRoot(),
       ReactiveFormsModule,
       NbInputModule,
       NbButtonModule,
@@ -48,8 +57,8 @@ import { DeleteConfirmComponent } from './components/delete-confirm/delete-confi
       NbActionsModule,
       NbIconModule,
       NbTooltipModule,
-      //MatDatepickerModule,
-      //MatSelectModule,
+      MatDatepickerModule,
+      MatSelectModule,
       NgSelectModule,
       NbPopoverModule,
       DragDropModule,
@@ -61,18 +70,18 @@ import { DeleteConfirmComponent } from './components/delete-confirm/delete-confi
       NbCardModule,
       RouterModule,
       NbAlertModule,
-      FormsModule,
+      FormsModule, FlatpickrModule,
       ReactiveFormsModule,
       NbInputModule,
-      //CustomTableComponent,
+      CustomTableComponent,
       NbButtonModule,
-      //MatSelectModule,
+      MatSelectModule,
       NbSelectModule,
       NbCheckboxModule,
-      NbActionsModule,
-      NbIconModule,
+      NbActionsModule, 
+      NbIconModule, 
       NgSelectModule,
-      //MatDatepickerModule,
+      MatDatepickerModule,
       //SelectorCountriesComponent,
       NbPopoverModule,
       DragDropModule,

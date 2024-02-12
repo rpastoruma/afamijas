@@ -46,7 +46,7 @@ public class WorkersServiceImpl implements WorkersService
 
 	final RouteStopsRepository routeStopsRepository;
 
-	final AbsencesRepository absencesRepository;
+	final WorkersAbsencesRepository workersAbsencesRepository;
 	
 	final CalendarEventsRepository calendarEventsRepository;
 
@@ -54,7 +54,7 @@ public class WorkersServiceImpl implements WorkersService
 
 
 	@Autowired
-	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, AbsencesRepository absencesRepository, CalendarEventsRepository calendarEventsRepository, MediaService mediaService)
+	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MediaService mediaService)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -65,7 +65,7 @@ public class WorkersServiceImpl implements WorkersService
 		this.legionellaLogRepository = legionellaLogRepository;
 		this.wcLogRepository = wcLogRepository;
 		this.routeStopsRepository = routeStopsRepository;
-		this.absencesRepository = absencesRepository;
+		this.workersAbsencesRepository = workersAbsencesRepository;
 		this.calendarEventsRepository = calendarEventsRepository;
 		this.mediaService = mediaService;
 	}
@@ -248,27 +248,21 @@ public class WorkersServiceImpl implements WorkersService
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public AbsenceDTO addAbsenceByWorker(String idpatient, String idworker, LocalDate day, String comment)
+	public WorkerAbsenceDTO addAbsenceByWorker(String idpatient, String idworker, String idroutestop, String comment)
 	{
 		User patient = this.usersRepository.findOne(idpatient, "A");
 		if(patient==null || !patient.getRoles().contains("PATIENT")) return null;
 
-		Absence absence = new Absence();
-		absence.setIdpatient(idpatient);
-		absence.setIdrelative(null);
-		absence.setIdworker(idworker);
-		absence.setDay(day);
-		absence.setAllday(null);
-		absence.setFrom(null);
-		absence.setTo(null);
-		absence.setComment(comment);
-
-		RouteStop routeStop = this.routeStopsRepository.findOne(patient.getIdRouteStopForDay(day.atTime(12, 0, 0)), "A");
-		if(routeStop!=null) absence.setIdroutestop(routeStop.get_id());
+		WorkerAbsence workerAbsence = new WorkerAbsence();
+		workerAbsence.setIdpatient(idpatient);
+		workerAbsence.setIdworker(idworker);
+		workerAbsence.setIdroutestop(idroutestop);
+		workerAbsence.setWhen(LocalDateTime.now());
+		workerAbsence.setComment(comment);
 
 		//TODO: EMAIL/NOTIFICACIÓN A QUIEN CORRESPONDA ANUNCIANDO AUSENCIA PARA ESTE PACIENTE
 
-		return new AbsenceDTO(this.absencesRepository.save(absence), patient, routeStop);	}
+		return new WorkerAbsenceDTO(this.workersAbsencesRepository.save(workerAbsence), patient);	}
 
 	@Override
 	public void deleteAbsence(String idpatient, String idabsence) {

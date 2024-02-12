@@ -8,6 +8,7 @@ import { NbIconLibraries } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbIconModule } from '@nebular/theme';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NbToastrModule } from '@nebular/theme';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     NbEvaIconsModule,
     NbIconModule,
     NgbModule,
+    NbToastrModule.forRoot()
   ],
   providers: [
   ],

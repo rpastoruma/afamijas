@@ -3,7 +3,6 @@ import { NavigationEnd, Router } from '@angular/router';
 import { NbGlobalPhysicalPosition, NbPopoverDirective, NbToastrConfig } from '@nebular/theme';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
-import { ToastTime } from 'src/app/shared/models/models';
 import { NotificationsService } from '../../services/notifications.service';
 
 @Component({

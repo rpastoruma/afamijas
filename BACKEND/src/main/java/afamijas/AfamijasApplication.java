@@ -67,6 +67,8 @@ public class AfamijasApplication extends SpringBootServletInitializer implements
 		return registrationBean;
 	}
 
+
+
 	@Override
 	public void run(ApplicationArguments args) throws Exception
 	{

@@ -1,7 +1,8 @@
 package afamijas.service;
 
-import afamijas.model.CalendarEvent;
 import afamijas.model.dto.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +18,7 @@ public interface RelativesService
 
     RouteDTO changeRouteStop(String idpatient, String idroutestop, LocalDate from, LocalDate to);
 
-    AbsenceDTO addAbsenceByRelative(String idpatient, String idrelative, LocalDate day, LocalDateTime from, LocalDateTime to, Boolean notransport, String comment);
+    RelativeAbsenceDTO saveAbsenceByRelative(String id, String idpatient, String idrelative, LocalDateTime from, LocalDateTime to, Boolean allday, String transport, String comment);
 
     void deleteAbsence(String idpatient, String idabsence);
 
@@ -31,4 +32,6 @@ public interface RelativesService
 
 
     List<PatientDTO> getPatients(String idrelative);
+
+    Page<RelativeAbsenceDTO> getRelativeAbsences(String idpatient, String idrelative, LocalDateTime from, LocalDateTime to, int page, int size, String orderby, String orderasc);
 }

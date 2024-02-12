@@ -31,7 +31,7 @@ public interface WorkersService
 
     String uploadActivities(MultipartFile file) throws Exception;
 
-    AbsenceDTO addAbsenceByWorker(String idpatient, String idworker, LocalDate day, String comment);
+    WorkerAbsenceDTO addAbsenceByWorker(String idpatient, String idworker, String idroutestop, String comment);
 
     void deleteAbsence(String idpatient, String idabsence);
 

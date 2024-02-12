@@ -1,0 +1,260 @@
+
+<div class="widget has-shadow">
+    <div class="widget-body">
+        <!---->
+        <!-- Horizontal table  -->
+        <div *ngIf="!isMobileLayout" class="table-responsive" style="overflow: visible;">
+            <table class="tableResp filter">
+                <thead class="thTable">
+                    <tr>
+                        <th *ngFor="let keyD of keys; index as i" [ngClass]="{'date-width': getFilterType(filters[i]) === 1, 'date-rage-width': getFilterType(filters[i]) === 4}"
+                        [style.width]="getFilterType(filters[i]) === 2 ? getWidth() + '%' : 'auto'" [style.max-width]="getFilterType(filters[i]) === 2 ? '120px' : 'auto'">
+                            <div class="divCenter d-flex">
+                                <div style="width: 90%;">{{keyD}} </div>
+                                <span *ngIf="sort" style="width: 10%; margin-top: auto; text-align: end;" (click)="changeStatusSort(i, sort[i])">
+                                    <i *ngIf="states[i] === 0" class="fas fa-sort" ></i>
+                                    <i *ngIf="states[i] === 1" class="fas fa-sort-up"></i>
+                                    <i *ngIf="states[i] === 2" class="fas fa-sort-down"></i>
+                                </span>
+                            </div>
+                            <div class="form-group" [ngSwitch]="getFilterType(filters[i])">
+                                <input type="text" *ngSwitchCase="3"
+                                    class="my-form-control inpWidth borderBold" 
+                                    #inputD
+                                    (change)="setValue(i, inputD.value)"
+                                    (keyup.enter)="filter(i, inputD.value)"
+                                >
+                                <ng-select #selector *ngSwitchCase="2" [ngModel]="filterValueDefault ? filterValueDefault[i]: undefined" [multiple]="false" (change)="filter(i, $event)" [placeholder]="''"
+                                    notFoundText="No encontrado" [clearable]="clearable ? clearable[i] : true">
+                                    <ng-option *ngFor="let fOption of filters[i]" [value]="fOption.id">{{fOption.text}}</ng-option> 
+                                </ng-select>
+                                <div *ngSwitchCase="1">
+                                    <input matInput #dateinput (click)="picker.open()" style="margin-top: 0;" [matDatepicker]="picker" class="dateFilter" (dateChange)="filter(i, dateinput.value)">
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </div>
+                                <div *ngSwitchCase="4">
+                                    <mat-form-field>
+                                        <mat-date-range-input #rangeInput [rangePicker]="pickerRange" class="dateFilterRange" style="margin-top: 0;">
+                                          <input matStartDate (dateInput)="filter(i, rangeInput.value)">
+                                          <input matEndDate  (dateInput)="filter(i, rangeInput.value)">
+                                        </mat-date-range-input>
+                                        <mat-datepicker-toggle matSuffix [for]="pickerRange"></mat-datepicker-toggle>
+                                        <mat-date-range-picker #pickerRange></mat-date-range-picker>
+                                      </mat-form-field>
+                                </div>
+                            </div>
+                            
+                        </th>
+                        <th style="width: 8%" *ngIf="iconFilter || (actions && actions.length > 0)">
+                            <div class="searchButton">
+                                <button class="filter-btn" *ngIf="iconFilter">
+                                    <nb-icon icon="search-outline" id="filter" (click)="filterBtn()"></nb-icon>
+                                </button>
+                            </div>               
+                        </th>
+                    </tr>
+                </thead>
+                <tbody *ngIf = "values && values.length > 0" class="tbodyTable">
+                    <tr *ngFor = "let value of values">
+                        <td *ngFor="let key of keys; index as i" [ngSwitch]="getValueType(value.values[i])" [ngStyle]="{'text-align': align && align[i] ? align[i] : 'center'}">
+                            <span *ngSwitchCase="0">
+                                <button nbButton *ngIf="!value.values[i]?.icon" status="primary" size="small" style="text-transform: none;" (click)="actionEvent(value.values[i]?.action, value.id)">{{value.values[i]?.text}}</button>
+                                <a *ngIf="value.values[i]?.icon" class="buttonColum" nbTooltip="{{value.values[i]?.text}}">
+                                    <i class="{{value.values[i]?.icon}}" (click)="actionEvent(value.values[i]?.action, value.id)"></i>
+                                </a>
+                            </span>
+                            <span *ngSwitchCase="1"> 
+                                {{getBool(value.values[i])}}
+                            </span>
+                            <span *ngSwitchCase="2" [innerHTML]="value.values[i]">
+                            </span>
+                            <span *ngSwitchCase="3">
+                                <input type="checkbox" [value]="value.values[i].value" style="width: 20px; height: 20px;" (change)="checkRow(value.id, $event)">
+                            </span>
+                        </td>
+                        
+                        <td  *ngIf="iconFilter || (actions && actions.length > 0)">
+                            <span class="tdButtons">
+                                <a class="buttonAbroads" *ngIf="staysAbroadAction" nbTooltip="{{staysAbroadAction.text}}">
+                                    <nb-icon icon="briefcase-outline" id="abroads" (click)="actionEvent('abroads', value.id)"></nb-icon>
+                                </a>
+                                <a class="buttonAwards" *ngIf="awardsAction" nbTooltip="{{awardsAction.text}}">
+                                    <nb-icon icon="award-outline" id="awards" (click)="actionEvent('awards', value.id)"></nb-icon>
+                                </a>
+                                <a class="buttonAbroads" *ngIf="statusAction && value.status == 'A'" nbTooltip="{{statusAction.text}}">
+                                    <nb-icon icon="checkmark-circle-outline" id="statusaccept" (click)="actionEvent('status', value.id)"></nb-icon>
+                                </a>
+                                <a class="buttonAbroads" *ngIf="statusAction && value.status == 'P'" nbTooltip="{{statusAction.text}}">
+                                    <nb-icon icon="close-circle-outline" id="statuspending" (click)="actionEvent('status', value.id)"></nb-icon>
+                                </a>
+                                <a class="buttonEdit" *ngIf="editAction && !value.noedit" nbTooltip="{{editAction.text}}">
+                                    <nb-icon icon="edit-2-outline" id="edit" (click)="actionEvent('edit', value.id)"></nb-icon>
+                                </a>
+                                <a class="buttonEdit" *ngIf="editAction && value.noedit" nbTooltip="{{editAction.textNoedit}}">
+                                    <nb-icon icon="edit-2-outline" id="edit" style="color: lightgray;"></nb-icon>
+                                </a>
+                                <a class="buttonShow" *ngIf="showAction" nbTooltip="{{showAction.text}}">
+                                    <nb-icon icon="search-outline" (click)="actionEvent('show', value.id, value)"></nb-icon>
+                                </a>
+                                <a class="buttonEvaluate" *ngIf="evaluateAction" nbTooltip="{{evaluateAction.text}}">
+                                    <nb-icon icon="list-outline" (click)="actionEvent('evaluate', value.id, value)"></nb-icon>
+                                </a>
+                                <a class="buttonEvaluate" *ngIf="transferAction" nbTooltip="{{transferAction.text}}">
+                                    <nb-icon icon="swap-outline" (click)="actionEvent('transfer', value.id, value)"></nb-icon>
+                                </a>
+                                <a class="buttonEvaluate" *ngIf="duplicateAction" nbTooltip="{{duplicateAction.text}}">
+                                    <nb-icon icon="copy" (click)="actionEvent('duplicate', value.id)"></nb-icon>
+                                </a>
+                                <a class="buttonEvaluate" *ngIf="incidenceAction" nbTooltip="{{incidenceAction.text}}">
+                                    <nb-icon icon="inbox-outline" (click)="actionEvent('incidence', value.id, value)"></nb-icon>
+                                </a>
+                                <a class="buttonEvaluate" *ngIf="approveAction" nbTooltip="{{approveAction.text}}">
+                                    <nb-icon icon="checkmark-circle-outline" (click)="actionEvent('approve', value.id, value)"></nb-icon>
+                                </a>
+                                <a class="buttonAbroads" *ngIf="activateAction && value.active == false" nbTooltip="{{activateAction.text}}">
+                                    <nb-icon icon="checkmark-circle-outline" id="activate" (click)="actionEvent('activate', value.id)"></nb-icon>
+                                </a>
+                                <a class="buttonAbroads" *ngIf="activateAction && value.active == true" nbTooltip="{{activateAction.text}}">
+                                    <nb-icon icon="close-circle-outline" id="noactivate" (click)="actionEvent('activate', value.id)"></nb-icon>
+                                </a>
+                                <a class="buttonTrash" *ngIf="deleteAction || (value?.nodelete === false)" nbTooltip="Borrar">
+                                    <nb-icon icon="trash-2-outline" id="delete" (click)="actionEvent('delete', value.id, value)"></nb-icon>
+                                </a>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="!values || values.length <= 0" class="tbodyTable">
+                    <tr>
+                        <td *ngIf="isProcessing" [attr.colspan]="hasAction() ? keys.length + 1 : keys.length">Cargando...</td>
+                        <td *ngIf="!isProcessing" [attr.colspan]="hasAction() ? keys.length + 1 : keys.length" class="text-center empty">No hay resultados</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!---->
+
+
+
+        <!-- Vertical table  -->
+        <div *ngIf="isMobileLayout" class="table-responsive">
+            <table class="tableResp filter">
+                <thead class="thead2">
+                    <!--tr class="tr2" *ngFor="let key of keys; index as i">
+                        <th [attr.colspan]="keys.length">
+                            <div class="divCenter d-flex">
+                                <div style="width: 90%;">{{key}} </div>
+                                <span *ngIf="sort" style="width: 10%; margin-top: auto; text-align: end;" (click)="changeStatusSort(i, sort[i])">
+                                    <i *ngIf="states[i] === 0" class="fas fa-sort" ></i>
+                                    <i *ngIf="states[i] === 1" class="fas fa-sort-up"></i>
+                                    <i *ngIf="states[i] === 2" class="fas fa-sort-down"></i>
+                                </span>
+                            </div>
+                            <div class="form-group" [ngSwitch]="getFilterType(filters[i])">
+                                <input type="text" *ngSwitchCase="3"
+                                    class="my-form-control inpWidth borderBold" 
+                                    #inputD
+                                    (change)="filter(i, inputD.value)"
+                                >
+                                <ng-select *ngSwitchCase="2" [multiple]="false" (change)="filter(i, $event)" [placeholder]="''"
+                                    notFoundText="No encontrado">
+                                    <ng-option *ngFor="let fOption of filters[i]" [value]="fOption.id">{{fOption.text}}</ng-option>
+                                </ng-select>
+                                <div *ngSwitchCase="1">
+                                    <input matInput #dateinput [matDatepicker]="picker" class="dateFilter" (dateChange)="filter(i, dateinput.value)">
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </div>
+                                <div *ngSwitchCase="4" class="dateFullWidth">
+                                    <mat-form-field>
+                                        <mat-date-range-input #rangeInput (ngModelChange)="filter(i, rangeInput.value)" [rangePicker]="pickerRange" class="dateFilterRange" style="margin-top: 0;">
+                                          <input matStartDate (dateInput)="filter(i, rangeInput.value)">
+                                          <input matEndDate (dateInput)="filter(i, rangeInput.value)">
+                                        </mat-date-range-input>
+                                        <mat-datepicker-toggle matSuffix [for]="pickerRange"></mat-datepicker-toggle>
+                                        <mat-date-range-picker #pickerRange></mat-date-range-picker>
+                                      </mat-form-field>
+                                </div>
+                            </div>
+                        </th>
+                    </tr-->
+                    <tr>
+                        <th [attr.colspan]="keys.length">
+                            <div class="searchButton" style="margin-bottom:10px;">
+                
+                                <button  *ngIf="iconFilter" nbButton  fullWidth status="primary" (click)="filterBtn()">BUSCAR</button>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody *ngFor = "let valueRow of values; index as i;" class="tbodyTable">
+                    <tr *ngFor = "let key of keys; index as e;">
+                        <td><b>{{key}}</b></td>
+                        <td [ngSwitch]="getValueType(valueRow.values[e])" [ngStyle]="{'text-align': align && align[i] ? align[i] : 'center'}">
+                            <span *ngSwitchCase="0">
+                                <button nbButton *ngIf="!valueRow.values[e]?.icon" status="primary" size="small" style="text-transform: none;" (click)="actionEvent(valueRow.values[e]?.action, valueRow.id)">{{valueRow.values[e]?.text}}</button>
+                                <a *ngIf="valueRow.values[e]?.icon" class="buttonColum" nbTooltip="{{valueRow.values[e]?.text}}">
+                                    <i class="{{valueRow.values[e]?.icon}}" (click)="actionEvent(valueRow.values[e]?.action, valueRow.id)"></i>
+                                </a>
+                            </span>
+                            <span *ngSwitchCase="1">
+                                {{getBool(valueRow.values[e])}}
+                            </span>
+                            <span *ngSwitchCase="2">
+                                {{valueRow.values[e]}}
+                            </span>
+                            <span *ngSwitchCase="3">
+                                <input type="checkbox" [value]="valueRow.values[i].value" style="width: 20px; height: 20px;" (change)="checkRow(valueRow.id, $event)">
+                            </span>
+                        </td>
+                    </tr>
+                    <tr *ngIf="hasAction()">
+                        <td colspan="2">
+                            <span class="tdButtons">
+                                <a class="buttonAbroads" *ngIf="statusAction && valueRow.status == 'A'" nbTooltip="{{statusAction.text}}">
+                                    <nb-icon icon="checkmark-circle-outline" id="statusaccept" (click)="actionEvent('status', valueRow.id)"></nb-icon>
+                                </a>
+                                <a class="buttonAbroads" *ngIf="statusAction && valueRow.status == 'P'" nbTooltip="{{statusAction.text}}">
+                                    <nb-icon icon="close-circle-outline" id="statuspending" (click)="actionEvent('status', valueRow.id)"></nb-icon>
+                                </a>
+                                <a class="buttonEdit" *ngIf="editAction && !valueRow.noedit" nbTooltip="{{editAction.text}}">
+                                    <nb-icon icon="edit-2-outline" id="edit" (click)="actionEvent('edit', valueRow.id)"></nb-icon>
+                                </a>
+                                <a class="buttonEdit" *ngIf="editAction && valueRow.noedit" nbTooltip="{{editAction.textNoedit}}">
+                                    <nb-icon icon="edit-2-outline" id="edit" style="color: lightgray;"></nb-icon>
+                                </a>
+                                <a class="buttonShow" *ngIf="showAction" nbTooltip="{{showAction.text}}">
+                                    <nb-icon icon="search-outline" (click)="actionEvent('show', valueRow.id, valueRow)"></nb-icon>
+                                </a>
+                                <a class="buttonEvaluate" *ngIf="approveAction" nbTooltip="{{approveAction.text}}">
+                                    <nb-icon icon="checkmark-circle-outline" (click)="actionEvent('approve', valueRow.id, valueRow)"></nb-icon>
+                                </a>
+                                <a class="buttonTrash" *ngIf="deleteAction || (valueRow?.nodelete === false)" nbTooltip="{{deleteAction.text}}">
+                                    <nb-icon icon="trash-2-outline" id="delete" (click)="actionEvent('delete', valueRow.id, valueRow)"></nb-icon>
+                                </a>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr style="border:0"><td style="border:0; background-color: white;"></td></tr>
+                </tbody>
+                <tbody *ngIf="!values || values.length <= 0" class="tbodyTable">
+                    <tr>
+                        <td *ngIf="isProcessing" colspan="2">Cargando...</td>
+                        <td *ngIf="!isProcessing" colspan="2" class="text-center empty">No hay resultados</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="margin-left: 3%" *ngIf="hasExport">
+            <button nbButton style="margin-right: .5em; cursor:pointer; border-color: darkgray;" [nbSpinner]="loading" nbSpinnerStatus="primary" nbSpinnerSize="large" nbSpinnerMessage="" class="float-left btn btn-secondary buttons-html5" (click)="exportPdf()">PDF</button>
+            <button nbButton style="margin-right: .5em; cursor:pointer; border-color: darkgray;" [nbSpinner]="loadingE" nbSpinnerStatus="primary" nbSpinnerSize="large" nbSpinnerMessage="" class="float-left btn btn-secondary buttons-html5" (click)="exportExcel()">EXCEL</button>
+        </div>
+        <div *ngIf="hasButtonDelete">
+            <button nbButton status="danger" class="float-left" [disabled]="noCheckedRow() || submitted" (click)="deleteCheckRow()">BORRAR</button>
+        </div>
+        <div *ngIf="withPagination">
+            <app-pagination [totalPages]="totalPages" [pageActive]="page" (chagePage)="setPageActive($event)"></app-pagination>
+        </div>
+    </div>
+</div>

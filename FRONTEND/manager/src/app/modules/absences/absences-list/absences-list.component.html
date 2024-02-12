@@ -1,1 +1,205 @@
-<p>absences-list works!</p>
+<nb-card>
+    <nb-card-header>
+        <div class="row float-start" >
+            <h4>Faltas</h4>
+        </div>
+        <button nbButton class="float-end" status="primary" (click)="goToCreate()">REGISTRAR FALTA</button>
+    </nb-card-header>
+    <nb-card-body>
+        Para el usuario:
+        <ng-select (change)="getRelativeAbsences(0)" [multiple]="false" [(ngModel)]="idpatient" name="idpatient" [clearable]="false" notFoundText="No tienes usuarios asociados">
+            <ng-option *ngFor="let u of allPatients" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}}</ng-option>
+        </ng-select>
+
+        
+        <br/>
+        Desde: <input
+        class="form-control"
+        type="text"
+        mwlFlatpickr
+        [(ngModel)]="from"
+        [altInput]="true"
+        [convertModelValue]="true"
+        [enableTime]="false"
+        dateFormat="YY-m-d"
+        altFormat="d/m/Y"
+        placeholder="Consultar desde..."
+        />
+
+        <br/>
+        Hasta: <input
+        class="form-control"
+        type="text"
+        mwlFlatpickr
+        [(ngModel)]="to"
+        [altInput]="true"
+        [convertModelValue]="true"
+        [enableTime]="false"
+        dateFormat="YY-m-d"
+        altFormat="d/m/Y"
+        placeholder="Consultar hasta..."
+        />
+
+        <hr/>
+
+        <app-custom-table
+            [actions]="[{action: 'edit', text: 'Modificar falta'}, {action: 'delete', text: 'Eliminar falta'}]"
+            [keys]="['Desde:', 'Hasta:', '¿Usará nuestro transporte?', 'Observaciones:']"
+            [values]="relativeAbsences"
+            [align]="['left', 'left', 'left', 'left']"
+            [filters]="[false, false, false, false]"
+            [sort]="[false, false, false, false]"
+            [widthToCollapse]="750"
+            [withPagination]="true"
+            [totalPages]="totalPages"
+            [page]="page"
+            [size]="size"
+            [loadingE]="loadingE"
+            [loading]="isProcessing"
+            [hasExport]="false"
+            (actionSelected)="action($event)"
+            (changePage)="setPage($event)"
+            (filterEvent)="filter(0)"
+            [isProcessing]="isProcessing"
+        >
+        </app-custom-table>
+    </nb-card-body>
+
+    <nb-card-footer>
+        <button nbButton class="float-end" status="primary" (click)="goToCreate()">REGISTRAR FALTA</button>
+    </nb-card-footer>
+</nb-card>
+
+
+
+
+
+<ng-template #modalContent let-close="close">
+  
+
+    <div class="modal-header">
+        <h5 *ngIf="!theAbsence || !theAbsence.id">Registrar falta:</h5>
+        <h5 *ngIf="theAbsence && theAbsence.id">Modificar falta:</h5>
+        <button type="button" class="close" (click)="close();">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+
+
+    <div  class="modal-body">
+        <div>
+
+                    <div class="float-start" ><input  type="checkbox" [(ngModel)]="theAbsence.allday" (change)="theAbsence.from=null; theAbsence.to=null; theAbsence.transport='NO';" [ngModelOptions]="{standalone: true}"/> - Falta para día(s) completo(s)</div>
+                    <br/>
+                    <br/>
+
+                    <div [hidden]="!theAbsence.allday">
+                        Desde: <input
+                        class="form-control"
+                        type="text"
+                        mwlFlatpickr
+                        [(ngModel)]="theAbsence.from"
+                        [altInput]="true"
+                        [convertModelValue]="true"
+                        [enableTime]="false"
+                        dateFormat="YY-m-d"
+                        altFormat="d/m/Y"
+                        placeholder="Desde qué día va a faltar..."
+                        [disable]="[disabledDay]"
+                        />
+    
+                        <br/>
+                        Hasta: <input
+                        class="form-control"
+                        type="text"
+                        mwlFlatpickr
+                        [(ngModel)]="theAbsence.to"
+                        [altInput]="true"
+                        [convertModelValue]="true"
+                        [enableTime]="false"
+                        dateFormat="YY-m-d"
+                        altFormat="d/m/Y"
+                        placeholder="Hasta qué día va a faltar..."
+                        [disable]="[disabledDay]"
+                        />
+                    </div>
+   
+
+                    <div [hidden]="theAbsence.allday">
+                        Desde: <input
+                        class="form-control"
+                        type="text"
+                        mwlFlatpickr
+                        [(ngModel)]="theAbsence.from"
+                        [altInput]="true"
+                        [convertModelValue]="true"
+                        [enableTime]="true"
+                        dateFormat="YY-m-dTH:i"
+                        altFormat="d/m/Y H:i"
+                        placeholder="Desde qué día y hora va a faltar..."
+                        [disable]="[disabledDay]"
+                        [defaultHour]="0"
+                        [time24hr]="true"
+                        />
+    
+                        <br/>
+                        Hasta: <input
+                        class="form-control"
+                        type="text"
+                        mwlFlatpickr
+                        [(ngModel)]="theAbsence.to"
+                        [altInput]="true"
+                        [convertModelValue]="true"
+                        [enableTime]="true"
+                        dateFormat="YY-m-dTH:i"
+                        altFormat="d/m/Y H:i"
+                        placeholder="Hasta qué día y hora va a faltar..."
+                        [disable]="[disabledDay]"
+                        [defaultHour]="0"
+                        [time24hr]="true"
+                        />
+                    </div>
+   
+    
+
+                    <br/>
+
+                    <span>¿Usará nuestro transporte?</span>
+                    <ng-select [disabled]="theAbsence.allday" [clearable]="false" [multiple]="false" [(ngModel)]="theAbsence.transport" name="theAbsence_transport" #theAbsence_transport="ngModel">
+                        <ng-option value="NO">NO</ng-option>
+                        <ng-option value="SOLO IDA">SOLO IDA</ng-option>
+                        <ng-option value="SOLO VUELTA">SOLO VUELTA</ng-option>
+                        <ng-option value="IDA Y VUELTA">IDA Y VUELTA</ng-option>
+                    </ng-select>
+     
+                    <br/>
+     
+                    Observaciones: 
+                    <textarea class="form-control" [(ngModel)]="theAbsence.comment" >
+                    </textarea>
+     
+     
+
+                
+                
+
+        </div>
+      </div>
+  
+
+    <div class="modal-footer">
+
+
+        <button [disabled]="isProcessing"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveRelativeAbsence(); ">
+            GUARDAR CAMBIOS
+        </button>
+
+    </div>
+
+
+    
+
+  </ng-template>
+  
+

@@ -78,6 +78,28 @@ export interface RouteStopDTO {
 
 
 
+export interface RelativeAbsenceDTO
+{
+    id : string;
+
+    idpatient : string;
+
+    idrelative  : string;
+    
+    patient_fullname  : string
+
+    transport  : string;
+
+    comment  : string;
+
+    allday : boolean;
+
+    from : Date;
+
+    to : Date;
+}
+
+
 
 //TODO: Revisar si se está haciendo bien ya que es copiada de proyectos antiguos
 //Parseo como fecha: 
@@ -157,7 +179,16 @@ export function hasRole(userRoles: string[], roleCompare: RoleCode) {
 
 
 
-// Tiempo notificaciones flotantse
-export enum ToastTime {
-    TIME = 2500
+
+export function parseDataExport(fields: any[], exportData: any[]) {
+    const final = [];
+    if (exportData) {
+        for (const value of exportData) {
+        const res = {};
+        fields.forEach((key, i) => res[key] = value[i]);
+        final.push(res);
+        }
+    }
+
+    return final;
 }

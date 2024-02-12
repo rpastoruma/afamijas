@@ -1,0 +1,25 @@
+<div class="divp">
+    <ul class="pagination">
+      <li (click)="setPageActive(pageActive-1)" class="paginate_button page-item previous pointer" id="sorting-table_previous" [ngClass]="pageActive <= 0 ? 'disabled' : ''"><!--disabled-->
+        <a aria-controls="sorting-table" data-dt-idx="0" tabindex="0" class="page-link">Anterior</a>
+      </li>
+      <li *ngIf="pointLeft" (click)="setPageActive(0)" class="paginate_button page-item pointer" [ngClass]="0 == pageActive ? 'active' : ''">
+          <a aria-controls="sorting-table" data-dt-idx="1" tabindex="1" class="page-link">1</a>
+      </li>
+      <li *ngIf="pointLeft" class="paginate_button page-item disabled">
+          <a aria-controls="sorting-table"  class="page-link">...</a>
+      </li>
+      <li (click)="setPageActive(i-1)" class="paginate_button page-item pointer" *ngFor="let i of pages" [ngClass]="i-1 == pageActive ? 'active' : ''"> <!--active-->
+        <a aria-controls="sorting-table" data-dt-idx="1" tabindex="{{i-1}}" class="page-link">{{i}}</a>
+      </li>
+      <li *ngIf="pointRight" class="paginate_button page-item disabled">
+          <a aria-controls="sorting-table"  class="page-link">...</a>
+      </li>
+      <li *ngIf="pointRight" (click)="setPageActive(totalPages-1)" class="paginate_button page-item pointer" [ngClass]="totalPages-1 == pageActive ? 'active' : ''">
+          <a aria-controls="sorting-table" data-dt-idx="4" tabindex="{{totalPages-1}}" class="page-link">{{totalPages}}</a>
+      </li>
+      <li (click)="setPageActive(pageActive+1)" class="paginate_button page-item next pointer" id="sorting-table_next" [ngClass]="pageActive+1 >= totalPages ? 'disabled' : ''">
+        <a aria-controls="sorting-table" data-dt-idx="3" tabindex="0" class="page-link">Siguiente</a>
+      </li>
+    </ul>
+  </div>

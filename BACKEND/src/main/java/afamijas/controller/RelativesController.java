@@ -82,15 +82,47 @@ public class RelativesController extends AbstractBaseController
 		}
 	}
 
-  	// si marca día entero solo se envía day (día puntual entero) --> si quisiera un intervalo de fechas se haría bucle con esto
-	// si entra un intervalo de fecha/horo se envía from-to y esto indicaría una falta puntual un día de tal a tal hora
-	@RequestMapping(method=RequestMethod.POST, value="addAbsenceByRelative", produces="application/json")
-	public ResponseEntity<?> addAbsenceByRelative(
+
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getRelativeAbsences", produces="application/json")
+	public ResponseEntity<?> getRelativeAbsences(
 			@RequestParam(value = "idpatient", required = true) String idpatient,
-			@RequestParam(value = "day", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate day,
-			@RequestParam(value = "from", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime from,
-			@RequestParam(value = "to", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime to,
-			@RequestParam(value = "notransport", required = true)  Boolean notransport,
+			@RequestParam(value = "from", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate from,
+			@RequestParam(value = "to", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate to,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			LocalDateTime from2 = from!=null?from.atTime(0, 0, 0, 0):null;
+			LocalDateTime to2 = to!=null?to.atTime(23, 59, 59, 999999999):null;
+
+			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
+			return new ResponseEntity<>(this.relativesService.getRelativeAbsences(idpatient, this.getId(), from2 , to2, page, size, "from", "DESC"), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="saveAbsenceByRelative", produces="application/json")
+	public ResponseEntity<?> saveAbsenceByRelative(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "idpatient", required = true) String idpatient,
+			@RequestParam(value = "allday", required = true) Boolean allday,
+			@RequestParam(value = "from", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime from,
+			@RequestParam(value = "to", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime to,
+			@RequestParam(value = "transport", required = true)  String transport,
 			@RequestParam(value = "comment", required = false) String comment,
 			HttpServletRequest request
 	)
@@ -99,7 +131,7 @@ public class RelativesController extends AbstractBaseController
 		{
 			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
-			return new ResponseEntity<>(this.relativesService.addAbsenceByRelative(idpatient, this.getId(), day, from , to, notransport, comment), HttpStatus.OK);
+			return new ResponseEntity<>(this.relativesService.saveAbsenceByRelative(id, idpatient, this.getId(), from , to, allday, transport, comment), HttpStatus.OK);
 		}
 		catch(Exception e)
 		{

@@ -5,9 +5,11 @@ import afamijas.model.*;
 import afamijas.model.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +35,7 @@ public class RelativesServiceImpl implements RelativesService
 
 	final RouteStopsRepository routeStopsRepository;
 
-	final AbsencesRepository absencesRepository;
+	final RelativesAbsencesRepository relativesAbsencesRepository;
 
 	final MenusRepository menusRepository;
 
@@ -46,12 +48,12 @@ public class RelativesServiceImpl implements RelativesService
 	final MediaService mediaService;
 
 	@Autowired
-	public RelativesServiceImpl(UsersRepository usersRepository, RoutesRepository routesRepository, RouteStopsRepository routeStopsRepository, AbsencesRepository absencesRepository, MenusRepository menusRepository, CalendarEventsRepository calendarEventsRepository, PermissionsRepository permissionsRepository, MongoTemplate mongoTemplate, MediaService mediaService)
+	public RelativesServiceImpl(UsersRepository usersRepository, RoutesRepository routesRepository, RouteStopsRepository routeStopsRepository, RelativesAbsencesRepository relativesAbsencesRepository, MenusRepository menusRepository, CalendarEventsRepository calendarEventsRepository, PermissionsRepository permissionsRepository, MongoTemplate mongoTemplate, MediaService mediaService)
 	{
 		this.usersRepository = usersRepository;
 		this.routesRepository = routesRepository;
 		this.routeStopsRepository = routeStopsRepository;
-		this.absencesRepository = absencesRepository;
+		this.relativesAbsencesRepository = relativesAbsencesRepository;
 		this.menusRepository = menusRepository;
 		this.calendarEventsRepository = calendarEventsRepository;
 		this.permissionsRepository = permissionsRepository;
@@ -127,29 +129,37 @@ public class RelativesServiceImpl implements RelativesService
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public AbsenceDTO addAbsenceByRelative(String idpatient, String idrelative, LocalDate day, LocalDateTime from, LocalDateTime to, Boolean notransport, String comment)
+	public RelativeAbsenceDTO saveAbsenceByRelative(String id, String idpatient, String idrelative, LocalDateTime from, LocalDateTime to, Boolean allday, String transport, String comment)
 	{
+		if(from==null && to==null) return null;
+
+		if(from==null) from = LocalDateTime.now();
+		if(to==null) to = LocalDateTime.of(from.getYear(), from.getMonth(), from.getDayOfMonth(), 23, 59, 59, 9999999);
+
+		if(allday)
+		{
+			from = LocalDateTime.of(from.getYear(), from.getMonth(), from.getDayOfMonth(), 0, 0, 0, 0);
+			to = LocalDateTime.of(to.getYear(), to.getMonth(), to.getDayOfMonth(), 23, 59, 59, 9999999);
+			transport = "NO";
+		}
+
 		User patient = this.usersRepository.findOne(idpatient, "A");
 		if(patient==null || !patient.getRoles().contains("PATIENT")) return null;
-		Boolean allday = false; if(from==null && to==null) allday = true;
 
-		Absence absence = new Absence();
-		absence.setIdpatient(idpatient);
-		absence.setIdrelative(idrelative);
-		absence.setIdworker(null);
-		absence.setDay(day);
-		absence.setAllday(allday);
-		absence.setFrom(from);
-		absence.setTo(to);
-		absence.setComment(comment);
+		RelativeAbsence relativeAbsence = id!=null?this.relativesAbsencesRepository.findOne(id):new RelativeAbsence();
+		if(relativeAbsence==null) return null;
 
-		RouteStop routeStop = null;
-		if(notransport) routeStop = this.routeStopsRepository.findOne(patient.getIdRouteStopForDay(day.atTime(12, 0, 0)), "A");
-		if(routeStop!=null) absence.setIdroutestop(routeStop.get_id());
+		relativeAbsence.setIdpatient(idpatient);
+		relativeAbsence.setIdrelative(idrelative);
+		relativeAbsence.setAllday(allday);
+		relativeAbsence.setFrom(from);
+		relativeAbsence.setTo(to);
+		relativeAbsence.setTransport(transport);
+		relativeAbsence.setComment(comment);
 
 		//TODO: EMAIL/NOTIFICACIÓN A QUIEN CORRESPONDA ANUNCIANDO AUSENCIA PARA ESTE PACIENTE
 
-		return new AbsenceDTO(this.absencesRepository.save(absence), patient, notransport?routeStop:null);
+		return new RelativeAbsenceDTO(this.relativesAbsencesRepository.save(relativeAbsence), patient);
 	}
 
 
@@ -160,12 +170,12 @@ public class RelativesServiceImpl implements RelativesService
 		User patient = this.usersRepository.findOne(idpatient, "A");
 		if(patient==null || !patient.getRoles().contains("PATIENT")) return;
 
-		Absence absence = this.absencesRepository.findOne(idabsence);
-		if(absence==null) return;
+		RelativeAbsence relativeAbsence = this.relativesAbsencesRepository.findOne(idabsence);
+		if(relativeAbsence ==null) return;
 
-		if(!absence.getIdpatient().equals(idpatient)) return;
+		if(!relativeAbsence.getIdpatient().equals(idpatient)) return;
 
-		this.absencesRepository.deleteById(idabsence);
+		this.relativesAbsencesRepository.deleteById(idabsence);
 
 		//TODO: EMAIL/NOTIFICACIÓN A QUIEN CORRESPONDA ANUNCIANDO ELIMINACIÓN DE AUSENCIA PARA ESTE PACIENTE
 	}
@@ -242,6 +252,29 @@ public class RelativesServiceImpl implements RelativesService
 	public List<PatientDTO> getPatients(String idrelative)
 	{
 		return this.usersRepository.findByIdRelative(idrelative, "A").stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
+	}
+
+	@Override
+	public Page<RelativeAbsenceDTO> getRelativeAbsences(String idpatient, String idrelative, LocalDateTime from, LocalDateTime to, int page, int size, String orderby, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		Criteria criteria1 = new Criteria().where("idpatient").is(idpatient).and("idrelative").is(idrelative);
+		if(from!=null) query.addCriteria(Criteria.where("from").gte(from));
+		if(to!=null) query.addCriteria(Criteria.where("to").lte(to));
+
+		Criteria criteria2 = new Criteria().where("to").gte(LocalDateTime.now());
+
+		Criteria criteria = new Criteria().andOperator(criteria1, criteria2);
+		query.addCriteria(criteria);
+
+		long total = this.mongoTemplate.count(query, RelativeAbsence.class);
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { System.out.println(query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		List<RelativeAbsenceDTO> list = this.mongoTemplate.find(query, RelativeAbsence.class).stream().map(x -> new RelativeAbsenceDTO(x, null)).toList();
+
+		return new PageImpl<>(list, pageable, total);
 	}
 
 
