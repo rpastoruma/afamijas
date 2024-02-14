@@ -1,24 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { MenusRoutingModule } from './menus.routing.module';
+import { PermissionsRoutingModule } from './permissions.routing.module';
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { FormsModule } from '@angular/forms';
-import { MenusListComponent } from './menus-list/menus-list.component';
+import { PermissionsListComponent } from './permissions-list/permissions-list.component';
 
 
 
 @NgModule({
   declarations: [
-    MenusListComponent
+    PermissionsListComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
-    MenusRoutingModule,
+    PermissionsRoutingModule,
     FormsModule,FlatpickrModule.forRoot(),
   ]
 })
-export class MenusModule { }
-
-
+export class PermissionModule { }

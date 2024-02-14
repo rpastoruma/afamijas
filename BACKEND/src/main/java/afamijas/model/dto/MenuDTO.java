@@ -10,11 +10,7 @@ public class MenuDTO
 
     private String idmenu;
 
-    private String idpatient;
-
-    private String patient_fullname;
-
-    private String name;
+    private String type;
 
     private String description;
 
@@ -23,12 +19,10 @@ public class MenuDTO
     private LocalDate from;
 
     private LocalDate to;
-    public MenuDTO(Menu menu, User patient)
+    public MenuDTO(Menu menu)
     {
         this.idmenu = menu.get_id();
-        this.idpatient = menu.getIdpatient();
-        this.patient_fullname = ((patient.getName() + " " + patient.getSurname1()).trim() + " " + patient.getSurname2()).trim();
-        this.name = menu.getName();
+        this.type = menu.getType();
         this.description = menu.getDescription();
         this.menu_url = menu.getMenu_url();
         this.from = menu.getFrom();
@@ -43,28 +37,12 @@ public class MenuDTO
         this.idmenu = idmenu;
     }
 
-    public String getIdpatient() {
-        return idpatient;
+    public String getType() {
+        return type;
     }
 
-    public void setIdpatient(String idpatient) {
-        this.idpatient = idpatient;
-    }
-
-    public String getPatient_fullname() {
-        return patient_fullname;
-    }
-
-    public void setPatient_fullname(String patient_fullname) {
-        this.patient_fullname = patient_fullname;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getDescription() {

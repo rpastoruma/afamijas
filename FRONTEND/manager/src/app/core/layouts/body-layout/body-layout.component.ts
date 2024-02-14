@@ -11,11 +11,14 @@ import { MENU_ITEMS, MENU_RELATIVE_ITEMS } from './pages-menu';
 export class BodyLayoutComponent implements OnInit {
 
   menu = MENU_ITEMS;
+  isMobileLayout : boolean = false;
 
   constructor(private authenticationService: AuthService) { }
 
   ngOnInit(): void {
     this.setMenuData();
+    this.isMobileLayout = window.innerWidth <= 750;
+    window.onresize = () => this.isMobileLayout = window.innerWidth <= 750;
   }
 
   setMenuData() 

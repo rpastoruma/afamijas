@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -379,6 +380,37 @@ public class WorkersController extends AbstractBaseController
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="saveMenu", produces="application/json")
+	public ResponseEntity<?> saveMenu(
+			@RequestParam(value = "idmenu", required = false) String idmenu,
+			@RequestParam(value = "type", required = true) String type,
+			@RequestParam(value = "description", required = false) String description,
+			@RequestParam(value = "from", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate from,
+			@RequestParam(value = "to", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate to,
+			@RequestParam(value = "file", required = false) MultipartFile file,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.saveMenu(idmenu, type, description, from, to, file);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
 
 
 }

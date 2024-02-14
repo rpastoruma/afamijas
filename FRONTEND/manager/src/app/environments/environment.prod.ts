@@ -16,7 +16,8 @@ export const environment = {
       config: BASE_URL + 'configuration',
       notifications : BASE_URL + 'notifications',
       relatives : ADMIN_URL + 'relatives',
-      workers : ADMIN_URL + 'workers'
+      workers : ADMIN_URL + 'workers',
+      media : ADMIN_URL + 'media'
 
     }
   };

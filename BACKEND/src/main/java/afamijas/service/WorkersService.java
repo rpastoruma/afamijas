@@ -43,4 +43,7 @@ public interface WorkersService
 
 
     void deleteCalendarEvent(String idcalendarevent);
+
+
+    void saveMenu(String id, String type, String description, LocalDate from, LocalDate to, MultipartFile file) throws Exception;
 }

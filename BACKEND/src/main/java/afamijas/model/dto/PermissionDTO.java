@@ -3,6 +3,8 @@ package afamijas.model.dto;
 import afamijas.model.Permission;
 import afamijas.model.User;
 
+import java.time.LocalDateTime;
+
 public class PermissionDTO
 {
     private String idpermission;
@@ -27,20 +29,22 @@ public class PermissionDTO
 
     private String permission_signed_url;
 
+    private LocalDateTime signed;
 
     public PermissionDTO(Permission permission, User relative, User patient)
     {
         this.idpermission = permission.get_id();
         this.idpatient = permission.getIdpatient();
-        this.patient_fullname = ((patient.getName() + " " + patient.getSurname1()).trim() + " " + patient.getSurname2()).trim();
-        this.patient_dni = patient.getDni();
-        this.idrelative = relative.get_id();
-        this.relative_fullname = ((relative.getName() + " " + relative.getSurname1()).trim() + " " + relative.getSurname2()).trim();
-        this.relative_dni = relative.getDni();
+        if(patient!=null) this.patient_fullname = ((patient.getName() + " " + patient.getSurname1()).trim() + " " + patient.getSurname2()).trim();
+        if(patient!=null) this.patient_dni = patient.getDni();
+        this.idrelative = permission.getIdrelative();
+        if(relative!=null) this.relative_fullname = ((relative.getName() + " " + relative.getSurname1()).trim() + " " + relative.getSurname2()).trim();
+        if(relative!=null) this.relative_dni = relative.getDni();
         this.type = permission.getType();
         this.comment = permission.getComment();
         this.permission_url = permission.getPermission_url();
         this.permission_signed_url = permission.getPermission_signed_url();
+        this.signed = permission.getSigned();
     }
 
     public String getIdpermission() {
@@ -129,5 +133,13 @@ public class PermissionDTO
 
     public void setPermission_signed_url(String permission_signed_url) {
         this.permission_signed_url = permission_signed_url;
+    }
+
+    public LocalDateTime getSigned() {
+        return signed;
+    }
+
+    public void setSigned(LocalDateTime signed) {
+        this.signed = signed;
     }
 }

@@ -33,6 +33,7 @@ export class CustomTableComponent implements OnInit, OnDestroy {
   @Input() align;
   @Input() hasExport = false;
   @Input() hasButtonDelete = false;
+  @Input() showSearchButton = true;
   isMobileLayout = false;
   @Output() changeFilter: EventEmitter<[number, string]> = new EventEmitter<[number, string]>();
   @Output() actionSelected: EventEmitter<[string, string, string]> = new EventEmitter<[string, string, string]>();
@@ -41,6 +42,7 @@ export class CustomTableComponent implements OnInit, OnDestroy {
   @Output() sortEvent: EventEmitter<[string, boolean]> = new EventEmitter<[string, boolean]>();
   @Output() exportData: EventEmitter<string> = new EventEmitter<string>();
   @Output() deleteCheck: EventEmitter<any> = new EventEmitter<any>();
+
   editAction: any;
   deleteAction: any;
   awardsAction: any;
@@ -140,6 +142,9 @@ export class CustomTableComponent implements OnInit, OnDestroy {
   }
 
   actionEvent(action, id, value?) {
+    //console.log("action=>"+action);
+    //console.log("id=>"+id);
+    //console.log("value=>"+JSON.stringify(value));
     this.actionSelected.emit([action, id, value]);
   }
 

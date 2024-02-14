@@ -1,0 +1,11 @@
+[{
+  "idpatient" : "",
+  "type": "GENÉRICA",
+  "comment": "Esta autorización es para...",
+  "permission_url": "https://www.residencialsanjose.org/sites/default/files/menus_dieta_basal.pdf",
+  "created": {
+    "$date": "2024-02-13T07:50:18.480Z"
+  },
+  "status": "P",
+  "_class": "afamijas.model.Permission"
+}]

@@ -1,0 +1,41 @@
+<nb-card>
+    <nb-card-header>
+        <div class="row float-start" >
+            <h4>Menús</h4>
+        </div>
+        
+    </nb-card-header>
+    <nb-card-body>
+        Para el usuario:
+        <ng-select (change)="getMenu()" [multiple]="false" [(ngModel)]="idpatient" name="idpatient" [clearable]="false" notFoundText="No tienes usuarios asociados">
+            <ng-option *ngFor="let u of allPatients" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}}</ng-option>
+        </ng-select>
+
+        <hr/>
+
+        <app-custom-table
+            [actions]="[{action: 'show', text: 'Ver menú'}]"
+            [keys]="['Desde:', 'Hasta:', 'Tipo:', 'Descripción:']"
+            [values]="menus"
+            [align]="['left', 'left', 'left', 'left']"
+            [filters]="[false, false, false, false]"
+            [sort]="[false, false, false, false]"
+            [widthToCollapse]="750"
+            [withPagination]="false"
+            [loadingE]="loadingE"
+            [loading]="isProcessing"
+            [hasExport]="false"
+            (actionSelected)="action($event)"
+            [isProcessing]="isProcessing"
+            [showSearchButton]="false"
+        >
+        </app-custom-table>
+    </nb-card-body>
+
+</nb-card>
+
+
+
+
+  
+

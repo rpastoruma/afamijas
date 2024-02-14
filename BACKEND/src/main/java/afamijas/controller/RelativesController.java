@@ -202,15 +202,19 @@ public class RelativesController extends AbstractBaseController
 	}
 
 
-	@RequestMapping(method=RequestMethod.GET, value="getPendingPermissions", produces="application/json")
-	public ResponseEntity<?> getPendingPermissions(
+	@RequestMapping(method=RequestMethod.GET, value="getPermissions", produces="application/json")
+	public ResponseEntity<?> getPermissions(
+			@RequestParam(value = "idpatient", required = true) String idpatient,
+			@RequestParam(value = "status", required = true) String status,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
 			HttpServletRequest request
 	)
 	{
 		try
 		{
 			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-			return new ResponseEntity<>(this.relativesService.getPendingPermissions(this.getId()), HttpStatus.OK);
+			return new ResponseEntity<>(this.relativesService.getPermissions(idpatient, status, page, size, "created", "DESC"), HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -224,7 +228,7 @@ public class RelativesController extends AbstractBaseController
 	public ResponseEntity<?> signPermission(
 			@RequestParam(value = "idpatient", required = true) String idpatient,
 			@RequestParam(value = "idpermission", required = true) String idpermission,
-			@RequestParam(value = "file", required = true) MultipartFile file,
+			@RequestParam(value = "signedfileurl", required = true) String signedfileurl,
 			HttpServletRequest request
 	)
 	{
@@ -232,7 +236,7 @@ public class RelativesController extends AbstractBaseController
 		{
 			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
-			this.relativesService.signPermission(idpatient, idpatient, file);
+			this.relativesService.signPermission(this.getId(), idpermission, idpatient, signedfileurl);
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		catch(Exception e)

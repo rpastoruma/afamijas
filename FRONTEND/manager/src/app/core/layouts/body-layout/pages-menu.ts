@@ -32,12 +32,14 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
   {
     title: 'Menús',
     icon: { icon: 'fa-file-lines', pack: 'fas' },
+    link: '/menus',
     data: 'menu.menus',
     expanded: false,
   },      
   {
     title: 'Autorizaciones',
     icon: { icon: 'fa-pen', pack: 'fas' },
+    link: '/permissions',
     data: 'menu.permissions',
     expanded: false,
   }

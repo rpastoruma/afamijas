@@ -1,0 +1,27 @@
+<nb-card style="z-index: 999999999 !important" >
+    <nb-card-header>
+        <div class="modal-header float-end">
+            <nb-icon *ngIf="openExternal" (click)="openPDFExternal()" class="sidebar-toggle" icon="external-link-outline" title="Tamaño máximo en otra pestaña"></nb-icon>
+            &nbsp;
+            <nb-icon (click)="goBack()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+        </div>
+
+        
+    </nb-card-header>
+
+    <nb-card-body>
+        <pdf-viewer [src]="pdfSrc" [render-text]="false" [original-size]="false" [show-borders]="false" style="width: 400px; height: 500px; margin:-10px" ></pdf-viewer>
+    </nb-card-body>
+
+    <nb-card-footer>
+
+ 
+        
+        <button *ngIf="forSigning"  nbButton status="primary" type="button" class="btn btn-outline-secondary float-end" (click)="openSigningPad(); ">
+            INICIAR FIRMA
+        </button>
+
+    </nb-card-footer>
+</nb-card>
+
+

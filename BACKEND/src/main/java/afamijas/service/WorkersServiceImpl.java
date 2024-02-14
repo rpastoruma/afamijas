@@ -50,11 +50,12 @@ public class WorkersServiceImpl implements WorkersService
 	
 	final CalendarEventsRepository calendarEventsRepository;
 
+	final MenusRepository menusRepository;
 	final MediaService mediaService;
 
 
 	@Autowired
-	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MediaService mediaService)
+	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, MediaService mediaService)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -67,6 +68,7 @@ public class WorkersServiceImpl implements WorkersService
 		this.routeStopsRepository = routeStopsRepository;
 		this.workersAbsencesRepository = workersAbsencesRepository;
 		this.calendarEventsRepository = calendarEventsRepository;
+		this.menusRepository = menusRepository;
 		this.mediaService = mediaService;
 	}
 
@@ -385,7 +387,54 @@ public class WorkersServiceImpl implements WorkersService
 	public void deleteCalendarEvent(String idcalendarevent)
 	{
 		this.calendarEventsRepository.deleteById(idcalendarevent);
+		//TODO: ¿avisos?
 	}
 
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void saveMenu(String id, String type, String description, LocalDate from, LocalDate to, MultipartFile file) throws Exception
+	{
+		if(id==null && file==null) return; //si es nuevo y no lleva fichero bye
+
+		Menu menu = id!=null?this.menusRepository.findOne(id, "A"):new Menu();
+		if(menu==null) return;
+
+		menu.setType(type);
+		menu.setDescription(description);
+		menu.setFrom(from);
+		menu.setTo(to);
+
+		if(file!=null)
+		{
+			Media media = this.mediaService.create(UUID.randomUUID().toString(), "menus", "file", file);
+			menu.setMenu_url(media.getUrl());
+		}
+
+		this.menusRepository.save(menu);
+	}
+
+	/*
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void savePermission(String id, String type, String description, LocalDate from, LocalDate to, MultipartFile file) throws Exception
+	{
+		if(id==null && file==null) return; //si es nuevo y no lleva fichero bye
+
+		Menu menu = id!=null?this.menusRepository.findOne(id, "A"):new Menu();
+		if(menu==null) return;
+
+		menu.setType(type);
+		menu.setDescription(description);
+		menu.setFrom(from);
+		menu.setTo(to);
+
+		if(file!=null)
+		{
+			Media media = this.mediaService.create(UUID.randomUUID().toString(), "menus", "file", file);
+			menu.setMenu_url(media.getUrl());
+		}
+
+		this.menusRepository.save(menu);
+	}*/
 
 }

@@ -101,6 +101,53 @@ export interface RelativeAbsenceDTO
 
 
 
+export interface MenuDTO
+{
+    id : string;
+
+    type : string;
+
+    description  : string;
+    
+    menu_url  : string
+
+    from : Date;
+
+    to : Date;
+}
+
+
+
+
+export interface PermissionDTO
+{
+    idpermission : string;
+
+    idpatient : string;
+
+    patient_fullname  : string;
+    
+    patient_dni  : string
+
+    idrelative : string;
+
+    relative_fullname : string;
+
+    relative_dni : string;
+
+    type : string;
+
+    comment : string;
+
+    permission_url : string;
+
+    permission_signed_url : string;
+
+}
+
+
+
+
 //TODO: Revisar si se está haciendo bien ya que es copiada de proyectos antiguos
 //Parseo como fecha: 
 export function reviver(key: string, value: any): any {

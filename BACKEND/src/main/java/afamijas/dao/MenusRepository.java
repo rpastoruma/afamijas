@@ -17,9 +17,5 @@ public interface MenusRepository extends MongoRepository<Menu, String>
 	@Query("{ '_id' : ?0, 'status' : ?1 }")
 	Menu findOne(String id, String status);
 
-	@Query("{ 'idpatient' : ?0, 'status' : 'A' }")
-	Menu findMenuByPatient(String id);
-
-
 
 }

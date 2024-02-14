@@ -27,6 +27,8 @@ public class Permission
 
 	private LocalDateTime created;
 
+	private LocalDateTime signed;
+
 	private String status;
 
 	public Permission()
@@ -105,6 +107,14 @@ public class Permission
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public LocalDateTime getSigned() {
+		return signed;
+	}
+
+	public void setSigned(LocalDateTime signed) {
+		this.signed = signed;
 	}
 
 	@Override

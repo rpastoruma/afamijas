@@ -14,10 +14,6 @@ public class Menu
 	@Id
 	private String _id;
 
-	private String idpatient;
-
-	private String name;
-
 	private String type; // BASAL, TRITURADO, HIPOSÓDICO
 
 	private String description;
@@ -42,21 +38,6 @@ public class Menu
 		this._id = _id;
 	}
 
-	public String getIdpatient() {
-		return idpatient;
-	}
-
-	public void setIdpatient(String idpatient) {
-		this.idpatient = idpatient;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public String getType() {
 		return type;
@@ -122,9 +103,8 @@ public class Menu
 		this.status = status;
 	}
 
-	public Menu(String idpatient)
+	public Menu()
 	{
-		this.idpatient = idpatient;
 		this.created = this.modified = LocalDateTime.now();
 		this.status = "A";
 	}

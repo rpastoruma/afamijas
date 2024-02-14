@@ -22,11 +22,9 @@ public interface RelativesService
 
     void deleteAbsence(String idpatient, String idabsence);
 
-    MenuDTO getMenu(String idpatient);
+    List<MenuDTO> getMenu(String idpatient);
 
-    List<PermissionDTO> getPendingPermissions(String idrelative);
-
-    PermissionDTO signPermission(String idpermission, String idpatient, MultipartFile file) throws Exception;
+    PermissionDTO signPermission(String idrelative, String idpermission, String idpatient, String url_signed_file) throws Exception;
 
     List<CalendarEventDTO> getCalendarEvents(String idrelative);
 
@@ -34,4 +32,8 @@ public interface RelativesService
     List<PatientDTO> getPatients(String idrelative);
 
     Page<RelativeAbsenceDTO> getRelativeAbsences(String idpatient, String idrelative, LocalDateTime from, LocalDateTime to, int page, int size, String orderby, String orderasc);
+
+    Page<PermissionDTO> getPermissions(String idpatient, String status, int page, int size, String orderby, String orderasc);
+
+
 }

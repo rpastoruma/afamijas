@@ -1,0 +1,54 @@
+<nb-card>
+    <nb-card-header>
+        <div class="row float-start" >
+            <h4>Autorizaciones</h4>
+        </div>
+        
+    </nb-card-header>
+    <nb-card-body>
+        Para el usuario:
+        <ng-select (change)="getPermissions(0)" [multiple]="false" [(ngModel)]="idpatient" name="idpatient" [clearable]="false" notFoundText="No tienes usuarios asociados">
+            <ng-option *ngFor="let u of allPatients" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}}</ng-option>
+        </ng-select>
+
+        
+        <br/>
+        <ng-select (change)="getPermissions(0)" [multiple]="false" [(ngModel)]="status" name="status" [clearable]="false">
+            <ng-option value="P">PENDIENTES</ng-option>
+            <ng-option value="A">FIRMADAS</ng-option>
+        </ng-select>
+
+
+        <hr/>
+
+        <app-custom-table
+            [actions]="[{action: 'show', text: 'Ver autorización'}]"
+            [keys]="['Tipo:', 'Observaciones:']"
+            [values]="permissions"
+            [align]="['left', 'left']"
+            [filters]="[false, false]"
+            [sort]="[false, false]"
+            [widthToCollapse]="750"
+            [withPagination]="true"
+            [totalPages]="totalPages"
+            [page]="page"
+            [size]="size"
+            [loadingE]="loadingE"
+            [loading]="isProcessing"
+            [hasExport]="false"
+            (actionSelected)="action($event)"
+            (changePage)="setPage($event)"
+            (filterEvent)="filter(0)"
+            [isProcessing]="isProcessing"
+        >
+        </app-custom-table>
+    </nb-card-body>
+
+    <nb-card-footer>
+
+    </nb-card-footer>
+</nb-card>
+
+
+
+

@@ -1,5 +1,24 @@
-<canvas (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)" (touchmove)="onMouseMove($event)"
-            (touchstart)="onMouseDown($event)" #signPad width="350" height="200">
-    </canvas>
-    <button (click)="clearSignature()">Borrar</button>
-    <button (click)="saveSignature()">Grabar firma</button>
+
+
+
+<nb-card style="z-index: 999999999 !important" >
+        <nb-card-header>
+            <div class="modal-header float-end">
+                <nb-icon (click)="clearSignature()" class="sidebar-toggle" icon="trash-2-outline" title="Borrar firma"></nb-icon>
+                &nbsp;
+                <nb-icon (click)="goBack()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+            </div>
+        </nb-card-header>
+    
+        <nb-card-body>
+                <canvas (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)" (touchmove)="onMouseMove($event)" (touchstart)="onMouseDown($event)" #signPad width="350" height="200"></canvas>
+        </nb-card-body>
+    
+        <nb-card-footer>
+                <button status="warning" nbButton [disabled]="isProcessing"  type="button" class="btn btn-outline-secondary float-end" (click)="saveSignature(); ">FIRMAR</button>
+        </nb-card-footer>
+</nb-card>
+    
+    
+    
+    

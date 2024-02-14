@@ -181,42 +181,48 @@ public class RelativesServiceImpl implements RelativesService
 	}
 
 	@Override
-	public MenuDTO getMenu(String idpatient)
+	public List<MenuDTO> getMenu(String idpatient)
 	{
 		User patient = this.usersRepository.findOne(idpatient, "A");
 		if(patient==null || !patient.getRoles().contains("PATIENT")) return null;
 
-		return new MenuDTO(this.menusRepository.findMenuByPatient(idpatient), patient);
+		Query query = new Query();
+
+		Criteria criteria = new Criteria().where("type").is(patient.getMenu_type())
+				.and("from").lte(LocalDateTime.now())
+				.and("to").gte(LocalDateTime.now())
+				.and("status").is("A");
+
+		query.addCriteria(criteria);
+
+		try { System.out.println(query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		return this.mongoTemplate.find(query, Menu.class).stream().map(x -> new MenuDTO(x)).toList();
 	}
 
 
-	@Override
-	public List<PermissionDTO> getPendingPermissions(String idrelative)
-	{
-		User relative = this.usersRepository.findOne(idrelative, "A");
-		if(relative==null || !relative.getRoles().contains("RELATIVE")) return null;
 
-		return this.permissionsRepository.findPendingPermissionsByRelative(idrelative).stream().map(x -> new PermissionDTO(x, relative, this.usersRepository.findOne(x.getIdpatient(), "A") )).toList();
-	}
 
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public PermissionDTO signPermission(String idpermission, String idpatient, MultipartFile file) throws Exception
+	public PermissionDTO signPermission(String idrelative, String idpermission, String idpatient, String url_signed_file) throws Exception
 	{
-		Permission permission = this.permissionsRepository.findOne(idpermission, "A");
+		Permission permission = this.permissionsRepository.findOne(idpermission, "P");
 
 		if(!permission.getIdpatient().equals(idpatient)) return null;
 
-		User relative = this.usersRepository.findOne(permission.getIdrelative(), "A");
+		User relative = this.usersRepository.findOne(idrelative, "A");
 		if(relative==null || !relative.getRoles().contains("RELATIVE")) return null;
 
-		User patient = this.usersRepository.findOne(permission.getIdpatient(), "A");
+		User patient = this.usersRepository.findOne(idpatient, "A");
 		if(patient==null || !patient.getRoles().contains("PATIENT")) return null;
 
-		Media media = this.mediaService.create(idpermission, "permission", "signed", file);
-		permission.setPermission_signed_url(media.getUrl());
+		permission.setSigned(LocalDateTime.now());
+		permission.setIdrelative(idrelative);
+		permission.setPermission_signed_url(url_signed_file);
 		permission.setStatus("A");
+
 
 		return new PermissionDTO(this.permissionsRepository.save(permission), relative, patient);
 
@@ -277,5 +283,22 @@ public class RelativesServiceImpl implements RelativesService
 		return new PageImpl<>(list, pageable, total);
 	}
 
+	@Override
+	public Page<PermissionDTO> getPermissions(String idpatient, String status, int page, int size, String orderby, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		Criteria criteria = new Criteria().where("idpatient").is(idpatient).and("status").is(status);
+		query.addCriteria(criteria);
+		long total = this.mongoTemplate.count(query, Permission.class);
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+
+		try { System.out.println(query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		List<PermissionDTO> list = this.mongoTemplate.find(query, Permission.class).stream().map(x -> new PermissionDTO(x, null, null)).toList();
+
+		return new PageImpl<>(list, pageable, total);
+	}
 
 }

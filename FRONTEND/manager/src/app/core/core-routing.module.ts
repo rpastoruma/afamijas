@@ -24,6 +24,8 @@ import { BodyLayoutComponent } from './layouts/body-layout/body-layout.component
 import { canViewCalendarGuard } from './guards/can-view-calendar.guard';
 import { canViewAbsencesGuard } from './guards/can-view-absences.guard';
 import { canViewRouteGuard } from './guards/can-view-route.guard';
+import { canViewMenuGuard } from './guards/can-view-menu.guard';
+import { canViewPermissionsGuard } from './guards/can-view-permissions.guard';
 
 const routes: Routes = [
     /*
@@ -68,6 +70,18 @@ const routes: Routes = [
       component: BodyLayoutComponent,
       canActivate : [canViewAbsencesGuard],
       loadChildren: () => import('../modules/absences/absences.module').then(m => m.AbsencesModule) 
+    },    
+    {
+      path : 'menus', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewMenuGuard],
+      loadChildren: () => import('../modules/menus/menus.module').then(m => m.MenusModule) 
+    },    
+    {
+      path : 'permissions', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewPermissionsGuard],
+      loadChildren: () => import('../modules/permission/permission.module').then(m => m.PermissionModule) 
     },
     {
       // login or register (must be after others routes)

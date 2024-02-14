@@ -17,6 +17,7 @@ import { SigningPadComponent } from './components/signing-pad/signing-pad.compon
 import { DeleteConfirmComponent } from './components/delete-confirm/delete-confirm.component';
 //import { DeleteConfirmComponent } from './components/delete-confirm/delete-confirm.component';
 //import { TableFieldListModalComponent } from './components/table-field-list-modal/table-field-list-modal.component';
+import { SafeUrlPipe } from './pipes/safeUrl.pipe';
 
 
 import { FlatpickrModule } from 'angularx-flatpickr';
@@ -24,7 +25,8 @@ import flatpickr from 'flatpickr';
 import { Spanish } from 'flatpickr/dist/l10n/es';
 import { CustomTableComponent } from './components/custom-table/custom-table.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
-
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { MyPdfViewerComponent } from './components/my-pdf-viewer/my-pdf-viewer.component';
 
 @NgModule({
     declarations: [
@@ -32,13 +34,14 @@ import { PaginationComponent } from './components/pagination/pagination.componen
       //FillPipe,
       //ResearchersSelectorComponent,
       //DeleteConfirmComponent,
-    
+      SafeUrlPipe,
     
   
     SigningPadComponent,
       DeleteConfirmComponent,
       CustomTableComponent,
       PaginationComponent,
+      MyPdfViewerComponent,
   ],
     imports: [
       CommonModule,
@@ -62,7 +65,8 @@ import { PaginationComponent } from './components/pagination/pagination.componen
       NgSelectModule,
       NbPopoverModule,
       DragDropModule,
-      NbSpinnerModule
+      NbSpinnerModule,
+      PdfViewerModule
     ],
     exports: [
       CommonModule,
@@ -85,6 +89,7 @@ import { PaginationComponent } from './components/pagination/pagination.componen
       //SelectorCountriesComponent,
       NbPopoverModule,
       DragDropModule,
+      
       //PaginationComponent,
     ],
     //entryComponents: [
@@ -93,3 +98,4 @@ import { PaginationComponent } from './components/pagination/pagination.componen
     //] 
 })
 export class SharedModule { }
+

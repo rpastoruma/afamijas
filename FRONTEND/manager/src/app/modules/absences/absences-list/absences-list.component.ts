@@ -208,7 +208,7 @@ export class AbsencesListComponent implements OnInit {
       closeOnBackdropClick: false,
       closeOnEsc: true,
       context: {
-        text: 'Por favor, confirma que quiere eliminar la falta ',
+        text: 'Por favor, confirma que quieres eliminar la falta ',
         value: this.value2Text(selected.values)
       }
     });
