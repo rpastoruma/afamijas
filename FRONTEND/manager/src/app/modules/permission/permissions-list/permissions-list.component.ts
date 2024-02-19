@@ -221,13 +221,12 @@ export class PermissionsListComponent implements OnInit {
 
   signPermission(idpatient: string, idpermission: string, url_signed_file : string)
   {
-    console.log("url_signed_file0="+url_signed_file);
     this.permissionsService.signPermission(idpatient, idpermission, url_signed_file).subscribe(
       res => {
         this.isProcessing = false;
         this.toastService.show("Autorización firmada correctamente.",
             "¡Ok!", 
-            { status: 'success', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+            { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );
         this.getPermissions(0);
       },

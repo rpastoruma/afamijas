@@ -10,20 +10,46 @@ export class UsersService {
 
   constructor(private http: HttpClient,) { }
 
+  //FAMILIARES
+
+  getPatientsByRelative() 
+  {
+    const url = ENV.url.relatives + `/getPatients`;
+    return this.http.get<any>(url, {});
+  }
+
+
+  //TRABAJADORES
   
   getAllUsersByWorker(roles : string[]) 
   {
     if(!roles) roles = [];
     const url = ENV.url.workers + `/getAllUsers?roles=${roles.toString()}`;
     return this.http.get<any>(url, {});
-   }
+  }
 
+  getAllPatients() {
+    const url = ENV.url.workers + `/getAllPatients`;
+    return this.http.get<any>(url, {});
+  }
 
-   getPatientsByRelative() 
-   {
-     const url = ENV.url.relatives + `/getPatients`;
-     return this.http.get<any>(url, {});
-    }
+  getMedications(idpatient : string, page :number, size: number)
+  {
+    let url = ENV.url.workers + `/getMedications?page=${page}&size=${size}`;
+    if(idpatient != '') url += '&idpatient=' + idpatient;
+
+    return this.http.get<any>(url, {});
+  }
  
+  modifyMedication(idpatient: string, medication_description_morning: string, medication_description_evening: string) 
+  {
+    const form = new FormData();
+    form.append('idpatient', idpatient);
+    form.append('medication_description_morning', medication_description_morning);
+    form.append('medication_description_evening', medication_description_evening);
+
+    return this.http.post<any>(ENV.url.workers + '/modifyMedication', form);
+  }
+
 
 }

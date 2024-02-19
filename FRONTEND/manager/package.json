@@ -6,6 +6,8 @@
     "start": "ng serve",
     "startlocal": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng serve --proxy-config proxy.conf.local.json --host=0.0.0.0",
     "build": "ng build",
+    "builddev": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --aot --configuration production ",
+    "buildprod": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --aot --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -39,6 +41,7 @@
     "moment": "^2.30.1",
     "ng-recaptcha": "^12.0.0",
     "ng2-pdf-viewer": "^10.0.0",
+    "ngx-extended-pdf-viewer": "^19.2.2",
     "ngx-moment": "^6.0.2",
     "pdf-lib": "^1.17.1",
     "pdfmake": "^0.2.9",

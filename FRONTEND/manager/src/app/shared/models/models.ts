@@ -9,6 +9,11 @@ export interface LoginResponse {
     photo_url : string;
 }
 
+export interface ActionDTO {
+    action : string;
+    text : string;
+}
+
 export interface UserDTO {
     id : string;
     fullname : string;
@@ -146,6 +151,18 @@ export interface PermissionDTO
 }
 
 
+
+export interface MedicationDTO
+{
+    idpatient : string;
+
+    patient_fullname : string;
+
+    medication_description_morning : string;
+
+    medication_description_evening  : string;
+    
+}
 
 
 //TODO: Revisar si se está haciendo bien ya que es copiada de proyectos antiguos

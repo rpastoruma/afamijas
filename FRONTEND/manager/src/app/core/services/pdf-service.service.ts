@@ -3,11 +3,10 @@ import * as pdfMake from 'pdfmake/build/pdfmake.js';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import { HttpClient } from '@angular/common/http';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-import * as moment from 'moment';
-import { LocalStorageService } from './local-storage.service';
-import { environment } from 'src/app/environments/environment'; 
-import { map } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
+import { registerLocaleData } from '@angular/common';
+import localeES from '@angular/common/locales/es';
+
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +18,9 @@ export class PdfService {
 
   constructor(
     public httpClient: HttpClient,
-    private localStorage: LocalStorageService
   ) {
-    this.logo2 = '../../assets/images/logo.png';
+    this.logo2 = '../../assets/logo.png';
+    registerLocaleData(localeES);
   }
 
   exportDataToPDF(titulo: string, fields, fieldsNT, titleFinal: string, result, minFields) {

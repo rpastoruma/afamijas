@@ -113,12 +113,14 @@
 
 
 
+  <div>
+    <button [hidden]="!canModifyEvent()" style="margin-bottom: 20px; margin-top: 20px" class="btn btn-primary float-end" (click)="addEvent()">
+      Añadir evento
+    </button>
+  </div>
 
 
-  <button [hidden]="!canModifyEvent()" class="btn btn-primary float-end" (click)="addEvent()">
-    Añadir evento
-  </button>
-
+  
 
 
   <!-- Everything you see below is just for the demo, 
@@ -225,9 +227,7 @@
 
     <div class="modal-header">
         <h5>Datos del evento:</h5>
-        <button type="button" class="close" (click)="resetEvent();close();">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <nb-icon (click)="close()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
     </div>
 
 

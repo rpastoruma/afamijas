@@ -170,7 +170,7 @@
                         <td [ngSwitch]="getValueType(valueRow.values[e])" [ngStyle]="{'text-align': align && align[i] ? align[i] : 'center'}">
                             <span *ngSwitchCase="0">
                                 <button nbButton *ngIf="!valueRow.values[e]?.icon" status="primary" size="small" style="text-transform: none;" (click)="actionEvent(valueRow.values[e]?.action, valueRow.id)">{{valueRow.values[e]?.text}}</button>
-                                <a *ngIf="valueRow.values[e]?.icon" class="buttonColum" nbTooltip="{{valueRow.values[e]?.text}}">
+                                <a *ngIf="valueRow.values[e]?.icon" class="buttonColum" >
                                     <i class="{{valueRow.values[e]?.icon}}" (click)="actionEvent(valueRow.values[e]?.action, valueRow.id)"></i>
                                 </a>
                             </span>
@@ -188,25 +188,25 @@
                     <tr *ngIf="hasAction()">
                         <td colspan="2">
                             <span class="tdButtons">
-                                <a class="buttonAbroads" *ngIf="statusAction && valueRow.status == 'A'" nbTooltip="{{statusAction.text}}">
+                                <a class="buttonAbroads" *ngIf="statusAction && valueRow.status == 'A'" >
                                     <nb-icon style="font-size:28px !important" icon="checkmark-circle-outline" id="statusaccept" (click)="actionEvent('status', valueRow.id)"></nb-icon>
                                 </a>
-                                <a class="buttonAbroads" *ngIf="statusAction && valueRow.status == 'P'" nbTooltip="{{statusAction.text}}">
+                                <a class="buttonAbroads" *ngIf="statusAction && valueRow.status == 'P'" >
                                     <nb-icon style="font-size:28px !important" icon="close-circle-outline" id="statuspending" (click)="actionEvent('status', valueRow.id)"></nb-icon>
                                 </a>
-                                <a class="buttonEdit" *ngIf="editAction && !valueRow.noedit" nbTooltip="{{editAction.text}}">
+                                <a class="buttonEdit" *ngIf="editAction && !valueRow.noedit" >
                                     <nb-icon style="font-size:28px !important" icon="edit-2-outline" id="edit" (click)="actionEvent('edit', valueRow.id)"></nb-icon>
                                 </a>
-                                <a class="buttonEdit" *ngIf="editAction && valueRow.noedit" nbTooltip="{{editAction.textNoedit}}">
+                                <a class="buttonEdit" *ngIf="editAction && valueRow.noedit" >
                                     <nb-icon style="font-size:28px !important" icon="edit-2-outline" id="edit" style="color: lightgray;"></nb-icon>
                                 </a>
-                                <a class="buttonShow" *ngIf="showAction" nbTooltip="{{showAction.text}}">
+                                <a class="buttonShow" *ngIf="showAction" >
                                     <nb-icon style="font-size:28px !important" icon="search-outline" (click)="actionEvent('show', valueRow.id, valueRow)"></nb-icon>
                                 </a>
-                                <a class="buttonEvaluate" *ngIf="approveAction" nbTooltip="{{approveAction.text}}">
+                                <a class="buttonEvaluate" *ngIf="approveAction" >
                                     <nb-icon style="font-size:28px !important" icon="checkmark-circle-outline" (click)="actionEvent('approve', valueRow.id, valueRow)"></nb-icon>
                                 </a>
-                                <a class="buttonTrash"  *ngIf="deleteAction || (valueRow?.nodelete === false)" nbTooltip="{{deleteAction.text}}">
+                                <a class="buttonTrash"  *ngIf="deleteAction || (valueRow?.nodelete === false)" >
                                     <nb-icon style="font-size:28px !important; color:red;" icon="trash-2-outline" id="delete" (click)="actionEvent('delete', valueRow.id, valueRow)"></nb-icon>
                                 </a>
                             </span>

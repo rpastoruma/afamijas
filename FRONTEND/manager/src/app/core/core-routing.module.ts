@@ -26,6 +26,7 @@ import { canViewAbsencesGuard } from './guards/can-view-absences.guard';
 import { canViewRouteGuard } from './guards/can-view-route.guard';
 import { canViewMenuGuard } from './guards/can-view-menu.guard';
 import { canViewPermissionsGuard } from './guards/can-view-permissions.guard';
+import { canViewWorkerMedicationGuard } from './guards/can-view-worker-medication.guard';
 
 const routes: Routes = [
     /*
@@ -83,6 +84,13 @@ const routes: Routes = [
       canActivate : [canViewPermissionsGuard],
       loadChildren: () => import('../modules/permission/permission.module').then(m => m.PermissionModule) 
     },
+    {
+      path : 'worker-medication', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewWorkerMedicationGuard],
+      loadChildren: () => import('../modules/worker-medication/worker-medication.module').then(m => m.WorkerMedicationModule) 
+    },
+    
     {
       // login or register (must be after others routes)
       path: '',

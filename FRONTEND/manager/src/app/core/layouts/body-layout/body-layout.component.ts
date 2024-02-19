@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { hasRole, RoleCode, } from 'src/app/shared/models/models';
 import { AuthService } from '../../services/auth.service'; 
-import { MENU_ITEMS, MENU_RELATIVE_ITEMS } from './pages-menu';
+import { MENU_ITEMS, MENU_MEDICATION, MENU_RELATIVE_ITEMS } from './pages-menu';
 
 @Component({
   selector: 'app-body-layout',
@@ -10,7 +10,7 @@ import { MENU_ITEMS, MENU_RELATIVE_ITEMS } from './pages-menu';
 })
 export class BodyLayoutComponent implements OnInit {
 
-  menu = MENU_ITEMS;
+  menu = MENU_ITEMS; // MENÚ GENERAL PARA TODOS LOS USUARIOS (CALENDARIO, ...)
   isMobileLayout : boolean = false;
 
   constructor(private authenticationService: AuthService) { }
@@ -26,9 +26,17 @@ export class BodyLayoutComponent implements OnInit {
     const roles = this.authenticationService.getRoles();
     if (roles) 
     {
-      if (hasRole(roles, RoleCode.RELATIVE) || hasRole(roles, RoleCode.ROOT) ) 
+      if (hasRole(roles, RoleCode.RELATIVE) ) 
       {
         this.menu = this.menu.concat(MENU_RELATIVE_ITEMS);
+      } 
+
+      if (hasRole(roles, RoleCode.NURSING) || hasRole(roles, RoleCode.NURSING_ASSISTANT)  || hasRole(roles, RoleCode.ADMIN)  || hasRole(roles, RoleCode.MANAGER)
+          || hasRole(roles, RoleCode.PSYCHOLOGIST)  || hasRole(roles, RoleCode.SOCIAL_WORKER)  || hasRole(roles, RoleCode.PHYSIOTHERAPIST)  || hasRole(roles, RoleCode.OCCUPATIONAL_THERAPIST) 
+          || hasRole(roles, RoleCode.OPERATOR_EXTRA_1)
+       ) 
+      {
+        this.menu = this.menu.concat(MENU_MEDICATION);
       } 
 
     }

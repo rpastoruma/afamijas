@@ -31,7 +31,7 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
   },
   {
     title: 'Menús',
-    icon: { icon: 'fa-file-lines', pack: 'fas' },
+    icon: { icon: 'fa-utensils', pack: 'fas' },
     link: '/menus',
     data: 'menu.menus',
     expanded: false,
@@ -44,5 +44,21 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
     expanded: false,
   }
        
+
+
           
+
+
 ];
+
+
+  //MENÚ MEDICACIÓN
+  export const MENU_MEDICATION: NbMenuItem[] = [
+    {
+      title: 'Medicación',
+      icon: { icon: 'fa-kit-medical', pack: 'fas' },
+      link: '/worker-medication',
+      data: 'menu.route',
+      expanded: false,
+    }
+  ];  

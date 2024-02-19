@@ -26,6 +26,9 @@ import java.util.List;
 @Service
 public class RelativesServiceImpl implements RelativesService
 {
+	@Value("${debug.queries}")
+	Boolean debug_queries;
+
 	@Value("${media.path}")
 	String mediapath;
 
@@ -195,7 +198,7 @@ public class RelativesServiceImpl implements RelativesService
 
 		query.addCriteria(criteria);
 
-		try { System.out.println(query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		try { if(debug_queries) System.out.println("getMenu: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
 
 		return this.mongoTemplate.find(query, Menu.class).stream().map(x -> new MenuDTO(x)).toList();
 	}
@@ -247,7 +250,7 @@ public class RelativesServiceImpl implements RelativesService
 
 
 		query.addCriteria(criteria);
-		try { System.out.println(query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		try { if(debug_queries) System.out.println("getCalendarEvents: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
 		List<CalendarEvent> calendarEventList = this.mongoTemplate.find(query, CalendarEvent.class);
 
 		return calendarEventList.stream().map(x -> new CalendarEventDTO(x)).toList();
@@ -257,8 +260,13 @@ public class RelativesServiceImpl implements RelativesService
 	@Override
 	public List<PatientDTO> getPatients(String idrelative)
 	{
-		return this.usersRepository.findByIdRelative(idrelative, "A").stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
+		Query query = new Query().with(Sort.by(Sort.Direction.ASC, "name"));;
+		Criteria criteria = new Criteria().where("idrelative").is(idrelative).and("roles").in(Arrays.asList("PATIENT")).and("status").is("A");
+		query.addCriteria(criteria);
+		try { if(debug_queries) System.out.println("getPatients:" + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		return this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
 	}
+
 
 	@Override
 	public Page<RelativeAbsenceDTO> getRelativeAbsences(String idpatient, String idrelative, LocalDateTime from, LocalDateTime to, int page, int size, String orderby, String orderasc)
@@ -277,7 +285,7 @@ public class RelativesServiceImpl implements RelativesService
 
 		long total = this.mongoTemplate.count(query, RelativeAbsence.class);
 		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
-		try { System.out.println(query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		try { if(debug_queries) System.out.println("getRelativeAbsences: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
 		List<RelativeAbsenceDTO> list = this.mongoTemplate.find(query, RelativeAbsence.class).stream().map(x -> new RelativeAbsenceDTO(x, null)).toList();
 
 		return new PageImpl<>(list, pageable, total);
@@ -294,7 +302,7 @@ public class RelativesServiceImpl implements RelativesService
 		long total = this.mongoTemplate.count(query, Permission.class);
 		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
 
-		try { System.out.println(query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		try { if(debug_queries) System.out.println("getPermissions: " +query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
 
 		List<PermissionDTO> list = this.mongoTemplate.find(query, Permission.class).stream().map(x -> new PermissionDTO(x, null, null)).toList();
 

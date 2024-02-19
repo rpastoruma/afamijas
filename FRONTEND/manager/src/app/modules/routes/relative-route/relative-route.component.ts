@@ -1,16 +1,10 @@
-import { Component,  ChangeDetectionStrategy,  ViewChild,  TemplateRef, ViewEncapsulation, OnInit } from '@angular/core';
-import { startOfDay,  endOfDay,  subDays,  addDays,  endOfMonth,  isSameDay,  isSameMonth,  addHours,} from 'date-fns';
-import { Subject } from 'rxjs';
+import { Component, ViewChild, TemplateRef, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {  CalendarEventTimesChangedEvent,  CalendarView, CalendarDateFormatter,  DAYS_OF_WEEK, CalendarMonthViewBeforeRenderEvent, CalendarWeekViewBeforeRenderEvent, CalendarDayViewBeforeRenderEvent, CalendarEvent} from 'angular-calendar';
-import { EventColor } from 'calendar-utils';
 import { registerLocaleData } from '@angular/common';
-import { AuthService } from 'src/app/core/services/auth.service';
 import localeEs from '@angular/common/locales/es';
 import { UsersService } from 'src/app/core/services/users.service';
-import { NbDialogService, NbGlobalPhysicalPosition } from '@nebular/theme';
-import { DeleteConfirmComponent } from 'src/app/shared/components/delete-confirm/delete-confirm.component';
-import { hasRole, RoleCode, rolName, RouteDTO, RouteStopDTO, PatientDTO } from 'src/app/shared/models/models';
+import { NbGlobalPhysicalPosition } from '@nebular/theme';
+import { RouteDTO, RouteStopDTO, PatientDTO } from 'src/app/shared/models/models';
 import { flatpickrFactory } from '../../calendar/mycalendar.module'; 
 import { RoutesService } from 'src/app/core/services/routes.service';
 import { NbToastrService } from '@nebular/theme';
@@ -25,8 +19,6 @@ export class RelativeRouteComponent implements OnInit {
   constructor(
     private modal: NgbModal, 
     private usersService : UsersService,
-    private authService : AuthService,
-    private dialogService: NbDialogService,
     private routesService : RoutesService,
     private toastService : NbToastrService
   ) 

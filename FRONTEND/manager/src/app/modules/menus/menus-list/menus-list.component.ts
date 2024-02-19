@@ -80,7 +80,7 @@ export class MenusListComponent implements OnInit {
       error => {
         this.isProcessing = false;
         console.error("getMenu():"+JSON.stringify(error));
-        this.toastService.show("No se han podido obtener la información de los menús.",
+        this.toastService.show("No se ha podido obtener la información de los menús.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );

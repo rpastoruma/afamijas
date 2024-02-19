@@ -33,6 +33,12 @@ export class SigningPadComponent implements OnInit{
 
   ngOnInit(): void {
     this.drawn = false;
+    const bodyElement = document.querySelector('body');
+    bodyElement.style.setProperty('overflow', 'hidden');
+
+    const htmlElement = document.querySelector('html');
+    htmlElement.style.setProperty('overflow', 'hidden');
+
   }
 
 
@@ -70,12 +76,13 @@ export class SigningPadComponent implements OnInit{
     this.context.beginPath();
   }
 
-  saveSignature(): void {
+  saveSignature(): void 
+  {
     if(!this.drawn)
     {
       this.toastService.show("Necesitas dibujar tu firma con el dedo o el ratón.",
             "¡Ups!", 
-            { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+            { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
            );
 
       return;
@@ -83,6 +90,14 @@ export class SigningPadComponent implements OnInit{
 
     this.signatureImg = this.sigPadElement.toDataURL('image/png');  
     //this.signatureSaved.emit(this.signatureImg);
+
+    const bodyElement = document.querySelector('body');
+    bodyElement.style.setProperty('overflow', 'auto');
+
+    const htmlElement = document.querySelector('html');
+    htmlElement.style.setProperty('overflow', 'auto');
+
+
     this.signPDF();
   }
 
@@ -142,9 +157,9 @@ export class SigningPadComponent implements OnInit{
       res => {
           /*this.toastService.show("Documento firmado correctamente",
             "¡Ok!", 
-            { status: 'success', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+            { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );*/
-          saveAs(file, "documento_firmado.pdf");
+          saveAs(file, "documento_firmado_" + Date.now() + ".pdf");
           this.ref.close(res);
       },
       error => {
@@ -152,9 +167,8 @@ export class SigningPadComponent implements OnInit{
         {
           /*this.toastService.show("Documento firmado correctamente",
             "¡Ok!", 
-            { status: 'success', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+            { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );*/
-          saveAs(file, "documento_firmado.pdf");
           this.ref.close(error.error.text);
         }
         else
@@ -162,7 +176,7 @@ export class SigningPadComponent implements OnInit{
           console.error("uploadFile():"+JSON.stringify(error));
           this.toastService.show("No se ha podido firmar el fichero.",
             "¡Ups!", 
-            { status: 'danger', destroyByClick: true, duration: 5000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+            { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
            );
         }
       }

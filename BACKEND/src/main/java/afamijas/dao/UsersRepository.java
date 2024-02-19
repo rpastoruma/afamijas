@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 
@@ -42,8 +43,6 @@ public interface UsersRepository extends MongoRepository<User, String>
 	@Query("{ 'dni' : ?0, 'status' : ?1  }")
 	List<User> findUserByDNI(String dni, String status);
 
-	@Query("{ 'idrelative' : ?0, 'status' : ?1  }")
-	List<User> findByIdRelative(String idrelative, String status);
 
 
 }

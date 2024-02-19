@@ -363,6 +363,28 @@ public class WorkersController extends AbstractBaseController
 
 
 
+
+	@RequestMapping(method=RequestMethod.GET, value="getAllPatients", produces="application/json")
+	public ResponseEntity<?> getAllPatients(
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			//PARA TODOS LOS TRABAJADORES
+			if(this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			return new ResponseEntity<>(this.workersService.getAllPatients(), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
 	@RequestMapping(method=RequestMethod.GET, value="getCalendarEvents", produces="application/json")
 	public ResponseEntity<?> getCalendarEvents(
 			HttpServletRequest request
@@ -401,6 +423,61 @@ public class WorkersController extends AbstractBaseController
 			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.saveMenu(idmenu, type, description, from, to, file);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getMedications", produces="application/json")
+	public ResponseEntity<?> getMedications(
+			@RequestParam(value = "idpatient", required = false) String idpatient,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !isMANAGER() && !isNURSING() && !isNURSING_ASSISTANT() &&
+					!isPSYCHOLOGIST() && !isSOCIAL_WORKER() && !isPHYSIOTHERAPIST() && !isOCCUPATIONAL_THERAPIST() &&
+					!isOPERATOR_EXTRA_1() )
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			if(order==null) order = "name";
+			if(orderasc==null) orderasc = "ASC";
+
+			return new ResponseEntity<>(this.workersService.getMedications(idpatient, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="modifyMedication", produces="application/json")
+	public ResponseEntity<?> modifyMedication(
+			@RequestParam(value = "idpatient", required = true) String idpatient,
+			@RequestParam(value = "medication_description_morning", required = true) String medication_description_morning,
+			@RequestParam(value = "medication_description_evening", required = true) String medication_description_evening,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.modifyMedication(idpatient, medication_description_morning, medication_description_evening);
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		catch(Exception e)

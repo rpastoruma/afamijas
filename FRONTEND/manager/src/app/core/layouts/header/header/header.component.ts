@@ -30,7 +30,7 @@ export class HeaderComponent implements OnInit {
     this.items = [{ title: 'Cerrar sesión'}];
     this.user = {
       id: this.authenticationService.getUserId(),
-      name: this.authenticationService.getFullname(),
+      name: this.cropFullname(this.authenticationService.getFullname()),
       roles: this.authenticationService.getRoles(), 
       dni:  this.authenticationService.getDni(),
       photo_url:  this.authenticationService.getPhotoURL(),
@@ -53,6 +53,19 @@ export class HeaderComponent implements OnInit {
   }
 
 
+  cropFullname(fullname : string)
+  {
+    if(window.innerWidth > 750) return fullname;
+    
+    fullname = fullname.trim();
+
+    if(fullname.length<=20) return fullname;
+
+    let cropped = fullname.substring(0, 20);
+    if(fullname.charAt(19) == ' ' || fullname.charAt(20) == ' ') return cropped;
+
+    else return cropped + "…";
+  }
 
   toggleSidebar(): boolean {
     this.sidebarService.toggle(true, 'menu-sidebar');

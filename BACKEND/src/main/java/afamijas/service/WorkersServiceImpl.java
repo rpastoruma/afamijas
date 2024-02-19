@@ -5,10 +5,7 @@ import afamijas.model.*;
 import afamijas.model.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -25,6 +22,10 @@ import java.util.*;
 @Service
 public class WorkersServiceImpl implements WorkersService
 {
+
+	@Value("${debug.queries}")
+	Boolean debug_queries;
+
 	@Value("${media.path}")
 	String mediapath;
 
@@ -327,7 +328,7 @@ public class WorkersServiceImpl implements WorkersService
 
 
 		query.addCriteria(criteria);
-		try { System.out.println(query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		try { if(debug_queries) System.out.println("getCalendarEvents: " +query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
 		List<CalendarEvent> calendarEventList = this.mongoTemplate.find(query, CalendarEvent.class);
 
 		return calendarEventList.stream().map(x -> new CalendarEventDTO(x)).toList();
@@ -372,12 +373,9 @@ public class WorkersServiceImpl implements WorkersService
 
 		query.addCriteria(criteria);
 
-		System.out.println("getAllUsers: " + query.getQueryObject().toJson());
+		try { if(debug_queries) System.out.println("getAllUsers: " +query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
 		List<User> userList = this.mongoTemplate.find(query, User.class);
-
-
-
-
 
 		return userList.stream().map(x -> new UserDTO(x)).toList();
 	}
@@ -411,6 +409,48 @@ public class WorkersServiceImpl implements WorkersService
 		}
 
 		this.menusRepository.save(menu);
+	}
+
+	@Override
+	public Page<MedicationDTO> getMedications(String idpatient, Integer page, Integer size, String orderby, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		Criteria criteria = new Criteria().where("roles").is(Arrays.asList("PATIENT"));
+		if(idpatient!=null) criteria.and("_id").is(idpatient);
+		query.addCriteria(criteria);
+		long total = this.mongoTemplate.count(query, Permission.class);
+
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { if(debug_queries) System.out.println("getMedications: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		List<MedicationDTO>  list = this.mongoTemplate.find(query, User.class).stream().map(x -> new MedicationDTO(x)).toList();
+
+		return new PageImpl<>(list, pageable, total);
+	}
+
+
+	@Override
+	public List<PatientDTO> getAllPatients()
+	{
+		Query query = new Query().with(Sort.by(Sort.Direction.ASC, "name"));
+		Criteria criteria = new Criteria().where("roles").in(Arrays.asList("PATIENT")).and("status").is("A");
+		query.addCriteria(criteria);
+		try { if(debug_queries) System.out.println("getAllPatients: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		return this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void modifyMedication(String idpatient, String medicationDescriptionMorning, String medicationDescriptionEvening)
+	{
+		User patient = this.usersRepository.findOne(idpatient, "A");
+		if(patient==null || !patient.getRoles().contains("PATIENT")) return;
+
+		patient.setMedication_description_morning(medicationDescriptionMorning);
+		patient.setMedication_description_evening(medicationDescriptionEvening);
+
+		this.usersRepository.save(patient);
 	}
 
 	/*

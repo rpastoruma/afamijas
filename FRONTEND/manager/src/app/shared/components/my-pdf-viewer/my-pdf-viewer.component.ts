@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Optional, Output } from '@angul
 import { NbDialogRef } from '@nebular/theme';
 import { NbDialogService, NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { SigningPadComponent } from '../signing-pad/signing-pad.component';
-
 @Component({
   selector: 'app-my-pdf-viewer',
   templateUrl: './my-pdf-viewer.component.html',
