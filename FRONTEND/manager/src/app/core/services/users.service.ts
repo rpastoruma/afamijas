@@ -8,6 +8,7 @@ import { environment as ENV} from '../../environments/environment';
 })
 export class UsersService {
 
+
   constructor(private http: HttpClient,) { }
 
   //FAMILIARES
@@ -49,6 +50,25 @@ export class UsersService {
     form.append('medication_description_evening', medication_description_evening);
 
     return this.http.post<any>(ENV.url.workers + '/modifyMedication', form);
+  }
+
+
+  getFoods(idpatient : string, page :number, size: number) 
+  {
+    let url = ENV.url.workers + `/getFoods?page=${page}&size=${size}`;
+    if(idpatient != '') url += '&idpatient=' + idpatient;
+
+    return this.http.get<any>(url, {});
+  }
+
+  modifyFood(idpatient: string, menu_type: string, breakfast_description: string) 
+  {
+    const form = new FormData();
+    form.append('idpatient', idpatient);
+    form.append('menu_type', menu_type);
+    form.append('breakfast_description', breakfast_description);
+
+    return this.http.post<any>(ENV.url.workers + '/modifyFood', form);
   }
 
 

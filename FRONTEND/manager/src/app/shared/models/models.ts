@@ -114,7 +114,7 @@ export interface MenuDTO
 
     description  : string;
     
-    menu_url  : string
+    menu_url  : string;
 
     from : Date;
 
@@ -161,6 +161,19 @@ export interface MedicationDTO
     medication_description_morning : string;
 
     medication_description_evening  : string;
+    
+}
+
+
+export interface FoodDTO
+{
+    idpatient : string;
+
+    patient_fullname : string;
+
+    menu_type : string;
+
+    breakfast_description  : string;
     
 }
 

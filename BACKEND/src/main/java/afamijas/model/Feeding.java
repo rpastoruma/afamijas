@@ -22,9 +22,13 @@ public class Feeding
 
 	private String daymeal; // DESAYUNO, COMIDA
 
-	private String dish;  //PRIMERO, SEGUNDO, TERCERO
+	private String dish;  //PRIMERO, SEGUNDO, POSTRE
 
 	private String result; // COMPLETO, PARCIAL, NADA
+
+	private String indications;
+
+	private String incidences;
 
 	private LocalDateTime when;
 
@@ -92,6 +96,23 @@ public class Feeding
 
 	public void setResult(String result) {
 		this.result = result;
+	}
+
+
+	public String getIndications() {
+		return indications;
+	}
+
+	public void setIndications(String indications) {
+		this.indications = indications;
+	}
+
+	public String getIncidences() {
+		return incidences;
+	}
+
+	public void setIncidences(String incidences) {
+		this.incidences = incidences;
 	}
 
 	@Override

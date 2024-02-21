@@ -25,7 +25,7 @@ export class MenusListComponent implements OnInit {
     description: '',
     menu_url: '',
     from: undefined,
-    to: undefined
+    to: undefined,
   }
 
   

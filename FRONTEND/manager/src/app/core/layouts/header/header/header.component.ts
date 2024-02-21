@@ -59,10 +59,10 @@ export class HeaderComponent implements OnInit {
     
     fullname = fullname.trim();
 
-    if(fullname.length<=20) return fullname;
+    if(fullname.length<=15) return fullname;
 
-    let cropped = fullname.substring(0, 20);
-    if(fullname.charAt(19) == ' ' || fullname.charAt(20) == ' ') return cropped;
+    let cropped = fullname.substring(0, 15);
+    if(fullname.charAt(14) == ' ' || fullname.charAt(15) == ' ') return cropped;
 
     else return cropped + "…";
   }

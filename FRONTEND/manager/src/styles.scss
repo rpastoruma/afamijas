@@ -15,9 +15,11 @@
 
 @import "~@ng-select/ng-select/themes/default.theme.css";
 
+/* puntero dedo en iconos */
 nb-icon { cursor: pointer;}
 
+/* iconos más grandes */
+.nb-theme-default nb-icon { font-size: 1.5rem; }
 
-.nb-theme-default nb-icon { font-size: 2rem; }
-
-
+/*quitar flecha de atrás de pantalla de login */
+.navigation { display: none !important; }

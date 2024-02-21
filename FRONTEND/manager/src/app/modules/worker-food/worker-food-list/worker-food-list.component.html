@@ -1,0 +1,81 @@
+<nb-card>
+    <nb-card-header>
+        <div class="row float-start" >
+            <h4>Listado de comidas</h4>
+        </div>
+        
+    </nb-card-header>
+    <nb-card-body>
+
+
+        Para el usuario:
+        <ng-select (change)="getFoods(0)" [multiple]="false" [(ngModel)]="idpatient" name="idpatient" [clearable]="false" notFoundText="No se encuentran usuarios">
+            <ng-option value="">TODOS</ng-option>
+            <ng-option *ngFor="let u of allPatients" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}}</ng-option>
+        </ng-select>
+
+        <hr/>
+
+        <app-custom-table
+            [actions]="actions"
+            [keys]="['Usuario:', 'Desayuno:', 'Tipo de menú:']"
+            [values]="foods"
+            [align]="['left', 'left', 'left']"
+            [filters]="[false, false, false]"
+            [sort]="[false, false, false]"
+            [widthToCollapse]="750"
+            [withPagination]="true"
+            [totalPages]="totalPages"
+            [page]="page"
+            [size]="size"
+            [loadingE]="loadingExcel"
+            [loading]="loadingPDF"
+            [hasExport]="true"
+            (actionSelected)="action($event)"
+            (changePage)="setPage($event)"
+            (filterEvent)="filter(0)"
+            [isProcessing]="isProcessing"
+            (exportData)="getExportData($event)"
+            [showSearchButton]="false"
+
+        >
+
+        </app-custom-table>
+    </nb-card-body>
+
+</nb-card>
+
+
+
+
+<ng-template #modalContent let-close="close">
+    <div class="modal-header">
+        <h6>Modificar comidas para {{theFood.patient_fullname}}</h6>
+        <nb-icon (click)="close()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+            Desayuno: 
+            <textarea rows="8" class="form-control" [(ngModel)]="theFood.breakfast_description"></textarea>
+
+            <br/>
+
+            Tipo de menú: 
+            <ng-select [multiple]="false" [(ngModel)]="theFood.menu_type" name="menu_type" [clearable]="false">
+                <ng-option *ngFor="let x of allMenuTypes" [value]="x">{{x}}</ng-option>
+            </ng-select>
+
+                
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button [disabled]="isProcessing"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="modifyFood();">
+            GUARDAR CAMBIOS
+        </button>
+    </div>
+</ng-template>
+  
+
+

@@ -28,7 +28,6 @@ import { PaginationComponent } from './components/pagination/pagination.componen
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { MyPdfViewerComponent } from './components/my-pdf-viewer/my-pdf-viewer.component';
 
-import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 
 @NgModule({
@@ -69,8 +68,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
       NbPopoverModule,
       DragDropModule,
       NbSpinnerModule,
-      PdfViewerModule,
-      NgxExtendedPdfViewerModule
+      PdfViewerModule
     ],
     exports: [
       CommonModule,

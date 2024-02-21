@@ -155,7 +155,7 @@ public class AuthController
 				this.sendRememberPasswordLink(user);
 			}
 
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{

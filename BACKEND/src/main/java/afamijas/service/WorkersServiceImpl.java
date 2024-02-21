@@ -102,7 +102,7 @@ public class WorkersServiceImpl implements WorkersService
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void registerFeeding(String idpatient, String idworker, String dish, String result, String daymeal)
+	public void registerFeeding(String idpatient, String idworker, String dish, String result, String daymeal, String indications, String incidences)
 	{
 		Feeding feeding = this.feedingRepository.findFeedingByPatientDayDaymealAndDish(idpatient, LocalDate.now(), daymeal, dish);
 		if(feeding==null) feeding = new Feeding();
@@ -114,6 +114,8 @@ public class WorkersServiceImpl implements WorkersService
 		feeding.setDaymeal(daymeal);
 		feeding.setDay(LocalDate.now());
 		feeding.setWhen(LocalDateTime.now());
+		feeding.setIndications(indications);
+		feeding.setIncidences(incidences);
 
 		this.feedingRepository.save(feeding);
 	}
@@ -411,6 +413,17 @@ public class WorkersServiceImpl implements WorkersService
 		this.menusRepository.save(menu);
 	}
 
+
+	@Override
+	public List<PatientDTO> getAllPatients()
+	{
+		Query query = new Query().with(Sort.by(Sort.Direction.ASC, "name"));
+		Criteria criteria = new Criteria().where("roles").in(Arrays.asList("PATIENT")).and("status").is("A");
+		query.addCriteria(criteria);
+		try { if(debug_queries) System.out.println("getAllPatients: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		return this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
+	}
+
 	@Override
 	public Page<MedicationDTO> getMedications(String idpatient, Integer page, Integer size, String orderby, String orderasc)
 	{
@@ -431,16 +444,6 @@ public class WorkersServiceImpl implements WorkersService
 
 
 	@Override
-	public List<PatientDTO> getAllPatients()
-	{
-		Query query = new Query().with(Sort.by(Sort.Direction.ASC, "name"));
-		Criteria criteria = new Criteria().where("roles").in(Arrays.asList("PATIENT")).and("status").is("A");
-		query.addCriteria(criteria);
-		try { if(debug_queries) System.out.println("getAllPatients: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
-		return this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
-	}
-
-	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public void modifyMedication(String idpatient, String medicationDescriptionMorning, String medicationDescriptionEvening)
 	{
@@ -449,6 +452,37 @@ public class WorkersServiceImpl implements WorkersService
 
 		patient.setMedication_description_morning(medicationDescriptionMorning);
 		patient.setMedication_description_evening(medicationDescriptionEvening);
+
+		this.usersRepository.save(patient);
+	}
+
+	@Override
+	public Page<FoodDTO> getFoods(String idpatient, Integer page, Integer size, String orderby, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		Criteria criteria = new Criteria().where("roles").is(Arrays.asList("PATIENT"));
+		if(idpatient!=null) criteria.and("_id").is(idpatient);
+		query.addCriteria(criteria);
+		long total = this.mongoTemplate.count(query, Permission.class);
+
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { if(debug_queries) System.out.println("getFoods: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		List<FoodDTO>  list = this.mongoTemplate.find(query, User.class).stream().map(x -> new FoodDTO(x)).toList();
+
+		return new PageImpl<>(list, pageable, total);
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void modifyFood(String idpatient, String menu_type, String breakfast_description)
+	{
+		User patient = this.usersRepository.findOne(idpatient, "A");
+		if(patient==null || !patient.getRoles().contains("PATIENT")) return;
+
+		patient.setMenu_type(menu_type);
+		patient.setBreakfast_description(breakfast_description);
 
 		this.usersRepository.save(patient);
 	}

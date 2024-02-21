@@ -169,6 +169,7 @@ export class SigningPadComponent implements OnInit{
             "¡Ok!", 
             { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );*/
+          saveAs(file, "documento_firmado_" + Date.now() + ".pdf");
           this.ref.close(error.error.text);
         }
         else

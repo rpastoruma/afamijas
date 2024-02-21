@@ -15,7 +15,7 @@ public interface WorkersService
 
     Page<PatientDTO> getActivePatients(String name_surnames, String dni, String groupcode, Integer page, Integer size, String order, String orderasc);
 
-    void registerFeeding(String idpatient, String idworker, String dish, String result, String daymeal);
+    void registerFeeding(String idpatient, String idworker, String dish, String result, String daymeal, String indications, String incidences);
 
     void registerTempFridge(String idworker, Double temperature);
 
@@ -47,9 +47,17 @@ public interface WorkersService
 
     void saveMenu(String id, String type, String description, LocalDate from, LocalDate to, MultipartFile file) throws Exception;
 
-    Page<MedicationDTO> getMedications(String idpatient, Integer page, Integer size, String order, String orderasc);
-
     List<PatientDTO> getAllPatients();
 
+    Page<MedicationDTO> getMedications(String idpatient, Integer page, Integer size, String order, String orderasc);
+
     void modifyMedication(String idpatient, String medicationDescriptionMorning, String medicationDescriptionEvening);
+
+    Page<FoodDTO> getFoods(String idpatient, Integer page, Integer size, String order, String orderasc);
+
+    void modifyFood(String idpatient, String menu_type, String breakfast_description);
+
+
+
+
 }

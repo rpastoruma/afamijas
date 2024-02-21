@@ -27,6 +27,7 @@ import { canViewRouteGuard } from './guards/can-view-route.guard';
 import { canViewMenuGuard } from './guards/can-view-menu.guard';
 import { canViewPermissionsGuard } from './guards/can-view-permissions.guard';
 import { canViewWorkerMedicationGuard } from './guards/can-view-worker-medication.guard';
+import { canViewWorkerFoodGuard } from './guards/can-view-worker-food.guard';
 
 const routes: Routes = [
     /*
@@ -89,6 +90,12 @@ const routes: Routes = [
       component: BodyLayoutComponent,
       canActivate : [canViewWorkerMedicationGuard],
       loadChildren: () => import('../modules/worker-medication/worker-medication.module').then(m => m.WorkerMedicationModule) 
+    },
+    {
+      path : 'worker-food', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewWorkerFoodGuard],
+      loadChildren: () => import('../modules/worker-food/worker-food.module').then(m => m.WorkerFoodModule) 
     },
     
     {

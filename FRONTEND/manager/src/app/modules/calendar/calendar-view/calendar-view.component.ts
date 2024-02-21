@@ -330,22 +330,41 @@ export class CalendarViewComponent implements OnInit {
 
 
     this.calendarService.saveCalendarEvent(event.id, fstart, fend, event.title, event.description, event.dayoff, event.roles, event.idsusers, fpublishdate).subscribe(
-      res => {
-        this.processing = false;
-        this.toastService.show("Evento guardado correctamente.",
+    {
+        next : (res) => {
+          console.log("RES=" + res);
+          this.processing = false;
+          this.toastService.show("Evento guardado correctamente.",
                                "¡Ok!", 
                                { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
                               );
-        this.getCalendarEvents();
-      },
-      error => {
-        this.processing = false;
-        console.error("saveCalendarEvent():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido guardar el evento.",
-                               "¡Ups!", 
-                               { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-                              );
+          this.getCalendarEvents();
+        },
 
+        error : (error) => {
+
+          if(error.status && error.status == 200)
+          {
+            console.log("error=" + error);
+            this.processing = false;
+            this.toastService.show("Evento guardado correctamente.",
+                                 "¡Ok!", 
+                                 { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+                                );
+            this.getCalendarEvents();
+          }
+          else
+          {
+            this.processing = false;
+            console.error("saveCalendarEvent():"+JSON.stringify(error));
+            this.toastService.show("No se ha podido guardar el evento.",
+                                 "¡Ups!", 
+                                 { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+                                );
+          }
+        },
+
+        
       }
     );
 
@@ -385,7 +404,7 @@ export class CalendarViewComponent implements OnInit {
               this.processing = false;
 
 
-              console.error("getCalendarEventsForWorkers():"+JSON.stringify(error));
+              console.error("deleteCalendarEvent():"+JSON.stringify(error));
               this.toastService.show("No se ha podido eliminar el evento.",
                                      "¡Ups!", 
                                      { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }

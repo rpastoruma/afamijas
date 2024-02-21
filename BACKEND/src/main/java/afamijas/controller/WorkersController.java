@@ -82,6 +82,8 @@ public class WorkersController extends AbstractBaseController
 			@RequestParam(value = "dish", required = true) String dish,
 			@RequestParam(value = "result", required = true) String result,
 			@RequestParam(value = "daymeal", required = true) String daymeal,
+			@RequestParam(value = "indications", required = false) String indications,
+			@RequestParam(value = "incidences", required = false) String incidences,
 			HttpServletRequest request
 	)
 	{
@@ -89,8 +91,8 @@ public class WorkersController extends AbstractBaseController
 		{
 			if(!this.isNURSING_ASSISTANT()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-			this.workersService.registerFeeding(idpatient, this.getId(), dish, result, daymeal);
-			return new ResponseEntity<>(HttpStatus.OK);
+			this.workersService.registerFeeding(idpatient, this.getId(), dish, result, daymeal, indications, incidences);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -111,7 +113,7 @@ public class WorkersController extends AbstractBaseController
 			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.registerTempFridge(this.getId(), temperature);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -136,7 +138,7 @@ public class WorkersController extends AbstractBaseController
 			if(tempservice==null && tempreception==null) return new ResponseEntity<>("Se necesita indicar temperatura.", HttpStatus.BAD_REQUEST);
 
 			this.workersService.registerTempService(this.getId(), dish, dishtype,  tempreception, tempservice);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -160,7 +162,7 @@ public class WorkersController extends AbstractBaseController
 			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.registerMealSample(this.getId(), dish, organoleptico, cuerposextra, comments);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -185,7 +187,7 @@ public class WorkersController extends AbstractBaseController
 			if(!this.isLEGIONELLA_CONTROL()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.registerLegionella(this.getId(), value, point, signature);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -208,7 +210,7 @@ public class WorkersController extends AbstractBaseController
 			if(!this.isCLEANING()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.registerWC(this.getId(), point, signature);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -229,7 +231,7 @@ public class WorkersController extends AbstractBaseController
 		{
 			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			this.workersService.uploadTimetable(file);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -248,7 +250,7 @@ public class WorkersController extends AbstractBaseController
 		{
 			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			this.workersService.uploadActivities(file);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -307,7 +309,7 @@ public class WorkersController extends AbstractBaseController
 			if(idsusers!=null && idsusers.size()>0) roles = null; //SI ES PARA USUARIOS ESPECÍFICOS NO SE PONE ROL
 
 			this.workersService.saveCalendarEvent(this.getId(), idcalendarevent, start, end, allDay, title, dayoff, description, roles, idsusers, publishdate);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -329,7 +331,7 @@ public class WorkersController extends AbstractBaseController
 			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.deleteCalendarEvent(idcalendarevent);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -423,7 +425,7 @@ public class WorkersController extends AbstractBaseController
 			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.saveMenu(idmenu, type, description, from, to, file);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -478,7 +480,7 @@ public class WorkersController extends AbstractBaseController
 			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.modifyMedication(idpatient, medication_description_morning, medication_description_evening);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -488,7 +490,55 @@ public class WorkersController extends AbstractBaseController
 	}
 
 
+	@RequestMapping(method=RequestMethod.GET, value="getFoods", produces="application/json")
+	public ResponseEntity<?> getFoods(
+			@RequestParam(value = "idpatient", required = false) String idpatient,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !isMANAGER() && !isKITCHEN() )
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
+			if(order==null) order = "name";
+			if(orderasc==null) orderasc = "ASC";
+
+			return new ResponseEntity<>(this.workersService.getFoods(idpatient, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+	@RequestMapping(method=RequestMethod.POST, value="modifyFood", produces="application/json")
+	public ResponseEntity<?> modifyFood(
+			@RequestParam(value = "idpatient", required = true) String idpatient,
+			@RequestParam(value = "menu_type", required = true) String menu_type,
+			@RequestParam(value = "breakfast_description", required = true) String breakfast_description,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.modifyFood(idpatient, menu_type, breakfast_description);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 }
 

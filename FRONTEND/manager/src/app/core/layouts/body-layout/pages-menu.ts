@@ -58,7 +58,20 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
       title: 'Medicación',
       icon: { icon: 'fa-kit-medical', pack: 'fas' },
       link: '/worker-medication',
-      data: 'menu.route',
+      data: 'menu.worker.medication',
+      expanded: false,
+    }
+  ];  
+
+
+  
+  //MENÚ COMIDAS
+  export const MENU_FOODS: NbMenuItem[] = [
+    {
+      title: 'Comidas',
+      icon: { icon: 'fa-utensils', pack: 'fas' },
+      link: '/worker-food',
+      data: 'menu.worker.food',
       expanded: false,
     }
   ];  

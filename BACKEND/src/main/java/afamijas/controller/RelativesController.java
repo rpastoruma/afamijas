@@ -155,7 +155,7 @@ public class RelativesController extends AbstractBaseController
 			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
 			this.relativesService.deleteAbsence(idpatient, idabsence);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -237,7 +237,7 @@ public class RelativesController extends AbstractBaseController
 			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
 			this.relativesService.signPermission(this.getId(), idpermission, idpatient, signedfileurl);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
