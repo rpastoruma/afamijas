@@ -46,11 +46,11 @@
                             </div>
                             
                         </th>
-                        <th style="width: 8%" *ngIf="iconFilter || (actions && actions.length > 0)">
+                        <th style="width: 8%" *ngIf="showSearchButton || (actions && actions.length > 0)">
                             <div class="searchButton">
-                                    <nb-icon nbTooltip="Buscar" style="font-size: 2.2rem; " *ngIf="iconFilter && showSearchButton" icon="search-outline" id="filter" (click)="filterBtn()"></nb-icon>
+                                    <nb-icon nbTooltip="Buscar" style="font-size: 2.2rem; " *ngIf="showSearchButton" icon="search-outline" id="filter" (click)="filterBtn()"></nb-icon>
 
-                                <!--button  *ngIf="iconFilter" nbButton   status="primary" (click)="filterBtn()">BUSCAR</button-->
+                                <!--button  *ngIf="showSearchButton" nbButton   status="primary" (click)="filterBtn()">BUSCAR</button-->
                             </div>               
                         </th>
                     </tr>
@@ -74,7 +74,7 @@
                             </span>
                         </td>
                         
-                        <td  *ngIf="iconFilter || (actions && actions.length > 0)">
+                        <td  *ngIf="showSearchButton || (actions && actions.length > 0)">
                             <span class="tdButtons">
                                 <a class="buttonEdit" *ngIf="editAction && !value.noedit" nbTooltip="{{editAction.text}}">
                                     <nb-icon icon="edit-2-outline" id="edit" (click)="actionEvent('edit', value.id)"></nb-icon>
@@ -103,7 +103,7 @@
                 </tbody>
             </table>
         </div>
-        <!---->
+        <!--Fin escritorio-->
 
 
 
@@ -153,7 +153,7 @@
                         <th [attr.colspan]="keys.length">
                             <div *ngIf="showSearchButton" class="searchButton" style="margin-bottom:10px;">
                 
-                                <button  *ngIf="iconFilter" nbButton  fullWidth status="primary" (click)="filterBtn()">BUSCAR</button>
+                                <button  *ngIf="showSearchButton" nbButton  fullWidth status="primary" (click)="filterBtn()">BUSCAR</button>
                             </div>
                         </th>
                     </tr>
@@ -210,7 +210,11 @@
                 </tbody>
             </table>
         </div>
-        <div style="margin-left: 3%" *ngIf="hasExport">
+        <!-- Fin móvil-->
+
+
+        <!--Común a móvil y escritorio-->
+        <div style="margin-left: 3%" *ngIf="hasExport && values && values.length > 0">
             <button nbButton style="margin-right: .5em; cursor:pointer; border-color: darkgray;" [nbSpinner]="loading" nbSpinnerStatus="primary" nbSpinnerSize="large" nbSpinnerMessage="" class="float-left btn btn-secondary buttons-html5" (click)="exportPdf()">PDF</button>
             <button nbButton style="margin-right: .5em; cursor:pointer; border-color: darkgray;" [nbSpinner]="loadingE" nbSpinnerStatus="primary" nbSpinnerSize="large" nbSpinnerMessage="" class="float-left btn btn-secondary buttons-html5" (click)="exportExcel()">EXCEL</button>
         </div>
@@ -220,5 +224,7 @@
         <div *ngIf="withPagination">
             <app-pagination [totalPages]="totalPages" [pageActive]="page" (chagePage)="setPageActive($event)"></app-pagination>
         </div>
+
+
     </div>
 </div>

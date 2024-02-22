@@ -29,8 +29,9 @@ export class UsersService {
     return this.http.get<any>(url, {});
   }
 
-  getAllPatients() {
-    const url = ENV.url.workers + `/getAllPatients`;
+  getAllPatients(groupcode? : string) {
+    let url = ENV.url.workers + `/getAllPatients`;
+    if(groupcode) url += '?groupcode=' + groupcode;
     return this.http.get<any>(url, {});
   }
 

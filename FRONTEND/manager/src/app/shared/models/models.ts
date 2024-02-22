@@ -178,6 +178,38 @@ export interface FoodDTO
 }
 
 
+
+export interface FeedingDTO
+{
+    id : string;
+
+    idpatient : string;
+
+    patient_fullname : string;
+
+    idworker : string;
+
+    worker_fullname : string;
+
+    day : Date;
+
+    daymeal : string; // DESAYUNO, COMIDA
+
+    dish : string;  //PRIMERO, SEGUNDO, POSTRE
+
+    result : string; // COMPLETO, PARCIAL, NADA
+
+    indications : string;
+
+    incidences : string;
+    
+}
+
+
+
+
+
+
 //TODO: Revisar si se está haciendo bien ya que es copiada de proyectos antiguos
 //Parseo como fecha: 
 export function reviver(key: string, value: any): any {

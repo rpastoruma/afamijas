@@ -1,6 +1,7 @@
 package afamijas.controller;
 
 
+import afamijas.dao.UsersRepository;
 import afamijas.model.Roles;
 import afamijas.model.User;
 import afamijas.security.JwtUser;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractBaseController
 {
-    protected UsersService usersService;
+    final protected UsersService usersService;
 
     @Autowired
     public AbstractBaseController(UsersService usersService)
@@ -117,6 +118,21 @@ public abstract class AbstractBaseController
 
         if(patient.getIdrelative().equals(this.getId())) return true;
         else return false;
+    }
+
+
+    protected User getUser()
+    {
+        try
+        {
+            JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if(user==null) return null;
+            else return this.usersService.findOne(user.getId());
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
     }
 
 

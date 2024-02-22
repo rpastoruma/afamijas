@@ -75,3 +75,20 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
       expanded: false,
     }
   ];  
+
+
+
+  
+  
+  //MENÚ REGISTRO ALIMETNACIÓN
+  export const MENU_FEEDINGS: NbMenuItem[] = [
+    {
+      title: 'Registro alimentación',
+      icon: { icon: 'fa-bowl-food', pack: 'fas' },
+      link: '/worker-feeding',
+      data: 'menu.worker.feeding',
+      expanded: false,
+    }
+  ];  
+
+

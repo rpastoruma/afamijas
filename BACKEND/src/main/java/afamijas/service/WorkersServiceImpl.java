@@ -73,6 +73,7 @@ public class WorkersServiceImpl implements WorkersService
 		this.mediaService = mediaService;
 	}
 
+	//TODO: REVISAR SI LA PAGINACIÓN ESTÁ BIEN HECHA YA QUE NO ESTÁ COMO EN LAS OTRAS
 	@Override
 	public Page<PatientDTO> getActivePatients(String name_surnames, String dni, String groupcode, Integer page, Integer size, String order, String orderasc)
 	{
@@ -100,25 +101,20 @@ public class WorkersServiceImpl implements WorkersService
 				() -> this.mongoTemplate.count(Query.of(query).limit(-1).skip(-1), User.class));
 	}
 
+
 	@Override
-	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void registerFeeding(String idpatient, String idworker, String dish, String result, String daymeal, String indications, String incidences)
+	public List<PatientDTO> getAllPatients(String groupcode)
 	{
-		Feeding feeding = this.feedingRepository.findFeedingByPatientDayDaymealAndDish(idpatient, LocalDate.now(), daymeal, dish);
-		if(feeding==null) feeding = new Feeding();
-
-		feeding.setIdpatient(idpatient);
-		feeding.setIdworker(idworker);
-		feeding.setDish(dish);
-		feeding.setResult(result);
-		feeding.setDaymeal(daymeal);
-		feeding.setDay(LocalDate.now());
-		feeding.setWhen(LocalDateTime.now());
-		feeding.setIndications(indications);
-		feeding.setIncidences(incidences);
-
-		this.feedingRepository.save(feeding);
+		Query query = new Query().with(Sort.by(Sort.Direction.ASC, "name"));
+		Criteria criteria = new Criteria().where("roles").in(Arrays.asList("PATIENT")).and("status").is("A");
+		if(groupcode!=null) criteria.and("groupcode").is(groupcode);
+		query.addCriteria(criteria);
+		try { if(debug_queries) System.out.println("getAllPatients: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		return this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
 	}
+
+
+
 
 
 	@Override
@@ -414,15 +410,6 @@ public class WorkersServiceImpl implements WorkersService
 	}
 
 
-	@Override
-	public List<PatientDTO> getAllPatients()
-	{
-		Query query = new Query().with(Sort.by(Sort.Direction.ASC, "name"));
-		Criteria criteria = new Criteria().where("roles").in(Arrays.asList("PATIENT")).and("status").is("A");
-		query.addCriteria(criteria);
-		try { if(debug_queries) System.out.println("getAllPatients: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
-		return this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
-	}
 
 	@Override
 	public Page<MedicationDTO> getMedications(String idpatient, Integer page, Integer size, String orderby, String orderasc)
@@ -433,7 +420,7 @@ public class WorkersServiceImpl implements WorkersService
 		Criteria criteria = new Criteria().where("roles").is(Arrays.asList("PATIENT"));
 		if(idpatient!=null) criteria.and("_id").is(idpatient);
 		query.addCriteria(criteria);
-		long total = this.mongoTemplate.count(query, Permission.class);
+		long total = this.mongoTemplate.count(query, User.class);
 
 		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
 		try { if(debug_queries) System.out.println("getMedications: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
@@ -465,7 +452,7 @@ public class WorkersServiceImpl implements WorkersService
 		Criteria criteria = new Criteria().where("roles").is(Arrays.asList("PATIENT"));
 		if(idpatient!=null) criteria.and("_id").is(idpatient);
 		query.addCriteria(criteria);
-		long total = this.mongoTemplate.count(query, Permission.class);
+		long total = this.mongoTemplate.count(query, User.class);
 
 		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
 		try { if(debug_queries) System.out.println("getFoods: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
@@ -486,6 +473,94 @@ public class WorkersServiceImpl implements WorkersService
 
 		this.usersRepository.save(patient);
 	}
+
+
+
+	@Override
+	public Page<FeedingDTO> getFeedings(User worker, String groupcode, String idpatient, LocalDate day, Integer page, Integer size, String orderby, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		Criteria criteria = new Criteria();
+		if(idpatient!=null)
+			criteria.and("idpatient").is(idpatient);
+		else if(groupcode != null)
+		{
+			Query query2 = new Query();
+			query2.addCriteria(new Criteria().where("roles").is(Arrays.asList("PATIENT")).and("groupcode").is(groupcode).and("status").is("A"));
+			List<String> idspatients =  this.mongoTemplate.find(query2, User.class).stream().map(x -> x.get_id()).toList();
+			criteria.and("idpatient").in(idspatients);
+		}
+		if(day!=null) criteria.and("day").is(day);
+
+		query.addCriteria(criteria);
+		long total = this.mongoTemplate.count(query, Feeding.class);
+
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { if(debug_queries) System.out.println("getFeedings: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		//EN LOS USUARIOS PATIENT Y WORKER INCLUIMOS TAMBIÉN LOS QUE PUDIERAN ESTAR BORRADOS POR ESO FINDONE NO FILTRA POR STATUS
+		List<FeedingDTO>  list = this.mongoTemplate.find(query, Feeding.class).stream().map(x -> new FeedingDTO(x, this.usersRepository.findOne(x.getIdpatient()), this.usersRepository.findOne(x.getIdworker()))).toList();
+
+		return new PageImpl<>(list, pageable, total);
+	}
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void registerFeeding(String id, String idpatient, String idworker, String dish, String result, String daymeal, String indications, String incidences)
+	{
+		if(!daymeal.equals("DESAYUNO") && !daymeal.equals("ALMUERZO")) return;
+		if(!result.equals("COMPLETO") && !result.equals("PARCIAL") && !result.equals("NADA")) return;
+		if(daymeal.equals("ALMUERZO") && (!dish.equals("PRIMERO") && !dish.equals("SEGUNDO") && !dish.equals("POSTRE"))) return;
+
+		Feeding feeding;
+		if(id!=null)
+		{
+			feeding = this.feedingRepository.findOne(id);
+			if(feeding==null) return;
+		}
+		else
+		{
+			Query query = new Query();
+			Criteria criteria = new Criteria();
+			if(daymeal.equals("ALMUERZO"))
+				criteria.and("idpatient").is(idpatient).and("day").is(LocalDate.now()).and("daymeal").is(daymeal).and("dish").is(dish);
+			else
+				criteria.and("idpatient").is(idpatient).and("day").is(LocalDate.now()).and("daymeal").is(daymeal);
+
+			query.addCriteria(criteria);
+			try { if(debug_queries) System.out.println("registerFeeding: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+			feeding = this.mongoTemplate.findOne(query, Feeding.class);
+
+			if(feeding==null)  feeding = new Feeding();
+		}
+
+		if(id==null) //rellenamos campos-clave
+		{
+			feeding.setIdpatient(idpatient);
+			feeding.setDay(LocalDate.now()); //SOLO SE ESTABLECE EL DÍA EN NUEVOS REGISTROS. LUEGO NO VARÍA.
+			feeding.setDaymeal(daymeal);
+			if(daymeal.equals("ALMUERZO")) feeding.setDish(dish); else feeding.setDish(null);
+		}
+		feeding.setIdworker(idworker);
+		feeding.setResult(result);
+		feeding.setIndications(indications);
+		feeding.setIncidences(incidences);
+
+		this.feedingRepository.save(feeding);
+	}
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void deleteFeeding(String id)
+	{
+		Feeding feeding = this.feedingRepository.findOne(id);
+		if(feeding!=null) this.feedingRepository.delete(feeding);
+	}
+
 
 	/*
 	@Override

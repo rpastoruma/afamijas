@@ -90,6 +90,11 @@ export class AuthService {
     return hasRole(this.getRoles(),  RoleCode.MANAGER);
   }
 
+  
+  isNursingAssitant()
+  {
+    return hasRole(this.getRoles(),  RoleCode.NURSING_ASSISTANT);
+  }
 
   login(username: string, password: string): Observable<string | null> 
   {

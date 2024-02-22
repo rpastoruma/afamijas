@@ -27,7 +27,6 @@ export class CustomTableComponent implements OnInit, OnDestroy {
   @Input() size = 10;
   @Input() filters;
   @Input() sort;
-  @Input() iconFilter = true;
   @Input() filterValueDefault;
   @Input() clearable;
   @Input() align;

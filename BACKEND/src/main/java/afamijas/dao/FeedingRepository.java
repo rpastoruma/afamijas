@@ -20,8 +20,8 @@ public interface FeedingRepository extends MongoRepository<Feeding, String>
 	@Query("{ 'idpatient' : ?0 }")
 	List<Feeding> findFeedingByPatient(String idpatient);
 
-	@Query("{ 'idpatient' : ?0, 'day' : ?1, 'daymeal' : ?2, 'dish' : ?3  }")
-	Feeding findFeedingByPatientDayDaymealAndDish(String idpatient, LocalDate day, String daymeal, String dish);
+	//@Query("{ 'idpatient' : ?0, 'day' : ?1, 'daymeal' : ?2, 'dish' : ?3  }")
+	//Feeding findFeedingByPatientDayDaymealAndDish(String idpatient, LocalDate day, String daymeal, String dish);
 
 
 

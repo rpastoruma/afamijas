@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { hasRole, RoleCode, } from 'src/app/shared/models/models';
 import { AuthService } from '../../services/auth.service'; 
-import { MENU_FOODS, MENU_ITEMS, MENU_MEDICATION, MENU_RELATIVE_ITEMS } from './pages-menu';
+import { MENU_FEEDINGS, MENU_FOODS, MENU_ITEMS, MENU_MEDICATION, MENU_RELATIVE_ITEMS } from './pages-menu';
 
 @Component({
   selector: 'app-body-layout',
@@ -47,6 +47,11 @@ export class BodyLayoutComponent implements OnInit {
       } 
 
 
+      if (hasRole(roles, RoleCode.NURSING_ASSISTANT) || hasRole(roles, RoleCode.ADMIN)  || hasRole(roles, RoleCode.MANAGER)
+       ) 
+      {
+        this.menu = this.menu.concat(MENU_FEEDINGS);
+      } 
 
 
     }

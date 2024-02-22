@@ -1,5 +1,6 @@
 package afamijas.service;
 
+import afamijas.model.User;
 import afamijas.model.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,9 @@ public interface WorkersService
 
     Page<PatientDTO> getActivePatients(String name_surnames, String dni, String groupcode, Integer page, Integer size, String order, String orderasc);
 
-    void registerFeeding(String idpatient, String idworker, String dish, String result, String daymeal, String indications, String incidences);
+    List<PatientDTO> getAllPatients(String groupcode);
+
+
 
     void registerTempFridge(String idworker, Double temperature);
 
@@ -47,7 +50,8 @@ public interface WorkersService
 
     void saveMenu(String id, String type, String description, LocalDate from, LocalDate to, MultipartFile file) throws Exception;
 
-    List<PatientDTO> getAllPatients();
+
+
 
     Page<MedicationDTO> getMedications(String idpatient, Integer page, Integer size, String order, String orderasc);
 
@@ -57,6 +61,11 @@ public interface WorkersService
 
     void modifyFood(String idpatient, String menu_type, String breakfast_description);
 
+    Page<FeedingDTO> getFeedings(User worker, String groupcode, String idpatient, LocalDate day, Integer page, Integer size, String order, String orderasc);
+
+    void registerFeeding(String id, String idpatient, String idworker, String dish, String result, String daymeal, String indications, String incidences);
+
+    void deleteFeeding(String id);
 
 
 

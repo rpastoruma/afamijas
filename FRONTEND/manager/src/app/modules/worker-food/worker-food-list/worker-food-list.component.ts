@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
-import { PatientDTO, MedicationDTO, parseDataExport, ActionDTO, MenuDTO, FoodDTO } from 'src/app/shared/models/models';
+import { PatientDTO, parseDataExport, ActionDTO, MenuDTO, FoodDTO } from 'src/app/shared/models/models';
 import { UsersService } from 'src/app/core/services/users.service';
 import { PdfService } from 'src/app/core/services/pdf-service.service';
 import { ExcelService } from 'src/app/core/services/excel-service.service';

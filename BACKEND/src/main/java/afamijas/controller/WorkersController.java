@@ -76,30 +76,6 @@ public class WorkersController extends AbstractBaseController
 
 
 
-	@RequestMapping(method=RequestMethod.POST, value="registerFeeding", produces="application/json")
-	public ResponseEntity<?> registerFeeding(
-			@RequestParam(value = "idpatient", required = true) String idpatient,
-			@RequestParam(value = "dish", required = true) String dish,
-			@RequestParam(value = "result", required = true) String result,
-			@RequestParam(value = "daymeal", required = true) String daymeal,
-			@RequestParam(value = "indications", required = false) String indications,
-			@RequestParam(value = "incidences", required = false) String incidences,
-			HttpServletRequest request
-	)
-	{
-		try
-		{
-			if(!this.isNURSING_ASSISTANT()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-			this.workersService.registerFeeding(idpatient, this.getId(), dish, result, daymeal, indications, incidences);
-			return new ResponseEntity<>("", HttpStatus.OK);
-		}
-		catch(Exception e)
-		{
-			this.errorsService.sendError(e, this.getParameters(request));
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
 
 
 	@RequestMapping(method=RequestMethod.POST, value="registerTempFridge", produces="application/json")
@@ -368,6 +344,7 @@ public class WorkersController extends AbstractBaseController
 
 	@RequestMapping(method=RequestMethod.GET, value="getAllPatients", produces="application/json")
 	public ResponseEntity<?> getAllPatients(
+			@RequestParam(value = "groupcode", required = false) String groupcode,
 			HttpServletRequest request
 	)
 	{
@@ -376,7 +353,9 @@ public class WorkersController extends AbstractBaseController
 			//PARA TODOS LOS TRABAJADORES
 			if(this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-			return new ResponseEntity<>(this.workersService.getAllPatients(), HttpStatus.OK);
+			if(groupcode!=null && groupcode.trim().equals("")) groupcode = null;
+
+			return new ResponseEntity<>(this.workersService.getAllPatients(groupcode), HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -531,6 +510,91 @@ public class WorkersController extends AbstractBaseController
 			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.modifyFood(idpatient, menu_type, breakfast_description);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getFeedings", produces="application/json")
+	public ResponseEntity<?> getFeedings(
+			@RequestParam(value = "groupcode", required = false) String groupcode,
+			@RequestParam(value = "idpatient", required = false) String idpatient,
+			@RequestParam(value = "day", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate day,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !isMANAGER() && !isNURSING_ASSISTANT() )
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			if(order==null) order = "created";
+			if(orderasc==null) orderasc = "DESC";
+
+			return new ResponseEntity<>(this.workersService.getFeedings(this.getUser(), groupcode, idpatient, day, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="registerFeeding", produces="application/json")
+	public ResponseEntity<?> registerFeeding(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "idpatient", required = true) String idpatient,
+			@RequestParam(value = "dish", required = true) String dish,
+			@RequestParam(value = "result", required = true) String result,
+			@RequestParam(value = "daymeal", required = true) String daymeal,
+			@RequestParam(value = "indications", required = false) String indications,
+			@RequestParam(value = "incidences", required = false) String incidences,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isNURSING_ASSISTANT()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.registerFeeding(id, idpatient, this.getId(), dish, result, daymeal, indications, incidences);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteFeeding", produces="application/json")
+	public ResponseEntity<?> deleteFeeding(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isNURSING_ASSISTANT()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.deleteFeeding(id);
 			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)

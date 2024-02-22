@@ -1,0 +1,143 @@
+<nb-card>
+    <nb-card-header>
+        <div class="row float-start" >
+            <h4>Registro de alimentación</h4>
+        </div>
+        <button [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openRegisterFeedinggModal()">REGISTRAR</button>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div style="margin-bottom: 15px !important">
+        Consultar registro para el día:
+        <input 
+        class="form-control"
+        type="text"
+        mwlFlatpickr
+        [(ngModel)]="day"
+        [altInput]="true"
+        [convertModelValue]="true"
+        [enableTime]="false"
+        dateFormat="YY-m-d"
+        altFormat="d/m/Y"
+        placeholder=""
+        (ngModelChange)="getFeedings(0);"
+        [disable]="[disabledDay]"
+        />
+        </div>
+
+        Para el grupo:
+        <ng-select (change)="idpatient=''; theFeeding.idpatient='';  getPatients();" [multiple]="false" [(ngModel)]="groupcode" name="groupcode" [clearable]="false" >
+            <ng-option *ngFor="let x of allGroups" [value]="x">{{x}}</ng-option>
+        </ng-select>
+
+        <br/>
+
+        Para el usuario:
+        <ng-select (change)="theFeeding.idpatient=idpatient;getFeedings(0)" [multiple]="false" [(ngModel)]="idpatient" name="idpatient" [clearable]="false" notFoundText="No se encuentran usuarios">
+            <ng-option value="">TODOS</ng-option>
+            <ng-option *ngFor="let u of allPatients" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}}</ng-option>
+        </ng-select>
+
+        <hr/>
+
+        <app-custom-table
+            [actions]="actions"
+            [keys]="['Usuario:', 'Día:', 'Comida:', 'Plato:', 'Resultado:', 'Indicaciones:', 'Incidencias:', 'Registrado por:']"
+            [values]="feedings"
+            [align]="['left', 'left', 'left', 'left', 'left', 'left', 'left', 'left']"
+            [filters]="[false, false, false, false, false, false, false, false]"
+            [sort]="[false, false, false, false, false, false, false, false]"
+            [widthToCollapse]="750"
+            [withPagination]="true"
+            [totalPages]="totalPages"
+            [page]="page"
+            [size]="size"
+            [loadingE]="loadingExcel"
+            [loading]="loadingPDF"
+            [hasExport]="true"
+            (actionSelected)="action($event)"
+            (changePage)="setPage($event)"
+            (filterEvent)="filter(0)"
+            [isProcessing]="isProcessing"
+            (exportData)="getExportData($event)"
+            [showSearchButton]="false"
+
+        >
+
+        </app-custom-table>
+    </nb-card-body>
+
+
+    
+    <nb-card-footer>
+        <button [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openRegisterFeedinggModal()">REGISTRAR</button>
+    </nb-card-footer>
+</nb-card>
+
+
+
+
+<ng-template #modalContent let-close="close">
+    <div class="modal-header">
+        <h6>Registro de comidas para <span style="color:red;">{{date2Text(theFeeding.day)}}</span></h6>
+        <nb-icon (click)="close()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+
+            Para el usuario:
+            <ng-select [multiple]="false" [(ngModel)]="theFeeding.idpatient" name="theFeeding-idpatient" [clearable]="false" notFoundText="No se encuentran usuarios">
+                <ng-option *ngFor="let u of allPatients" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}}</ng-option>
+            </ng-select>
+
+            <br/>
+
+            Comida: 
+            <ng-select [multiple]="false" [(ngModel)]="theFeeding.daymeal" name="theFeeding-daymeal" [clearable]="false">
+                <ng-option value="DESAYUNO">DESAYUNO</ng-option>
+                <ng-option value="ALMUERZO">ALMUERZO</ng-option>
+            </ng-select>
+
+            <div [hidden]="theFeeding.daymeal == 'DESAYUNO'" >
+            <br/>
+            Plato: 
+            <ng-select [multiple]="false" [(ngModel)]="theFeeding.dish" name="theFeeding-dish" [clearable]="false">
+                <ng-option value="PRIMERO">PRIMERO</ng-option>
+                <ng-option value="SEGUNDO">SEGUNDO</ng-option>
+                <ng-option value="POSTRE">POSTRE</ng-option>
+            </ng-select>
+            </div>
+
+            <br/>
+            Resultado: 
+            <ng-select [multiple]="false" [(ngModel)]="theFeeding.result" name="theFeeding-result" [clearable]="false">
+                <ng-option value="COMPLETO">COMPLETO</ng-option>
+                <ng-option value="PARCIAL">PARCIAL</ng-option>
+                <ng-option value="NADA">NADA</ng-option>
+            </ng-select>
+           
+            <br/>
+            Indicaciones: 
+            <textarea rows="3" class="form-control" [(ngModel)]="theFeeding.indications"></textarea>
+                
+            <br/>
+            Incidencias: 
+            <textarea rows="3" class="form-control" [(ngModel)]="theFeeding.incidences"></textarea>
+                
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button nbButton status="warning" type="button" class="btn btn-outline-secondary" (click)="close();">
+            CERRAR
+        </button>
+        &nbsp;
+        <button [disabled]="isProcessing"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="registerFeeding();">
+            GUARDAR CAMBIOS
+        </button>
+    </div>
+</ng-template>
+  
+
+

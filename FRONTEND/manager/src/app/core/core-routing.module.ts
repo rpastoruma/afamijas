@@ -97,6 +97,12 @@ const routes: Routes = [
       canActivate : [canViewWorkerFoodGuard],
       loadChildren: () => import('../modules/worker-food/worker-food.module').then(m => m.WorkerFoodModule) 
     },
+    {
+      path : 'worker-feeding', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewWorkerFoodGuard],
+      loadChildren: () => import('../modules/worker-feeding-register/worker-feeding-register.module').then(m => m.WorkerFeedingRegisterModule) 
+    },
     
     {
       // login or register (must be after others routes)

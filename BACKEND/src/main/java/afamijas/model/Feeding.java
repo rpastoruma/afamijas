@@ -30,17 +30,11 @@ public class Feeding
 
 	private String incidences;
 
-	private LocalDateTime when;
+	LocalDateTime created;
 
-	public Feeding() { this.when = LocalDateTime.now(); }
 
-	public LocalDateTime getWhen() {
-		return when;
-	}
+	public Feeding() { this.created = LocalDateTime.now(); }
 
-	public void setWhen(LocalDateTime when) {
-		this.when = when;
-	}
 
 	public String get_id() {
 		return _id;
@@ -113,6 +107,14 @@ public class Feeding
 
 	public void setIncidences(String incidences) {
 		this.incidences = incidences;
+	}
+
+	public LocalDateTime getCreated() {
+		return created;
+	}
+
+	public void setCreated(LocalDateTime created) {
+		this.created = created;
 	}
 
 	@Override
