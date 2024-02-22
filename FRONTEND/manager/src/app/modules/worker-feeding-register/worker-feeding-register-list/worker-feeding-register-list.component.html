@@ -26,7 +26,7 @@
         </div>
 
         Para el grupo:
-        <ng-select (change)="idpatient=''; theFeeding.idpatient='';  getPatients();" [multiple]="false" [(ngModel)]="groupcode" name="groupcode" [clearable]="false" >
+        <ng-select [searchable]="false" (change)="idpatient=''; theFeeding.idpatient='';  getPatients();" [multiple]="false" [(ngModel)]="groupcode" name="groupcode" [clearable]="false" notFoundText="No se encuentran grupos">
             <ng-option *ngFor="let x of allGroups" [value]="x">{{x}}</ng-option>
         </ng-select>
 
