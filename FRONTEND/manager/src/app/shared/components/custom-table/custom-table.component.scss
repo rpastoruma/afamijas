@@ -5,21 +5,17 @@
 }
 
 table {
-  width: 100% !important;
+  width:100% !important;
   line-height: 1.5em;
   border-collapse: collapse;
   border-spacing: 0;
   display: table;
   overflow: auto;
-  word-break:break-all;
   color: #212529;
   clear: both;
   margin: 6px 0 !important;
   max-width: none !important;
   border-color: grey;
-}
-
-table td {   word-wrap: break-word !important;
 }
 
 .thTable th {
@@ -35,7 +31,6 @@ table td {   word-wrap: break-word !important;
   padding: 0.75rem;
   // vertical-align: top; 
   text-align: center;
-  word-wrap: break-word !important;
 }
 
 .tbodyTable tr:nth-child(even), .tbodyTable2 tr:nth-child(even) {
