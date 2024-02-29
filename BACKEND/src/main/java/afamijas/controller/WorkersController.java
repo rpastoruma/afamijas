@@ -78,77 +78,6 @@ public class WorkersController extends AbstractBaseController
 
 
 
-	@RequestMapping(method=RequestMethod.POST, value="registerTempFridge", produces="application/json")
-	public ResponseEntity<?> registerTempFridge(
-			@RequestParam(value = "temperature", required = true) Double temperature,
-			HttpServletRequest request
-	)
-	{
-		try
-		{
-			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-			this.workersService.registerTempFridge(this.getId(), temperature);
-			return new ResponseEntity<>("", HttpStatus.OK);
-		}
-		catch(Exception e)
-		{
-			this.errorsService.sendError(e, this.getParameters(request));
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-
-	@RequestMapping(method=RequestMethod.POST, value="registerTempService", produces="application/json")
-	public ResponseEntity<?> registerTempService(
-			@RequestParam(value = "dish", required = true) String dish,
-			@RequestParam(value = "dishtype", required = true) String dishtype,
-			@RequestParam(value = "tempreception", required = false) Double tempreception,
-			@RequestParam(value = "tempservice", required = false) Double tempservice,
-			HttpServletRequest request
-	)
-	{
-		try
-		{
-			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-			if(tempservice==null && tempreception==null) return new ResponseEntity<>("Se necesita indicar temperatura.", HttpStatus.BAD_REQUEST);
-
-			this.workersService.registerTempService(this.getId(), dish, dishtype,  tempreception, tempservice);
-			return new ResponseEntity<>("", HttpStatus.OK);
-		}
-		catch(Exception e)
-		{
-			this.errorsService.sendError(e, this.getParameters(request));
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-
-	@RequestMapping(method=RequestMethod.POST, value="registerMealSample", produces="application/json")
-	public ResponseEntity<?> registerMealSample(
-			@RequestParam(value = "dish", required = true) String dish,
-			@RequestParam(value = "organoleptico", required = true) Boolean organoleptico,
-			@RequestParam(value = "cuerposextra", required = true) Boolean cuerposextra,
-			@RequestParam(value = "comments", required = false) String comments,
-			HttpServletRequest request
-	)
-	{
-		try
-		{
-			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-			this.workersService.registerMealSample(this.getId(), dish, organoleptico, cuerposextra, comments);
-			return new ResponseEntity<>("", HttpStatus.OK);
-		}
-		catch(Exception e)
-		{
-			this.errorsService.sendError(e, this.getParameters(request));
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-
-
 
 	@RequestMapping(method=RequestMethod.POST, value="registerLegionella", produces="application/json")
 	public ResponseEntity<?> registerLegionella(
@@ -603,6 +532,257 @@ public class WorkersController extends AbstractBaseController
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getTempFridges", produces="application/json")
+	public ResponseEntity<?> getTempFridges(
+			@RequestParam(value = "dayfrom", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			@RequestParam(value = "dayto", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !isMANAGER() && !isKITCHEN() )
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			if(order==null) order = "created";
+			if(orderasc==null) orderasc = "DESC";
+
+			return new ResponseEntity<>(this.workersService.getTempFridges(this.getUser(), dayfrom, dayto, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="registerTempFridge", produces="application/json")
+	public ResponseEntity<?> registerTempFridge(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "temperature", required = true) Double temperature,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.registerTempFridge(id, this.getId(), temperature);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteTempFridge", produces="application/json")
+	public ResponseEntity<?> deleteTempFridge(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.deleteTempFridge(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getTempServices", produces="application/json")
+	public ResponseEntity<?> getTempServices(
+			@RequestParam(value = "dayfrom", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			@RequestParam(value = "dayto", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !isMANAGER() && !isKITCHEN() )
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			if(order==null) order = "created";
+			if(orderasc==null) orderasc = "DESC";
+
+			return new ResponseEntity<>(this.workersService.getTempServices(this.getUser(), dayfrom, dayto, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="registerTempService", produces="application/json")
+	public ResponseEntity<?> registerTempService(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "dish", required = true) String dish,
+			@RequestParam(value = "dish_type", required = true) String dish_type,
+			@RequestParam(value = "temperature_reception", required = true) Double temperature_reception,
+			@RequestParam(value = "temperature_service", required = false) Double temperature_service,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.registerTempService(id, this.getId(), dish, dish_type, temperature_reception, temperature_service);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteTempService", produces="application/json")
+	public ResponseEntity<?> deleteTempService(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.deleteTempService(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getMealSamples", produces="application/json")
+	public ResponseEntity<?> getMealSamples(
+			@RequestParam(value = "dayfrom", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			@RequestParam(value = "dayto", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !isMANAGER() && !isKITCHEN() )
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			if(order==null) order = "created";
+			if(orderasc==null) orderasc = "DESC";
+
+			return new ResponseEntity<>(this.workersService.getMealSamples(this.getUser(), dayfrom, dayto, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="registerMealSample", produces="application/json")
+	public ResponseEntity<?> registerMealSample(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "dish", required = true) String dish,
+			@RequestParam(value = "orgenolepticoOk", required = false) Boolean orgenolepticoOk,
+			@RequestParam(value = "cuerposExtraOk", required = false) Boolean cuerposExtraOk,
+			@RequestParam(value = "comments", required = false) String comments,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.registerMealSample(id, this.getId(), dish, orgenolepticoOk, cuerposExtraOk, comments);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteMealSample", produces="application/json")
+	public ResponseEntity<?> deleteMealSample(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.deleteMealSample(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
 
 }
 

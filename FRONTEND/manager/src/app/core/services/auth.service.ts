@@ -96,6 +96,14 @@ export class AuthService {
     return hasRole(this.getRoles(),  RoleCode.NURSING_ASSISTANT);
   }
 
+
+    
+  isKitchen()
+  {
+    return hasRole(this.getRoles(),  RoleCode.KITCHEN);
+  }
+
+
   login(username: string, password: string): Observable<string | null> 
   {
     // this.logout();

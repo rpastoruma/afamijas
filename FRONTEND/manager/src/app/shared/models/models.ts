@@ -207,6 +207,69 @@ export interface FeedingDTO
 
 
 
+export interface TempFridgeDTO
+{
+    id : string;
+
+    idworker : string;
+
+    worker_fullname : string;
+
+    day : Date;
+
+    temperature : number; 
+
+    isOk : boolean;  
+    
+}
+
+
+
+export interface TempServiceDTO
+{
+    id : string;
+
+    idworker : string;
+
+    worker_fullname : string;
+
+    day : Date;
+
+    dish : string;
+
+    dish_type: string; // FRÍO, CALIENTE
+    
+    temperature_reception: number;
+    
+    temperature_service: number;
+
+    isOk : boolean;  
+    
+}
+
+export interface MealSampleDTO
+{
+    id : string;
+
+    idworker : string;
+
+    worker_fullname : string;
+
+    day : Date;
+
+    dish : string;
+
+    orgenolepticoOk: boolean; 
+    
+    cuerposExtraOk: boolean;
+    
+    comments: string;
+
+
+    
+}
+
+
 
 
 

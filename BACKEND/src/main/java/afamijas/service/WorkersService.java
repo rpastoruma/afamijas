@@ -20,12 +20,6 @@ public interface WorkersService
 
 
 
-    void registerTempFridge(String idworker, Double temperature);
-
-    void registerTempService(String idworker, String dish, String dishtype, Double tempreception, Double tempservice);
-
-    void registerMealSample(String idworker, String dish, Boolean organoletico, Boolean cuerposextra, String comments);
-
     void registerLegionella(String idworker, Double value, String point, String signature);
 
     void registerWC(String idworker, String point, String signature);
@@ -57,9 +51,13 @@ public interface WorkersService
 
     void modifyMedication(String idpatient, String medicationDescriptionMorning, String medicationDescriptionEvening);
 
+
+
     Page<FoodDTO> getFoods(String idpatient, Integer page, Integer size, String order, String orderasc);
 
     void modifyFood(String idpatient, String menu_type, String breakfast_description);
+
+
 
     Page<FeedingDTO> getFeedings(User worker, String groupcode, String idpatient, LocalDate day, Integer page, Integer size, String order, String orderasc);
 
@@ -69,4 +67,23 @@ public interface WorkersService
 
 
 
+    Page<TempFridgeDTO> getTempFridges(User worker, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc);
+
+    void registerTempFridge(String id, String idworker, Double temperature);
+
+    void deleteTempFridge(String id);
+
+
+
+    Page<TempServiceDTO> getTempServices(User worker, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc);
+
+    void registerTempService(String id, String idworker, String dish, String dishtype, Double tempreception, Double tempservice);
+
+    void deleteTempService(String id);
+
+    Page<MealSampleDTO>  getMealSamples(User user, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String order, String orderasc);
+
+    void registerMealSample(String id, String idworker, String dish, Boolean orgenolepticoOk, Boolean cuerposExtraOk, String comments);
+
+    void deleteMealSample(String id);
 }

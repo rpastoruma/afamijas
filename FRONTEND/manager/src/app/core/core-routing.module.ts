@@ -28,6 +28,8 @@ import { canViewMenuGuard } from './guards/can-view-menu.guard';
 import { canViewPermissionsGuard } from './guards/can-view-permissions.guard';
 import { canViewWorkerMedicationGuard } from './guards/can-view-worker-medication.guard';
 import { canViewWorkerFoodGuard } from './guards/can-view-worker-food.guard';
+import { canViewWorkerFeedingRegisterGuard } from './guards/can-view-worker-feeding-register.guard';
+import { canViewWorkerTempRegisterGuard } from './guards/can-view-worker-temp-register.guard';
 
 const routes: Routes = [
     /*
@@ -100,8 +102,14 @@ const routes: Routes = [
     {
       path : 'worker-feeding', 
       component: BodyLayoutComponent,
-      canActivate : [canViewWorkerFoodGuard],
+      canActivate : [canViewWorkerFeedingRegisterGuard],
       loadChildren: () => import('../modules/worker-feeding-register/worker-feeding-register.module').then(m => m.WorkerFeedingRegisterModule) 
+    },
+    {
+      path : 'worker-temp', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewWorkerTempRegisterGuard],
+      loadChildren: () => import('../modules/worker-temp-register/worker-temp-register.module').then(m => m.WorkerTempRegisterModule) 
     },
     
     {

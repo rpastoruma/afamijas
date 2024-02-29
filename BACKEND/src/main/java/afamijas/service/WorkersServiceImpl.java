@@ -119,74 +119,6 @@ public class WorkersServiceImpl implements WorkersService
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void registerTempFridge(String idworker, Double temperature)
-	{
-		TempFridge tempFridge = this.tempFridgeRepository.findOne(LocalDate.now());
-		if(tempFridge==null) tempFridge = new TempFridge();
-
-		tempFridge.setTemperature(temperature);
-		tempFridge.setDay(LocalDate.now());
-		tempFridge.setIdworker(idworker);
-		tempFridge.setOk(true);
-		tempFridge.setWhen(LocalDateTime.now());
-
-		if(temperature>4.0) tempFridge.setOk(false);
-
-		//TODO: ¿NOTIFICAR SI UNA TEMPERATURA ESTÁ MAL?
-
-		this.tempFridgeRepository.save(tempFridge);
-	}
-
-
-	@Override
-	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void registerTempService(String idworker, String dish, String dishtype, Double tempreception, Double tempservice)
-	{
-		TempService tempService = this.tempServicesRepository.findOneByDayAndDish(LocalDate.now(), dish);
-		if(tempService==null) tempService = new TempService();
-
-		tempService.setTemperature_service(tempservice);
-		tempService.setTemperature_reception(tempreception);
-		tempService.setDish(dish);
-		tempService.setDish_type(dishtype);
-		tempService.setIdworker(idworker);
-		tempService.setDay(LocalDate.now());
-		tempService.setOk(true);
-		tempService.setWhen(LocalDateTime.now());
-
-		if(tempreception>4.0) tempService.setOk(false);
-		if(dishtype.equals("COLD") && tempservice>8.0) tempService.setOk(false);
-		if(dishtype.equals("HOT") && tempservice<65.0) tempService.setOk(false);
-
-		//TODO: ¿NOTIFICAR SI UNA TEMPERATURA ESTÁ MAL?
-
-		this.tempServicesRepository.save(tempService);
-	}
-
-	@Override
-	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void registerMealSample(String idworker, String dish, Boolean organoletico, Boolean cuerposextra, String comments)
-	{
-		MealSample mealSample = this.mealSamplesRepository.findOneByDayAndDish(LocalDate.now(), dish);
-		if(mealSample==null) mealSample = new MealSample();
-
-		mealSample.setOrgenolepticoOk(organoletico);
-		mealSample.setCuerposExtraOk(cuerposextra);
-		mealSample.setComments(comments);
-		mealSample.setDish(dish);
-		mealSample.setDay(LocalDate.now());
-		mealSample.setIdworker(idworker);
-		mealSample.setWhen(LocalDateTime.now());
-
-		//TODO: ¿NOTIFICAR SI UNA MUESTRA ESTÁ MAL?
-
-		this.mealSamplesRepository.save(mealSample);
-	}
-
-
-
-	@Override
-	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public void registerLegionella(String idworker, Double value, String point, String signature)
 	{
 		LegionellaLog legionellaLog = this.legionellaLogRepository.findOne(LocalDate.now());
@@ -562,6 +494,260 @@ public class WorkersServiceImpl implements WorkersService
 	}
 
 
+
+	@Override
+	public Page<TempFridgeDTO> getTempFridges(User worker, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		Criteria criteria = new Criteria().andOperator(new Criteria().where("day").gte(dayfrom), new Criteria().where("day").lte(dayto));
+
+		query.addCriteria(criteria);
+		long total = this.mongoTemplate.count(query, TempFridge.class);
+
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { if(debug_queries) System.out.println("getTempFridges: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		//EN LOS USUARIOS WORKER INCLUIMOS TAMBIÉN LOS QUE PUDIERAN ESTAR BORRADOS POR ESO FINDONE NO FILTRA POR STATUS
+		List<TempFridgeDTO> list = this.mongoTemplate.find(query, TempFridge.class).stream().map(x -> new TempFridgeDTO(x, this.usersRepository.findOne(x.getIdworker()))).toList();
+
+		return new PageImpl<>(list, pageable, total);
+	}
+
+
+
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void registerTempFridge(String id, String idworker, Double temperature)
+	{
+		TempFridge tempFridge;
+		if(id!=null)
+		{
+			tempFridge = this.tempFridgeRepository.findOne(id);
+			if(tempFridge==null) return;
+		}
+		else
+		{
+			Query query = new Query();
+			Criteria criteria = new Criteria();
+			criteria.and("day").is(LocalDate.now());
+			query.addCriteria(criteria);
+			try { if(debug_queries) System.out.println("registerTempFridge: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+			tempFridge = this.mongoTemplate.findOne(query, TempFridge.class);
+
+			if(tempFridge==null)  tempFridge = new TempFridge();
+		}
+
+		if(id==null) //rellenamos campos-clave
+		{
+			tempFridge.setDay(LocalDate.now()); //SOLO SE ESTABLECE EL DÍA EN NUEVOS REGISTROS. LUEGO NO VARÍA.
+		}
+		tempFridge.setIdworker(idworker);
+		tempFridge.setTemperature(temperature);
+		tempFridge.setOk(temperature<=4.0?true:false);
+
+		//TODO: ¿NOTIFICAR SI UNA TEMPERATURA ESTÁ MAL?
+
+		this.tempFridgeRepository.save(tempFridge);
+	}
+
+
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void deleteTempFridge(String id)
+	{
+		TempFridge tempFridge = this.tempFridgeRepository.findOne(id);
+		if(tempFridge!=null) this.tempFridgeRepository.delete(tempFridge);
+	}
+
+
+
+
+
+
+
+
+	@Override
+	public Page<TempServiceDTO> getTempServices(User worker, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc) {
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		Criteria criteria = new Criteria().andOperator(new Criteria().where("day").gte(dayfrom), new Criteria().where("day").lte(dayto));
+
+		query.addCriteria(criteria);
+		long total = this.mongoTemplate.count(query, TempService.class);
+
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { if(debug_queries) System.out.println("getTempServices: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		//EN LOS USUARIOS WORKER INCLUIMOS TAMBIÉN LOS QUE PUDIERAN ESTAR BORRADOS POR ESO FINDONE NO FILTRA POR STATUS
+		List<TempServiceDTO> list = this.mongoTemplate.find(query, TempService.class).stream().map(x -> new TempServiceDTO(x, this.usersRepository.findOne(x.getIdworker()))).toList();
+
+		return new PageImpl<>(list, pageable, total);
+
+	}
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void registerTempService(String id, String idworker, String dish, String dishtype, Double tempreception, Double tempservice)
+	{
+		TempService tempService;
+		if(id!=null)
+		{
+			tempService = this.tempServicesRepository.findOne(id);
+			if(tempService==null) return;
+		}
+		else
+		{
+			Query query = new Query();
+			Criteria criteria = new Criteria();
+			criteria.and("day").is(LocalDate.now());
+			criteria.and("dish").is(dish);
+			query.addCriteria(criteria);
+			try { if(debug_queries) System.out.println("registerTempService: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+			tempService = this.mongoTemplate.findOne(query, TempService.class);
+
+			if(tempService==null)  tempService = new TempService();
+		}
+
+		if(id==null)
+		{
+			tempService.setDay(LocalDate.now());
+		}
+
+		tempService.setDish(dish);
+		tempService.setTemperature_reception(tempreception);
+		tempService.setDish_type(dishtype);
+		tempService.setIdworker(idworker);
+		tempService.setOk(true);
+
+		if(tempreception>4.0) tempService.setOk(false);
+
+		if(tempservice!=null)
+		{
+			tempService.setTemperature_service(tempservice);
+			if(dishtype.equals("FRÍO") && tempservice>8.0) tempService.setOk(false);
+			if(dishtype.equals("CALIENTE") && tempservice<65.0) tempService.setOk(false);
+		}
+
+		//TODO: ¿NOTIFICAR SI UNA TEMPERATURA ESTÁ MAL?
+
+		this.tempServicesRepository.save(tempService);
+	}
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void deleteTempService(String id)
+	{
+		TempService tempService = this.tempServicesRepository.findOne(id);
+		if(tempService!=null) this.tempServicesRepository.delete(tempService);
+	}
+
+	@Override
+	public Page<MealSampleDTO> getMealSamples(User user, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		Criteria criteria = new Criteria().andOperator(new Criteria().where("day").gte(dayfrom), new Criteria().where("day").lte(dayto));
+
+		query.addCriteria(criteria);
+		long total = this.mongoTemplate.count(query, MealSample.class);
+
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { if(debug_queries) System.out.println("getMealSamples: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		//EN LOS USUARIOS WORKER INCLUIMOS TAMBIÉN LOS QUE PUDIERAN ESTAR BORRADOS POR ESO FINDONE NO FILTRA POR STATUS
+		List<MealSampleDTO> list = this.mongoTemplate.find(query, MealSample.class).stream().map(x -> new MealSampleDTO(x, this.usersRepository.findOne(x.getIdworker()))).toList();
+
+		return new PageImpl<>(list, pageable, total);
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void registerMealSample(String id, String idworker, String dish, Boolean orgenolepticoOk, Boolean cuerposExtraOk, String comments)
+	{
+		MealSample mealSample;
+		if(id!=null)
+		{
+			mealSample = this.mealSamplesRepository.findOne(id);
+			if(mealSample==null) return;
+		}
+		else
+		{
+			Query query = new Query();
+			Criteria criteria = new Criteria();
+			criteria.and("day").is(LocalDate.now());
+			criteria.and("dish").is(dish);
+			query.addCriteria(criteria);
+			try { if(debug_queries) System.out.println("registerMealSample: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+			mealSample = this.mongoTemplate.findOne(query, MealSample.class);
+
+			if(mealSample==null)  mealSample = new MealSample();
+		}
+
+		if(id==null)
+		{
+			mealSample.setDay(LocalDate.now());
+		}
+
+		mealSample.setDish(dish);
+		if(orgenolepticoOk!=null)
+		{
+			mealSample.setOrgenolepticoOk(orgenolepticoOk);
+			//TODO: ¿NOTIFICAR SI ESTÁ MAL?
+		}
+		if(cuerposExtraOk!=null)
+		{
+			mealSample.setCuerposExtraOk(cuerposExtraOk);
+			//TODO: ¿NOTIFICAR SI ESTÁ MAL?
+		}
+
+		if(comments!=null) mealSample.setComments(comments);
+
+		mealSample.setIdworker(idworker);
+
+		this.mealSamplesRepository.save(mealSample);
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void deleteMealSample(String id)
+	{
+		MealSample mealSample = this.mealSamplesRepository.findOne(id);
+		if(mealSample!=null) this.mealSamplesRepository.delete(mealSample);
+	}
+
+
+	/*
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void registerMealSample(String idworker, String dish, Boolean organoletico, Boolean cuerposextra, String comments)
+	{
+		MealSample mealSample = this.mealSamplesRepository.findOneByDayAndDish(LocalDate.now(), dish);
+		if(mealSample==null) mealSample = new MealSample();
+
+		mealSample.setOrgenolepticoOk(organoletico);
+		mealSample.setCuerposExtraOk(cuerposextra);
+		mealSample.setComments(comments);
+		mealSample.setDish(dish);
+		mealSample.setDay(LocalDate.now());
+		mealSample.setIdworker(idworker);
+		mealSample.setWhen(LocalDateTime.now());
+
+		//TODO: ¿NOTIFICAR SI UNA MUESTRA ESTÁ MAL?
+
+		this.mealSamplesRepository.save(mealSample);
+	}
+
+*/
 	/*
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)

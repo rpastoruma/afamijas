@@ -25,18 +25,17 @@ public class TempFridge
 
 
 
-	private LocalDateTime when;
+	private LocalDateTime created;
 
-	public TempFridge() { this.when = LocalDateTime.now(); }
+	public TempFridge() { this.created = LocalDateTime.now(); }
 
-	public LocalDateTime getWhen() {
-		return when;
+	public LocalDateTime getCreated() {
+		return created;
 	}
 
-	public void setWhen(LocalDateTime when) {
-		this.when = when;
+	public void setCreated(LocalDateTime created) {
+		this.created = created;
 	}
-
 
 	public String get_id() {
 		return _id;

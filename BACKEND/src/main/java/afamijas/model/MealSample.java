@@ -28,17 +28,19 @@ public class MealSample
 
 
 
-	private LocalDateTime when;
+	private LocalDateTime created;
 
-	public MealSample() { this.when = LocalDateTime.now(); }
+	public MealSample() { this.created = LocalDateTime.now(); }
 
-	public LocalDateTime getWhen() {
-		return when;
+	public LocalDateTime getCreated() {
+		return created;
 	}
 
-	public void setWhen(LocalDateTime when) {
-		this.when = when;
+	public void setCreated(LocalDateTime created) {
+		this.created = created;
 	}
+
+
 
 	public String get_id() {
 		return _id;

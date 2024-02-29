@@ -92,3 +92,15 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
   ];  
 
 
+  
+  
+  //MENÚ REGISTRO TEMPERATURAS
+  export const MENU_TEMP: NbMenuItem[] = [
+    {
+      title: 'Registro temperaturas',
+      icon: { icon: 'fa-temperature-low', pack: 'fas' },
+      link: '/worker-temp',
+      data: 'menu.worker.temp',
+      expanded: false,
+    }
+  ];  
