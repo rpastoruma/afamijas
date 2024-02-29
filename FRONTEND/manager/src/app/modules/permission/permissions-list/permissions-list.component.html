@@ -13,7 +13,7 @@
 
         
         <br/>
-        <ng-select (change)="getPermissions(0)" [multiple]="false" [(ngModel)]="status" name="status" [clearable]="false">
+        <ng-select [searchable]="false" (change)="getPermissions(0)" [multiple]="false" [(ngModel)]="status" name="status" [clearable]="false">
             <ng-option value="P">PENDIENTES</ng-option>
             <ng-option value="A">FIRMADAS</ng-option>
         </ng-select>

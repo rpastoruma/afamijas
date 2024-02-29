@@ -160,7 +160,7 @@
                 </thead>
                 <tbody *ngFor = "let valueRow of values; index as i;" class="tbodyTable">
                     <tr *ngFor = "let key of keys; index as e;">
-                        <td><b>{{key}}</b></td>
+                        <td style="word-break: keep-all"><b>{{key}}</b></td>
                         <td [ngSwitch]="getValueType(valueRow.values[e])" [ngStyle]="{'text-align': align && align[i] ? align[i] : 'center'}">
                             <span *ngSwitchCase="0">
                                 <button nbButton *ngIf="!valueRow.values[e]?.icon" status="primary" size="small" style="text-transform: none;" (click)="actionEvent(valueRow.values[e]?.action, valueRow.id)">{{valueRow.values[e]?.text}}</button>

@@ -164,7 +164,7 @@
                     <br/>
 
                     <span>¿Usará nuestro transporte?</span>
-                    <ng-select [disabled]="theAbsence.allday" [clearable]="false" [multiple]="false" [(ngModel)]="theAbsence.transport" name="theAbsence_transport" #theAbsence_transport="ngModel">
+                    <ng-select [searchable]="false" [disabled]="theAbsence.allday" [clearable]="false" [multiple]="false" [(ngModel)]="theAbsence.transport" name="theAbsence_transport" #theAbsence_transport="ngModel">
                         <ng-option value="NO">NO</ng-option>
                         <ng-option value="SOLO IDA">SOLO IDA</ng-option>
                         <ng-option value="SOLO VUELTA">SOLO VUELTA</ng-option>

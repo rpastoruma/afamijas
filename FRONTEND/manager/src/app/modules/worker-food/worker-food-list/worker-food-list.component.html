@@ -62,7 +62,7 @@
             <br/>
 
             Tipo de menú: 
-            <ng-select [multiple]="false" [(ngModel)]="theFood.menu_type" name="menu_type" [clearable]="false">
+            <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theFood.menu_type" name="menu_type" [clearable]="false">
                 <ng-option *ngFor="let x of allMenuTypes" [value]="x">{{x}}</ng-option>
             </ng-select>
 

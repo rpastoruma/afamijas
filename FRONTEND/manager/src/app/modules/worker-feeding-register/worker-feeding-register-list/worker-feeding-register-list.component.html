@@ -94,7 +94,7 @@
             <br/>
 
             Comida: 
-            <ng-select [multiple]="false" [(ngModel)]="theFeeding.daymeal" name="theFeeding-daymeal" [clearable]="false">
+            <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theFeeding.daymeal" name="theFeeding-daymeal" [clearable]="false">
                 <ng-option value="DESAYUNO">DESAYUNO</ng-option>
                 <ng-option value="ALMUERZO">ALMUERZO</ng-option>
             </ng-select>
@@ -102,7 +102,7 @@
             <div [hidden]="theFeeding.daymeal == 'DESAYUNO'" >
             <br/>
             Plato: 
-            <ng-select [multiple]="false" [(ngModel)]="theFeeding.dish" name="theFeeding-dish" [clearable]="false">
+            <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theFeeding.dish" name="theFeeding-dish" [clearable]="false">
                 <ng-option value="PRIMERO">PRIMERO</ng-option>
                 <ng-option value="SEGUNDO">SEGUNDO</ng-option>
                 <ng-option value="POSTRE">POSTRE</ng-option>
@@ -111,7 +111,7 @@
 
             <br/>
             Resultado: 
-            <ng-select [multiple]="false" [(ngModel)]="theFeeding.result" name="theFeeding-result" [clearable]="false">
+            <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theFeeding.result" name="theFeeding-result" [clearable]="false">
                 <ng-option value="COMPLETO">COMPLETO</ng-option>
                 <ng-option value="PARCIAL">PARCIAL</ng-option>
                 <ng-option value="NADA">NADA</ng-option>
