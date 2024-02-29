@@ -4,15 +4,20 @@
       <nb-tabset>
         <nb-tab tabTitle="NEVERA">
           
-            <nb-card>
-                <nb-card-header>
+            <div>
+                <div>
                     <div class="row float-start" >
                         <h4>Registro de temperatura en nevera</h4>
                     </div>
-                    <button [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openRegisterTempFridgeModal(true)">REGISTRAR</button>
-                </nb-card-header>
-                <nb-card-body>
-            
+                </div>
+
+                <div style="text-align: right;" >
+                      <button [hidden]="!canModify()" nbButton style="margin-bottom: 10px" status="primary" (click)="openRegisterTempFridgeModal(true)">REGISTRAR</button>
+                </div>
+
+                <div>
+
+                    <div style="margin-top:20px">
                     Consultar registro desde el día:
                     <input 
                     class="form-control"
@@ -28,6 +33,7 @@
                     (ngModelChange)="getTempFridges(0);"
                     [disable]="[disabledDay]"
                     />
+                </div>
 
                     <div style="margin-top:15px">
                     Consultar registro hasta el día:
@@ -75,14 +81,10 @@
                     >
             
                     </app-custom-table>
-                </nb-card-body>
+                </div>
             
-            
-                
-                <nb-card-footer>
-                    <button [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openRegisterTempFridgeModal(true)">REGISTRAR</button>
-                </nb-card-footer>
-            </nb-card>
+
+            </div>
             
 
 
@@ -93,15 +95,21 @@
           
 
 
-            <nb-card>
-                <nb-card-header>
-                    <div class="row float-start" >
+            <div>
+                <div>
+                    <div>
                         <h4>Registro de temperatura de recepción y servicio</h4>
                     </div>
-                    <button [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openRegisterTempServiceModal(true)">REGISTRAR</button>
-                </nb-card-header>
-                <nb-card-body>
+                </div>
+
+                <div style="text-align: right;" >
+                    <button [hidden]="!canModify()" nbButton style="margin-bottom: 10px"  status="primary" (click)="openRegisterTempServiceModal(true)">REGISTRAR</button>
+                </div>
+
+
+                <div>
             
+                    <div style="margin-top:20px">
                     Consultar registro desde el día:
                     <input 
                     class="form-control"
@@ -117,6 +125,7 @@
                     (ngModelChange)="getTempServices(0);"
                     [disable]="[disabledDay]"
                     />
+                </div>
 
                     <div style="margin-top:15px">
                     Consultar registro hasta el día:
@@ -164,14 +173,10 @@
                     >
             
                     </app-custom-table>
-                </nb-card-body>
+                </div>
             
-            
-                
-                <nb-card-footer>
-                    <button [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openRegisterTempServiceModal(true)">REGISTRAR</button>
-                </nb-card-footer>
-            </nb-card>
+
+            </div>
             
 
 
@@ -181,15 +186,23 @@
           
 
 
-            <nb-card>
-                <nb-card-header>
-                    <div class="row float-start" >
+            <div>
+                <div>
+                    <div class="row" >
                         <h4>Registro de muestras de comida</h4>
                     </div>
-                    <button [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openRegisterMealSampleModal(true)">REGISTRAR</button>
-                </nb-card-header>
-                <nb-card-body>
+                </div>
+
+                <div style="text-align: right;" >
+                    <button [hidden]="!canModify()" nbButton style="margin-bottom: 10px" status="primary" (click)="openRegisterMealSampleModal(true)">REGISTRAR</button>
+                </div>
+
             
+
+
+                <div>
+            
+                    <div style="margin-top:20px">
                     Consultar registro desde el día:
                     <input 
                     class="form-control"
@@ -204,7 +217,7 @@
                     placeholder=""
                     (ngModelChange)="getMealSamples(0);"
                     [disable]="[disabledDay]"
-                    />
+                    /></div>
 
                     <div style="margin-top:15px">
                     Consultar registro hasta el día:
@@ -252,16 +265,11 @@
                     >
             
                     </app-custom-table>
-                </nb-card-body>
-            
-            
-                
-                <nb-card-footer>
-                    <button [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openRegisterTempServiceModal(true)">REGISTRAR</button>
-                </nb-card-footer>
-            </nb-card>
+                </div>
             
 
+
+            </div>
 
 
         </nb-tab>

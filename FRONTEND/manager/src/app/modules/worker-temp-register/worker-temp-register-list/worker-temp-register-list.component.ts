@@ -214,7 +214,7 @@ export class WorkerTempRegisterListComponent implements OnInit{
     this.tempsService.getMealSamples(this.page, this.size, this.dayfrom, this.dayto).subscribe(
       res => {
         this.isProcessing = false;
-        this.mealsSamples = res.content.map(item => { return {id: item.id, values: [this.date2Text1(item.day), item.dish, this.getBoolean(item.orgenolepticoOk), this.getBoolean(item.cuerposExtraOk), item.comments, item.worker_fullname] }; });
+        this.mealsSamples = res.content.map(item => { return {id: item.id, values: [this.date2Text1(item.day), item.dish, this.getBoolean(item.orgenolepticoOk, false), this.getBoolean(item.cuerposExtraOk, false), item.comments, item.worker_fullname] }; });
         this.mealsSamplesObjects = res.content;
 
         this.totalPages = res.totalPages;
@@ -267,9 +267,16 @@ export class WorkerTempRegisterListComponent implements OnInit{
   }
 
 
-  getBoolean(x : boolean)
+  getBoolean(x : boolean, pdf :boolean)
   {
-    if(x) return "BIEN"; else return "MAL";
+    if(!pdf)
+    {
+      if(x) return "<span class='green'>BIEN</span>"; else return "<span class='red'>MAL</span>";
+    }
+    else
+    {
+      if(x) return "BIEN"; else return "MAL";
+    }
   }
 
   
@@ -365,7 +372,7 @@ export class WorkerTempRegisterListComponent implements OnInit{
         const keys = ['Día:', 'Plato:', 'Control organoléptico:', 'Control cuerpos extraños:', 'Observaciones:', 'Registrado por:'];
         const fields = ['day', 'dish', 'orgenolepticoOk', 'cuerposExtraOk', 'comments', 'worker_fullname'];
         fields.forEach((key, i) => header[key] = keys[i]);
-        this.exportData = res && res.content ? res.content.map(item => [this.date2Text1(item.day), item.dish, this.getBoolean(item.orgenolepticoOk), this.getBoolean(item.cuerposExtraOk), item.comments, item.worker_fullname]) : null;
+        this.exportData = res && res.content ? res.content.map(item => [this.date2Text1(item.day), item.dish, this.getBoolean(item.orgenolepticoOk, true), this.getBoolean(item.cuerposExtraOk, true), item.comments, item.worker_fullname]) : null;
         const final = parseDataExport(fields, this.exportData);
         const title = 'Registro de muestras de comidas';
 

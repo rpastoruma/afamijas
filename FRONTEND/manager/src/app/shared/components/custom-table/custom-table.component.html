@@ -4,7 +4,7 @@
         <!---->
         <!-- Horizontal table  -->
         <div *ngIf="!isMobileLayout" class="table-responsive" style="overflow: visible;">
-            <table class="tableResp filter">
+            <table style="word-break: keep-all" class="tableResp filter">
                 <thead class="thTable">
                     <tr>
                         <th *ngFor="let keyD of keys; index as i" [ngClass]="{'date-width': getFilterType(filters[i]) === 1, 'date-rage-width': getFilterType(filters[i]) === 4}"
@@ -109,7 +109,7 @@
 
         <!-- Vertical table  -->
         <div *ngIf="isMobileLayout" class="table-responsive">
-            <table class="tableResp filter">
+            <table style="word-break: break-all"  class="tableResp filter">
                 <thead class="thead2">
                     <!--tr class="tr2" *ngFor="let key of keys; index as i">
                         <th [attr.colspan]="keys.length">
@@ -171,8 +171,9 @@
                             <span *ngSwitchCase="1">
                                 {{getBool(valueRow.values[e])}}
                             </span>
-                            <span *ngSwitchCase="2">
-                                {{valueRow.values[e]}}
+
+
+                            <span *ngSwitchCase="2" [innerHTML]="valueRow.values[e]">
                             </span>
                             <span *ngSwitchCase="3">
                                 <input type="checkbox" [value]="valueRow.values[i].value" style="width: 20px; height: 20px;" (change)="checkRow(valueRow.id, $event)">
@@ -214,7 +215,7 @@
 
 
         <!--Común a móvil y escritorio-->
-        <div style="margin-left: 3%" *ngIf="hasExport && values && values.length > 0">
+        <div *ngIf="hasExport && values && values.length > 0">
             <button nbButton style="margin-right: .5em; cursor:pointer; border-color: darkgray;" [nbSpinner]="loading" nbSpinnerStatus="primary" nbSpinnerSize="large" nbSpinnerMessage="" class="float-left btn btn-secondary buttons-html5" (click)="exportPdf()">PDF</button>
             <button nbButton style="margin-right: .5em; cursor:pointer; border-color: darkgray;" [nbSpinner]="loadingE" nbSpinnerStatus="primary" nbSpinnerSize="large" nbSpinnerMessage="" class="float-left btn btn-secondary buttons-html5" (click)="exportExcel()">EXCEL</button>
         </div>
