@@ -12,12 +12,13 @@ export class FeedingsService {
 
   constructor(private http: HttpClient,) { }
 
-  getFeedings(page : number, size: number, groupcode : string, idpatient : string, day : Date) 
+  getFeedings(page : number, size: number, groupcode : string, idpatient : string, dayfrom : Date, dayto : Date) 
   {
     let url = ENV.url.workers + `/getFeedings?page=${page}&size=${size}`;
     if(groupcode && groupcode != '') url += "&groupcode=" + groupcode;
     if(idpatient && idpatient != '') url += "&idpatient=" + idpatient;
-    if(day) url += "&day=" + this.formatDate2(day);
+    url += "&dayfrom=" + this.formatDate2(dayfrom);
+    url += "&dayto=" + this.formatDate2(dayto);
 
     return this.http.get<any>(url, {});
   }

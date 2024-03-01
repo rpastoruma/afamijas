@@ -79,27 +79,6 @@ public class WorkersController extends AbstractBaseController
 
 
 
-	@RequestMapping(method=RequestMethod.POST, value="registerLegionella", produces="application/json")
-	public ResponseEntity<?> registerLegionella(
-			@RequestParam(value = "value", required = true) Double value,
-			@RequestParam(value = "point", required = true) String point,
-			@RequestParam(value = "signature", required = true) String signature,
-			HttpServletRequest request
-	)
-	{
-		try
-		{
-			if(!this.isLEGIONELLA_CONTROL()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-			this.workersService.registerLegionella(this.getId(), value, point, signature);
-			return new ResponseEntity<>("", HttpStatus.OK);
-		}
-		catch(Exception e)
-		{
-			this.errorsService.sendError(e, this.getParameters(request));
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
 
 
 
@@ -456,7 +435,8 @@ public class WorkersController extends AbstractBaseController
 	public ResponseEntity<?> getFeedings(
 			@RequestParam(value = "groupcode", required = false) String groupcode,
 			@RequestParam(value = "idpatient", required = false) String idpatient,
-			@RequestParam(value = "day", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate day,
+			@RequestParam(value = "dayfrom", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			@RequestParam(value = "dayto", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
 			@RequestParam(value = "page", required = true) Integer page,
 			@RequestParam(value = "size", required = true) Integer size,
 			@RequestParam(value = "order", required = false) String order,
@@ -473,7 +453,7 @@ public class WorkersController extends AbstractBaseController
 			if(order==null) order = "created";
 			if(orderasc==null) orderasc = "DESC";
 
-			return new ResponseEntity<>(this.workersService.getFeedings(this.getUser(), groupcode, idpatient, day, page, size, order, orderasc), HttpStatus.OK);
+			return new ResponseEntity<>(this.workersService.getFeedings(this.getUser(), groupcode, idpatient, dayfrom, dayto, page, size, order, orderasc), HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -770,6 +750,94 @@ public class WorkersController extends AbstractBaseController
 			if(!this.isKITCHEN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.deleteMealSample(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getLegionellaLogs", produces="application/json")
+	public ResponseEntity<?> getLegionellaLogs(
+			@RequestParam(value = "dayfrom", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			@RequestParam(value = "dayto", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !isMANAGER() && !isLEGIONELLA_CONTROL() )
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			if(order==null) order = "created";
+			if(orderasc==null) orderasc = "DESC";
+
+			return new ResponseEntity<>(this.workersService.getLegionellaLogs(this.getUser(), dayfrom, dayto, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="registerLegionellaLog", produces="application/json")
+	public ResponseEntity<?> registerLegionellaLog(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "point", required = true) String point,
+			@RequestParam(value = "value", required = false) Double value,
+			@RequestParam(value = "temperature", required = false) Double temperature,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isLEGIONELLA_CONTROL()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.registerLegionellaLog(id, this.getId(), point, value, temperature);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteLegionellaLog", produces="application/json")
+	public ResponseEntity<?> deleteLegionellaLog(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isLEGIONELLA_CONTROL()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.deleteLegionellaLog(id);
 			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)

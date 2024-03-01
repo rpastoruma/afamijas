@@ -20,6 +20,8 @@ public class LegionellaLog
 
 	private Double value;
 
+	private Double temperature;
+
 	private String point;
 
 	private String signature;
@@ -27,16 +29,16 @@ public class LegionellaLog
 
 	private Boolean isOk;
 
-	private LocalDateTime when;
+	private LocalDateTime created;
 
-	public LegionellaLog() { this.when = LocalDateTime.now(); }
+	public LegionellaLog() { this.created = LocalDateTime.now(); }
 
-	public LocalDateTime getWhen() {
-		return when;
+	public LocalDateTime getCreated() {
+		return created;
 	}
 
-	public void setWhen(LocalDateTime when) {
-		this.when = when;
+	public void setCreated(LocalDateTime created) {
+		this.created = created;
 	}
 
 	public String get_id() {
@@ -77,6 +79,14 @@ public class LegionellaLog
 
 	public void setPoint(String point) {
 		this.point = point;
+	}
+
+	public Double getTemperature() {
+		return temperature;
+	}
+
+	public void setTemperature(Double temperature) {
+		this.temperature = temperature;
 	}
 
 	public String getSignature() {

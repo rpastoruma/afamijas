@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
-import { PatientDTO, parseDataExport, ActionDTO, FeedingDTO } from 'src/app/shared/models/models';
+import { PatientDTO, parseDataExport, ActionDTO, FeedingDTO, LegionellaLogDTO } from 'src/app/shared/models/models';
 import { UsersService } from 'src/app/core/services/users.service';
 import { PdfService } from 'src/app/core/services/pdf-service.service';
 import { ExcelService } from 'src/app/core/services/excel-service.service';
@@ -8,49 +8,43 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FeedingsService } from 'src/app/core/services/feedings.service';
 import { flatpickrFactory } from '../../calendar/mycalendar.module'; 
+import { LegionellalogsService } from 'src/app/core/services/legionellalogs.service';
 
 
 
 @Component({
-  selector: 'app-worker-feeding-register-list',
-  templateUrl: './worker-feeding-register-list.component.html',
-  styleUrls: ['./worker-feeding-register-list.component.scss']
+  selector: 'app-worker-legionella-list',
+  templateUrl: './worker-legionella-list.component.html',
+  styleUrls: ['./worker-legionella-list.component.scss']
 })
-export class WorkerFeedingRegisterListComponent implements OnInit {
+export class WorkerLegionellaListComponent implements OnInit 
+{
 
-  
 
   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
 
   //PARÁMETROS LISTADO
   dayfrom : Date = new Date();
   dayto : Date = new Date();
-  groupcode : string = 'GRUPO 1';
-  idpatient : string = '';
 
   page : number = 0;
   size : number = 4;
   totalPages : number = 0;
 
-  allPatients : PatientDTO[] = [];
-  allGroups : string[] = ['GRUPO 1', 'GRUPO 2', 'GRUPO 3']
 
-  theFeeding : FeedingDTO = {
+  theLegionellaLog : LegionellaLogDTO = {
     id: '',
-    idpatient: '',
-    patient_fullname: '',
     idworker: '',
     worker_fullname: '',
     day: new Date(),
-    daymeal: '',
-    dish: '',
-    result: '',
-    indications: '',
-    incidences: ''
+    point: '',
+    value: 0.5,
+    temperature: 60,
+    isOk: true
   };
   
-  feedings: any[]  = []; // amy => formato del listado
-  feedingsObjects: FeedingDTO[]  = [];
+  legionellalogs: any[]  = []; // amy => formato del listado
+  legionellalogsObjects: LegionellaLogDTO[]  = [];
 
   loadingExcel : boolean = false;
   loadingPDF : boolean = false;
@@ -67,67 +61,58 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
     private excelService : ExcelService,
     private authService : AuthService,
     private modal: NgbModal, 
-    private feedingsService : FeedingsService
+    private legionelaLogsService : LegionellalogsService
 
   ) { }
 
   ngOnInit(): void {
     flatpickrFactory();
-    this.getPatients();
-    if(this.canModify()) this.actions = [{action: 'edit', text: 'Modificar registro de alimentación'},{action: 'delete', text: 'Eliminar registro de alimentación'}];
+    this.getLegionellaLogs(0);
+    if(this.canModify()) this.actions = [{action: 'edit', text: 'Modificar registro de Legionella'},{action: 'delete', text: 'Eliminar registro de Legionella'}];
   }
 
-  getPatients()
-  {
-      this.feedings = [];
-      this.feedingsObjects = [];
-      this.isProcessing = true;
-      this.usersService.getAllPatients(this.groupcode).subscribe(
-        res => {
-          this.allPatients = res;
-          if(this.allPatients && this.allPatients.length>0) 
-          {
-            this.getFeedings(0);
-          }
-          else
-            this.isProcessing = false;
-        },
-        error => 
-        {
-          console.error("getPatients():"+JSON.stringify(error));
-          this.toastService.show("No se pueden obtener los usuarios.",
-          "¡Ups!", 
-          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-         );
-        }
-      );
-  }
-  
 
 
-  getFeedings(page :number) 
+
+  getLegionellaLogs(page :number) 
   {
+    this.legionellalogs = [];
+    this.legionellalogsObjects = [];
     this.isProcessing = true;
     if(!this.dayfrom) this.dayfrom = new Date();
     if(!this.dayto) this.dayto = new Date();
     this.page = page
-    this.feedingsService.getFeedings(this.page, this.size, this.groupcode, this.idpatient, this.dayfrom, this.dayto).subscribe(
+    this.legionelaLogsService.getLegionellaLogs(this.page, this.size, this.dayfrom, this.dayto).subscribe(
       res => {
         this.isProcessing = false;
-        this.feedings = res.content.map(item => { return {id: item.id, values: [item.patient_fullname, this.date2Text1(item.day), item.daymeal, item.dish, item.result, item.indications, item.incidences, item.worker_fullname] }; });
-        this.feedingsObjects = res.content;
+        this.legionellalogs = res.content.map(item => { return {id: item.id, values: [this.date2Text1(item.day), item.point, this.getVal(item.value), this.getTemp(item.temperature), item.worker_fullname] }; });
+        this.legionellalogsObjects = res.content;
 
         this.totalPages = res.totalPages;
       },
       error => {
         this.isProcessing = false;
-        console.error("getFeedings():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido obtener la información del registro de alimentación.",
+        console.error("getLegionellaLogs():"+JSON.stringify(error));
+        this.toastService.show("No se ha podido obtener la información del registro de Legionella.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
       }
     );
+  }
+
+  
+  getTemp(temp : number)
+  {
+    const stemp = temp>0?'+'+temp:temp;
+    if(temp>=60) return "<div class=\"green\">" + stemp + " ºC</div>";
+    else return "<div class=\"red\">" + stemp + " ºC</div>";
+  }
+
+  getVal(val : number)
+  {
+    if(val>=0.2 && val <= 1.0) return "<div class=\"green\">" + val + " ºC</div>";
+    else return "<div class=\"red\">" + val + " mg/l</div>";
   }
 
   
@@ -141,15 +126,15 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
     if(!this.dayfrom) this.dayfrom = new Date();
     if(!this.dayto) this.dayto = new Date();
 
-    this.feedingsService.getFeedings(0, 100000000, this.groupcode, this.idpatient, this.dayfrom, this.dayto).subscribe(
+    this.legionelaLogsService.getLegionellaLogs(0, 100000000, this.dayfrom, this.dayto).subscribe(
       res => {
         const header = {};
-        const keys = ['Usuario:', 'Día:', 'Comida:', 'Plato:', 'Resultado:', 'Indicaciones:', 'Incidencias:', 'Registrado por:'];
-        const fields = ['patient_fullname', 'day', 'daymeal', 'dish', 'result', 'indications', 'incidences', 'worker_fullname'];
+        const keys = ['Día:', 'Punto:', 'C.R.L. (mg/l):', 'Temperatura (ºC):', 'Registrado por:'];
+        const fields = ['day', 'point', 'value', 'temperature', 'worker_fullname'];
         fields.forEach((key, i) => header[key] = keys[i]);
-        this.exportData = res && res.content ? res.content.map(item => [item.patient_fullname, this.date2Text1(item.day), item.daymeal, item.dish, item.result, item.indications, item.incidences, item.worker_fullname]) : null;
+        this.exportData = res && res.content ? res.content.map(item => [this.date2Text1(item.day), item.point, item.value, item.temperature, item.worker_fullname]) : null;
         const final = parseDataExport(fields, this.exportData);
-        const title = 'Registro de alimentación';
+        const title = 'Registro de Legionella';
 
         if (format === 'excel') 
         {
@@ -159,7 +144,7 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
         } 
         else 
         {
-          const minFields = ['20%','10%','10%','10%','10%','10%','10%','20%'];
+          const minFields = ['20%','30%','10%','10%','30%'];
           const keystranslate = keys.map(item => item);
           this.pdfService.exportDataToPDF(title, keystranslate, fields, title, final, minFields);
           this.loadingPDF = false;
@@ -174,74 +159,50 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
 
 
   filter(page: number) {
-    this.getFeedings(page);
+    this.getLegionellaLogs(page);
   }
 
 
   setPage(event) {
     this.page = event;
-    this.getFeedings(this.page);
+    this.getLegionellaLogs(this.page);
   }
 
   action(event) 
   {
     if (event && event[0] === 'edit') 
     {
-      const selected = this.feedingsObjects.find(item => item.id === event[1]);
-      this.theFeeding = selected;
+      const selected = this.legionellalogsObjects.find(item => item.id === event[1]);
+      this.theLegionellaLog = selected;
 
-      this.openRegisterFeedinggModal();
+      this.openRegisterLegionellaLogModal();
     } 
     else if (event && event[0] === 'delete') 
     {
-      this.deleteFeeding(event[1]);
+      this.deleteLegionellaLog(event[1]);
     }
   }
 
 
   canModify() : boolean
   {
-    return this.authService.isNursingAssitant();
+    return this.authService.isLegionellaLog();
   }
 
 
 
-  openRegisterFeedinggModal()
+  openRegisterLegionellaLogModal()
   {
-    if(this.theFeeding.idpatient=='' && this.allPatients.length>0)  this.theFeeding.idpatient = this.allPatients[0].id; 
-    if(this.theFeeding.daymeal=='' && new Date().getHours() <= 12) this.theFeeding.daymeal = 'DESAYUNO';
-    if(this.theFeeding.daymeal=='' && new Date().getHours() > 12) this.theFeeding.daymeal = 'ALMUERZO';
-    if(this.theFeeding.dish=='') this.theFeeding.dish = 'PRIMERO';
-    if(this.theFeeding.result=='') this.theFeeding.result = 'COMPLETO';
-
     this.modal.open(this.modalContent, { size: 'lg' });
   }
 
-  registerFeeding()
+  registerLegionellaLog()
   {
-    if(!this.theFeeding.day) this.theFeeding.day = new Date();
+    if(!this.theLegionellaLog.day) this.theLegionellaLog.day = new Date();
 
-    if(!this.theFeeding.idpatient)
+    if(!this.theLegionellaLog.point || this.theLegionellaLog.point.trim() == '')
     {
-      this.toastService.show("Debes seleccionar usuario.",
-        "¡Ups!", 
-        { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-      );
-      return;
-    }
-
-    if(!this.theFeeding.daymeal)
-    {
-      this.toastService.show("Debes seleccionar comida.",
-        "¡Ups!", 
-        { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-      );
-      return;
-    }
-
-    if(!this.theFeeding.dish && this.theFeeding.daymeal=='ALMUERZO')
-    {
-      this.toastService.show("Debes seleccionar plato.",
+      this.toastService.show("Debes indicar el punto.",
         "¡Ups!", 
         { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
       );
@@ -249,25 +210,16 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
     }
 
 
-    if(!this.theFeeding.result)
-    {
-      this.toastService.show("Debes seleccionar resultado.",
-        "¡Ups!", 
-        { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-      );
-      return;
-    }
 
-    
 
-    this.feedingsService.registerFeeding(this.theFeeding).subscribe(
+    this.legionelaLogsService.registerLegionellaLog(this.theLegionellaLog).subscribe(
       res => {
         this.isProcessing = false;
-        this.toastService.show("Registro de alimentación realizado correctamente.",
+        this.toastService.show("Registro de Legionella realizado correctamente.",
             "¡Ok!", 
             { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );
-        this.getFeedings(this.page);
+        this.getLegionellaLogs(this.page);
         this.modal.dismissAll();
       },
       error => {
@@ -282,20 +234,20 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
   }
 
 
-  deleteFeeding(id : string)
+  deleteLegionellaLog(id : string)
   {
-    this.feedingsService.deleteFeeding(id).subscribe(
+    this.legionelaLogsService.deleteLegionellaLog(id).subscribe(
       res => {
         this.isProcessing = false;
-        this.toastService.show("Registro de alimentación eliminado correctamente.",
+        this.toastService.show("Registro de Legionella eliminado correctamente.",
             "¡Ok!", 
             { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );
-        this.getFeedings(this.page);
+        this.getLegionellaLogs(this.page);
       },
       error => {
         this.isProcessing = false;
-        console.error("deleteFeeding():"+JSON.stringify(error));
+        console.error("deleteLegionellaLog():"+JSON.stringify(error));
         this.toastService.show("No se ha podido eliminar el registro de alimentación.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }

@@ -104,6 +104,13 @@ export class AuthService {
   }
 
 
+    
+  isLegionellaLog()
+  {
+    return hasRole(this.getRoles(),  RoleCode.LEGIONELLA_CONTROL);
+  }
+
+
   login(username: string, password: string): Observable<string | null> 
   {
     // this.logout();

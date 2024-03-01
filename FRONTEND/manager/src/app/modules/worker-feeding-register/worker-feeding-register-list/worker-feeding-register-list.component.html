@@ -8,23 +8,41 @@
     <nb-card-body>
 
         <div style="margin-bottom: 15px !important">
-        Consultar registro para el día:
-        <input 
-        class="form-control"
-        type="text"
-        mwlFlatpickr
-        [(ngModel)]="day"
-        [altInput]="true"
-        [convertModelValue]="true"
-        [enableTime]="false"
-        dateFormat="YY-m-d"
-        altFormat="d/m/Y"
-        placeholder=""
-        (ngModelChange)="getFeedings(0);"
-        [disable]="[disabledDay]"
-        />
-        </div>
-
+            Consultar registro desde el día:
+            <input 
+            class="form-control"
+            type="text"
+            mwlFlatpickr
+            [(ngModel)]="dayfrom"
+            [altInput]="true"
+            [convertModelValue]="true"
+            [enableTime]="false"
+            dateFormat="YY-m-d"
+            altFormat="d/m/Y"
+            placeholder=""
+            (ngModelChange)="getFeedings(0);"
+            [disable]="[disabledDay]"
+            />
+            </div>
+        
+        <div style="margin-bottom: 15px !important">
+            Consultar registro hasta el día:
+            <input 
+            class="form-control"
+            type="text"
+            mwlFlatpickr
+            [(ngModel)]="dayto"
+            [altInput]="true"
+            [convertModelValue]="true"
+            [enableTime]="false"
+            dateFormat="YY-m-d"
+            altFormat="d/m/Y"
+            placeholder=""
+            (ngModelChange)="getFeedings(0);"
+            [disable]="[disabledDay]"
+            />
+            </div>
+    
         Para el grupo:
         <ng-select [searchable]="false" (change)="idpatient=''; theFeeding.idpatient='';  getPatients();" [multiple]="false" [(ngModel)]="groupcode" name="groupcode" [clearable]="false" notFoundText="No se encuentran grupos">
             <ng-option *ngFor="let x of allGroups" [value]="x">{{x}}</ng-option>

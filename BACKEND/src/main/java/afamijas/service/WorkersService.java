@@ -4,6 +4,8 @@ import afamijas.model.User;
 import afamijas.model.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -18,9 +20,6 @@ public interface WorkersService
 
     List<PatientDTO> getAllPatients(String groupcode);
 
-
-
-    void registerLegionella(String idworker, Double value, String point, String signature);
 
     void registerWC(String idworker, String point, String signature);
 
@@ -53,13 +52,15 @@ public interface WorkersService
 
 
 
+
     Page<FoodDTO> getFoods(String idpatient, Integer page, Integer size, String order, String orderasc);
 
     void modifyFood(String idpatient, String menu_type, String breakfast_description);
 
 
 
-    Page<FeedingDTO> getFeedings(User worker, String groupcode, String idpatient, LocalDate day, Integer page, Integer size, String order, String orderasc);
+
+    Page<FeedingDTO> getFeedings(User worker, String groupcode, String idpatient, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String order, String orderasc);
 
     void registerFeeding(String id, String idpatient, String idworker, String dish, String result, String daymeal, String indications, String incidences);
 
@@ -81,9 +82,23 @@ public interface WorkersService
 
     void deleteTempService(String id);
 
+
+
+
     Page<MealSampleDTO>  getMealSamples(User user, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String order, String orderasc);
 
     void registerMealSample(String id, String idworker, String dish, Boolean orgenolepticoOk, Boolean cuerposExtraOk, String comments);
 
     void deleteMealSample(String id);
+
+
+
+
+    Page<LegionellaLogDTO> getLegionellaLogs(User user, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc);
+
+    @Transactional(propagation= Propagation.REQUIRES_NEW)
+    void registerLegionellaLog(String id, String idworker, String point, Double value, Double temperature);
+
+    @Transactional(propagation= Propagation.REQUIRES_NEW)
+    void deleteLegionellaLog(String id);
 }

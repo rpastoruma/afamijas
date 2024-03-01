@@ -271,6 +271,28 @@ export interface MealSampleDTO
 
 
 
+export interface LegionellaLogDTO
+{
+    id : string;
+
+    idworker : string;
+
+    worker_fullname : string;
+
+    day : Date;
+
+    point : string;
+
+    value: number; 
+    
+    temperature: number;
+    
+    isOk: boolean;
+
+    
+}
+
+
 
 
 //TODO: Revisar si se está haciendo bien ya que es copiada de proyectos antiguos

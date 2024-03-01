@@ -34,12 +34,12 @@
                 </ul>
             </div>
 
-            <div style="{{myroutestop_tomorrow.idroutestop!=myroutestop_today.idroutestop?'color: red':'color: green'}}" *ngIf="myroutestop_tomorrow && myroutestop_tomorrow.idroutestop!=''">
+            <div [ngStyle]="myroutestop_tomorrow.idroutestop!=myroutestop_today.idroutestop?{color: 'red'}:{color: 'green'}" *ngIf="myroutestop_tomorrow && myroutestop_tomorrow.idroutestop!=''">
                 Parada asignada para mañana:
                 <ul  style="margin-top:10px;">
-                    <li style="{{myroutestop_tomorrow.idroutestop!=myroutestop_today.idroutestop?'color: red':'color: green'}}" class="routestop_hour"><nb-icon icon="clock-outline"></nb-icon> {{myroutestop_tomorrow.hour}}</li>
-                    <li style="{{myroutestop_tomorrow.idroutestop!=myroutestop_today.idroutestop?'color: red':'color: green'}}" class="routestop_name">{{myroutestop_tomorrow.name}}</li>
-                    <li style="{{myroutestop_tomorrow.idroutestop!=myroutestop_today.idroutestop?'color: red':'color: green'}}" class="routestop_postaladdress"><small>{{myroutestop_tomorrow.postaladdress}}</small></li>
+                    <li [ngStyle]="myroutestop_tomorrow.idroutestop!=myroutestop_today.idroutestop?{color: 'red'}:{color: 'green'}" class="routestop_hour"><nb-icon icon="clock-outline"></nb-icon> {{myroutestop_tomorrow.hour}}</li>
+                    <li [ngStyle]="myroutestop_tomorrow.idroutestop!=myroutestop_today.idroutestop?{color: 'red'}:{color: 'green'}" class="routestop_name">{{myroutestop_tomorrow.name}}</li>
+                    <li [ngStyle]="myroutestop_tomorrow.idroutestop!=myroutestop_today.idroutestop?{color: 'red'}:{color: 'green'}"  class="routestop_postaladdress"><small>{{myroutestop_tomorrow.postaladdress}}</small></li>
                 </ul>
             </div>
 

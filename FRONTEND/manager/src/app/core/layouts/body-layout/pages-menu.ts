@@ -104,3 +104,21 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
       expanded: false,
     }
   ];  
+
+
+  
+  
+  //MENÚ REGISTRO TEMPERATURAS
+  export const MENU_LEGIONELLA: NbMenuItem[] = [
+    {
+      title: 'Control Legionella',
+      icon: { icon: 'fa-bacteria', pack: 'fas' },
+      link: '/worker-legionella',
+      data: 'menu.worker.legionella',
+      expanded: false,
+    }
+  ];  
+
+
+
+  

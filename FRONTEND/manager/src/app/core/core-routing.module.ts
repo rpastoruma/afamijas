@@ -30,6 +30,8 @@ import { canViewWorkerMedicationGuard } from './guards/can-view-worker-medicatio
 import { canViewWorkerFoodGuard } from './guards/can-view-worker-food.guard';
 import { canViewWorkerFeedingRegisterGuard } from './guards/can-view-worker-feeding-register.guard';
 import { canViewWorkerTempRegisterGuard } from './guards/can-view-worker-temp-register.guard';
+import { canViewLegionellalogGuard } from './guards/can-view-legionellalog.guard';
+
 
 const routes: Routes = [
     /*
@@ -110,6 +112,12 @@ const routes: Routes = [
       component: BodyLayoutComponent,
       canActivate : [canViewWorkerTempRegisterGuard],
       loadChildren: () => import('../modules/worker-temp-register/worker-temp-register.module').then(m => m.WorkerTempRegisterModule) 
+    },
+    {
+      path : 'worker-legionella', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewLegionellalogGuard],
+      loadChildren: () => import('../modules/worker-legionella/worker-legionella.module').then(m => m.WorkerLegionellaModule) 
     },
     
     {

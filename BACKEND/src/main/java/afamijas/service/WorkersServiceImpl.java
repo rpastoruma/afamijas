@@ -117,28 +117,6 @@ public class WorkersServiceImpl implements WorkersService
 
 
 
-	@Override
-	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void registerLegionella(String idworker, Double value, String point, String signature)
-	{
-		LegionellaLog legionellaLog = this.legionellaLogRepository.findOne(LocalDate.now());
-		if(legionellaLog==null) legionellaLog = new LegionellaLog();
-
-		legionellaLog.setDay(LocalDate.now());
-		legionellaLog.setPoint(point);
-		legionellaLog.setIdworker(idworker);
-		legionellaLog.setSignature(signature);
-		legionellaLog.setValue(value);
-		legionellaLog.setWhen(LocalDateTime.now());
-		legionellaLog.setOk(true);
-
-		if(value<0.2 || value>1.0)  legionellaLog.setOk(false);
-
-		//TODO: ¿NOTIFICAR SI UNA MUESTRA ESTÁ MAL?
-
-		this.legionellaLogRepository.save(legionellaLog);
-
-	}
 
 
 	@Override
@@ -409,12 +387,12 @@ public class WorkersServiceImpl implements WorkersService
 
 
 	@Override
-	public Page<FeedingDTO> getFeedings(User worker, String groupcode, String idpatient, LocalDate day, Integer page, Integer size, String orderby, String orderasc)
+	public Page<FeedingDTO> getFeedings(User worker, String groupcode, String idpatient, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc)
 	{
 		Pageable pageable = PageRequest.of(page, size);
 		Query query = new Query();
 
-		Criteria criteria = new Criteria();
+		Criteria criteria = new Criteria().andOperator(new Criteria().where("day").gte(dayfrom), new Criteria().where("day").lte(dayto));
 		if(idpatient!=null)
 			criteria.and("idpatient").is(idpatient);
 		else if(groupcode != null)
@@ -424,7 +402,6 @@ public class WorkersServiceImpl implements WorkersService
 			List<String> idspatients =  this.mongoTemplate.find(query2, User.class).stream().map(x -> x.get_id()).toList();
 			criteria.and("idpatient").in(idspatients);
 		}
-		if(day!=null) criteria.and("day").is(day);
 
 		query.addCriteria(criteria);
 		long total = this.mongoTemplate.count(query, Feeding.class);
@@ -650,6 +627,9 @@ public class WorkersServiceImpl implements WorkersService
 		if(tempService!=null) this.tempServicesRepository.delete(tempService);
 	}
 
+
+
+
 	@Override
 	public Page<MealSampleDTO> getMealSamples(User user, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc)
 	{
@@ -726,28 +706,85 @@ public class WorkersServiceImpl implements WorkersService
 	}
 
 
-	/*
+
+
+
 	@Override
-	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void registerMealSample(String idworker, String dish, Boolean organoletico, Boolean cuerposextra, String comments)
+	public Page<LegionellaLogDTO> getLegionellaLogs(User user, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc)
 	{
-		MealSample mealSample = this.mealSamplesRepository.findOneByDayAndDish(LocalDate.now(), dish);
-		if(mealSample==null) mealSample = new MealSample();
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
 
-		mealSample.setOrgenolepticoOk(organoletico);
-		mealSample.setCuerposExtraOk(cuerposextra);
-		mealSample.setComments(comments);
-		mealSample.setDish(dish);
-		mealSample.setDay(LocalDate.now());
-		mealSample.setIdworker(idworker);
-		mealSample.setWhen(LocalDateTime.now());
+		Criteria criteria = new Criteria().andOperator(new Criteria().where("day").gte(dayfrom), new Criteria().where("day").lte(dayto));
 
-		//TODO: ¿NOTIFICAR SI UNA MUESTRA ESTÁ MAL?
+		query.addCriteria(criteria);
+		long total = this.mongoTemplate.count(query, LegionellaLog.class);
 
-		this.mealSamplesRepository.save(mealSample);
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { if(debug_queries) System.out.println("getLegionellaLogs: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		//EN LOS USUARIOS WORKER INCLUIMOS TAMBIÉN LOS QUE PUDIERAN ESTAR BORRADOS POR ESO FINDONE NO FILTRA POR STATUS
+		List<LegionellaLogDTO> list = this.mongoTemplate.find(query, LegionellaLog.class).stream().map(x -> new LegionellaLogDTO(x, this.usersRepository.findOne(x.getIdworker()))).toList();
+
+		return new PageImpl<>(list, pageable, total);
 	}
 
-*/
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void registerLegionellaLog(String id, String idworker, String point, Double value, Double temperature)
+	{
+		LegionellaLog legionellaLog;
+		if(id!=null)
+		{
+			legionellaLog = this.legionellaLogRepository.findOne(id);
+			if(legionellaLog==null) return;
+		}
+		else
+		{
+			Query query = new Query();
+			Criteria criteria = new Criteria();
+			criteria.and("day").is(LocalDate.now());
+			query.addCriteria(criteria);
+			try { if(debug_queries) System.out.println("registerLegionellaLog: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+			legionellaLog = this.mongoTemplate.findOne(query, LegionellaLog.class);
+
+			if(legionellaLog==null)  legionellaLog = new LegionellaLog();
+		}
+
+		if(id==null)
+		{
+			legionellaLog.setDay(LocalDate.now());
+		}
+
+		legionellaLog.setOk(true);
+		legionellaLog.setPoint(point);
+		if(value!=null)
+		{
+			legionellaLog.setValue(value);
+			if(value<0.2 || value>1) legionellaLog.setOk(false);
+			//TODO: ¿NOTIFICAR SI ESTÁ MAL?
+		}
+		if(temperature!=null)
+		{
+			legionellaLog.setTemperature(temperature);
+			if(temperature<60) legionellaLog.setOk(false);
+			//TODO: ¿NOTIFICAR SI ESTÁ MAL?
+		}
+
+		legionellaLog.setIdworker(idworker);
+
+		this.legionellaLogRepository.save(legionellaLog);
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void deleteLegionellaLog(String id)
+	{
+		LegionellaLog legionellaLog = this.legionellaLogRepository.findOne(id);
+		if(legionellaLog!=null) this.legionellaLogRepository.delete(legionellaLog);
+	}
+
+
 	/*
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
