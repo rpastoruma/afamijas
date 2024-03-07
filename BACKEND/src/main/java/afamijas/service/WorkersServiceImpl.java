@@ -119,18 +119,6 @@ public class WorkersServiceImpl implements WorkersService
 
 
 
-	@Override
-	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void registerWC(String idworker, String point, String signature)
-	{
-		WCLog wcLog = new WCLog();
-		wcLog.setIdworker(idworker);
-		wcLog.setPoint(point);
-		wcLog.setWhen(LocalDateTime.now());
-		wcLog.setSignature(signature);
-		this.wcLogRepository.save(wcLog);
-	}
-
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
@@ -783,6 +771,69 @@ public class WorkersServiceImpl implements WorkersService
 		LegionellaLog legionellaLog = this.legionellaLogRepository.findOne(id);
 		if(legionellaLog!=null) this.legionellaLogRepository.delete(legionellaLog);
 	}
+
+	@Override
+	public Page<WCLogDTO> getWCLogs(User user, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		Criteria criteria = new Criteria().andOperator(new Criteria().where("day").gte(dayfrom), new Criteria().where("day").lte(dayto));
+
+		query.addCriteria(criteria);
+		long total = this.mongoTemplate.count(query, WCLog.class);
+
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { if(debug_queries) System.out.println("getWCLogs: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		//EN LOS USUARIOS WORKER INCLUIMOS TAMBIÉN LOS QUE PUDIERAN ESTAR BORRADOS POR ESO FINDONE NO FILTRA POR STATUS
+		List<WCLogDTO> list = this.mongoTemplate.find(query, WCLog.class).stream().map(x -> new WCLogDTO(x, this.usersRepository.findOne(x.getIdworker()))).toList();
+
+		return new PageImpl<>(list, pageable, total);
+
+	}
+
+	@Override
+	public void registerWCLog(String id, String idworker, String point, String hour)
+	{
+		WCLog wcLog;
+		if(id!=null)
+		{
+			wcLog = this.wcLogRepository.findOne(id);
+			if(wcLog==null) return;
+		}
+		else
+		{
+			Query query = new Query();
+			Criteria criteria = new Criteria();
+			criteria.and("day").is(LocalDate.now());
+			query.addCriteria(criteria);
+			try { if(debug_queries) System.out.println("registerWCLog: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+			wcLog = this.mongoTemplate.findOne(query, WCLog.class);
+
+			if(wcLog==null) wcLog = new WCLog();
+		}
+
+		if(id==null)
+		{
+			wcLog.setDay(LocalDate.now());
+		}
+
+		wcLog.setHour(hour);
+		wcLog.setPoint(point);
+
+
+		wcLog.setIdworker(idworker);
+
+		this.wcLogRepository.save(wcLog);	}
+
+	@Override
+	public void deleteWCLog(String id)
+	{
+		WCLog wcLog = this.wcLogRepository.findOne(id);
+		if(wcLog!=null) this.wcLogRepository.delete(wcLog);
+	}
+
 
 
 	/*

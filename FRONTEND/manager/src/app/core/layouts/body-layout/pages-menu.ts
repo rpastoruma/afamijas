@@ -118,7 +118,21 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
       expanded: false,
     }
   ];  
+ 
+  
+  //MENÚ REGISTRO LIMPIEZA
+  export const MENU_CLEANING: NbMenuItem[] = [
+    {
+      title: 'Registro de limpieza',
+      icon: { icon: 'fa-broom', pack: 'fas' },
+      link: '/worker-wclogs',
+      data: 'menu.worker-wclogs',
+      expanded: false,
+    }
+  ];  
 
 
+
+  
 
   

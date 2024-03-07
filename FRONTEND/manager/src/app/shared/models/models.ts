@@ -295,6 +295,26 @@ export interface LegionellaLogDTO
 
 
 
+export interface WCLogDTO
+{
+    id : string;
+
+    idworker : string;
+
+    worker_fullname : string;
+
+    day : Date;
+
+    point : string;
+
+    hour: string; 
+    
+    
+}
+
+
+
+
 //TODO: Revisar si se está haciendo bien ya que es copiada de proyectos antiguos
 //Parseo como fecha: 
 export function reviver(key: string, value: any): any {

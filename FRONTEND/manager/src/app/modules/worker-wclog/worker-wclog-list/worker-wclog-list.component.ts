@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
-import { PatientDTO, parseDataExport, ActionDTO, FeedingDTO, LegionellaLogDTO } from 'src/app/shared/models/models';
+import { PatientDTO, parseDataExport, ActionDTO, FeedingDTO, LegionellaLogDTO, WCLogDTO } from 'src/app/shared/models/models';
 import { UsersService } from 'src/app/core/services/users.service';
 import { PdfService } from 'src/app/core/services/pdf-service.service';
 import { ExcelService } from 'src/app/core/services/excel-service.service';
@@ -9,15 +9,16 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FeedingsService } from 'src/app/core/services/feedings.service';
 import { flatpickrFactory } from '../../calendar/mycalendar.module'; 
 import { LegionellalogsService } from 'src/app/core/services/legionellalogs.service';
+import { WclogsService } from 'src/app/core/services/wclogs.service';
 
 
 
 @Component({
-  selector: 'app-worker-legionella-list',
-  templateUrl: './worker-legionella-list.component.html',
-  styleUrls: ['./worker-legionella-list.component.scss']
+  selector: 'app-worker-wclog-list',
+  templateUrl: './worker-wclog-list.component.html',
+  styleUrls: ['./worker-wclog-list.component.scss']
 })
-export class WorkerLegionellaListComponent implements OnInit 
+export class WorkerWclogListComponent implements OnInit 
 {
 
 
@@ -32,19 +33,17 @@ export class WorkerLegionellaListComponent implements OnInit
   totalPages : number = 0;
 
 
-  theLegionellaLog : LegionellaLogDTO = {
+  theWC : WCLogDTO = {
     id: '',
     idworker: '',
     worker_fullname: '',
     day: new Date(),
     point: '',
-    value: 0.5,
-    temperature: 60,
-    isOk: true
+    hour: ''
   };
   
-  legionellalogs: any[]  = []; // amy => formato del listado
-  legionellalogsObjects: LegionellaLogDTO[]  = [];
+  wclogs: any[]  = []; // amy => formato del listado
+  wclogsObjects: WCLogDTO[]  = [];
 
   loadingExcel : boolean = false;
   loadingPDF : boolean = false;
@@ -61,58 +60,44 @@ export class WorkerLegionellaListComponent implements OnInit
     private excelService : ExcelService,
     private authService : AuthService,
     private modal: NgbModal, 
-    private legionelaLogsService : LegionellalogsService
+    private wclogsService : WclogsService
 
   ) { }
 
   ngOnInit(): void {
     flatpickrFactory();
-    this.getLegionellaLogs(0);
-    if(this.canModify()) this.actions = [{action: 'edit', text: 'Modificar registro de Legionella'},{action: 'delete', text: 'Eliminar registro de Legionella'}];
+    this.getWCLogs(0);
+    if(this.canModify()) this.actions = [{action: 'edit', text: 'Modificar registro de limpieza'},{action: 'delete', text: 'Eliminar registro de limpieza'}];
   }
 
 
 
 
-  getLegionellaLogs(page :number) 
+  getWCLogs(page :number) 
   {
-    this.legionellalogs = [];
-    this.legionellalogsObjects = [];
+    this.wclogs = [];
+    this.wclogsObjects = [];
     this.isProcessing = true;
     if(!this.dayfrom) this.dayfrom = new Date();
     if(!this.dayto) this.dayto = new Date();
     this.page = page
-    this.legionelaLogsService.getLegionellaLogs(this.page, this.size, this.dayfrom, this.dayto).subscribe(
+    this.wclogsService.getWCLogs(this.page, this.size, this.dayfrom, this.dayto).subscribe(
       res => {
         this.isProcessing = false;
-        this.legionellalogs = res.content.map(item => { return {id: item.id, values: [this.date2Text1(item.day), item.point, this.getVal(item.value), this.getTemp(item.temperature), item.worker_fullname] }; });
-        this.legionellalogsObjects = res.content;
+        this.wclogs = res.content.map(item => { return {id: item.id, values: [this.date2Text1(item.day), item.hour, item.point, item.worker_fullname] }; });
+        this.wclogsObjects = res.content;
 
         this.totalPages = res.totalPages;
       },
       error => {
         this.isProcessing = false;
-        console.error("getLegionellaLogs():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido obtener la información del registro de Legionella.",
+        console.error("getWCLogs():"+JSON.stringify(error));
+        this.toastService.show("No se ha podido obtener la información del registro de limpieza.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
       }
     );
-  }
-
-  
-  getTemp(temp : number)
-  {
-    const stemp = temp>0?'+'+temp:temp;
-    if(temp>=60) return "<div class=\"green\">" + stemp + " ºC</div>";
-    else return "<div class=\"red\">" + stemp + " ºC</div>";
-  }
-
-  getVal(val : number)
-  {
-    if(val>=0.2 && val <= 1.0) return "<div class=\"green\">" + val + " mg/l</div>";
-    else return "<div class=\"red\">" + val + " mg/l</div>";
   }
 
   
@@ -126,15 +111,15 @@ export class WorkerLegionellaListComponent implements OnInit
     if(!this.dayfrom) this.dayfrom = new Date();
     if(!this.dayto) this.dayto = new Date();
 
-    this.legionelaLogsService.getLegionellaLogs(0, 100000000, this.dayfrom, this.dayto).subscribe(
+    this.wclogsService.getWCLogs(0, 100000000, this.dayfrom, this.dayto).subscribe(
       res => {
         const header = {};
-        const keys = ['Día:', 'Punto:', 'C.R.L. (mg/l):', 'Temperatura (ºC):', 'Registrado por:'];
-        const fields = ['day', 'point', 'value', 'temperature', 'worker_fullname'];
+        const keys = ['Día:', 'Hora', 'Punto:', 'Limpiado por:'];
+        const fields = ['day', 'hour', 'point', 'worker_fullname'];
         fields.forEach((key, i) => header[key] = keys[i]);
-        this.exportData = res && res.content ? res.content.map(item => [this.date2Text1(item.day), item.point, item.value, item.temperature, item.worker_fullname]) : null;
+        this.exportData = res && res.content ? res.content.map(item => [this.date2Text1(item.day), item.hour, item.point, item.worker_fullname]) : null;
         const final = parseDataExport(fields, this.exportData);
-        const title = 'Registro de Legionella';
+        const title = 'Registro de Limpieza';
 
         if (format === 'excel') 
         {
@@ -144,7 +129,7 @@ export class WorkerLegionellaListComponent implements OnInit
         } 
         else 
         {
-          const minFields = ['20%','30%','10%','10%','30%'];
+          const minFields = ['20%','20%','20%','40%'];
           const keystranslate = keys.map(item => item);
           this.pdfService.exportDataToPDF(title, keystranslate, fields, title, final, minFields);
           this.loadingPDF = false;
@@ -159,48 +144,50 @@ export class WorkerLegionellaListComponent implements OnInit
 
 
   filter(page: number) {
-    this.getLegionellaLogs(page);
+    this.getWCLogs(page);
   }
 
 
   setPage(event) {
     this.page = event;
-    this.getLegionellaLogs(this.page);
+    this.getWCLogs(this.page);
   }
 
   action(event) 
   {
     if (event && event[0] === 'edit') 
     {
-      const selected = this.legionellalogsObjects.find(item => item.id === event[1]);
-      this.theLegionellaLog = selected;
+      const selected = this.wclogsObjects.find(item => item.id === event[1]);
+      this.theWC = selected;
 
-      this.openRegisterLegionellaLogModal();
+      this.openRegisterWCLogModal();
     } 
     else if (event && event[0] === 'delete') 
     {
-      this.deleteLegionellaLog(event[1]);
-    }
+      this.deleteWCLog(event[1]);
+    } 
+
+    
   }
 
 
   canModify() : boolean
   {
-    return this.authService.isLegionellaLog();
+    return this.authService.isCleaning();
   }
 
 
 
-  openRegisterLegionellaLogModal()
+  openRegisterWCLogModal()
   {
     this.modal.open(this.modalContent, { size: 'lg' });
   }
 
-  registerLegionellaLog()
+  registerWCLog()
   {
-    if(!this.theLegionellaLog.day) this.theLegionellaLog.day = new Date();
 
-    if(!this.theLegionellaLog.point || this.theLegionellaLog.point.trim() == '')
+
+    if(!this.theWC.point || this.theWC.point.trim() == '')
     {
       this.toastService.show("Debes indicar el punto.",
         "¡Ups!", 
@@ -211,20 +198,31 @@ export class WorkerLegionellaListComponent implements OnInit
 
 
 
+    if(!this.theWC.hour || this.theWC.hour.trim() == '')
+    {
+      this.toastService.show("Debes indicar la hora.",
+        "¡Ups!", 
+        { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+      );
+      return;
+    }
 
-    this.legionelaLogsService.registerLegionellaLog(this.theLegionellaLog).subscribe(
+
+
+
+    this.wclogsService.registerWCLog(this.theWC).subscribe(
       res => {
         this.isProcessing = false;
-        this.toastService.show("Registro de Legionella realizado correctamente.",
+        this.toastService.show("Registro de limpieza realizado correctamente.",
             "¡Ok!", 
             { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );
-        this.getLegionellaLogs(this.page);
+        this.getWCLogs(this.page);
         this.modal.dismissAll();
       },
       error => {
         this.isProcessing = false;
-        console.error("registerLegionellaLog():"+JSON.stringify(error));
+        console.error("registerWCLog():"+JSON.stringify(error));
         this.toastService.show("No se ha podido realizar el registro de alimentación.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
@@ -234,21 +232,21 @@ export class WorkerLegionellaListComponent implements OnInit
   }
 
 
-  deleteLegionellaLog(id : string)
+  deleteWCLog(id : string)
   {
-    this.legionelaLogsService.deleteLegionellaLog(id).subscribe(
+    this.wclogsService.deleteWCLog(id).subscribe(
       res => {
         this.isProcessing = false;
-        this.toastService.show("Registro de Legionella eliminado correctamente.",
+        this.toastService.show("Registro de limpieza eliminado correctamente.",
             "¡Ok!", 
             { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );
-        this.getLegionellaLogs(this.page);
+        this.getWCLogs(this.page);
       },
       error => {
         this.isProcessing = false;
-        console.error("deleteLegionellaLog():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido eliminar el registro de Legionella.",
+        console.error("deleteWCLog():"+JSON.stringify(error));
+        this.toastService.show("No se ha podido eliminar el registro de limpieza.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );

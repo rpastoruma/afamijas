@@ -21,8 +21,6 @@ public interface WorkersService
     List<PatientDTO> getAllPatients(String groupcode);
 
 
-    void registerWC(String idworker, String point, String signature);
-
     String uploadTimetable(MultipartFile file) throws Exception;
 
     String uploadActivities(MultipartFile file) throws Exception;
@@ -101,4 +99,15 @@ public interface WorkersService
 
     @Transactional(propagation= Propagation.REQUIRES_NEW)
     void deleteLegionellaLog(String id);
+
+
+
+
+    Page<WCLogDTO> getWCLogs(User user, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc);
+
+    @Transactional(propagation= Propagation.REQUIRES_NEW)
+    void registerWCLog(String id, String idworker, String point, String hour);
+
+    @Transactional(propagation= Propagation.REQUIRES_NEW)
+    void deleteWCLog(String id);
 }

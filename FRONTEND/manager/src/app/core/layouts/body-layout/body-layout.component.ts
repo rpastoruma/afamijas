@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { hasRole, RoleCode, } from 'src/app/shared/models/models';
 import { AuthService } from '../../services/auth.service'; 
-import { MENU_FEEDINGS, MENU_FOODS, MENU_ITEMS, MENU_LEGIONELLA, MENU_MEDICATION, MENU_RELATIVE_ITEMS, MENU_TEMP } from './pages-menu';
+import { MENU_CLEANING, MENU_FEEDINGS, MENU_FOODS, MENU_ITEMS, MENU_LEGIONELLA, MENU_MEDICATION, MENU_RELATIVE_ITEMS, MENU_TEMP } from './pages-menu';
 
 @Component({
   selector: 'app-body-layout',
@@ -63,6 +63,12 @@ export class BodyLayoutComponent implements OnInit {
        ) 
       {
         this.menu = this.menu.concat(MENU_LEGIONELLA);
+      } 
+
+      if (hasRole(roles, RoleCode.CLEANING) || hasRole(roles, RoleCode.ADMIN)  || hasRole(roles, RoleCode.MANAGER)
+       ) 
+      {
+        this.menu = this.menu.concat(MENU_CLEANING);
       } 
 
       

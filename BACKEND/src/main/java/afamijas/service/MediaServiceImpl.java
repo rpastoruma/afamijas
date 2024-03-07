@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -86,9 +87,11 @@ public class MediaServiceImpl implements MediaService
         String fileName = UUID.randomUUID() + "-" + FileUtils.sanitizeFilename(file.getOriginalFilename());
         String wholePath = mediapath + File.separator + fileName;
 
+        file.transferTo(Paths.get(wholePath));
+
         try { cdnurl = this.uploadFileFTP(objecttype + "_" + mediatype, fileName, new FileInputStream(wholePath) ); } catch (Exception e) { throw new Exception("ERROR: Cannot upload the file " + fileName);  }
 
-        try { File f = new File(wholePath); System.out.println("F======>+" + f.getAbsolutePath()); f.delete(); } catch (Exception e) { e.printStackTrace(); }
+        try { File f = new File(wholePath); f.delete(); } catch (Exception e) { e.printStackTrace(); }
 
         if(cdnurl!=null)
         {

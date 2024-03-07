@@ -18,11 +18,13 @@ public class WCLog
 
 	private String point;
 
-	private String signature;
+	private LocalDate day;
 
-	private LocalDateTime when;
+		private String hour;
 
-	public WCLog() { this.when = LocalDateTime.now(); }
+	private LocalDateTime created;
+
+	public WCLog() { this.created = LocalDateTime.now(); }
 
 	public String get_id() {
 		return _id;
@@ -48,20 +50,28 @@ public class WCLog
 		this.point = point;
 	}
 
-	public String getSignature() {
-		return signature;
+	public LocalDate getDay() {
+		return day;
 	}
 
-	public void setSignature(String signature) {
-		this.signature = signature;
+	public void setDay(LocalDate day) {
+		this.day = day;
 	}
 
-	public LocalDateTime getWhen() {
-		return when;
+	public String getHour() {
+		return hour;
 	}
 
-	public void setWhen(LocalDateTime when) {
-		this.when = when;
+	public void setHour(String hour) {
+		this.hour = hour;
+	}
+
+	public LocalDateTime getCreated() {
+		return created;
+	}
+
+	public void setCreated(LocalDateTime created) {
+		this.created = created;
 	}
 
 	@Override

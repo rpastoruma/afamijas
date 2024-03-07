@@ -19,7 +19,7 @@ public interface MediaService
 
     List<Media> findByObjectAndObjecTypeAndMediaType(String idobject, String objecttype, String mediatype);
 
-    @Transactional(propagation= Propagation.REQUIRES_NEW)
+
     Media create(String idobject, String objecttype, String mediatype, MultipartFile file) throws Exception;
 
     Media create(String idobject, String objecttype, String mediatype, String filename, String url, String mimetype);

@@ -111,6 +111,14 @@ export class AuthService {
   }
 
 
+  isCleaning()
+  {
+    return hasRole(this.getRoles(),  RoleCode.CLEANING);
+  }
+
+
+
+
   login(username: string, password: string): Observable<string | null> 
   {
     // this.logout();

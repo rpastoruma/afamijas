@@ -82,29 +82,6 @@ public class WorkersController extends AbstractBaseController
 
 
 
-	@RequestMapping(method=RequestMethod.POST, value="registerWC", produces="application/json")
-	public ResponseEntity<?> registerWC(
-			@RequestParam(value = "point", required = true) String point,
-			@RequestParam(value = "signature", required = true) String signature,
-			HttpServletRequest request
-	)
-	{
-		try
-		{
-			if(!this.isCLEANING()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-			this.workersService.registerWC(this.getId(), point, signature);
-			return new ResponseEntity<>("", HttpStatus.OK);
-		}
-		catch(Exception e)
-		{
-			this.errorsService.sendError(e, this.getParameters(request));
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-
-
 	@RequestMapping(method=RequestMethod.POST, value="uploadTimetable", produces="application/json")
 	public ResponseEntity<?> uploadTimetable(
 			@RequestParam(value = "file", required = true) MultipartFile file,
@@ -838,6 +815,92 @@ public class WorkersController extends AbstractBaseController
 			if(!this.isLEGIONELLA_CONTROL()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.deleteLegionellaLog(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getWCLogs", produces="application/json")
+	public ResponseEntity<?> getWCLogs(
+			@RequestParam(value = "dayfrom", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			@RequestParam(value = "dayto", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !isMANAGER() && !isCLEANING() )
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			if(order==null) order = "created";
+			if(orderasc==null) orderasc = "DESC";
+
+			return new ResponseEntity<>(this.workersService.getWCLogs(this.getUser(), dayfrom, dayto, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="registerWCLog", produces="application/json")
+	public ResponseEntity<?> registerWCLog(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "point", required = true) String point,
+			@RequestParam(value = "hour", required = true) String hour,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isCLEANING()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.registerWCLog(id, this.getId(), point, hour);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteWCLog", produces="application/json")
+	public ResponseEntity<?> deleteWCLog(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isCLEANING()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.deleteWCLog(id);
 			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
