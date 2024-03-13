@@ -110,4 +110,13 @@ public interface WorkersService
 
     @Transactional(propagation= Propagation.REQUIRES_NEW)
     void deleteWCLog(String id);
+
+
+
+    Page<HealthLogDTO> getHealthLogs(User user, String groupcode, String idpatient, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String order, String orderasc);
+
+
+    void registerHealthLog(String id, String idpatient, String id1, Double lowPressure, Double highPressure, Double sugar);
+
+    void deleteHealthLog(String id);
 }

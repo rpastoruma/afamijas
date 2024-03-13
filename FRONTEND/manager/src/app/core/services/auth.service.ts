@@ -96,6 +96,12 @@ export class AuthService {
     return hasRole(this.getRoles(),  RoleCode.NURSING_ASSISTANT);
   }
 
+  
+  isNursing()
+  {
+    return hasRole(this.getRoles(),  RoleCode.NURSING);
+  }
+
 
     
   isKitchen()

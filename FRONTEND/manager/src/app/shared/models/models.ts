@@ -312,6 +312,33 @@ export interface WCLogDTO
     
 }
 
+export interface HealthLogDTO
+{
+    id : string;
+
+    idpatient : string;
+
+    patient_fullname : string;
+
+    idworker : string;
+
+    worker_fullname : string;
+
+    day : Date;
+
+    low_pressure : number;
+
+    high_pressure : number;
+
+    hour_presure: string;
+
+    sugar : number;
+
+    hour_sugar: string;
+
+    
+}
+
 
 
 

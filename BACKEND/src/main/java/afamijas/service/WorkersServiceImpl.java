@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -52,11 +54,13 @@ public class WorkersServiceImpl implements WorkersService
 	final CalendarEventsRepository calendarEventsRepository;
 
 	final MenusRepository menusRepository;
+
+	final HealthLogRepository healthLogRepository;
 	final MediaService mediaService;
 
 
 	@Autowired
-	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, MediaService mediaService)
+	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, MediaService mediaService)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -70,6 +74,7 @@ public class WorkersServiceImpl implements WorkersService
 		this.workersAbsencesRepository = workersAbsencesRepository;
 		this.calendarEventsRepository = calendarEventsRepository;
 		this.menusRepository = menusRepository;
+		this.healthLogRepository = healthLogRepository;
 		this.mediaService = mediaService;
 	}
 
@@ -825,13 +830,101 @@ public class WorkersServiceImpl implements WorkersService
 
 		wcLog.setIdworker(idworker);
 
-		this.wcLogRepository.save(wcLog);	}
+		this.wcLogRepository.save(wcLog);
+	}
 
 	@Override
 	public void deleteWCLog(String id)
 	{
 		WCLog wcLog = this.wcLogRepository.findOne(id);
 		if(wcLog!=null) this.wcLogRepository.delete(wcLog);
+	}
+
+
+
+
+
+	@Override
+	public Page<HealthLogDTO> getHealthLogs(User user, String groupcode, String idpatient, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		Criteria criteria = new Criteria().andOperator(new Criteria().where("day").gte(dayfrom), new Criteria().where("day").lte(dayto));
+
+		query.addCriteria(criteria);
+		long total = this.mongoTemplate.count(query, HealthLog.class);
+
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { if(debug_queries) System.out.println("getHealthLogs: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		//EN LOS USUARIOS WORKER INCLUIMOS TAMBIÉN LOS QUE PUDIERAN ESTAR BORRADOS POR ESO FINDONE NO FILTRA POR STATUS
+		List<HealthLogDTO> list = this.mongoTemplate.find(query, HealthLog.class).stream().map(x -> new HealthLogDTO(x, this.usersRepository.findOne(x.getIdpatient()), this.usersRepository.findOne(x.getIdworker()))).toList();
+
+		return new PageImpl<>(list, pageable, total);
+	}
+
+	@Override
+	public void registerHealthLog(String id, String idpatient, String idworker, Double lowPressure, Double highPressure, Double sugar)
+	{
+		if(lowPressure!=null && lowPressure==0) lowPressure = null;
+		if(highPressure!=null && highPressure==0) highPressure = null;
+		if(sugar!=null && sugar==0) sugar = null;
+
+		HealthLog healthLog;
+		if(id!=null)
+		{
+			healthLog = this.healthLogRepository.findOne(id);
+			if(healthLog==null) return;
+		}
+		else
+		{
+			Query query = new Query();
+			Criteria criteria = new Criteria();
+			criteria.and("day").is(LocalDate.now());
+			criteria.and("idpatient").is(idpatient);
+			query.addCriteria(criteria);
+			try { if(debug_queries) System.out.println("registerHealthLog: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+			healthLog = this.mongoTemplate.findOne(query, HealthLog.class);
+
+			if(healthLog==null) healthLog = new HealthLog();
+		}
+
+		if(id==null)
+		{
+			healthLog.setIdpatient(idpatient);
+			healthLog.setDay(LocalDate.now());
+		}
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+		String hour = formatter.format(LocalTime.now());
+
+		if(lowPressure!=null)
+		{
+			healthLog.setLow_pressure(lowPressure);
+			if(healthLog.getHour_presure()==null) healthLog.setHour_presure(hour);
+		}
+		if(highPressure!=null)
+		{
+			healthLog.setHigh_pressure(highPressure);
+			if(healthLog.getHour_presure()==null) healthLog.setHour_presure(hour);
+		}
+		if(sugar!=null)
+		{
+			healthLog.setSugar(sugar);
+			if(healthLog.getHour_sugar()==null) healthLog.setHour_sugar(hour);
+		}
+		healthLog.setIdworker(idworker);
+
+		this.healthLogRepository.save(healthLog);
+
+	}
+
+	@Override
+	public void deleteHealthLog(String id)
+	{
+		HealthLog healthLog = this.healthLogRepository.findOne(id);
+		if(healthLog!=null) this.healthLogRepository.delete(healthLog);
 	}
 
 

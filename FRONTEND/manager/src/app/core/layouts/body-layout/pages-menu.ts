@@ -56,7 +56,7 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
   export const MENU_MEDICATION: NbMenuItem[] = [
     {
       title: 'Medicación',
-      icon: { icon: 'fa-kit-medical', pack: 'fas' },
+      icon: { icon: 'fa-pills', pack: 'fas' },
       link: '/worker-medication',
       data: 'menu.worker.medication',
       expanded: false,
@@ -133,6 +133,17 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
 
 
 
-  
+    
+  //MENÚ REGISTRO SANITARIO
+  export const MENU_HEALTH: NbMenuItem[] = [
+    {
+      title: 'Registro sanitario',
+      icon: { icon: 'fa-kit-medical', pack: 'fas' },
+      link: '/worker-healthlogs',
+      data: 'menu.worker-healthlogs',
+      expanded: false,
+    }
+  ];  
+
 
   

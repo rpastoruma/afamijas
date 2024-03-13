@@ -915,5 +915,91 @@ public class WorkersController extends AbstractBaseController
 
 
 
+	@RequestMapping(method=RequestMethod.GET, value="getHealthLogs", produces="application/json")
+	public ResponseEntity<?> getHealthLogs(
+			@RequestParam(value = "groupcode", required = false) String groupcode,
+			@RequestParam(value = "idpatient", required = false) String idpatient,
+			@RequestParam(value = "dayfrom", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			@RequestParam(value = "dayto", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !isMANAGER() && !isNURSING()  && !isNURSING_ASSISTANT() )
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			if(order==null) order = "created";
+			if(orderasc==null) orderasc = "DESC";
+
+			return new ResponseEntity<>(this.workersService.getHealthLogs(this.getUser(), groupcode, idpatient, dayfrom, dayto, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="registerHealthLog", produces="application/json")
+	public ResponseEntity<?> registerHealthLog(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "idpatient", required = true) String idpatient,
+			@RequestParam(value = "low_pressure", required = false) Double low_pressure,
+			@RequestParam(value = "high_pressure", required = false) Double high_pressure,
+			@RequestParam(value = "sugar", required = false) Double sugar,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isNURSING_ASSISTANT()  && !isNURSING()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.registerHealthLog(id, idpatient, this.getId(), low_pressure, high_pressure, sugar);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteHealthLog", produces="application/json")
+	public ResponseEntity<?> deleteHealthLog(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isNURSING_ASSISTANT()  && !isNURSING()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.deleteHealthLog(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+
+
 }
 
