@@ -1,6 +1,7 @@
 package afamijas.controller;
 
 
+import afamijas.model.dto.UrlDTO;
 import afamijas.service.ErrorsService;
 import afamijas.service.MediaService;
 import afamijas.service.RelativesService;
@@ -59,7 +60,7 @@ public class MediaController extends AbstractBaseController
 			file.transferTo(Paths.get(wholePath));
 			String cdnurl = this.mediaService.uploadFileFTP("signed_" + this.getId(), fileName,  new FileInputStream(wholePath));
 			try { new File(wholePath).delete(); } catch (Exception e) { e.printStackTrace(); }
-			return new ResponseEntity<>(cdnurl, HttpStatus.OK);
+			return new ResponseEntity<>(new UrlDTO(cdnurl), HttpStatus.OK);
 		}
 		catch(Exception e)
 		{

@@ -197,8 +197,8 @@ export class PermissionsListComponent implements OnInit {
         res => {
             if(res != 'close') 
             {
-              if(res.startsWith('https'))
-                this.signPermission(this.idpatient, event[1], res);
+              if(res.url && res.url.startsWith('https'))
+                this.signPermission(this.idpatient, event[1], res.url);
               else
               {
                 console.error("action():"+JSON.stringify(res));
