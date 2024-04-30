@@ -39,7 +39,7 @@ public interface WorkersService
     void deleteCalendarEvent(String idcalendarevent);
 
 
-    void saveMenu(String id, String type, String description, LocalDate from, LocalDate to, MultipartFile file) throws Exception;
+    void saveMenu(String idadmin, String id, String type, String description, LocalDate from, LocalDate to, MultipartFile file) throws Exception;
 
 
 
@@ -119,4 +119,14 @@ public interface WorkersService
     void registerHealthLog(String id, String idpatient, String id1, Double lowPressure, Double highPressure, Double sugar);
 
     void deleteHealthLog(String id);
+
+
+
+
+    Page<DocDTO> getDocs(User user, String text, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc);
+
+    void saveDoc(String id, String idworker, String title, String description, String url, LocalDate dayfrom, LocalDate dayto, List<String> roles);
+
+    void deleteDoc(String id);
+
 }

@@ -49,6 +49,7 @@ public class MediaController extends AbstractBaseController
 
 	@RequestMapping(method=RequestMethod.POST, value="uploadFile", produces="application/json")
 	public ResponseEntity<?> uploadFile(
+			@RequestParam(value = "type", required = true) String type,
 			@RequestParam(value = "file", required = true) MultipartFile file,
 			HttpServletRequest request
 	)
@@ -58,7 +59,7 @@ public class MediaController extends AbstractBaseController
 			String fileName = UUID.randomUUID() + "-" + FileUtils.sanitizeFilename(file.getOriginalFilename());
 			String wholePath = mediapath + File.separator + fileName;
 			file.transferTo(Paths.get(wholePath));
-			String cdnurl = this.mediaService.uploadFileFTP("signed_" + this.getId(), fileName,  new FileInputStream(wholePath));
+			String cdnurl = this.mediaService.uploadFileFTP( this.getId() + "/" + type, fileName,  new FileInputStream(wholePath));
 			try { new File(wholePath).delete(); } catch (Exception e) { e.printStackTrace(); }
 			return new ResponseEntity<>(new UrlDTO(cdnurl), HttpStatus.OK);
 		}

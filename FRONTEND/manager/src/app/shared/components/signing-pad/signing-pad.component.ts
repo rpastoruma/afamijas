@@ -153,7 +153,7 @@ export class SigningPadComponent implements OnInit{
     const file = new Blob([pdfBytes], {type: 'application/pdf'});
 
     
-    this.mediaService.uploadFile(new File([file], "documento_firmado.pdf")).subscribe(
+    this.mediaService.uploadFile("signed", new File([file], "documento_firmado.pdf")).subscribe(
       res => {
           /*this.toastService.show("Documento firmado correctamente",
             "¡Ok!", 

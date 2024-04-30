@@ -14,9 +14,10 @@ export const environment = {
       auth : AUTH_URL,
       login: AUTH_URL + 'login',
       config: BASE_URL + 'configuration',
-      notifications : BASE_URL + 'notifications',
+      notifications : ADMIN_URL + 'notifications',
       relatives : ADMIN_URL + 'relatives',
       workers : ADMIN_URL + 'workers',
+      members : ADMIN_URL + 'members',
       media : ADMIN_URL + 'media'
 
     }

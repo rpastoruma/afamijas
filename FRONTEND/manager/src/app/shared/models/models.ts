@@ -55,6 +55,41 @@ export interface PatientDTO {
     groupcode : string;
 }
 
+
+
+export interface MemberDTO {
+    id : string;
+    membernumber : string;
+    email : string;
+    name : string;
+    surname1 : string;
+    surname2 : string;
+    fullname : string;
+    documentid : string;
+    documenttype : string;
+    phone : string;
+    postaladdres : string;
+    idcity : string;
+    cityname : string;
+    idstate : string;
+    statename : string;
+    postalcode : string;
+
+    fee_euros : number;
+    fee_period : string;
+    fee_payment : string;
+
+    bank_name : string;
+    bank_account_holder_fullname : string;
+    bank_account_holder_dni : string;
+    bank_account_iban : string;
+
+    register_document_url : string;
+    unregister_document_url : string;
+
+    unregister_reason : string;
+}
+
 export interface RouteDTO {
     idroute : string;
     route_name : string;
@@ -338,6 +373,31 @@ export interface HealthLogDTO
 
     
 }
+
+
+export interface DocDTO
+{
+    id : string;
+
+    idworker : string;
+
+    worker_fullname : string;
+
+    title : string
+
+    description : string;
+
+    url : string;
+
+    dayfrom : Date;
+
+    dayto : Date;
+
+    roles : string[];
+
+    created : Date;
+}
+
 
 
 

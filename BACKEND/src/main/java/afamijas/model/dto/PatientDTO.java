@@ -23,7 +23,7 @@ public class PatientDTO
 
     private String surname2;
 
-    private String dni;
+    private String documentid;
 
     private String phone;
 
@@ -82,9 +82,9 @@ public class PatientDTO
         this.name = user.getName();
         this.surname1 = user.getSurname1();
         this.surname2 = user.getSurname2();
-        this.dni = user.getDni();
+        this.documentid = user.getDocumentid();
         this.phone = user.getPhone();
-        this.postaladdres = user.getPostaladdres();
+        this.postaladdres = user.getPostaladdress();
 
         this.idcity  = user.getIdcity();
         if(city!=null) this.cityname = city.getName();
@@ -175,12 +175,12 @@ public class PatientDTO
         this.surname2 = surname2;
     }
 
-    public String getDni() {
-        return dni;
+    public String getDocumentid() {
+        return documentid;
     }
 
-    public void setDni(String dni) {
-        this.dni = dni;
+    public void setDocumentid(String documentid) {
+        this.documentid = documentid;
     }
 
     public String getPhone() {

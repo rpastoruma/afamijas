@@ -76,15 +76,18 @@
                         
                         <td  *ngIf="showSearchButton || (actions && actions.length > 0)">
                             <span class="tdButtons">
+
+                                <a class="buttonShow" *ngIf="showAction" nbTooltip="{{showAction.text}}">
+                                    <nb-icon icon="eye-outline" (click)="actionEvent('show', value.id, value)"></nb-icon>
+                                </a>
+                                
                                 <a class="buttonEdit" *ngIf="editAction && !value.noedit" nbTooltip="{{editAction.text}}">
                                     <nb-icon icon="edit-2-outline" id="edit" (click)="actionEvent('edit', value.id)"></nb-icon>
                                 </a>
                                 <a class="buttonEdit" *ngIf="editAction && value.noedit" nbTooltip="{{editAction.textNoedit}}">
                                     <nb-icon icon="edit-2-outline" id="edit" style="color: lightgray;"></nb-icon>
                                 </a>
-                                <a class="buttonShow" *ngIf="showAction" nbTooltip="{{showAction.text}}">
-                                    <nb-icon icon="eye-outline" (click)="actionEvent('show', value.id, value)"></nb-icon>
-                                </a>
+
                                 <a class="buttonEvaluate" *ngIf="approveAction" nbTooltip="{{approveAction.text}}">
                                     <nb-icon icon="checkmark-circle-outline" (click)="actionEvent('approve', value.id, value)"></nb-icon>
                                 </a>
@@ -183,15 +186,17 @@
                     <tr *ngIf="hasAction()">
                         <td colspan="2">
                             <span class="tdButtons">
+                                <a class="buttonShow" *ngIf="showAction" >
+                                    <nb-icon style="font-size:28px !important" icon="eye-outline" (click)="actionEvent('show', valueRow.id, valueRow)"></nb-icon>
+                                </a>
+
                                 <a class="buttonEdit" *ngIf="editAction && !valueRow.noedit" >
                                     <nb-icon style="font-size:28px !important" icon="edit-2-outline" id="edit" (click)="actionEvent('edit', valueRow.id)"></nb-icon>
                                 </a>
                                 <a class="buttonEdit" *ngIf="editAction && valueRow.noedit" >
                                     <nb-icon style="font-size:28px !important" icon="edit-2-outline" id="edit" style="color: lightgray;"></nb-icon>
                                 </a>
-                                <a class="buttonShow" *ngIf="showAction" >
-                                    <nb-icon style="font-size:28px !important" icon="eye-outline" (click)="actionEvent('show', valueRow.id, valueRow)"></nb-icon>
-                                </a>
+
                                 <a class="buttonEvaluate" *ngIf="approveAction" >
                                     <nb-icon style="font-size:28px !important" icon="checkmark-circle-outline" (click)="actionEvent('approve', valueRow.id, valueRow)"></nb-icon>
                                 </a>

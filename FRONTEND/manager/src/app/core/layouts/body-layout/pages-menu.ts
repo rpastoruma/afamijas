@@ -146,4 +146,28 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
   ];  
 
 
+    
+  //MENÚ DOCUMENTOS
+  export const MENU_DOCS: NbMenuItem[] = [
+    {
+      title: 'Documentos',
+      icon: { icon: 'fa-folder-open', pack: 'fas' },
+      link: '/worker-docs',
+      data: 'menu.worker-docs',
+      expanded: false,
+    }
+  ];  
+    
+  //MENÚ SOCIOS
+  export const MENU_MEMBERS: NbMenuItem[] = [
+    {
+      title: 'Socios',
+      icon: { icon: 'fa-user-check', pack: 'fas' },
+      link: '/members',
+      data: 'menu.members',
+      expanded: false,
+    }
+  ];  
+
+
   

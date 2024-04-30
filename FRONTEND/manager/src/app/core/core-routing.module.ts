@@ -33,6 +33,8 @@ import { canViewWorkerTempRegisterGuard } from './guards/can-view-worker-temp-re
 import { canViewLegionellalogGuard } from './guards/can-view-legionellalog.guard';
 import { canViewWclogsGuard } from './guards/can-view-wclogs.guard';
 import { canViewHealthLogsGuard } from './guards/can-view-health-logs.guard';
+import { canViewDocsGuard } from './guards/can-view-docs.guard';
+import { canAccessMembersGuard } from './guards/can-access-members.guard';
 
 
 const routes: Routes = [
@@ -132,6 +134,18 @@ const routes: Routes = [
       component: BodyLayoutComponent,
       canActivate : [canViewHealthLogsGuard],
       loadChildren: () => import('../modules/worker-health-log/worker-health-log.module').then(m => m.WorkerHealthLogModule) 
+    },
+    {
+      path : 'worker-docs', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewDocsGuard],
+      loadChildren: () => import('../modules/worker-documents/worker-documents.module').then(m => m.WorkerDocumentsModule) 
+    },
+    {
+      path : 'members', 
+      component: BodyLayoutComponent,
+      canActivate : [canAccessMembersGuard],
+      loadChildren: () => import('../modules/members/members.module').then(m => m.MembersModule) 
     },
     
     {

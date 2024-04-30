@@ -11,9 +11,10 @@ export class MediaService {
   constructor(private http: HttpClient,) { }
 
 
-  uploadFile(file : File) 
+  uploadFile(type :string, file : File) 
   {
     const form = new FormData();
+    form.append('type', type);
     form.append('file', file);
  
     return this.http.post<any>(ENV.url.media + '/uploadFile', form);

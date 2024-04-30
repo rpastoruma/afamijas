@@ -90,6 +90,7 @@ export class AbsencesListComponent implements OnInit {
   getRelativeAbsences(page: number) 
   {
     this.page = page;
+    this.isProcessing = true;
     this.relativeAbsencesService.getRelativeAbsences(this.page, this.size, this.idpatient, this.from, this.to).subscribe(
       res => {
         this.isProcessing = false;

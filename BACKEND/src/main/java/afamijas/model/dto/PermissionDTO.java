@@ -36,10 +36,10 @@ public class PermissionDTO
         this.idpermission = permission.get_id();
         this.idpatient = permission.getIdpatient();
         if(patient!=null) this.patient_fullname = ((patient.getName() + " " + patient.getSurname1()).trim() + " " + patient.getSurname2()).trim();
-        if(patient!=null) this.patient_dni = patient.getDni();
+        if(patient!=null) this.patient_dni = patient.getDocumentid();
         this.idrelative = permission.getIdrelative();
         if(relative!=null) this.relative_fullname = ((relative.getName() + " " + relative.getSurname1()).trim() + " " + relative.getSurname2()).trim();
-        if(relative!=null) this.relative_dni = relative.getDni();
+        if(relative!=null) this.relative_dni = relative.getDocumentid();
         this.type = permission.getType();
         this.comment = permission.getComment();
         this.permission_url = permission.getPermission_url();

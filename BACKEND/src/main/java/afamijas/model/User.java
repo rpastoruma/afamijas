@@ -36,11 +36,13 @@ public class User
 
 	private String surname2;
 
-	private String dni;
+	private String documentid;
+
+	private String documenttype;
 
 	private String phone;
 
-	private String postaladdres;
+	private String postaladdress;
 
 	private String idcity;
 
@@ -136,7 +138,9 @@ public class User
 
 	// MEMBERS:
 
-	private String fee_euros;
+	private Integer membernumber;
+
+	private Double fee_euros;
 
 	private String fee_period;  //mes, trimestre...
 
@@ -150,10 +154,20 @@ public class User
 
 	private String bank_account_iban;
 
+	private String register_document_url;
+
+	private String unregister_document_url;
+
+	private String unregister_reason;
+
+
+
+	private Boolean email_notifications;
 
 	public User()
 	{
 		this.created = this.modified = LocalDateTime.now();
+		this.email_notifications = false;
 	}
 
 	public String get_id() {
@@ -180,7 +194,29 @@ public class User
 		this.password = password;
 	}
 
+	public String getPostaladdress() {
+		return postaladdress;
+	}
 
+	public void setPostaladdress(String postaladdress) {
+		this.postaladdress = postaladdress;
+	}
+
+	public Integer getMembernumber() {
+		return membernumber;
+	}
+
+	public void setMembernumber(Integer membernumber) {
+		this.membernumber = membernumber;
+	}
+
+	public String getUnregister_reason() {
+		return unregister_reason;
+	}
+
+	public void setUnregister_reason(String unregister_reason) {
+		this.unregister_reason = unregister_reason;
+	}
 
 	public String getGender() {
 		return gender;
@@ -231,13 +267,14 @@ public class User
 		this.surname2 = surname2;
 	}
 
-	public String getDni() {
-		return dni;
+	public Boolean getEmail_notifications() {
+		return email_notifications;
 	}
 
-	public void setDni(String dni) {
-		this.dni = dni;
+	public void setEmail_notifications(Boolean email_notifications) {
+		this.email_notifications = email_notifications;
 	}
+
 
 	public String getPhone() {
 		return phone;
@@ -247,13 +284,6 @@ public class User
 		this.phone = phone;
 	}
 
-	public String getPostaladdres() {
-		return postaladdres;
-	}
-
-	public void setPostaladdres(String postaladdres) {
-		this.postaladdres = postaladdres;
-	}
 
 	public String getIdcity() {
 		return idcity;
@@ -343,11 +373,11 @@ public class User
 		this.principal_keeper_phone = principal_keeper_phone;
 	}
 
-	public String getFee_euros() {
+	public Double getFee_euros() {
 		return fee_euros;
 	}
 
-	public void setFee_euros(String fee_euros) {
+	public void setFee_euros(Double fee_euros) {
 		this.fee_euros = fee_euros;
 	}
 
@@ -581,6 +611,38 @@ public class User
 
 	public void setRoles(List<String> roles) {
 		this.roles = roles;
+	}
+
+	public String getDocumentid() {
+		return documentid;
+	}
+
+	public void setDocumentid(String documentid) {
+		this.documentid = documentid;
+	}
+
+	public String getDocumenttype() {
+		return documenttype;
+	}
+
+	public void setDocumenttype(String documenttype) {
+		this.documenttype = documenttype;
+	}
+
+	public String getRegister_document_url() {
+		return register_document_url;
+	}
+
+	public void setRegister_document_url(String register_document_url) {
+		this.register_document_url = register_document_url;
+	}
+
+	public String getUnregister_document_url() {
+		return unregister_document_url;
+	}
+
+	public void setUnregister_document_url(String unregister_document_url) {
+		this.unregister_document_url = unregister_document_url;
 	}
 
 	@Transient

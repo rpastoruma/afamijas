@@ -288,7 +288,7 @@ public class WorkersController extends AbstractBaseController
 		{
 			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-			this.workersService.saveMenu(idmenu, type, description, from, to, file);
+			this.workersService.saveMenu(this.getId(), idmenu, type, description, from, to, file);
 			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
@@ -996,6 +996,91 @@ public class WorkersController extends AbstractBaseController
 	}
 
 
+
+
+
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getDocs", produces="application/json")
+	public ResponseEntity<?> getDocs(
+			@RequestParam(value = "text", required = false) String text,
+			@RequestParam(value = "dayfrom", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			@RequestParam(value = "dayto", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(order==null) order = "created";
+			if(orderasc==null) orderasc = "DESC";
+
+			return new ResponseEntity<>(this.workersService.getDocs(this.getUser(), text, dayfrom, dayto, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="saveDoc", produces="application/json")
+	public ResponseEntity<?> saveDoc(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "url", required = true) String url,
+			@RequestParam(value = "title", required = true) String title,
+			@RequestParam(value = "description", required = false) String description,
+			@RequestParam(value = "dayfrom", required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			@RequestParam(value = "dayto", required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
+			@RequestParam(value = "roles", required = false)  List<String> roles,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.saveDoc(id, this.getId(), title, description, url, dayfrom, dayto, roles);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteDoc", produces="application/json")
+	public ResponseEntity<?> deleteDoc(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.deleteDoc(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 
 

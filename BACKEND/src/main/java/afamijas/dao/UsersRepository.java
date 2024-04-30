@@ -16,6 +16,7 @@ public interface UsersRepository extends MongoRepository<User, String>
 	@Query("{ '_id' : ?0 }")
 	User findOne(String id);
 
+
 	@Query("{ '_id' : ?0, 'status' : ?1 }")
 	User findOne(String id, String status);
 
@@ -40,9 +41,14 @@ public interface UsersRepository extends MongoRepository<User, String>
 	@Query("{ 'surname2' : ?0, 'status' : ?1  }")
 	List<User> findUserBySurname2(String surname2, String status);
 
-	@Query("{ 'dni' : ?0, 'status' : ?1  }")
+	@Query("{ 'documentid' : ?0, 'status' : ?1  }")
 	List<User> findUserByDNI(String dni, String status);
 
+	@Query("{ 'roles' : { $in : ?0 }, 'status' : ?1 }")
+	List<User> findUsersByRoleAndStatus(List<String> roles, String status);
 
+
+	@Query("{ 'status' : ?0 }")
+	List<User> findUsersByStatus(String status);
 
 }

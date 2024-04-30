@@ -106,7 +106,7 @@ public class AuthController
 					user.getRoles(),
 					user.get_id(),
 					user.getUsername(),
-					user.getDni(),
+					user.getDocumentid(),
 					user.getFullname(),
 					user.getPhoto_url());
 

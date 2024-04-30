@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkersServiceImpl implements WorkersService
@@ -56,11 +57,15 @@ public class WorkersServiceImpl implements WorkersService
 	final MenusRepository menusRepository;
 
 	final HealthLogRepository healthLogRepository;
+
+	final DocsRepository docsRepository;
 	final MediaService mediaService;
+
+	final NotificationsService notificationsService;
 
 
 	@Autowired
-	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, MediaService mediaService)
+	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, DocsRepository docsRepository, MediaService mediaService, NotificationsService notificationsService)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -75,7 +80,9 @@ public class WorkersServiceImpl implements WorkersService
 		this.calendarEventsRepository = calendarEventsRepository;
 		this.menusRepository = menusRepository;
 		this.healthLogRepository = healthLogRepository;
+		this.docsRepository = docsRepository;
 		this.mediaService = mediaService;
+		this.notificationsService = notificationsService;
 	}
 
 	//TODO: REVISAR SI LA PAGINACIÓN ESTÁ BIEN HECHA YA QUE NO ESTÁ COMO EN LAS OTRAS
@@ -95,7 +102,7 @@ public class WorkersServiceImpl implements WorkersService
 
 			query.addCriteria(names_or_criteria);
 		}
-		if(dni!=null) query.addCriteria(Criteria.where("dni").is(dni));
+		if(dni!=null) query.addCriteria(Criteria.where("documentid").is(dni));
 		if(groupcode!=null) query.addCriteria(Criteria.where("groupcode").is(groupcode));
 
 		List<PatientDTO> list = this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
@@ -130,6 +137,8 @@ public class WorkersServiceImpl implements WorkersService
 	public String uploadTimetable(MultipartFile file) throws Exception
 	{
 		Media media = this.mediaService.create(UUID.randomUUID().toString(), "timetable", "file", file);
+
+
 
 		return media.getUrl();
 
@@ -178,6 +187,14 @@ public class WorkersServiceImpl implements WorkersService
 	public void saveCalendarEvent(String idworker, String idcalendarevent, LocalDateTime start, LocalDateTime end, Boolean allDay, String title, Boolean dayoff, String description, List<String> roles, List<String> idsusers, LocalDateTime publishdate)
 	{
 		CalendarEvent calendarEvent = null;
+
+		if(roles!=null && roles.contains("WORKER"))
+		{
+			List all_worker_roles = Arrays.asList(Roles.WORKER_ROLES);
+			roles.addAll(all_worker_roles);
+			roles = roles.stream().distinct().collect(Collectors.toList());
+			roles.remove("WORKER");
+		}
 		
 		if(idcalendarevent!=null)
 		{
@@ -291,7 +308,7 @@ public class WorkersServiceImpl implements WorkersService
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void saveMenu(String id, String type, String description, LocalDate from, LocalDate to, MultipartFile file) throws Exception
+	public void saveMenu(String idadmin, String id, String type, String description, LocalDate from, LocalDate to, MultipartFile file) throws Exception
 	{
 		if(id==null && file==null) return; //si es nuevo y no lleva fichero bye
 
@@ -308,6 +325,7 @@ public class WorkersServiceImpl implements WorkersService
 			Media media = this.mediaService.create(UUID.randomUUID().toString(), "menus", "file", file);
 			menu.setMenu_url(media.getUrl());
 		}
+
 
 		this.menusRepository.save(menu);
 	}
@@ -851,6 +869,15 @@ public class WorkersServiceImpl implements WorkersService
 		Query query = new Query();
 
 		Criteria criteria = new Criteria().andOperator(new Criteria().where("day").gte(dayfrom), new Criteria().where("day").lte(dayto));
+		if(idpatient!=null)
+			criteria.and("idpatient").is(idpatient);
+		else if(groupcode != null)
+		{
+			Query query2 = new Query();
+			query2.addCriteria(new Criteria().where("roles").is(Arrays.asList("PATIENT")).and("groupcode").is(groupcode).and("status").is("A"));
+			List<String> idspatients =  this.mongoTemplate.find(query2, User.class).stream().map(x -> x.get_id()).toList();
+			criteria.and("idpatient").in(idspatients);
+		}
 
 		query.addCriteria(criteria);
 		long total = this.mongoTemplate.count(query, HealthLog.class);
@@ -927,6 +954,121 @@ public class WorkersServiceImpl implements WorkersService
 		if(healthLog!=null) this.healthLogRepository.delete(healthLog);
 	}
 
+
+
+
+
+
+
+
+	@Override
+	public Page<DocDTO> getDocs(User user, String text, LocalDate availablefrom, LocalDate availableto, Integer page, Integer size, String orderby, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		if(user.getRoles().contains("ADMIN") || user.getRoles().contains("MANAGER"))
+		{
+			if(text!=null && !text.trim().equals(""))
+			{
+				Criteria criteria1 = new Criteria().orOperator(
+						Criteria.where("title").regex(".*"+text+".*", "i"),
+						Criteria.where("description").regex(".*"+text+".*", "i")
+				);
+				query.addCriteria(criteria1);
+			}
+
+			if(availablefrom!=null)
+			{
+				//no va a ser null nunca por saveDoc
+				query.addCriteria(Criteria.where("dayfrom").gte(availablefrom));
+			}
+
+			if(availableto!=null)
+			{
+				//no va a ser null nunca por saveDoc
+				query.addCriteria(Criteria.where("dayto").lte(availableto));
+			}
+		}
+		else
+		{
+			query.addCriteria(Criteria.where("dayfrom").lte(LocalDate.now()));
+			query.addCriteria(Criteria.where("dayto").gte(LocalDate.now()));
+			Criteria criteria4 = new Criteria().orOperator(
+					Criteria.where("roles").in(user.getRoles()),
+					Criteria.where("roles").size(0),
+					Criteria.where("roles").is(null)
+			);
+			query.addCriteria(criteria4);
+		}
+
+
+		if(!(text!=null && !text.trim().equals("")) && availablefrom==null && availableto==null && !(!user.getRoles().contains("ADMIN") && !user.getRoles().contains("MANAGER")))
+			query.addCriteria(new Criteria());
+
+		long total = this.mongoTemplate.count(query, HealthLog.class);
+
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { if(debug_queries) System.out.println("getDocs: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		//EN LOS USUARIOS WORKER INCLUIMOS TAMBIÉN LOS QUE PUDIERAN ESTAR BORRADOS POR ESO FINDONE NO FILTRA POR STATUS
+		List<DocDTO> list = this.mongoTemplate.find(query, Doc.class).stream().map(x -> new DocDTO(x, this.usersRepository.findOne(x.getIdworker()))).toList();
+
+		return new PageImpl<>(list, pageable, total);
+	}
+
+
+
+	@Override
+	public void saveDoc(String id, String idworker, String title, String description, String url, LocalDate dayfrom, LocalDate dayto, List<String> roles)
+	{
+		if(dayfrom==null) dayfrom = LocalDate.now();
+		if(dayto==null) dayto = LocalDate.of(2100, 1, 1);
+		if(roles!=null && roles.size()==0) roles = null;
+
+		if(roles!=null && roles.contains("WORKER"))
+		{
+			List all_worker_roles = Arrays.asList(Roles.WORKER_ROLES);
+			roles.addAll(all_worker_roles);
+			roles = roles.stream().distinct().collect(Collectors.toList());
+			roles.remove("WORKER");
+		}
+
+
+		Doc doc;
+		String oldurl = null;
+		if(id!=null)
+		{
+			doc = this.docsRepository.findOne(id);
+			if(doc==null) return;
+			oldurl = doc.getUrl();
+		}
+		else
+		{
+			doc = new Doc();
+			doc.setUrl(url);
+		}
+
+
+		doc.setIdworker(idworker);
+		doc.setTitle(title);
+		doc.setDescription(description);
+		doc.setDayfrom(dayfrom);
+		doc.setDayto(dayto);
+		doc.setRoles(roles);
+
+		doc = this.docsRepository.save(doc);
+
+		this.notificationsService.create(null, roles, doc.getTitle(), "NORMAL", doc.getDescription(), url);
+
+	}
+
+	@Override
+	public void deleteDoc(String id)
+	{
+		Doc doc = this.docsRepository.findOne(id);
+		if(doc!=null) this.docsRepository.delete(doc);
+	}
 
 
 	/*

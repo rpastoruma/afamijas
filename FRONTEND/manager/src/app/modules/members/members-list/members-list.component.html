@@ -1,0 +1,89 @@
+<nb-card>
+    <nb-card-header>
+        <div class="row float-start" >
+            <h4>Listado de socios</h4>
+        </div>
+        
+    </nb-card-header>
+    <nb-card-body>
+
+
+        <input class="form-control" type="number" [(ngModel)]="membernumber" name="status" placeholder="Número del socio" />
+
+        <br/>
+        <input class="form-control" type="text" [(ngModel)]="name_surnames" name="name_surnames" placeholder="Nombre / apellidos" />
+
+        <br/>
+        <input class="form-control" type="text" [(ngModel)]="documentid" name="documentid"  placeholder="DNI / documento de identidad" />
+
+        <br/>
+        <ng-select (change)="getMembers()" [multiple]="false" [(ngModel)]="status" name="status" [clearable]="false">
+            <ng-option value="A">SOCIOS ACTIVOS</ng-option>
+            <ng-option value="D">SOCIOS DADOS DE BAJA</ng-option>
+        </ng-select>
+
+        <hr/>
+
+        <app-custom-table
+            [actions]="actions"
+            [keys]="['Nº Socio', 'Nombre', 'DNI', 'Email', 'Teléfono']"
+            [values]="members"
+            [align]="['left', 'left', 'left', 'left', 'left']"
+            [filters]="[false, false, false, false, false]"
+            [sort]="[false, false, false, false, false]"
+            [widthToCollapse]="750"
+            [withPagination]="true"
+            [totalPages]="totalPages"
+            [page]="page"
+            [size]="size"
+            [loadingE]="loadingExcel"
+            [loading]="loadingPDF"
+            [hasExport]="true"
+            (actionSelected)="action($event)"
+            (changePage)="setPage($event)"
+            (filterEvent)="filter(0)"
+            [isProcessing]="isProcessing"
+            (exportData)="getExportData($event)"
+            [showSearchButton]="true"
+
+        >
+
+        </app-custom-table>
+    </nb-card-body>
+
+</nb-card>
+
+
+
+
+<!--ng-template #modalContent let-close="close">
+    <div class="modal-header">
+        <h6>Modificar comidas para {{theFood.patient_fullname}}</h6>
+        <nb-icon (click)="close()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+            Desayuno: 
+            <textarea rows="8" class="form-control" [(ngModel)]="theFood.breakfast_description"></textarea>
+
+            <br/>
+
+            Tipo de menú: 
+            <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theFood.menu_type" name="menu_type" [clearable]="false">
+                <ng-option *ngFor="let x of allMenuTypes" [value]="x">{{x}}</ng-option>
+            </ng-select>
+
+                
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button [disabled]="isProcessing"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="modifyFood();">
+            GUARDAR CAMBIOS
+        </button>
+    </div>
+</ng-template-->
+  
+
+
