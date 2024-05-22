@@ -144,6 +144,9 @@ public class MembersController extends AbstractBaseController
 			@RequestParam(value = "bank_account_holder_dni", required = false) String bank_account_holder_dni,
 			@RequestParam(value = "bank_account_iban", required = false) String bank_account_iban,
 
+			@RequestParam(value = "register_document_url", required = false) String register_document_url,
+			@RequestParam(value = "is_document_signed", required = false) Boolean is_document_signed,
+
 			HttpServletRequest request
 	)
 	{
@@ -151,8 +154,10 @@ public class MembersController extends AbstractBaseController
 		{
 			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
+			if(is_document_signed==null) is_document_signed = false;
+
 			return new ResponseEntity<>(this.membersService.saveMember(id, name, surname1, surname2, email, phone, documentid, documenttype, postaladdress, idcity, idstate, postalcode,
-					fee_euros, fee_period, fee_payment, bank_name, bank_account_holder_fullname, bank_account_holder_dni, bank_account_iban), HttpStatus.OK);
+					fee_euros, fee_period, fee_payment, bank_name, bank_account_holder_fullname, bank_account_holder_dni, bank_account_iban, register_document_url, is_document_signed), HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -167,14 +172,16 @@ public class MembersController extends AbstractBaseController
 	public ResponseEntity<?> unregisterMember(
 			@RequestParam(value = "id", required = true) String id,
 			@RequestParam(value = "unregister_reason", required = true) String unregister_reason,
+			@RequestParam(value = "unregister_document_url", required = false) String unregister_document_url,
+			@RequestParam(value = "is_document_signed", required = false) Boolean is_document_signed,
 			HttpServletRequest request
 	)
 	{
 		try
 		{
 			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-			this.membersService.unregisterMember(id, unregister_reason);
+			if(is_document_signed==null) is_document_signed = false;
+			this.membersService.unregisterMember(id, unregister_reason, unregister_document_url, is_document_signed);
 			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
@@ -183,6 +190,9 @@ public class MembersController extends AbstractBaseController
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+
+
 
 
 

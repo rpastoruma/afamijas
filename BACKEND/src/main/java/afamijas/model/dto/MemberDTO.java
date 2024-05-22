@@ -60,8 +60,13 @@ public class MemberDTO
 
     private String unregister_document_url;
 
+    private String register_document_url_signed;
+
+    private String unregister_document_url_signed;
+
     private String unregister_reason;
 
+    private String status;
 
 
 
@@ -92,7 +97,10 @@ public class MemberDTO
         this.bank_account_iban = user.getBank_account_iban();
         this.register_document_url = user.getRegister_document_url();
         this.unregister_document_url = user.getUnregister_document_url();
+        this.register_document_url_signed = user.getRegister_document_url_signed();
+        this.unregister_document_url_signed = user.getUnregister_document_url_signed();
         this.unregister_reason = user.getUnregister_reason();
+        this.status = user.getStatus();
     }
 
     public String getId() {
@@ -301,5 +309,30 @@ public class MemberDTO
 
     public void setMembernumber(Integer membernumber) {
         this.membernumber = membernumber;
+    }
+
+    public String getRegister_document_url_signed() {
+        return register_document_url_signed;
+    }
+
+    public void setRegister_document_url_signed(String register_document_url_signed) {
+        this.register_document_url_signed = register_document_url_signed;
+    }
+
+    public String getUnregister_document_url_signed() {
+        return unregister_document_url_signed;
+    }
+
+    public void setUnregister_document_url_signed(String unregister_document_url_signed) {
+        this.unregister_document_url_signed = unregister_document_url_signed;
+    }
+
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

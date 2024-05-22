@@ -1,12 +1,14 @@
  import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment as ENV} from '../../environments/environment'; 
+import { MemberDTO } from 'src/app/shared/models/models';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class MembersService {
+
 
   constructor(private http: HttpClient,) { }
 
@@ -19,6 +21,50 @@ export class MembersService {
     return this.http.get<any>(url, {});
   }
 
+  saveMember(theMember: MemberDTO, is_document_signed : boolean) 
+  {
+    const form = new FormData();
+    if(theMember.id && theMember.id!='') form.append('id', theMember.id);
+    form.append('name', theMember.name);
+    form.append('surname1', theMember.surname1);
+    form.append('email', theMember.email);
+    form.append('documentid', theMember.documentid);
+    form.append('documenttype', theMember.documenttype);
 
+    form.append('is_document_signed', is_document_signed.toString());
+    if(theMember.register_document_url && theMember.register_document_url!='') form.append('register_document_url', theMember.register_document_url);
+
+
+    if(theMember.surname2 && theMember.surname2!='') form.append('surname2', theMember.surname2);
+    if(theMember.phone && theMember.phone!='') form.append('phone', theMember.phone);
+    
+    if(theMember.postaladdress && theMember.postaladdress!='') form.append('postaladdress', theMember.postaladdress);
+    if(theMember.idcity && theMember.idcity!='') form.append('idcity', theMember.idcity);
+    if(theMember.idstate && theMember.idstate!='') form.append('idstate', theMember.idstate);
+    if(theMember.postalcode && theMember.postalcode!='') form.append('postalcode', theMember.postalcode);
+    if(theMember.fee_euros && theMember.fee_euros>0) form.append('fee_euros', theMember.fee_euros.toString());
+    if(theMember.fee_period && theMember.fee_period!='') form.append('fee_period', theMember.fee_period);
+    if(theMember.fee_payment && theMember.fee_payment!='') form.append('fee_payment', theMember.fee_payment);
+    if(theMember.bank_name && theMember.bank_name!='') form.append('bank_name', theMember.bank_name);
+    if(theMember.bank_account_holder_fullname && theMember.bank_account_holder_fullname!='') form.append('bank_account_holder_fullname', theMember.bank_account_holder_fullname);
+    if(theMember.bank_account_holder_dni && theMember.bank_account_holder_dni!='') form.append('bank_account_holder_dni', theMember.bank_account_holder_dni);
+    if(theMember.bank_account_iban && theMember.bank_account_iban!='') form.append('bank_account_iban', theMember.bank_account_iban);
+
+ 
+    return this.http.post<any>(ENV.url.members + '/saveMember', form);
+  }
+
+
+  unregisterMember(id: string, unregister_reason: string, unregister_document_url: string, is_document_signed: boolean) 
+  {
+    const form = new FormData();
+    form.append('id', id);
+    if(unregister_reason) form.append('unregister_reason', unregister_reason);
+    if(unregister_document_url && unregister_document_url!='') form.append('unregister_document_url', unregister_document_url);
+    if(is_document_signed) form.append('is_document_signed', is_document_signed.toString());
+
+ 
+    return this.http.post<any>(ENV.url.members + '/unregisterMember', form);
+  }
   
 }

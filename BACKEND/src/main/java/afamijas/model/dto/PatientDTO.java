@@ -27,7 +27,7 @@ public class PatientDTO
 
     private String phone;
 
-    private String postaladdres;
+    private String postaladdress;
 
     private String idcity;
 
@@ -84,7 +84,7 @@ public class PatientDTO
         this.surname2 = user.getSurname2();
         this.documentid = user.getDocumentid();
         this.phone = user.getPhone();
-        this.postaladdres = user.getPostaladdress();
+        this.postaladdress = user.getPostaladdress();
 
         this.idcity  = user.getIdcity();
         if(city!=null) this.cityname = city.getName();
@@ -191,12 +191,12 @@ public class PatientDTO
         this.phone = phone;
     }
 
-    public String getPostaladdres() {
-        return postaladdres;
+    public String getPostaladdress() {
+        return postaladdress;
     }
 
-    public void setPostaladdres(String postaladdres) {
-        this.postaladdres = postaladdres;
+    public void setPostaladdress(String postaladdress) {
+        this.postaladdress = postaladdress;
     }
 
     public String getIdcity() {

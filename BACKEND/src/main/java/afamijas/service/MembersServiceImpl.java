@@ -11,19 +11,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class MembersServiceImpl implements MembersService
@@ -83,6 +75,7 @@ public class MembersServiceImpl implements MembersService
 		if(debug_queries) System.out.println("findMyNotifications: " + query.getQueryObject().toJson());
 		List<MemberDTO> list = this.mongoTemplate.find(query, User.class).stream().map(x -> new MemberDTO(x, null, null)).toList();
 
+
 		return PageableExecutionUtils.getPage(
 				list,
 				pageable,
@@ -93,9 +86,41 @@ public class MembersServiceImpl implements MembersService
 	public MemberDTO saveMember(String id, String name, String surname1, String surname2, String email, String phone, String documentid, String documenttype,
 								String postaladdress, String idcity, String idstate, String postalcode,
 								Double fee_euros, String fee_period, String fee_payment,
-								String bank_name, String bank_account_holder_fullname, String bank_account_holder_dni, String bank_account_iban)
+								String bank_name, String bank_account_holder_fullname, String bank_account_holder_dni, String bank_account_iban, String register_document_url, Boolean is_document_signed)
 	{
-		User member = new User();
+		User member = null;
+		if(id!=null)
+		{
+			member = this.usersRepository.findOne(id);
+			if(member==null) return null;
+		}
+		else
+		{
+			member = new User();
+			member.setMembernumber(this.getLastMemberNumber()+1);
+
+			member.setUnregister_document_url("");
+			member.setUnregister_document_url_signed("");
+
+			member.setRegister_document_url("");
+			member.setRegister_document_url_signed("");
+
+
+		}
+
+		if(register_document_url!=null)
+		{
+			if(is_document_signed)
+			{
+				member.setRegister_document_url("");
+				member.setRegister_document_url_signed(register_document_url);
+			}
+			else
+			{
+				member.setRegister_document_url(register_document_url);
+				member.setRegister_document_url_signed("");
+			}
+		}
 
 		member.setRoles(Arrays.asList("MEMBER"));
 		member.setStatus("A");
@@ -125,14 +150,27 @@ public class MembersServiceImpl implements MembersService
 		return new MemberDTO(this.usersRepository.save(member), this.citiesRepository.findOne(idcity), this.statesRepository.findOne(idstate));
 	}
 
+	private Integer getLastMemberNumber()
+	{
+		final Query query = new Query().addCriteria(Criteria.where("roles").in("MEMBER")).with(Sort.by(Sort.Direction.DESC, "membernumber")).limit(1);
+		User user = mongoTemplate.findOne(query, User.class);
+		if(user==null)
+			return 0;
+		else return
+				user.getMembernumber();
+	}
+
+
 	@Override
-	public void unregisterMember(String id, String unregister_reason)
+	public void unregisterMember (String id, String unregister_reason, String unregister_document_url, boolean is_document_signed)
 	{
 		User member = this.usersRepository.findOne(id);
 		if(member!=null)
 		{
 			member.setStatus("D");
-			member.setUnregister_reason(unregister_reason);
+			member.setUnregister_reason(unregister_reason==null?"":unregister_reason);
+			if(unregister_document_url!=null && !is_document_signed) member.setUnregister_document_url(unregister_document_url);
+			if(unregister_document_url!=null && is_document_signed) member.setUnregister_document_url_signed(unregister_document_url);
 			this.usersRepository.save(member);
 		}
 

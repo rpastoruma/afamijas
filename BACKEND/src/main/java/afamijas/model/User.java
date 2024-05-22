@@ -158,6 +158,10 @@ public class User
 
 	private String unregister_document_url;
 
+	private String register_document_url_signed;
+
+	private String unregister_document_url_signed;
+
 	private String unregister_reason;
 
 
@@ -643,6 +647,23 @@ public class User
 
 	public void setUnregister_document_url(String unregister_document_url) {
 		this.unregister_document_url = unregister_document_url;
+	}
+
+
+	public String getRegister_document_url_signed() {
+		return register_document_url_signed;
+	}
+
+	public void setRegister_document_url_signed(String register_document_url_signed) {
+		this.register_document_url_signed = register_document_url_signed;
+	}
+
+	public String getUnregister_document_url_signed() {
+		return unregister_document_url_signed;
+	}
+
+	public void setUnregister_document_url_signed(String unregister_document_url_signed) {
+		this.unregister_document_url_signed = unregister_document_url_signed;
 	}
 
 	@Transient

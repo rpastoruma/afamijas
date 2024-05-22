@@ -29,7 +29,7 @@ export interface PatientDTO {
     surname2 : string;
     dni : string;
     phone : string;
-    postaladdres : string;
+    postaladdress : string;
     idcity : string;
     cityname : string;
     idstate : string;
@@ -68,7 +68,7 @@ export interface MemberDTO {
     documentid : string;
     documenttype : string;
     phone : string;
-    postaladdres : string;
+    postaladdress : string;
     idcity : string;
     cityname : string;
     idstate : string;
@@ -85,9 +85,14 @@ export interface MemberDTO {
     bank_account_iban : string;
 
     register_document_url : string;
+    register_document_url_signed : string;
+
     unregister_document_url : string;
+    unregister_document_url_signed : string;
 
     unregister_reason : string;
+
+    status : string
 }
 
 export interface RouteDTO {

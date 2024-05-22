@@ -27,6 +27,8 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
   dayto : Date = new Date();
   groupcode : string = 'GRUPO 1';
   idpatient : string = '';
+  idspatients : string[] = [];
+  all_idspatients : string[] = [];
 
   page : number = 0;
   size : number = 4;
@@ -42,7 +44,7 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
     idworker: '',
     worker_fullname: '',
     day: new Date(),
-    daymeal: '',
+    daymeal: 'ALMUERZO',
     dish: '',
     result: '',
     indications: '',
@@ -85,6 +87,8 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
       this.usersService.getAllPatients(this.groupcode).subscribe(
         res => {
           this.allPatients = res;
+          this.idspatients = this.allPatients.map(item => item.id);
+          this.all_idspatients = this.allPatients.map(item => item.id);
           if(this.allPatients && this.allPatients.length>0) 
           {
             this.getFeedings(0);
@@ -114,7 +118,7 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
     this.feedingsService.getFeedings(this.page, this.size, this.groupcode, this.idpatient, this.dayfrom, this.dayto).subscribe(
       res => {
         this.isProcessing = false;
-        this.feedings = res.content.map(item => { return {id: item.id, values: [item.patient_fullname, this.date2Text1(item.day), item.daymeal, item.dish, item.result, item.indications, item.incidences, item.worker_fullname] }; });
+        this.feedings = res.content.map(item => { return {id: item.id, values: [item.patient_fullname, this.date2Text1(item.day), /*item.daymeal,*/ item.dish, item.result, item.indications, item.incidences, item.worker_fullname] }; });
         this.feedingsObjects = res.content;
 
         this.totalPages = res.totalPages;
@@ -147,7 +151,7 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
         const keys = ['Usuario:', 'Día:', 'Comida:', 'Plato:', 'Resultado:', 'Indicaciones:', 'Incidencias:', 'Registrado por:'];
         const fields = ['patient_fullname', 'day', 'daymeal', 'dish', 'result', 'indications', 'incidences', 'worker_fullname'];
         fields.forEach((key, i) => header[key] = keys[i]);
-        this.exportData = res && res.content ? res.content.map(item => [item.patient_fullname, this.date2Text1(item.day), item.daymeal, item.dish, item.result, item.indications, item.incidences, item.worker_fullname]) : null;
+        this.exportData = res && res.content ? res.content.map(item => [item.patient_fullname, this.date2Text1(item.day), /*item.daymeal,*/ item.dish, item.result, item.indications, item.incidences, item.worker_fullname]) : null;
         const final = parseDataExport(fields, this.exportData);
         const title = 'Registro de alimentación';
 
@@ -208,20 +212,23 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
 
   openRegisterFeedinggModal()
   {
+    this.idspatients = this.all_idspatients;
+    //console.log("this.all_idspatients="+this.all_idspatients)
     if(this.theFeeding.idpatient=='' && this.allPatients.length>0)  this.theFeeding.idpatient = this.allPatients[0].id; 
-    if(this.theFeeding.daymeal=='' && new Date().getHours() <= 12) this.theFeeding.daymeal = 'DESAYUNO';
-    if(this.theFeeding.daymeal=='' && new Date().getHours() > 12) this.theFeeding.daymeal = 'ALMUERZO';
+    //if(this.theFeeding.daymeal=='' && new Date().getHours() <= 12) this.theFeeding.daymeal = 'DESAYUNO';
+    //if(this.theFeeding.daymeal=='' && new Date().getHours() > 12) this.theFeeding.daymeal = 'ALMUERZO';
+    this.theFeeding.daymeal = 'ALMUERZO';
     if(this.theFeeding.dish=='') this.theFeeding.dish = 'PRIMERO';
     if(this.theFeeding.result=='') this.theFeeding.result = 'COMPLETO';
 
     this.modal.open(this.modalContent, { size: 'lg' });
   }
 
-  registerFeeding()
+  registerFeeding() 
   {
     if(!this.theFeeding.day) this.theFeeding.day = new Date();
 
-    if(!this.theFeeding.idpatient)
+    if(this.idspatients.length==0)
     {
       this.toastService.show("Debes seleccionar usuario.",
         "¡Ups!", 
@@ -230,6 +237,7 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
       return;
     }
 
+    /*
     if(!this.theFeeding.daymeal)
     {
       this.toastService.show("Debes seleccionar comida.",
@@ -237,7 +245,7 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
         { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
       );
       return;
-    }
+    }*/
 
     if(!this.theFeeding.dish && this.theFeeding.daymeal=='ALMUERZO')
     {
@@ -258,27 +266,35 @@ export class WorkerFeedingRegisterListComponent implements OnInit {
       return;
     }
 
-    
+    let isError = false;
+    for(let i=0; i<this.idspatients.length; i++)
+    {
+      this.theFeeding.idpatient = this.idspatients[i];
+      this.feedingsService.registerFeeding(this.theFeeding).subscribe(
+        res => {
+          this.isProcessing = false;
+          if(i==this.idspatients.length-1)
+          {
+            if(!isError) this.toastService.show("Registro de alimentación realizado correctamente.",
+                "¡Ok!", 
+                { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+                );
+            this.getFeedings(this.page);
+            this.modal.dismissAll();
+          }
+        },
+        error => {
+          isError = true;
+          this.isProcessing = false;
+          console.error("registerFeeding():"+JSON.stringify(error));
+          this.toastService.show("No se ha podido realizar el registro de alimentación.",
+            "¡Ups!", 
+            { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+           );
+        }
+      );
+    }
 
-    this.feedingsService.registerFeeding(this.theFeeding).subscribe(
-      res => {
-        this.isProcessing = false;
-        this.toastService.show("Registro de alimentación realizado correctamente.",
-            "¡Ok!", 
-            { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-          );
-        this.getFeedings(this.page);
-        this.modal.dismissAll();
-      },
-      error => {
-        this.isProcessing = false;
-        console.error("registerFeeding():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido realizar el registro de alimentación.",
-          "¡Ups!", 
-          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-         );
-      }
-    );
   }
 
 
