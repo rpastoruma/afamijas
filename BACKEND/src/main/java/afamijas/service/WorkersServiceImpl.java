@@ -59,13 +59,16 @@ public class WorkersServiceImpl implements WorkersService
 	final HealthLogRepository healthLogRepository;
 
 	final DocsRepository docsRepository;
+
+	final ReceiptsRepository receiptsRepository;
+
 	final MediaService mediaService;
 
 	final NotificationsService notificationsService;
 
 
 	@Autowired
-	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, DocsRepository docsRepository, MediaService mediaService, NotificationsService notificationsService)
+	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, DocsRepository docsRepository, ReceiptsRepository receiptsRepository, MediaService mediaService, NotificationsService notificationsService)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -81,6 +84,7 @@ public class WorkersServiceImpl implements WorkersService
 		this.menusRepository = menusRepository;
 		this.healthLogRepository = healthLogRepository;
 		this.docsRepository = docsRepository;
+		this.receiptsRepository = receiptsRepository;
 		this.mediaService = mediaService;
 		this.notificationsService = notificationsService;
 	}
@@ -126,6 +130,17 @@ public class WorkersServiceImpl implements WorkersService
 	}
 
 
+
+
+	@Override
+	public List<MemberDTO> getAllMembers()
+	{
+		Query query = new Query().with(Sort.by(Sort.Direction.ASC, "name"));
+		Criteria criteria = new Criteria().where("roles").in(Arrays.asList("MEMBER")).and("status").is("A");
+		query.addCriteria(criteria);
+		try { if(debug_queries) System.out.println("getAllMembers: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		return this.mongoTemplate.find(query, User.class).stream().map(x -> new MemberDTO(x, null, null)).toList();
+	}
 
 
 
@@ -817,6 +832,7 @@ public class WorkersServiceImpl implements WorkersService
 	}
 
 	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public void registerWCLog(String id, String idworker, String point, String hour)
 	{
 		WCLog wcLog;
@@ -852,6 +868,7 @@ public class WorkersServiceImpl implements WorkersService
 	}
 
 	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public void deleteWCLog(String id)
 	{
 		WCLog wcLog = this.wcLogRepository.findOne(id);
@@ -892,6 +909,7 @@ public class WorkersServiceImpl implements WorkersService
 	}
 
 	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public void registerHealthLog(String id, String idpatient, String idworker, Double lowPressure, Double highPressure, Double sugar)
 	{
 		if(lowPressure!=null && lowPressure==0) lowPressure = null;
@@ -948,6 +966,7 @@ public class WorkersServiceImpl implements WorkersService
 	}
 
 	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public void deleteHealthLog(String id)
 	{
 		HealthLog healthLog = this.healthLogRepository.findOne(id);
@@ -1006,7 +1025,7 @@ public class WorkersServiceImpl implements WorkersService
 		if(!(text!=null && !text.trim().equals("")) && availablefrom==null && availableto==null && !(!user.getRoles().contains("ADMIN") && !user.getRoles().contains("MANAGER")))
 			query.addCriteria(new Criteria());
 
-		long total = this.mongoTemplate.count(query, HealthLog.class);
+		long total = this.mongoTemplate.count(query, Doc.class);
 
 		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
 		try { if(debug_queries) System.out.println("getDocs: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
@@ -1020,6 +1039,7 @@ public class WorkersServiceImpl implements WorkersService
 
 
 	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public void saveDoc(String id, String idworker, String title, String description, String url, LocalDate dayfrom, LocalDate dayto, List<String> roles)
 	{
 		if(dayfrom==null) dayfrom = LocalDate.now();
@@ -1064,11 +1084,92 @@ public class WorkersServiceImpl implements WorkersService
 	}
 
 	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
 	public void deleteDoc(String id)
 	{
 		Doc doc = this.docsRepository.findOne(id);
 		if(doc!=null) this.docsRepository.delete(doc);
 	}
+
+
+
+
+	// SOLO PARA ADMIN y MANAGER
+	public Page<ReceiptDTO> getReceipts(User user, String idmember, LocalDate dayfrom, LocalDate dayto, String status, Integer page, Integer size, String orderby, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		if(idmember!=null)
+			query.addCriteria(Criteria.where("idmember").is(idmember));
+
+		if(dayfrom!=null && dayto!=null)
+			query.addCriteria(new Criteria().andOperator(new Criteria().where("duedate").gte(dayfrom), new Criteria().where("duedate").lte(dayto)));
+		else if(dayfrom!=null && dayto==null)
+			query.addCriteria(Criteria.where("duedate").gte(dayfrom));
+		else if(dayto!=null && dayfrom==null)
+			query.addCriteria(Criteria.where("duedate").lte(dayto));
+
+		if(status!=null)
+			query.addCriteria(Criteria.where("status").is(status));
+
+		long total = this.mongoTemplate.count(query, Receipt.class);
+
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { if(debug_queries) System.out.println("getReceipts: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		//EN LOS USUARIOS WORKER INCLUIMOS TAMBIÉN LOS QUE PUDIERAN ESTAR BORRADOS POR ESO FINDONE NO FILTRA POR STATUS
+		List<ReceiptDTO> list = this.mongoTemplate.find(query, Receipt.class).stream().map(x -> new ReceiptDTO(x, this.usersRepository.findOne(x.getIdmember()))).toList();
+
+		return new PageImpl<>(list, pageable, total);
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void saveReceipt(String id, String idmember, String url, Double total, LocalDate duedate, String status, LocalDate paiddate)
+	{
+		Receipt receipt;
+		String oldurl = null;
+		if(id!=null)
+		{
+			receipt = this.receiptsRepository.findOne(id);
+			if(receipt==null) return;
+			oldurl = receipt.getUrl();
+		}
+		else
+		{
+			receipt = new Receipt();
+			receipt.setUrl(url);
+			receipt.setIdmember(idmember);
+		}
+
+		receipt.setTotal(total);
+		receipt.setDuedate(duedate);
+		receipt.setStatus(status);
+
+		if(status.equals("PAID") && paiddate==null) paiddate = LocalDate.now();
+		receipt.setPaiddate(paiddate);
+
+		receipt = this.receiptsRepository.save(receipt);
+
+		this.notificationsService.create(idmember, null, status.equals("PAID")?"Recibo pagado":"Recibo pendiente", "NORMAL", duedate.format(DateTimeFormatter.ofPattern("yyyy-MM-d")) + ": " + total + " euros.", receipt.getUrl());
+	}
+
+
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void deleteReceipt(String id)
+	{
+		Receipt receipt = this.receiptsRepository.findOne(id);
+		if(receipt!=null) this.receiptsRepository.delete(receipt);
+	}
+
+
+
+
+
 
 
 	/*

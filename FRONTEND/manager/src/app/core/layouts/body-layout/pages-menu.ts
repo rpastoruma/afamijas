@@ -171,3 +171,26 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
 
 
   
+    
+  //MENÚ RECIBOS
+  export const MENU_RECEIPTS: NbMenuItem[] = [
+    {
+      title: 'Recibos',
+      icon: { icon: 'fa-receipt', pack: 'fas' },
+      link: '/members/receipts',
+      data: 'menu.receipts',
+      expanded: false,
+    }
+  ];  
+  
+    
+  //MENÚ FACTURAS
+  export const MENU_INVOICES: NbMenuItem[] = [
+    {
+      title: 'Facturas',
+      icon: { icon: 'fa-file-invoice', pack: 'fas' },
+      link: '/invoices',
+      data: 'menu.invoices',
+      expanded: false,
+    }
+  ];  

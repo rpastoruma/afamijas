@@ -1,25 +1,24 @@
 import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
-import { PatientDTO, parseDataExport, ActionDTO, FeedingDTO, rolName, DocDTO } from 'src/app/shared/models/models';
+import { parseDataExport, ActionDTO, rolName, ReceiptDTO, MemberDTO } from 'src/app/shared/models/models';
 import { UsersService } from 'src/app/core/services/users.service';
 import { PdfService } from 'src/app/core/services/pdf-service.service';
 import { ExcelService } from 'src/app/core/services/excel-service.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FeedingsService } from 'src/app/core/services/feedings.service';
 import { flatpickrFactory } from '../../calendar/mycalendar.module'; 
-import { DocsService } from 'src/app/core/services/docs.service';
 import { Subscription, finalize } from 'rxjs';
 import { MediaService } from 'src/app/core/services/media.service';
 import { HttpEventType } from '@angular/common/http';
-
+import { ReceiptsService } from 'src/app/core/services/receipts.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-worker-documents-list',
-  templateUrl: './worker-documents-list.component.html',
-  styleUrls: ['./worker-documents-list.component.scss']
+  selector: 'app-members-receipts-list',
+  templateUrl: './members-receipts-list.component.html',
+  styleUrls: ['./members-receipts-list.component.scss']
 })
-export class WorkerDocumentsListComponent implements OnInit {
+export class MembersReceiptsListComponent implements OnInit {
 
   
 
@@ -28,34 +27,34 @@ export class WorkerDocumentsListComponent implements OnInit {
   //PARÁMETROS LISTADO
   dayfrom : Date = null; 
   dayto : Date = null;
-  theText : string = '';
+  idmember : string = '';
+  status : string = '';
 
   page : number = 0;
   size : number = 4;
   totalPages : number = 0;
 
-  allRoles : string[] = [ "RELATIVE", "WORKER", "TRANSPORT", "ADMIN", "CLEANING", "NURSING" , "NURSING_ASSISTANT" , "LEGIONELLA_CONTROL" , "KITCHEN" , "MONITOR" , "SOCIAL_WORKER" , "PSYCHOLOGIST" , "MANAGER" , "PHYSIOTHERAPIST", "OCCUPATIONAL_THERAPIST", "OPERATOR_EXTRA_1" ];
-
+  
   requiredFileType:string  = ".png,.jpg,.jpeg,.webp,.gif,.pdf,.doc,.docx,.xsl,.xslx";
   fileName = '';
   uploadProgress:number;
   uploadSub: Subscription;
 
-  theDoc : DocDTO = {
+  theReceipt : ReceiptDTO = {
     id: '',
-    idworker: '',
-    worker_fullname: '',
-    title: '',
-    description: '',
+    idmember: '',
+    member_fullname: '',
+    total: 0,
     url: '',
-    dayfrom: null,
-    dayto: null,
-    roles: [],
-    created: undefined
+    duedate: undefined,
+    paiddate: undefined,
+    status: 'PENDING'
   };
+
+  allMembers : MemberDTO[] = [];
   
-  docs: any[]  = []; // amy => formato del listado
-  docsObjects: DocDTO[]  = [];
+  receipts: any[]  = []; // any => formato del listado
+  receiptsObjects: ReceiptDTO[]  = [];
 
   loadingExcel : boolean = false;
   loadingPDF : boolean = false;
@@ -65,6 +64,9 @@ export class WorkerDocumentsListComponent implements OnInit {
 
   actions : ActionDTO[] = [];
 
+  paramsuscription : Subscription;
+  idmember_param : string;
+
   constructor(
     public toastService: NbToastrService,
     private mediaService : MediaService,
@@ -72,7 +74,10 @@ export class WorkerDocumentsListComponent implements OnInit {
     private excelService : ExcelService,
     private authService : AuthService,
     private modal: NgbModal, 
-    private docsService : DocsService
+    private receiptsService : ReceiptsService,
+    private usersService : UsersService,
+    private router: Router,
+    private route: ActivatedRoute
 
   ) {
    }
@@ -81,39 +86,80 @@ export class WorkerDocumentsListComponent implements OnInit {
     flatpickrFactory();
     this.dayfrom = null;
     this.dayto = null;
-    if(!this.canModify()) this.actions = [{action: 'show', text: 'Abrir documento'}];
-    if(this.canModify()) this.actions = [{action: 'show', text: 'Abrir documento'}, {action: 'edit', text: 'Modificar documento'}, {action: 'delete', text: 'Eliminar documento'}];
-    this.getDocs(0);
+    if(!this.canModify()) this.actions = [{action: 'show', text: 'Ver recibo'}];
+    if(this.canModify()) this.actions = [{action: 'show', text: 'Ver recibo'}, {action: 'edit', text: 'Modificar recibo'}, {action: 'delete', text: 'Eliminar recibo'}];
+    
+    
+    
+    this.paramsuscription = this.route.queryParams.subscribe(params => {
+      console.log(params)
+      this.idmember_param = params['idmember'];
+      this.getAllMembers(this.idmember_param);
+   });
+
   }
 
 
   roleName(therole) { return rolName(therole); }
   
 
+  
+  getAllMembers(idmemberparam :string)
+  {
+      this.isProcessing = true;
+      this.usersService.getAllMembers().subscribe(
+        res => {
+          this.allMembers = res;
+          if(this.allMembers && this.allMembers.length>0) 
+          {
+            if(idmemberparam) this.idmember = idmemberparam;
+            this.getReceipts(0);
+          }
+          else
+            this.isProcessing = false;
+        },
+        error => 
+        {
+          console.error("getAllMembers():"+JSON.stringify(error));
+          this.toastService.show("No se pueden obtener los socios.",
+          "¡Ups!", 
+          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+         );
+        }
+      );
+  }
 
-  getDocs(page :number) 
+
+  getReceipts(page :number) 
   {
     this.isProcessing = true;
     //if(!this.dayfrom) this.dayfrom = null;
     //if(!this.dayto) this.dayto = null;
     this.page = page
-    this.docsService.getDocs(this.page, this.size, this.dayfrom, this.dayto, this.theText).subscribe(
+    this.receiptsService.getReceipts(this.page, this.size, this.idmember, this.dayfrom, this.dayto, this.status).subscribe(
       res => {
         this.isProcessing = false;
-        this.docs = res.content.map(item => { return {id: item.id, values: [item.title, item.description, this.date2Text1(item.dayfrom), this.date2Text1(item.dayto), item.worker_fullname ] }; });
-        this.docsObjects = res.content;
+        this.receipts = res.content.map(item => { return {id: item.id, values: [item.member_fullname, this.date2Text1(item.duedate), item.total, this.getStatus(item.status), this.date2Text1(item.paiddate), item.url ] }; });
+        this.receiptsObjects = res.content;
 
         this.totalPages = res.totalPages;
       },
       error => {
         this.isProcessing = false;
-        console.error("getDocs():"+JSON.stringify(error));
-        this.toastService.show("No se han podido obtener los documentos.",
+        console.error("getReceipts():"+JSON.stringify(error));
+        this.toastService.show("No se han podido obtener los recibos.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
       }
     );
+  }
+
+  getStatus(status : string)
+  {
+    if(status=='PAID') return 'PAGADO';
+    else if(status=='PENDING') return 'PENDIENTE';
+    else return "¿?";
   }
 
   
@@ -127,15 +173,15 @@ export class WorkerDocumentsListComponent implements OnInit {
     if(!this.dayfrom) this.dayfrom = new Date();
     if(!this.dayto) this.dayto = new Date();
 
-    this.docsService.getDocs(0, 100000000, this.dayfrom, this.dayto, this.theText).subscribe(
+    this.receiptsService.getReceipts(0, 100000000, this.idmember, this.dayfrom, this.dayto, this.status).subscribe(
       res => {
         const header = {};
-        const keys = ['Título:', 'Descripción:',  'Publicado desde:', 'Publicado hasta:', 'Subido por:'];
-        const fields = ['patient_fullname', 'day', 'daymeal', 'dish', 'result', 'indications', 'incidences', 'worker_fullname'];
+        const keys = ['Socio:', 'Fecha:', 'Total:', 'Estado:', 'Fecha de pago:'];
+        const fields = ['member_fullname', 'duedate', 'total', 'status', 'paiddate'];
         fields.forEach((key, i) => header[key] = keys[i]);
-        this.exportData = res && res.content ? res.content.map(item => [item.title, item.description, this.date2Text1(item.dayfrom), this.date2Text1(item.dayto), item.worker_fullname ]) : null;
+        this.exportData = res && res.content ? res.content.map(item => [item.member_fullname, this.date2Text1(item.duedate), item.total, this.getStatus(item.status), this.date2Text1(item.paiddate) ]) : null;
         const final = parseDataExport(fields, this.exportData);
-        const title = 'Documentos';
+        const title = 'Recibos';
 
         if (format === 'excel') 
         {
@@ -145,7 +191,7 @@ export class WorkerDocumentsListComponent implements OnInit {
         } 
         else 
         {
-          const minFields = ['20%','20%','20%','20%','20%'];
+          const minFields = ['30%','20%','10%','10%','10%','20%'];
           const keystranslate = keys.map(item => item);
           this.pdfService.exportDataToPDF(title, keystranslate, fields, title, final, minFields);
           this.loadingPDF = false;
@@ -160,29 +206,29 @@ export class WorkerDocumentsListComponent implements OnInit {
 
 
   filter(page: number) {
-    this.getDocs(page);
+    this.getReceipts(page);
   }
 
 
   setPage(event) {
     this.page = event;
-    this.getDocs(this.page);
+    this.getReceipts(this.page);
   }
 
   action(event) 
   {
     if (event && event[0] === 'edit') 
     {
-      const selected = { ...this.docsObjects.find(item => item.id === event[1])};
-      this.openAddDocumentModal(selected);
+      const selected = { ...this.receiptsObjects.find(item => item.id === event[1])};
+      this.openAddReceiptModal(selected);
     } 
     else if (event && event[0] === 'delete') 
     {
-      this.deleteDoc(event[1]);
+      this.deleteReceipt(event[1]);
     }
     else if (event && event[0] === 'show') 
     {
-      const selected =  {...this.docsObjects.find(item => item.id === event[1])};
+      const selected =  {...this.receiptsObjects.find(item => item.id === event[1])};
       window.open(selected.url);
     } 
 
@@ -196,25 +242,25 @@ export class WorkerDocumentsListComponent implements OnInit {
 
 
 
-  openAddDocumentModal(selected? : DocDTO)
+  openAddReceiptModal(selected? : ReceiptDTO)
   {
     console.warn(JSON.stringify(selected));
     if(!selected)
     {
       this.fileName = undefined;
-      this.theDoc.id =''; 
-      this.theDoc.url =''; 
-      this.theDoc.title =''; 
-      this.theDoc.description ='';
-      this.theDoc.dayfrom = new Date();
-      this.theDoc.dayto = null;
-      this.theDoc.roles = [ "WORKER" ];
+      this.theReceipt.id =''; 
+      this.theReceipt.url =''; 
+      this.theReceipt.total = 0; 
+      this.theReceipt.status ='PENDING';
+      this.theReceipt.duedate = new Date();
+      this.theReceipt.paiddate = null;
+      this.theReceipt.idmember = this.idmember;
     }
     else
     {
-      this.theDoc = selected;
-      this.theDoc.dayfrom = this.localDateTime2Date(this.theDoc.dayfrom);
-      this.theDoc.dayto = this.localDateTime2Date(this.theDoc.dayto);
+      this.theReceipt = selected;
+      this.theReceipt.duedate = this.localDateTime2Date(this.theReceipt.duedate);
+      this.theReceipt.paiddate = this.localDateTime2Date(this.theReceipt.paiddate);
     }
 
 
@@ -222,12 +268,22 @@ export class WorkerDocumentsListComponent implements OnInit {
     this.modal.open(this.modalContent, { size: 'lg' });
   }
 
-  saveDoc()
+  saveReceipt()
   {
 
-    if(this.theDoc.url == '') 
+    
+    if(this.theReceipt.idmember == '') 
+      {
+        this.toastService.show("Debes seleccionar el socio primero.",
+          "¡Ups!", 
+          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+        );
+        return;
+      }
+
+    if(this.theReceipt.url == '') 
     {
-      this.toastService.show("Debes seleccionar el documento a subir primero.",
+      this.toastService.show("Debes seleccionar el recibo a subir primero.",
         "¡Ups!", 
         { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
       );
@@ -235,9 +291,9 @@ export class WorkerDocumentsListComponent implements OnInit {
     }
 
 
-    if(this.theDoc.title == '') 
+    if(this.theReceipt.total <= 0) 
     {
-      this.toastService.show("Debes indicar un título para el documento.",
+      this.toastService.show("Debes indicar el total del recibo.",
         "¡Ups!", 
         { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
       );
@@ -245,20 +301,20 @@ export class WorkerDocumentsListComponent implements OnInit {
     }
    
 
-    this.docsService.saveDoc(this.theDoc).subscribe(
+    this.receiptsService.saveReceipt(this.theReceipt).subscribe(
       res => {
         this.isProcessing = false;
-        this.toastService.show("Documento grabado correctamente.",
+        this.toastService.show("Recibo grabado correctamente.",
             "¡Ok!", 
             { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );
-        this.getDocs(this.page);
+        this.getReceipts(this.page);
         this.modal.dismissAll();
       },
       error => {
         this.isProcessing = false;
-        console.error("saveDoc():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido añadir el documento.",
+        console.error("saveReceipt():"+JSON.stringify(error));
+        this.toastService.show("No se ha podido añadir el recibo.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
@@ -267,21 +323,21 @@ export class WorkerDocumentsListComponent implements OnInit {
   }
 
 
-  deleteDoc(id : string)
+  deleteReceipt(id : string)
   {
-    this.docsService.deleteDoc(id).subscribe(
+    this.receiptsService.deleteReceipt(id).subscribe(
       res => {
         this.isProcessing = false;
-        this.toastService.show("Documento eliminado correctamente.",
+        this.toastService.show("Recibo eliminado correctamente.",
             "¡Ok!", 
             { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );
-        this.getDocs(this.page);
+        this.getReceipts(this.page);
       },
       error => {
         this.isProcessing = false;
         console.error("deleteFeeding():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido eliminar el documento.",
+        this.toastService.show("No se ha podido eliminar el recibo.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
@@ -300,7 +356,7 @@ async onFileSelected(event) {
 
   if (file) 
   {
-    const upload$ = this.mediaService.uploadFile("document", file).pipe(finalize(() => this.reset())
+    const upload$ = this.mediaService.uploadFile("recepit", file).pipe(finalize(() => this.reset())
   )
   ;
 
@@ -314,7 +370,7 @@ async onFileSelected(event) {
         {
           if(event.url && event.url.startsWith("https://") )
           {
-            this.theDoc.url = event.url;
+            this.theReceipt.url = event.url;
           }
           else
             console.error("onFileSelected1():"+JSON.stringify(event));
@@ -330,7 +386,7 @@ async onFileSelected(event) {
         else 
         {
           if(event.url && event.url.startsWith("https://") ) 
-            this.theDoc.url = event.url;
+            this.theReceipt.url = event.url;
           else
             console.error("onFileSelected3():"+JSON.stringify(event));
         }

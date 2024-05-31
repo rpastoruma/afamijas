@@ -35,6 +35,7 @@ import { canViewWclogsGuard } from './guards/can-view-wclogs.guard';
 import { canViewHealthLogsGuard } from './guards/can-view-health-logs.guard';
 import { canViewDocsGuard } from './guards/can-view-docs.guard';
 import { canAccessMembersGuard } from './guards/can-access-members.guard';
+import { canAccessInvoicesGuard } from './guards/can-access-invoices.guard';
 
 
 const routes: Routes = [
@@ -146,6 +147,12 @@ const routes: Routes = [
       component: BodyLayoutComponent,
       canActivate : [canAccessMembersGuard],
       loadChildren: () => import('../modules/members/members.module').then(m => m.MembersModule) 
+    },
+    {
+      path : 'invoices', 
+      component: BodyLayoutComponent,
+      canActivate : [canAccessInvoicesGuard],
+      loadChildren: () => import('../modules/invoices/invoices.module').then(m => m.InvoicesModule) 
     },
     
     {

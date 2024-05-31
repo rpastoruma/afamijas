@@ -18,6 +18,7 @@ export const environment = {
       relatives : ADMIN_URL + 'relatives',
       workers : ADMIN_URL + 'workers',
       members : ADMIN_URL + 'members',
+      invoices : ADMIN_URL + 'invoices',
       media : ADMIN_URL + 'media'
     }
   };

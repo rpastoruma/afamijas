@@ -407,6 +407,27 @@ export interface DocDTO
 
 
 
+export interface ReceiptDTO
+{
+    id : string;
+
+    idmember : string;
+
+    member_fullname : string;
+
+    total : number
+
+    url : string;
+
+    duedate : Date;
+
+    paiddate : Date;
+
+    status : string;
+}
+
+
+
 //TODO: Revisar si se está haciendo bien ya que es copiada de proyectos antiguos
 //Parseo como fecha: 
 export function reviver(key: string, value: any): any {

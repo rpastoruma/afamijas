@@ -105,7 +105,7 @@ export class MembersListComponent  implements OnInit{
 
   ngOnInit(): void {
     this.getMembers(0);
-    this.actions = [  {action: 'edit', text: 'Modificar datos de socio'},  {action: 'delete', text: 'Dar de baja socio'}  ];
+    this.actions = [  {action: 'edit', text: 'Modificar datos de socio'},  {action: 'show', text: 'Ver recibos del socio'},    {action: 'delete', text: 'Dar de baja socio'}  ];
   }
 
   getMembers(page? : number)
@@ -185,13 +185,20 @@ export class MembersListComponent  implements OnInit{
 
   action(event) 
   {
-    if (event && event[0] === 'edit') 
+    if (event && event[0] === 'show') 
     {
       const selected = this.membersObjects.find(item => item.id === event[1]);
       this.theMember = selected;
 
-      this.openSaveMemberModal(false);
+      window.open('/members/receipts?idmember=' + this.theMember.id);
     } 
+    else if (event && event[0] === 'edit') 
+      {
+        const selected = this.membersObjects.find(item => item.id === event[1]);
+        this.theMember = selected;
+  
+        this.openSaveMemberModal(false);
+      } 
     else if (event && event[0] === 'delete') 
     {
       const selected = this.membersObjects.find(item => item.id === event[1]);

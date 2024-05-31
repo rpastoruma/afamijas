@@ -250,6 +250,24 @@ public class WorkersController extends AbstractBaseController
 	}
 
 
+	@RequestMapping(method=RequestMethod.GET, value="getAllMembers", produces="application/json")
+	public ResponseEntity<?> getAllMembers(
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			//PARA ADMIN Y DIRECTOR
+			if(!this.isMANAGER() && !this.isADMIN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			return new ResponseEntity<>(this.workersService.getAllMembers(), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@RequestMapping(method=RequestMethod.GET, value="getCalendarEvents", produces="application/json")
 	public ResponseEntity<?> getCalendarEvents(
@@ -1084,6 +1102,94 @@ public class WorkersController extends AbstractBaseController
 
 
 
+
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getReceipts", produces="application/json")
+	public ResponseEntity<?> getReceipts(
+			@RequestParam(value = "idmember", required = false) String idmember,
+			@RequestParam(value = "dayfrom", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			@RequestParam(value = "dayto", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
+			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(order==null) order = "created";
+			if(orderasc==null) orderasc = "DESC";
+
+			if(idmember!=null && idmember.trim().equals("")) idmember = null;
+			if(status!=null && status.trim().equals("")) status = null;
+
+			return new ResponseEntity<>(this.workersService.getReceipts(this.getUser(), idmember, dayfrom, dayto, status, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="saveReceipt", produces="application/json")
+	public ResponseEntity<?> saveReceipt(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "idmember", required = false) String idmember,
+			@RequestParam(value = "url", required = true) String url,
+			@RequestParam(value = "total", required = true) Double total,
+			@RequestParam(value = "duedate", required = true)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate duedate,
+			@RequestParam(value = "status", required = true) String status,
+			@RequestParam(value = "paiddate", required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate paiddate,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.saveReceipt(id, idmember, url, total, duedate, status, paiddate);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteReceipt", produces="application/json")
+	public ResponseEntity<?> deleteReceipt(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.deleteReceipt(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 
 }

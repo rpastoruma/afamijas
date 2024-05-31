@@ -35,6 +35,11 @@ export class UsersService {
     return this.http.get<any>(url, {});
   }
 
+  getAllMembers() {
+    let url = ENV.url.workers + `/getAllMembers`;
+    return this.http.get<any>(url, {});
+  }
+
   getMedications(idpatient : string, page :number, size: number)
   {
     let url = ENV.url.workers + `/getMedications?page=${page}&size=${size}`;

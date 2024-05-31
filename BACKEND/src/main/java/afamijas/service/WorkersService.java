@@ -21,6 +21,8 @@ public interface WorkersService
     List<PatientDTO> getAllPatients(String groupcode);
 
 
+    List<MemberDTO> getAllMembers();
+
     String uploadTimetable(MultipartFile file) throws Exception;
 
     String uploadActivities(MultipartFile file) throws Exception;
@@ -129,4 +131,13 @@ public interface WorkersService
 
     void deleteDoc(String id);
 
+
+
+    Page<ReceiptDTO> getReceipts(User user, String idmember, LocalDate dayfrom, LocalDate dayto, String status, Integer page, Integer size, String orderby, String orderasc);
+
+
+    void saveReceipt(String id, String idmember, String url, Double total, LocalDate duedate, String status, LocalDate paiddate);
+
+    @Transactional(propagation= Propagation.REQUIRES_NEW)
+    void deleteReceipt(String id);
 }
