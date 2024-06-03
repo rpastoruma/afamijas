@@ -427,6 +427,26 @@ export interface ReceiptDTO
 }
 
 
+export interface InvoiceDTO
+{
+    id : string;
+
+    idpatient : string;
+
+    patient_fullname : string;
+
+    total : number
+
+    url : string;
+
+    duedate : Date;
+
+    paiddate : Date;
+
+    status : string;
+}
+
+
 
 //TODO: Revisar si se está haciendo bien ya que es copiada de proyectos antiguos
 //Parseo como fecha: 

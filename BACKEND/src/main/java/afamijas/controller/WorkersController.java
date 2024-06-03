@@ -1192,5 +1192,95 @@ public class WorkersController extends AbstractBaseController
 	}
 
 
+
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getInvoices", produces="application/json")
+	public ResponseEntity<?> getInvoices(
+			@RequestParam(value = "idpatient", required = false) String idpatient,
+			@RequestParam(value = "dayfrom", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			@RequestParam(value = "dayto", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
+			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(order==null) order = "created";
+			if(orderasc==null) orderasc = "DESC";
+
+			if(idpatient!=null && idpatient.trim().equals("")) idpatient = null;
+			if(status!=null && status.trim().equals("")) status = null;
+
+			return new ResponseEntity<>(this.workersService.getInvoices(this.getUser(), idpatient, dayfrom, dayto, status, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="saveInvoice", produces="application/json")
+	public ResponseEntity<?> saveInvoice(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "idpatient", required = false) String idpatient,
+			@RequestParam(value = "url", required = true) String url,
+			@RequestParam(value = "total", required = true) Double total,
+			@RequestParam(value = "duedate", required = true)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate duedate,
+			@RequestParam(value = "status", required = true) String status,
+			@RequestParam(value = "paiddate", required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate paiddate,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.saveInvoice(id, idpatient, url, total, duedate, status, paiddate);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteInvoice", produces="application/json")
+	public ResponseEntity<?> deleteInvoice(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.deleteInvoice(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
 }
 

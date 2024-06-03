@@ -140,4 +140,18 @@ public interface WorkersService
 
     @Transactional(propagation= Propagation.REQUIRES_NEW)
     void deleteReceipt(String id);
+
+
+
+
+
+
+
+    Page<InvoiceDTO> getInvoices(User user, String idpatient, LocalDate dayfrom, LocalDate dayto, String status, Integer page, Integer size, String orderby, String orderasc);
+
+
+    void saveInvoice(String id, String idpatient, String url, Double total, LocalDate duedate, String status, LocalDate paiddate);
+
+    @Transactional(propagation= Propagation.REQUIRES_NEW)
+    void deleteInvoice(String id);
 }

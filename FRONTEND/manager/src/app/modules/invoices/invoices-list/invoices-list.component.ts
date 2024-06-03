@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
-import { parseDataExport, ActionDTO, rolName, ReceiptDTO, MemberDTO } from 'src/app/shared/models/models';
+import { parseDataExport, ActionDTO, rolName, InvoiceDTO, MemberDTO } from 'src/app/shared/models/models';
 import { UsersService } from 'src/app/core/services/users.service';
 import { PdfService } from 'src/app/core/services/pdf-service.service';
 import { ExcelService } from 'src/app/core/services/excel-service.service';
@@ -10,7 +10,7 @@ import { flatpickrFactory } from '../../calendar/mycalendar.module';
 import { Subscription, finalize } from 'rxjs';
 import { MediaService } from 'src/app/core/services/media.service';
 import { HttpEventType } from '@angular/common/http';
-import { ReceiptsService } from 'src/app/core/services/receipts.service';
+import { InvoicesService } from 'src/app/core/services/invoices.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -27,7 +27,7 @@ export class InvoicesListComponent implements OnInit {
   //PARÁMETROS LISTADO
   dayfrom : Date = null; 
   dayto : Date = null;
-  idmember : string = '';
+  idpatient : string = '';
   status : string = '';
 
   page : number = 0;
@@ -40,10 +40,10 @@ export class InvoicesListComponent implements OnInit {
   uploadProgress:number;
   uploadSub: Subscription;
 
-  theReceipt : ReceiptDTO = {
+  theInvoice : InvoiceDTO = {
     id: '',
-    idmember: '',
-    member_fullname: '',
+    idpatient: '',
+    patient_fullname: '',
     total: 0,
     url: '',
     duedate: undefined,
@@ -51,10 +51,10 @@ export class InvoicesListComponent implements OnInit {
     status: 'PENDING'
   };
 
-  allMembers : MemberDTO[] = [];
+  allPatients : MemberDTO[] = [];
   
-  receipts: any[]  = []; // any => formato del listado
-  receiptsObjects: ReceiptDTO[]  = [];
+  invoices: any[]  = []; // any => formato del listado
+  invoicesObjects: InvoiceDTO[]  = [];
 
   loadingExcel : boolean = false;
   loadingPDF : boolean = false;
@@ -65,7 +65,7 @@ export class InvoicesListComponent implements OnInit {
   actions : ActionDTO[] = [];
 
   paramsuscription : Subscription;
-  idmember_param : string;
+  idpatient_param : string;
 
   constructor(
     public toastService: NbToastrService,
@@ -74,7 +74,7 @@ export class InvoicesListComponent implements OnInit {
     private excelService : ExcelService,
     private authService : AuthService,
     private modal: NgbModal, 
-    private receiptsService : ReceiptsService,
+    private receiptsService : InvoicesService,
     private usersService : UsersService,
     private router: Router,
     private route: ActivatedRoute
@@ -86,15 +86,15 @@ export class InvoicesListComponent implements OnInit {
     flatpickrFactory();
     this.dayfrom = null;
     this.dayto = null;
-    if(!this.canModify()) this.actions = [{action: 'show', text: 'Ver recibo'}];
-    if(this.canModify()) this.actions = [{action: 'show', text: 'Ver recibo'}, {action: 'edit', text: 'Modificar recibo'}, {action: 'delete', text: 'Eliminar recibo'}];
+    if(!this.canModify()) this.actions = [{action: 'show', text: 'Ver factura'}];
+    if(this.canModify()) this.actions = [{action: 'show', text: 'Ver factura'}, {action: 'edit', text: 'Modificar factura'}, {action: 'delete', text: 'Eliminar factura'}];
     
     
     
     this.paramsuscription = this.route.queryParams.subscribe(params => {
       console.log(params)
-      this.idmember_param = params['idmember'];
-      this.getAllMembers(this.idmember_param);
+      this.idpatient_param = params['idpatient'];
+      this.getAllPatients(this.idpatient_param);
    });
 
   }
@@ -104,24 +104,24 @@ export class InvoicesListComponent implements OnInit {
   
 
   
-  getAllMembers(idmemberparam :string)
+  getAllPatients(idpatientparam :string)
   {
       this.isProcessing = true;
-      this.usersService.getAllMembers().subscribe(
+      this.usersService.getAllPatients().subscribe(
         res => {
-          this.allMembers = res;
-          if(this.allMembers && this.allMembers.length>0) 
+          this.allPatients = res;
+          if(this.allPatients && this.allPatients.length>0) 
           {
-            if(idmemberparam) this.idmember = idmemberparam;
-            this.getReceipts(0);
+            if(idpatientparam) this.idpatient = idpatientparam;
+            this.getInvoices(0);
           }
           else
             this.isProcessing = false;
         },
         error => 
         {
-          console.error("getAllMembers():"+JSON.stringify(error));
-          this.toastService.show("No se pueden obtener los socios.",
+          console.error("getAllPatients():"+JSON.stringify(error));
+          this.toastService.show("No se pueden obtener los usuarios.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
@@ -130,24 +130,24 @@ export class InvoicesListComponent implements OnInit {
   }
 
 
-  getReceipts(page :number) 
+  getInvoices(page :number) 
   {
     this.isProcessing = true;
     //if(!this.dayfrom) this.dayfrom = null;
     //if(!this.dayto) this.dayto = null;
     this.page = page
-    this.receiptsService.getReceipts(this.page, this.size, this.idmember, this.dayfrom, this.dayto, this.status).subscribe(
+    this.receiptsService.getInvoices(this.page, this.size, this.idpatient, this.dayfrom, this.dayto, this.status).subscribe(
       res => {
         this.isProcessing = false;
-        this.receipts = res.content.map(item => { return {id: item.id, values: [item.member_fullname, this.date2Text1(item.duedate), item.total, this.getStatus(item.status), this.date2Text1(item.paiddate), item.url ] }; });
-        this.receiptsObjects = res.content;
+        this.invoices = res.content.map(item => { return {id: item.id, values: [item.patient_fullname, this.date2Text1(item.duedate), item.total, this.getStatus(item.status), this.date2Text1(item.paiddate), item.url ] }; });
+        this.invoicesObjects = res.content;
 
         this.totalPages = res.totalPages;
       },
       error => {
         this.isProcessing = false;
-        console.error("getReceipts():"+JSON.stringify(error));
-        this.toastService.show("No se han podido obtener los recibos.",
+        console.error("getInvoices():"+JSON.stringify(error));
+        this.toastService.show("No se han podido obtener las facturas.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
@@ -173,15 +173,15 @@ export class InvoicesListComponent implements OnInit {
     if(!this.dayfrom) this.dayfrom = new Date();
     if(!this.dayto) this.dayto = new Date();
 
-    this.receiptsService.getReceipts(0, 100000000, this.idmember, this.dayfrom, this.dayto, this.status).subscribe(
+    this.receiptsService.getInvoices(0, 100000000, this.idpatient, this.dayfrom, this.dayto, this.status).subscribe(
       res => {
         const header = {};
-        const keys = ['Socio:', 'Fecha:', 'Total:', 'Estado:', 'Fecha de pago:'];
-        const fields = ['member_fullname', 'duedate', 'total', 'status', 'paiddate'];
+        const keys = ['Usuario:', 'Fecha:', 'Total:', 'Estado:', 'Fecha de pago:'];
+        const fields = ['patient_fullname', 'duedate', 'total', 'status', 'paiddate'];
         fields.forEach((key, i) => header[key] = keys[i]);
-        this.exportData = res && res.content ? res.content.map(item => [item.member_fullname, this.date2Text1(item.duedate), item.total, this.getStatus(item.status), this.date2Text1(item.paiddate) ]) : null;
+        this.exportData = res && res.content ? res.content.map(item => [item.patient_fullname, this.date2Text1(item.duedate), item.total, this.getStatus(item.status), this.date2Text1(item.paiddate) ]) : null;
         const final = parseDataExport(fields, this.exportData);
-        const title = 'Recibos';
+        const title = 'Facturas';
 
         if (format === 'excel') 
         {
@@ -206,29 +206,29 @@ export class InvoicesListComponent implements OnInit {
 
 
   filter(page: number) {
-    this.getReceipts(page);
+    this.getInvoices(page);
   }
 
 
   setPage(event) {
     this.page = event;
-    this.getReceipts(this.page);
+    this.getInvoices(this.page);
   }
 
   action(event) 
   {
     if (event && event[0] === 'edit') 
     {
-      const selected = { ...this.receiptsObjects.find(item => item.id === event[1])};
-      this.openAddReceiptModal(selected);
+      const selected = { ...this.invoicesObjects.find(item => item.id === event[1])};
+      this.openAddInvoiceModal(selected);
     } 
     else if (event && event[0] === 'delete') 
     {
-      this.deleteReceipt(event[1]);
+      this.deleteInvoice(event[1]);
     }
     else if (event && event[0] === 'show') 
     {
-      const selected =  {...this.receiptsObjects.find(item => item.id === event[1])};
+      const selected =  {...this.invoicesObjects.find(item => item.id === event[1])};
       window.open(selected.url);
     } 
 
@@ -242,25 +242,25 @@ export class InvoicesListComponent implements OnInit {
 
 
 
-  openAddReceiptModal(selected? : ReceiptDTO)
+  openAddInvoiceModal(selected? : InvoiceDTO)
   {
     console.warn(JSON.stringify(selected));
     if(!selected)
     {
       this.fileName = undefined;
-      this.theReceipt.id =''; 
-      this.theReceipt.url =''; 
-      this.theReceipt.total = 0; 
-      this.theReceipt.status ='PENDING';
-      this.theReceipt.duedate = new Date();
-      this.theReceipt.paiddate = null;
-      this.theReceipt.idmember = this.idmember;
+      this.theInvoice.id =''; 
+      this.theInvoice.url =''; 
+      this.theInvoice.total = 0; 
+      this.theInvoice.status ='PENDING';
+      this.theInvoice.duedate = new Date();
+      this.theInvoice.paiddate = null;
+      this.theInvoice.idpatient = this.idpatient;
     }
     else
     {
-      this.theReceipt = selected;
-      this.theReceipt.duedate = this.localDateTime2Date(this.theReceipt.duedate);
-      this.theReceipt.paiddate = this.localDateTime2Date(this.theReceipt.paiddate);
+      this.theInvoice = selected;
+      this.theInvoice.duedate = this.localDateTime2Date(this.theInvoice.duedate);
+      this.theInvoice.paiddate = this.localDateTime2Date(this.theInvoice.paiddate);
     }
 
 
@@ -268,22 +268,22 @@ export class InvoicesListComponent implements OnInit {
     this.modal.open(this.modalContent, { size: 'lg' });
   }
 
-  saveReceipt()
+  saveInvoice()
   {
 
     
-    if(this.theReceipt.idmember == '') 
+    if(this.theInvoice.idpatient == '') 
       {
-        this.toastService.show("Debes seleccionar el socio primero.",
+        this.toastService.show("Debes seleccionar el usuario primero.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
         );
         return;
       }
 
-    if(this.theReceipt.url == '') 
+    if(this.theInvoice.url == '') 
     {
-      this.toastService.show("Debes seleccionar el recibo a subir primero.",
+      this.toastService.show("Debes seleccionar la factura a subir primero.",
         "¡Ups!", 
         { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
       );
@@ -291,9 +291,9 @@ export class InvoicesListComponent implements OnInit {
     }
 
 
-    if(this.theReceipt.total <= 0) 
+    if(this.theInvoice.total <= 0) 
     {
-      this.toastService.show("Debes indicar el total del recibo.",
+      this.toastService.show("Debes indicar el total de la factura.",
         "¡Ups!", 
         { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
       );
@@ -301,20 +301,20 @@ export class InvoicesListComponent implements OnInit {
     }
    
 
-    this.receiptsService.saveReceipt(this.theReceipt).subscribe(
+    this.receiptsService.saveInvoice(this.theInvoice).subscribe(
       res => {
         this.isProcessing = false;
-        this.toastService.show("Recibo grabado correctamente.",
+        this.toastService.show("Factura grabado correctamente.",
             "¡Ok!", 
             { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );
-        this.getReceipts(this.page);
+        this.getInvoices(this.page);
         this.modal.dismissAll();
       },
       error => {
         this.isProcessing = false;
-        console.error("saveReceipt():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido añadir el recibo.",
+        console.error("saveInvoice():"+JSON.stringify(error));
+        this.toastService.show("No se ha podido añadir la factura.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
@@ -323,21 +323,21 @@ export class InvoicesListComponent implements OnInit {
   }
 
 
-  deleteReceipt(id : string)
+  deleteInvoice(id : string)
   {
-    this.receiptsService.deleteReceipt(id).subscribe(
+    this.receiptsService.deleteInvoice(id).subscribe(
       res => {
         this.isProcessing = false;
-        this.toastService.show("Recibo eliminado correctamente.",
+        this.toastService.show("Factura eliminada correctamente.",
             "¡Ok!", 
             { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );
-        this.getReceipts(this.page);
+        this.getInvoices(this.page);
       },
       error => {
         this.isProcessing = false;
         console.error("deleteFeeding():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido eliminar el recibo.",
+        this.toastService.show("No se ha podido eliminar la factura.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
@@ -370,7 +370,7 @@ async onFileSelected(event) {
         {
           if(event.url && event.url.startsWith("https://") )
           {
-            this.theReceipt.url = event.url;
+            this.theInvoice.url = event.url;
           }
           else
             console.error("onFileSelected1():"+JSON.stringify(event));
@@ -386,7 +386,7 @@ async onFileSelected(event) {
         else 
         {
           if(event.url && event.url.startsWith("https://") ) 
-            this.theReceipt.url = event.url;
+            this.theInvoice.url = event.url;
           else
             console.error("onFileSelected3():"+JSON.stringify(event));
         }
