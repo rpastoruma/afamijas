@@ -3,19 +3,42 @@ package afamijas.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+
+/*
+https://dr5hn.github.io/countries-states-cities-database/
+https://github.com/dr5hn/countries-states-cities-database
+
+Otras opciones para códigos postales de todos los paíse en:
+
+https://www.geonames.org/export/
+https://github.com/Zeeshanahmad4/Zip-code-of-all-countries-cities-in-the-world-CSV-TXT-SQL-DATABASE
+
+
+ */
+
 @Document(collection = "states")
 public class State
 {
 	@Id
 	private String _id;
 
-	private String id;
+	private Integer id;
 
 	private String name;
 
-	private String localcode;
+	private Integer country_id;
 
-	private String idcountry;
+	private String country_name;
+
+	private String country_code;
+
+	private String state_code;
+
+	private Double latitude;
+
+	private Double longitude;
+
+	private String prefix_postalcode;
 
 	public String get_id() {
 		return _id;
@@ -25,11 +48,11 @@ public class State
 		this._id = _id;
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -41,20 +64,61 @@ public class State
 		this.name = name;
 	}
 
-	public String getLocalcode() {
-		return localcode;
+	public Integer getCountry_id() {
+		return country_id;
 	}
 
-	public void setLocalcode(String localcode) {
-		this.localcode = localcode;
+	public void setCountry_id(Integer country_id) {
+		this.country_id = country_id;
 	}
 
-	public String getIdcountry() {
-		return idcountry;
+	public String getCountry_name() {
+		return country_name;
 	}
 
-	public void setIdcountry(String idcountry) {
-		this.idcountry = idcountry;
+	public void setCountry_name(String country_name) {
+		this.country_name = country_name;
+	}
+
+	public String getCountry_code() {
+		return country_code;
+	}
+
+	public void setCountry_code(String country_code) {
+		this.country_code = country_code;
+	}
+
+	public String getState_code() {
+		return state_code;
+	}
+
+	public void setState_code(String state_code) {
+		this.state_code = state_code;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
+
+
+	public String getPrefix_postalcode() {
+		return prefix_postalcode;
+	}
+
+	public void setPrefix_postalcode(String prefix_postalcode) {
+		this.prefix_postalcode = prefix_postalcode;
 	}
 
 	@Override

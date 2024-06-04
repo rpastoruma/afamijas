@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { NbDialogService, NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
-import {  parseDataExport, ActionDTO, MemberDTO } from 'src/app/shared/models/models';
+import {  parseDataExport, ActionDTO, MemberDTO, CountryDTO, StateDTO, CityDTO } from 'src/app/shared/models/models';
 import { MembersService } from 'src/app/core/services/members.service';
 import { PdfService } from 'src/app/core/services/pdf-service.service';
 import { ExcelService } from 'src/app/core/services/excel-service.service';
@@ -11,6 +11,7 @@ import { Subscription, finalize } from 'rxjs';
 import { HttpEventType } from '@angular/common/http';
 import { MediaService } from 'src/app/core/services/media.service';
 import { MyPdfViewerComponent } from 'src/app/shared/components/my-pdf-viewer/my-pdf-viewer.component';
+import { FrontValuesService } from 'src/app/core/services/front-values.service';
 
 @Component({
   selector: 'app-members-list',
@@ -51,8 +52,7 @@ export class MembersListComponent  implements OnInit{
 
   actions : ActionDTO[] = [];
 
-  allStates : any[] = [];
-  allCities : any[] = [];
+
   
 
   is_document_signed : string = "SIN_FIRMA";
@@ -69,10 +69,12 @@ export class MembersListComponent  implements OnInit{
     documenttype: 'DNI',
     phone: '',
     postaladdress: '',
-    idcity: '',
+    idcity: undefined,
     cityname: '',
-    idstate: '',
+    idstate: undefined,
     statename: '',
+    idcountry: undefined,
+    countryname: '',
     postalcode: '',
     fee_euros: 0,
     fee_period: '',
@@ -89,6 +91,12 @@ export class MembersListComponent  implements OnInit{
     status : 'A'
   }
 
+  theCountries : CountryDTO[] = [];
+  theStates : StateDTO[] = [];
+  theCities : CityDTO[] = [];
+
+
+
   theNewMember : MemberDTO = { ...this.theMember };
 
   constructor(
@@ -99,7 +107,8 @@ export class MembersListComponent  implements OnInit{
     private authService : AuthService,
     private modal: NgbModal, 
     private dialogService : NbDialogService,
-    private mediaService : MediaService
+    private mediaService : MediaService,
+    private frontValuesService : FrontValuesService
 
   ) { }
 
@@ -110,10 +119,10 @@ export class MembersListComponent  implements OnInit{
 
   getMembers(page? : number)
   {
+      this.isProcessing = true;
       if(page) this.page = page;
       this.membersService.getMembers(this.page, this.size, this.membernumber, this.name_surnames, this.documentid, this.status).subscribe(
         res => {
-
           this.isProcessing = false;
           this.members = res.content.map(item => { return {id: item.id, values: [item.membernumber, item.fullname, item.documentid, item.email, item.phone]  }; });
           this.membersObjects = res.content;
@@ -121,7 +130,8 @@ export class MembersListComponent  implements OnInit{
         },
         error => 
         {
-          console.error("getPatients():"+JSON.stringify(error));
+          this.isProcessing = false;
+          console.error("getMembers():"+JSON.stringify(error));
           this.toastService.show("No se pueden obtener los socios.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
@@ -132,9 +142,108 @@ export class MembersListComponent  implements OnInit{
   
 
 
+  getCountries() 
+  {
+    this.isProcessing = true;
+    this.frontValuesService.getCountries().subscribe(
+      res => {
+        this.isProcessing = false;
+        this.theCountries = res;
+        console.log("this.theMember.idcountry="  + this.theMember.idcountry);
+        if(!this.theMember.idcountry) this.theMember.idcountry = 207; //ESPAÑA
+        this.getStates();
+      },
+      error => {
+        this.isProcessing = false;
+        console.error("getCountries():"+JSON.stringify(error));
+        this.toastService.show("No se han podido obtener los países.",
+          "¡Ups!", 
+          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+         );
+      }
+    );
+  }
   
   
 
+  getStates() 
+  {
+    this.isProcessing = true;
+    this.frontValuesService.getStates(this.theMember.idcountry).subscribe(
+      res => {
+        this.isProcessing = false;
+        this.theStates = res;
+        if(this.theStates[0]) { if(!this.theMember.idstate) this.theMember.idstate = this.theStates[0].id; }
+        else this.theMember.idstate = undefined;
+        this.getCities();
+      },
+      error => {
+        this.isProcessing = false;
+        console.error("getStates():"+JSON.stringify(error));
+        this.toastService.show("No se han podido obtener los estados.",
+          "¡Ups!", 
+          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+         );
+      }
+    );
+  }
+  
+
+  getCities() 
+  {
+    this.isProcessing = true;
+    this.frontValuesService.getCities(this.theMember.idstate).subscribe(
+      res => {
+        this.isProcessing = false;
+        this.theCities = res;
+        if(this.theCities[0]) { if(!this.theMember.idcity) this.theMember.idcity = this.theCities[0].id; }
+        else this.theMember.idcity = undefined;
+      },
+      error => {
+        this.isProcessing = false;
+        console.error("getStates():"+JSON.stringify(error));
+        this.toastService.show("No se han podido obtener las ciudades.",
+          "¡Ups!", 
+          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+         );
+      }
+    );
+  }
+  
+  
+
+  getStateAndCitiesByPostalCodeAndCountryId() 
+  {
+    if(this.theMember.idcountry!=207) return; //solo para españa
+    this.isProcessing = true;
+    this.frontValuesService.getStateAndCitiesByPostalCodeAndCountryId(this.theMember.postalcode, this.theMember.idcountry).subscribe(
+      res => {
+        this.isProcessing = false;
+        if(res)
+        {
+          this.theMember.idstate = res.state.id;
+          this.theCities = res.cities;
+          if(this.theCities[0]) this.theMember.idcity = this.theCities[0].id;
+          else this.theMember.idcity = undefined;
+        }
+        else
+        {
+          this.theMember.idstate = undefined;
+          this.theMember.idcity = undefined;
+        }
+      },
+      error => {
+        this.isProcessing = false;
+        console.error("getStateAndCitiesByPostalCodeAndCountryId():"+JSON.stringify(error));
+        this.toastService.show("No se han podido obtener las ciudades por código postal.",
+          "¡Ups!", 
+          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+         );
+      }
+    );
+  }
+  
+  
   
   getExportData(format: string) 
   {
@@ -213,6 +322,10 @@ export class MembersListComponent  implements OnInit{
   openSaveMemberModal(isnew : boolean)
   {
     if(isnew) this.theMember = {...this.theNewMember};
+
+    console.log("this.theMember=" + JSON.stringify(this.theMember));
+
+    this.getCountries();
 
     this.modal.open(this.modalContent, { size: 'lg' });
   }

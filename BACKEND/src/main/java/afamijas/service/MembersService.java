@@ -19,7 +19,7 @@ public interface MembersService
     Page<MemberDTO> getMembers(Integer membernumber, String name_surnames, String documentid, String status, Integer page, Integer size, String order, String orderasc);
 
     MemberDTO saveMember(String id, String name, String surname1, String surname2, String email, String phone, String documentid, String documenttype,
-                         String postaladdress, String idcity, String idstate, String postalcode,
+                         String postaladdress, Integer idcity, Integer idstate,  Integer idcountry,  String postalcode,
                          Double fee_euros, String fee_period, String fee_payment,
                          String bank_name, String bank_account_holder_fullname, String bank_account_holder_dni, String bank_account_iban, String unregister_document_url, Boolean is_document_signed);
 

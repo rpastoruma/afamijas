@@ -39,8 +39,9 @@ export class MembersService {
     if(theMember.phone && theMember.phone!='') form.append('phone', theMember.phone);
     
     if(theMember.postaladdress && theMember.postaladdress!='') form.append('postaladdress', theMember.postaladdress);
-    if(theMember.idcity && theMember.idcity!='') form.append('idcity', theMember.idcity);
-    if(theMember.idstate && theMember.idstate!='') form.append('idstate', theMember.idstate);
+    if(theMember.idcity) form.append('idcity', theMember.idcity.toString());
+    if(theMember.idstate) form.append('idstate', theMember.idstate.toString());
+    if(theMember.idcountry) form.append('idcountry', theMember.idcountry.toString());
     if(theMember.postalcode && theMember.postalcode!='') form.append('postalcode', theMember.postalcode);
     if(theMember.fee_euros && theMember.fee_euros>0) form.append('fee_euros', theMember.fee_euros.toString());
     if(theMember.fee_period && theMember.fee_period!='') form.append('fee_period', theMember.fee_period);

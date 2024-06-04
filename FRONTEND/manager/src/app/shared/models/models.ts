@@ -69,10 +69,12 @@ export interface MemberDTO {
     documenttype : string;
     phone : string;
     postaladdress : string;
-    idcity : string;
+    idcity : number;
     cityname : string;
-    idstate : string;
+    idstate : number;
     statename : string;
+    idcountry : number;
+    countryname : string;
     postalcode : string;
 
     fee_euros : number;
@@ -539,3 +541,31 @@ export function parseDataExport(fields: any[], exportData: any[]) {
 
     return final;
 }
+
+
+
+export interface CountryDTO {
+    id : number;
+    name : string;
+    iso2 : string;
+}
+
+
+
+export interface StateDTO {
+    id : number;
+    name : string;
+    country_code : string;
+}
+
+
+export interface CityDTO {
+    id : number;
+    name : string;
+    state_code : string;
+    country_code : string;
+}
+
+
+
+

@@ -44,9 +44,11 @@ public class User
 
 	private String postaladdress;
 
-	private String idcity;
+	private Integer idcity;
 
-	private String idstate;
+	private Integer idstate;
+
+	private Integer idcountry;
 
 	private String postalcode;
 
@@ -289,19 +291,19 @@ public class User
 	}
 
 
-	public String getIdcity() {
+	public Integer getIdcity() {
 		return idcity;
 	}
 
-	public void setIdcity(String idcity) {
+	public void setIdcity(Integer idcity) {
 		this.idcity = idcity;
 	}
 
-	public String getIdstate() {
+	public Integer getIdstate() {
 		return idstate;
 	}
 
-	public void setIdstate(String idstate) {
+	public void setIdstate(Integer idstate) {
 		this.idstate = idstate;
 	}
 
@@ -664,6 +666,14 @@ public class User
 
 	public void setUnregister_document_url_signed(String unregister_document_url_signed) {
 		this.unregister_document_url_signed = unregister_document_url_signed;
+	}
+
+	public Integer getIdcountry() {
+		return idcountry;
+	}
+
+	public void setIdcountry(Integer idcountry) {
+		this.idcountry = idcountry;
 	}
 
 	@Transient

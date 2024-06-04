@@ -14,11 +14,12 @@ public interface StatesRepository extends MongoRepository<State, String>
 {
 
 	@Query("{ 'id' : ?0 }")
-	State findOne(String id);
+	State findOne(Integer id);
 
-	@Query("{ 'idstate' : ?0 }")
-	List<State> findStatesByIdcountry(String idcountry);
+	@Query("{ 'country_id' : ?0 }")
+	List<State> findStatesByIdcountry(Integer idcountry);
 
-
+	@Query("{ 'country_id' : ?0 , 'prefix_postalcode' :  ?1 }")
+	State findStateByCountryIdAndPrefixPostalCode(Integer idcountry, String prefixpostalcode);
 	
 }

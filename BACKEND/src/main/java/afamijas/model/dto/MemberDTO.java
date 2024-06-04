@@ -1,6 +1,7 @@
 package afamijas.model.dto;
 
 import afamijas.model.City;
+import afamijas.model.Country;
 import afamijas.model.State;
 import afamijas.model.User;
 
@@ -32,13 +33,18 @@ public class MemberDTO
 
     private String postaladdress;
 
-    private String idcity;
+    private Integer idcity;
 
     private String cityname;
 
-    private String idstate;
+    private Integer idstate;
 
     private String statename;
+
+    private Integer idcountry;
+
+    private String countryname;
+
 
     private String postalcode;
 
@@ -70,7 +76,7 @@ public class MemberDTO
 
 
 
-    public MemberDTO(User user, City city, State state)
+    public MemberDTO(User user, City city, State state, Country country)
     {
         this.id = user.get_id();
         this.membernumber = user.getMembernumber();
@@ -83,11 +89,15 @@ public class MemberDTO
         this.documenttype = user.getDocumenttype();
         this.phone = user.getPhone();
         this.postaladdress = user.getPostaladdress();
+
         this.idcity = user.getIdcity();
         if(city!=null) this.cityname = city.getName();
         this.idstate = user.getIdstate();
         if(state!=null) this.statename = state.getName();
+        this.idcountry = user.getIdcountry();
+        if(country!=null) this.countryname = country.getName();
         this.postalcode = user.getPostalcode();
+
         this.fee_euros = user.getFee_euros();
         this.fee_period = user.getFee_period();
         this.fee_payment = user.getFee_payment();
@@ -133,6 +143,22 @@ public class MemberDTO
 
     public void setSurname1(String surname1) {
         this.surname1 = surname1;
+    }
+
+    public Integer getIdcountry() {
+        return idcountry;
+    }
+
+    public void setIdcountry(Integer idcountry) {
+        this.idcountry = idcountry;
+    }
+
+    public String getCountryname() {
+        return countryname;
+    }
+
+    public void setCountryname(String countryname) {
+        this.countryname = countryname;
     }
 
     public String getSurname2() {
@@ -183,12 +209,20 @@ public class MemberDTO
         this.postaladdress = postaladdress;
     }
 
-    public String getIdcity() {
+    public Integer getIdcity() {
         return idcity;
     }
 
-    public void setIdcity(String idcity) {
+    public void setIdcity(Integer idcity) {
         this.idcity = idcity;
+    }
+
+    public Integer getIdstate() {
+        return idstate;
+    }
+
+    public void setIdstate(Integer idstate) {
+        this.idstate = idstate;
     }
 
     public String getCityname() {
@@ -199,13 +233,7 @@ public class MemberDTO
         this.cityname = cityname;
     }
 
-    public String getIdstate() {
-        return idstate;
-    }
 
-    public void setIdstate(String idstate) {
-        this.idstate = idstate;
-    }
 
     public String getStatename() {
         return statename;

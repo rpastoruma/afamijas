@@ -35,18 +35,22 @@ public class MembersServiceImpl implements MembersService
 
 	final StatesRepository statesRepository;
 
+	final CountriesRepository countriesRepository;
+
+
 	final MediaService mediaService;
 
 	final NotificationsService notificationsService;
 
 
 	@Autowired
-	public MembersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, MediaService mediaService, NotificationsService notificationsService)
+	public MembersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, CountriesRepository countriesRepository, MediaService mediaService, NotificationsService notificationsService)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
 		this.citiesRepository = citiesRepository;
 		this.statesRepository = statesRepository;
+		this.countriesRepository = countriesRepository;
 		this.mediaService = mediaService;
 		this.notificationsService = notificationsService;
 	}
@@ -73,7 +77,7 @@ public class MembersServiceImpl implements MembersService
 		if(status!=null) query.addCriteria(Criteria.where("status").is(status));
 
 		if(debug_queries) System.out.println("findMyNotifications: " + query.getQueryObject().toJson());
-		List<MemberDTO> list = this.mongoTemplate.find(query, User.class).stream().map(x -> new MemberDTO(x, null, null)).toList();
+		List<MemberDTO> list = this.mongoTemplate.find(query, User.class).stream().map(x -> new MemberDTO(x, null, null, null)).toList();
 
 
 		return PageableExecutionUtils.getPage(
@@ -84,7 +88,7 @@ public class MembersServiceImpl implements MembersService
 
 	@Override
 	public MemberDTO saveMember(String id, String name, String surname1, String surname2, String email, String phone, String documentid, String documenttype,
-								String postaladdress, String idcity, String idstate, String postalcode,
+								String postaladdress, Integer idcity, Integer idstate, Integer idcountry, String postalcode,
 								Double fee_euros, String fee_period, String fee_payment,
 								String bank_name, String bank_account_holder_fullname, String bank_account_holder_dni, String bank_account_iban, String register_document_url, Boolean is_document_signed)
 	{
@@ -135,6 +139,7 @@ public class MembersServiceImpl implements MembersService
 
 		member.setIdcity(idcity);
 		member.setIdstate(idstate);
+		member.setIdcountry(idcountry);
 		member.setPostaladdress(postaladdress);
 		member.setPostalcode(postalcode);
 
@@ -147,7 +152,7 @@ public class MembersServiceImpl implements MembersService
 		member.setBank_account_holder_dni(bank_account_holder_dni);
 		member.setBank_account_iban(bank_account_iban);
 
-		return new MemberDTO(this.usersRepository.save(member), this.citiesRepository.findOne(idcity), this.statesRepository.findOne(idstate));
+		return new MemberDTO(this.usersRepository.save(member), this.citiesRepository.findOne(idcity), this.statesRepository.findOne(idstate), this.countriesRepository.findOne(idcountry));
 	}
 
 	private Integer getLastMemberNumber()

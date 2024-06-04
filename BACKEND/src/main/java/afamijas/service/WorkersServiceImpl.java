@@ -141,7 +141,7 @@ public class WorkersServiceImpl implements WorkersService
 		Criteria criteria = new Criteria().where("roles").in(Arrays.asList("MEMBER")).and("status").is("A");
 		query.addCriteria(criteria);
 		try { if(debug_queries) System.out.println("getAllMembers: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
-		return this.mongoTemplate.find(query, User.class).stream().map(x -> new MemberDTO(x, null, null)).toList();
+		return this.mongoTemplate.find(query, User.class).stream().map(x -> new MemberDTO(x, null, null, null)).toList();
 	}
 
 

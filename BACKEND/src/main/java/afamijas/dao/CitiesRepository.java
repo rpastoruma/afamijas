@@ -15,11 +15,14 @@ public interface CitiesRepository extends MongoRepository<City, String>
 {
 
 	@Query("{ 'id' : ?0 }")
-	City findOne(String id);
+	City findOne(Integer id);
 
-	@Query("{ 'idstate' : ?0 }")
-	List<City> findCitiesByIdState(String idstate);
+	@Query("{ 'state_id' : ?0 }")
+	List<City> findCitiesByIdState(Integer idstate);
+
+	@Query("{ 'postalcodes' : { $in : [ ?0 ] }, 'country_id' : ?1 }")
+	List<City> findCitiesByPostalCodeAndCountryId(String postalcode, Integer idcountry);
 
 
-	
+
 }

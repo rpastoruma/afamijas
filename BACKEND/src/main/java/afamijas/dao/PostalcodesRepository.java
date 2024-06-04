@@ -18,8 +18,8 @@ public interface PostalcodesRepository extends MongoRepository<PostalCode, Strin
 	@Query("{ 'id' : ?0 }")
 	PostalCode findOne(Long id);
 
-	@Query("{ 'cityname' : ?0 }")
-	PostalCode findPostalCodeByCityName(String cityname);
+	@Query("{ 'municipio_nombre' : ?0 }")
+	List<PostalCode> findPostalCodeByCityName(String municipio_nombre);
 
 	
 }

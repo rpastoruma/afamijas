@@ -1,12 +1,23 @@
 package afamijas.service;
 
+import afamijas.dao.CitiesRepository;
 import afamijas.dao.ConfigurationRepository;
+import afamijas.dao.PostalcodesRepository;
+import afamijas.dao.StatesRepository;
+import afamijas.model.City;
 import afamijas.model.Configuration;
+import afamijas.model.PostalCode;
+import afamijas.model.State;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,10 +26,20 @@ public class ConfigurationServiceImpl implements ConfigurationService
 {
     final ConfigurationRepository configurationRepository;
 
+    final StatesRepository statesRepository;
+
+    final CitiesRepository citiesRepository;
+
+    final PostalcodesRepository postalcodesRepository;
+
+
     @Autowired
-    public ConfigurationServiceImpl(ConfigurationRepository configurationRepository)
+    public ConfigurationServiceImpl(ConfigurationRepository configurationRepository, StatesRepository statesRepository, CitiesRepository citiesRepository, PostalcodesRepository postalcodesRepository)
     {
         this.configurationRepository = configurationRepository;
+        this.statesRepository = statesRepository;
+        this.citiesRepository = citiesRepository;
+        this.postalcodesRepository = postalcodesRepository;
     }
 
     @Override
@@ -51,8 +72,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
         try
         {
             if(type.equals("TEXT") || type.equals("HTML")) ;
-            else if(type.equals("NUMERIC")) new Double(StringUtils.replace(value, ",", "."));
-            else if(type.equals("BOOLEAN")) new Boolean(value);
+            else if(type.equals("NUMERIC"))  Double.parseDouble(StringUtils.replace(value, ",", "."));
+            else if(type.equals("BOOLEAN")) Boolean.parseBoolean(value);
             else new SimpleDateFormat(type).parse(value);
         }
         catch(Exception e)
@@ -100,4 +121,65 @@ public class ConfigurationServiceImpl implements ConfigurationService
     {
         return this.configurationRepository.findByAdmin(true);
     }
+
+
+  /*
+    IMPORTA LOS CÓDIGOS POSTALES DEL INE (COLECCIÓN postalcodes) EN LA COLECCIÓN citie (campo array postalcodes)
+
+    TODO: HABRÍA QUE ACTIVARLO DE NUEVO CUANDO SE SOLUCIONEN A MANO TODAS LAS INCIDENCIAS DE BLOQUE1.txt y BLOQUE2.txt
+
+
+    @Scheduled(fixedRate = 1000*60*500) // solo al inicio
+    @Transactional(propagation= Propagation.REQUIRES_NEW)
+    public void importPostalCodes()
+    {
+
+        List<State> provincias = this.statesRepository.findStatesByIdcountry(207); //ESPAÑA
+
+        for(State provincia : provincias)
+        {
+            System.out.println("PROVINCIA: " +  provincia.getId() + " - " + provincia.getName() );
+            List<City> municipios = this.citiesRepository.findCitiesByIdState(provincia.getId());
+
+            for(City municipio : municipios)
+            {
+                if(municipio.getPostalcodes()!=null && municipio.getPostalcodes().size()>0)
+                    continue; //YA TIENE
+
+                //System.out.println("\tMUNICIPIO: " +  municipio.getId() + " - " + municipio.getName() );
+
+                List<PostalCode> codigospostales = this.postalcodesRepository.findPostalCodeByCityName(municipio.getName());
+                if(codigospostales==null || codigospostales.size()==0)
+                {
+                    //System.out.println("\t\t(1) NO SE ENCUENTRA CÓDIGOS POSTALES PARA " + municipio.getId() + " - " + municipio.getName());
+                    continue;
+                }
+
+                List<String> postalcodes = new ArrayList<>();
+                for(PostalCode postalCode : codigospostales)
+                    if(postalCode.getCodigo_postal().startsWith(provincia.getPrefix_postalcode()))
+                        postalcodes.add(postalCode.getCodigo_postal());
+
+                if(postalcodes.size()>0)
+                {
+                    municipio.setPostalcodes(postalcodes);
+                    this.citiesRepository.save(municipio);
+                }
+                else
+                {
+                    System.out.println("\t\t(2) NO SE ENCUENTRA CÓDIGOS POSTALES PARA " + municipio.getId() + " - " + municipio.getName());
+                }
+
+            }
+
+        }
+
+
+    }
+   */
+
+
+
+
+
 }

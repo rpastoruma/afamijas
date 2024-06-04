@@ -29,11 +29,11 @@ public class PatientDTO
 
     private String postaladdress;
 
-    private String idcity;
+    private Integer idcity;
 
     private String cityname;
 
-    private String idstate;
+    private Integer idstate;
 
     private String statename;
 
@@ -199,21 +199,7 @@ public class PatientDTO
         this.postaladdress = postaladdress;
     }
 
-    public String getIdcity() {
-        return idcity;
-    }
 
-    public void setIdcity(String idcity) {
-        this.idcity = idcity;
-    }
-
-    public String getIdstate() {
-        return idstate;
-    }
-
-    public void setIdstate(String idstate) {
-        this.idstate = idstate;
-    }
 
     public String getPostalcode() {
         return postalcode;

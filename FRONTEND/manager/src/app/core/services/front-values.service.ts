@@ -46,4 +46,27 @@ export class FrontValuesService
     }
     return '';
   }
+
+
+  getCountries() {
+    return this.http.get<any>(ENV.url.config + '/getCountries');
+  }
+
+  getStates(idcountry : number) {
+    return this.http.get<any>(ENV.url.config + '/getStates?idcountry=' + idcountry);
+  }
+
+  getCities(idstate : number) {
+    return this.http.get<any>(ENV.url.config + '/getCities?idstate=' + idstate);
+  }
+
+  getStateAndCitiesByPostalCodeAndCountryId(postalcode : string, idcountry : number) {
+    return this.http.get<any>(ENV.url.config + '/getStateAndCitiesByPostalCodeAndCountryId?postalcode=' + postalcode + '&idcountry=' + idcountry);
+  }
+
+
+
+
+
+
 }

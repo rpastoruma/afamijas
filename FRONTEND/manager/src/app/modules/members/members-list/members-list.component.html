@@ -108,23 +108,31 @@
 
             </div><div style="display: none;" id="step2">
 
+            País: 
+            <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theMember.idcountry" name="theMember-idcountry" (change)="getStates()" [clearable]="false">
+                <ng-option *ngFor="let x of theCountries" [value]="x.id">{{x.name}}</ng-option>
+            </ng-select>
+            <br/>
+
+
+            Código postal: 
+            <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theMember.postalcode" (change)="getStateAndCitiesByPostalCodeAndCountryId()" name="theMember-postalcode" type="text" >
+         
+
             Provincia: 
-            <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theMember.idstate" name="theMember-idstate" [clearable]="false">
-                <ng-option *ngFor="let x of allStates" [value]="x">{{x}}</ng-option>
+            <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theMember.idstate" name="theMember-idstate" (change)="theMember.postalcode=''; getCities()" [clearable]="false">
+                <ng-option *ngFor="let x of theStates" [value]="x.id">{{x.name}}</ng-option>
             </ng-select>
             <br/>
 
 
             Localidad: 
             <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theMember.idcity" name="theMember-idcity" [clearable]="false">
-                <ng-option *ngFor="let x of allCities" [value]="x">{{x}}</ng-option>
+                <ng-option *ngFor="let x of theCities" [value]="x.id">{{x.name}}</ng-option>
             </ng-select>
             <br/>
 
 
-            Código postal: 
-            <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theMember.postalcode" name="theMember-postalcode" type="text" >
-         
 
 
             Dirección postal: 

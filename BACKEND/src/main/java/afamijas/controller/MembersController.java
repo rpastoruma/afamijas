@@ -130,8 +130,9 @@ public class MembersController extends AbstractBaseController
 			@RequestParam(value = "documenttype", required = false) String documenttype,
 
 			@RequestParam(value = "postaladdress", required = false) String postaladdress,
-			@RequestParam(value = "idcity", required = false) String idcity,
-			@RequestParam(value = "idstate", required = false) String idstate,
+			@RequestParam(value = "idcity", required = false) Integer idcity,
+			@RequestParam(value = "idstate", required = false) Integer idstate,
+			@RequestParam(value = "idcountry", required = false) Integer idcountry,
 			@RequestParam(value = "postalcode", required = false) String postalcode,
 
 			@RequestParam(value = "fee_euros", required = false) Double fee_euros,
@@ -156,7 +157,7 @@ public class MembersController extends AbstractBaseController
 
 			if(is_document_signed==null) is_document_signed = false;
 
-			return new ResponseEntity<>(this.membersService.saveMember(id, name, surname1, surname2, email, phone, documentid, documenttype, postaladdress, idcity, idstate, postalcode,
+			return new ResponseEntity<>(this.membersService.saveMember(id, name, surname1, surname2, email, phone, documentid, documenttype, postaladdress, idcity, idstate, idcountry, postalcode,
 					fee_euros, fee_period, fee_payment, bank_name, bank_account_holder_fullname, bank_account_holder_dni, bank_account_iban, register_document_url, is_document_signed), HttpStatus.OK);
 		}
 		catch(Exception e)
