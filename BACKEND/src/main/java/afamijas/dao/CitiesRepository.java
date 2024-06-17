@@ -23,6 +23,11 @@ public interface CitiesRepository extends MongoRepository<City, String>
 	@Query("{ 'postalcodes' : { $in : [ ?0 ] }, 'country_id' : ?1 }")
 	List<City> findCitiesByPostalCodeAndCountryId(String postalcode, Integer idcountry);
 
+	//CASE INSENSITIVE:
+	@Query("{ 'name' : { $regex : '^?0$', $options : 'i' }, 'country_code' : ?1 }")
+	List<City> findCitiesByNameAndCountryCode(String name, String country_code);
 
+	@Query("{ 'country_code' : ?0 }")
+	List<City> findCitiesByCountryCode(String country_code);
 
 }

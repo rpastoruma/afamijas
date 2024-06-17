@@ -10,7 +10,7 @@ import java.util.List;
 https://dr5hn.github.io/countries-states-cities-database/
 https://github.com/dr5hn/countries-states-cities-database
 
-Otras opciones para códigos postales de todos los paíse en:
+Otras opciones para códigos postales de todos los países en:
 
 https://www.geonames.org/export/
 https://github.com/Zeeshanahmad4/Zip-code-of-all-countries-cities-in-the-world-CSV-TXT-SQL-DATABASE

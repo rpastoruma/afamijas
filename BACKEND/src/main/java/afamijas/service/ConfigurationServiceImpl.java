@@ -8,18 +8,17 @@ import afamijas.model.City;
 import afamijas.model.Configuration;
 import afamijas.model.PostalCode;
 import afamijas.model.State;
+import afamijas.utils.StringUtils;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
+
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ConfigurationServiceImpl implements ConfigurationService
@@ -72,7 +71,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         try
         {
             if(type.equals("TEXT") || type.equals("HTML")) ;
-            else if(type.equals("NUMERIC"))  Double.parseDouble(StringUtils.replace(value, ",", "."));
+            else if(type.equals("NUMERIC"))  Double.parseDouble(StringUtils.replaceString(value, ",", "."));
             else if(type.equals("BOOLEAN")) Boolean.parseBoolean(value);
             else new SimpleDateFormat(type).parse(value);
         }
@@ -138,7 +137,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
         for(State provincia : provincias)
         {
-            System.out.println("PROVINCIA: " +  provincia.getId() + " - " + provincia.getName() );
+            //System.out.println("PROVINCIA: " +  provincia.getId() + " - " + provincia.getName() );
             List<City> municipios = this.citiesRepository.findCitiesByIdState(provincia.getId());
 
             for(City municipio : municipios)
@@ -148,10 +147,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
                 //System.out.println("\tMUNICIPIO: " +  municipio.getId() + " - " + municipio.getName() );
 
-                List<PostalCode> codigospostales = this.postalcodesRepository.findPostalCodeByCityName(municipio.getName());
+                List<PostalCode> codigospostales = this.postalcodesRepository.findPostalCodeByCityName(municipio.getName().toLowerCase());
                 if(codigospostales==null || codigospostales.size()==0)
                 {
-                    //System.out.println("\t\t(1) NO SE ENCUENTRA CÓDIGOS POSTALES PARA " + municipio.getId() + " - " + municipio.getName());
+                    //System.out.println(municipio.getName() + "|" + provincia.getName());
                     continue;
                 }
 
@@ -162,12 +161,13 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
                 if(postalcodes.size()>0)
                 {
+                    System.out.println(municipio.getName());
                     municipio.setPostalcodes(postalcodes);
                     this.citiesRepository.save(municipio);
                 }
                 else
                 {
-                    System.out.println("\t\t(2) NO SE ENCUENTRA CÓDIGOS POSTALES PARA " + municipio.getId() + " - " + municipio.getName());
+                    //System.out.println("\t\t(2) NO SE ENCUENTRA CÓDIGOS POSTALES PARA " + municipio.getId() + " - " + municipio.getName());
                 }
 
             }
@@ -175,9 +175,176 @@ public class ConfigurationServiceImpl implements ConfigurationService
         }
 
 
-    }
-   */
 
+    }
+
+*/
+
+
+
+
+
+
+    //@Scheduled(fixedRate = 1000*60*500) // solo al inicio
+    @Transactional(propagation= Propagation.REQUIRES_NEW)
+    public void namesInINENotInBD()
+    {
+
+        List<PostalCode> postalcodes = this.postalcodesRepository.findAll();
+
+        Set<String> already = new HashSet<>();
+        for(PostalCode postalCode : postalcodes)
+        {
+            List<City> cities = this.citiesRepository.findCitiesByNameAndCountryCode(postalCode.getMunicipio_nombre(), "ES");
+
+            if(cities==null || cities.size()==0)
+            {
+                if(!already.contains(postalCode.getMunicipio_nombre().trim()))
+                {
+                    System.out.println(postalCode.getMunicipio_nombre());
+                    already.add(postalCode.getMunicipio_nombre().trim());
+                }
+            }
+
+        }
+        System.out.println("FINALIZADO");
+        System.exit(-1);
+
+
+    }
+
+
+
+    //@Scheduled(fixedRate = 1000*60*500) // solo al inicio
+    @Transactional(propagation= Propagation.REQUIRES_NEW)
+    public void fixNamesInBD()
+    {
+        List<City> cityList = this.citiesRepository.findCitiesByCountryCode("ES");
+
+        for(City city : cityList)
+        {
+            if(city.getName().indexOf(",")==-1)
+            {
+                if(city.getName().toLowerCase().endsWith(" el"))
+                {
+                    String name = city.getName();
+                    System.out.println(name + " ==> ");
+                    name = StringUtils.replaceString(name, " el", ", el");
+                    name = StringUtils.replaceString(name, " El", ", El");
+                    System.out.println("\t" + name);
+                    city.setName(name);
+                    this.citiesRepository.save(city);
+                }
+                else if(city.getName().toLowerCase().endsWith(" la"))
+                {
+                    String name = city.getName();
+                    System.out.println(name + " ==> ");
+                    name = StringUtils.replaceString(name, " la", ", la");
+                    name = StringUtils.replaceString(name, " La", ", La");
+                    System.out.println("\t" + name);
+                    city.setName(name);
+                    this.citiesRepository.save(city);
+                }
+                else if(city.getName().toLowerCase().endsWith(" los"))
+                {
+                    String name = city.getName();
+                    System.out.println(name + " ==> ");
+                    name = StringUtils.replaceString(name, " los", ", los");
+                    name = StringUtils.replaceString(name, " Los", ", Los");
+                    System.out.println("\t" + name);
+                    city.setName(name);
+                    this.citiesRepository.save(city);
+                }
+                else if(city.getName().toLowerCase().endsWith(" las"))
+                {
+                    String name = city.getName();
+                    System.out.println(name + " ==> ");
+                    name = StringUtils.replaceString(name, " las", ", las");
+                    name = StringUtils.replaceString(name, " Las", ", Las");
+                    System.out.println("\t" + name);
+                    city.setName(name);
+                    this.citiesRepository.save(city);
+                }
+                else if(city.getName().toLowerCase().endsWith(" os"))
+                {
+                    String name = city.getName();
+                    System.out.println(name + " ==> ");
+                    name = StringUtils.replaceString(name, " os", ", os");
+                    name = StringUtils.replaceString(name, " Os", ", Os");
+                    System.out.println("\t" + name);
+                    city.setName(name);
+                    this.citiesRepository.save(city);
+                }
+                else if(city.getName().toLowerCase().endsWith(" as"))
+                {
+                    String name = city.getName();
+                    System.out.println(name + " ==> ");
+                    name = StringUtils.replaceString(name, " as", ", as");
+                    name = StringUtils.replaceString(name, " As", ", As");
+                    System.out.println("\t" + name);
+                    city.setName(name);
+                    this.citiesRepository.save(city);
+                }
+                else if(city.getName().toLowerCase().endsWith(" o"))
+                {
+                    String name = city.getName();
+                    System.out.println(name + " ==> ");
+                    name = StringUtils.replaceString(name, " o", ", o");
+                    name = StringUtils.replaceString(name, " O", ", O");
+                    System.out.println("\t" + name);
+                    city.setName(name);
+                    this.citiesRepository.save(city);
+                }
+                else if(city.getName().toLowerCase().endsWith(" a"))
+                {
+                    String name = city.getName();
+                    System.out.println(name + " ==> ");
+                    name = StringUtils.replaceString(name, " a", ", a");
+                    name = StringUtils.replaceString(name, " A", ", A");
+                    System.out.println("\t" + name);
+                    city.setName(name);
+                    this.citiesRepository.save(city);
+                }
+                else if(city.getName().toLowerCase().endsWith(" l'"))
+                {
+                    String name = city.getName();
+                    System.out.println(name + " ==> ");
+                    name = StringUtils.replaceString(name, " l'", ", l'");
+                    name = StringUtils.replaceString(name, " L'", ", L'");
+                    System.out.println("\t" + name);
+                    city.setName(name);
+                    this.citiesRepository.save(city);
+                }
+                else if(city.getName().toLowerCase().endsWith(" els'"))
+                {
+                    String name = city.getName();
+                    System.out.println(name + " ==> ");
+                    name = StringUtils.replaceString(name, " els", ", els");
+                    name = StringUtils.replaceString(name, " Els", ", Els");
+                    System.out.println("\t" + name);
+                    city.setName(name);
+                    this.citiesRepository.save(city);
+                }
+                else if(city.getName().toLowerCase().endsWith(" les'"))
+                {
+                    String name = city.getName();
+                    System.out.println(name + " ==> ");
+                    name = StringUtils.replaceString(name, " les", ", les");
+                    name = StringUtils.replaceString(name, " Les", ", Les");
+                    System.out.println("\t" + name);
+                    city.setName(name);
+                    this.citiesRepository.save(city);
+                }
+            }
+        }
+
+        System.out.println("FINALIZADO");
+        System.exit(-1);
+
+
+
+
+    }
 
 
 

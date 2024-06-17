@@ -110,7 +110,7 @@
 
             País: 
             <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theMember.idcountry" name="theMember-idcountry" (change)="getStates()" [clearable]="false">
-                <ng-option *ngFor="let x of theCountries" [value]="x.id">{{x.name}}</ng-option>
+                <ng-option *ngFor="let x of theCountries" [value]="x.id">{{x.emoji}} - {{x.name}}</ng-option>
             </ng-select>
             <br/>
 
@@ -219,6 +219,9 @@
 
             <div *ngIf="theMember.register_document_url && theMember.register_document_url!='' && !(theMember.register_document_url_signed && theMember.register_document_url_signed!='') " matTooltip="Documento de alta" class="file-upload">
                 <a class="form-control" target="_blank" href="{{theMember.register_document_url}}"><i class="fa-solid fa-paperclip"></i> Documento subido previamente (sin firmar)</a>
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="openDocumentRegister();">
+                    FIRMAR DOCUMENTO
+                </button>
                 <br/>
             </div>       
 
@@ -282,6 +285,10 @@
 
             <div *ngIf="theMember.unregister_document_url && theMember.unregister_document_url!='' && !(theMember.unregister_document_url_signed && theMember.unregister_document_url_signed!='') " matTooltip="Documento de baja" class="file-upload">
                 <a class="form-control" target="_blank" href="{{theMember.unregister_document_url}}"><i class="fa-solid fa-paperclip"></i> Documento subido previamente (sin firmar)</a>
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="openDocumentUnRegister();">
+                    FIRMAR DOCUMENTO
+                </button>
+
                 <br/>
             </div>       
 

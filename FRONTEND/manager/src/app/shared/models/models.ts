@@ -548,6 +548,7 @@ export interface CountryDTO {
     id : number;
     name : string;
     iso2 : string;
+    emoji : string;
 }
 
 

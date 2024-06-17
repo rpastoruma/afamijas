@@ -26,7 +26,7 @@ export class MembersListComponent  implements OnInit{
 
   @ViewChild('modalUnregister', { static: true }) modalUnregister: TemplateRef<any>;
 
-  requiredFileType:string  = ".png,.jpg,.jpeg,.webp,.gif,.pdf,.doc,.docx,.xsl,.xslx";
+  requiredFileType:string  =".pdf";
   fileName = '';
   uploadProgress:number;
   uploadSub: Subscription;
@@ -110,7 +110,9 @@ export class MembersListComponent  implements OnInit{
     private mediaService : MediaService,
     private frontValuesService : FrontValuesService
 
-  ) { }
+  )
+   {
+    }
 
   ngOnInit(): void {
     this.getMembers(0);
@@ -323,9 +325,13 @@ export class MembersListComponent  implements OnInit{
   {
     if(isnew) this.theMember = {...this.theNewMember};
 
-    console.log("this.theMember=" + JSON.stringify(this.theMember));
-
     this.getCountries();
+
+
+    if(this.theMember.register_document_url_signed && this.theMember.register_document_url_signed.startsWith("https://"))
+      this.is_document_signed = 'FIRMADO';
+    else
+      this.is_document_signed = 'SIN_FIRMA';
 
     this.modal.open(this.modalContent, { size: 'lg' });
   }
@@ -333,8 +339,11 @@ export class MembersListComponent  implements OnInit{
   
   openUnregisterMemberModal()
   {
+    if(this.theMember.unregister_document_url_signed && this.theMember.unregister_document_url_signed.startsWith("https://"))
+      this.is_document_signed = 'FIRMADO';
+    else
+      this.is_document_signed = 'SIN_FIRMA';
 
-    console.log("openUnregisterMemberModal= " + JSON.stringify(this.theMember));
     this.modal.open(this.modalUnregister, { size: 'lg' });
   }
 
@@ -429,9 +438,19 @@ async onFileSelected(event, document_type) {
           if(event.url && event.url.startsWith("https://") )
           {
             if(document_type=='BAJA')
-              this.theMember.unregister_document_url = event.url;
+            {
+                if(this.is_document_signed=='SIN_FIRMA')
+                  this.theMember.unregister_document_url = event.url;
+                else
+                  this.theMember.unregister_document_url_signed = event.url;
+            }
             else if(document_type=='ALTA')
-              this.theMember.register_document_url = event.url;
+            {
+                if(this.is_document_signed=='SIN_FIRMA')
+                  this.theMember.register_document_url = event.url;
+                else
+                  this.theMember.register_document_url_signed = event.url;
+            }
           }
           else
             console.error("onFileSelected1():"+JSON.stringify(event));
@@ -449,9 +468,19 @@ async onFileSelected(event, document_type) {
           if(event.url && event.url.startsWith("https://") ) 
           {
               if(document_type=='BAJA')
-                this.theMember.unregister_document_url = event.url;
-              else if(document_type=='ALTA')
-                this.theMember.register_document_url = event.url;
+                {
+                  if(this.is_document_signed=='SIN_FIRMA')
+                    this.theMember.unregister_document_url = event.url;
+                  else
+                    this.theMember.unregister_document_url_signed = event.url;
+              }
+                else if(document_type=='ALTA')
+              {
+                  if(this.is_document_signed=='SIN_FIRMA')
+                    this.theMember.register_document_url = event.url;
+                  else
+                    this.theMember.register_document_url_signed = event.url;
+              }
           }
           else
             console.error("onFileSelected3():"+JSON.stringify(event));
@@ -475,5 +504,133 @@ cancelUpload() {
   this.uploadSub = null;
   
   }
+
+
+  getFullName()
+  {
+    return (this.theMember.name.trim() + " " + this.theMember.surname1.trim() + " " + this.theMember.surname2.trim()).trim();
+  }
+
+
+
+  openDocumentRegister()
+  {
+    this.dialogService.open(MyPdfViewerComponent, {
+      hasScroll: true,
+      closeOnBackdropClick: false,
+      closeOnEsc: false,
+      context: {
+        pdfSrc: this.theMember.register_document_url,
+        fullname : this.getFullName(),
+        forSigning : true,
+        openExternal : true
+      }
+    }).onClose.subscribe(
+      res => {
+          if(res != 'close') 
+          {
+            if(res.url && res.url.startsWith('https'))
+              this.signDocumentRegister(this.theMember.id, res.url);
+            else
+            {
+              this.toastService.show("No se ha podido firmar el documento correctamente.",
+              "¡Ups!", 
+              { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+              );
+            }
+          }
+            
+      }
+    );
+  }
+
+
+
+  signDocumentRegister(idmember: string, register_document_url_signed : string)
+  {
+    this.membersService.signDocumentRegister(idmember, register_document_url_signed).subscribe(
+      res => {
+        this.isProcessing = false;
+        this.theMember.register_document_url_signed = register_document_url_signed;
+        this.is_document_signed = 'FIRMADO';
+        this.toastService.show("Documento firmado correctamente.",
+            "¡Ok!", 
+            { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+          );
+        this.getMembers(0);
+      },
+      error => {
+        this.isProcessing = false;
+        console.error("signDocumentRegister():"+JSON.stringify(error));
+        this.toastService.show("No se ha podido firmar la autorización correctamente.",
+          "¡Ups!", 
+          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+         );
+      }
+    );
+  }
+
+
+
+  
+
+  openDocumentUnRegister()
+  {
+    this.dialogService.open(MyPdfViewerComponent, {
+      hasScroll: true,
+      closeOnBackdropClick: false,
+      closeOnEsc: false,
+      context: {
+        pdfSrc: this.theMember.unregister_document_url,
+        fullname : this.theMember.fullname,
+        forSigning : true,
+        openExternal : true
+      }
+    }).onClose.subscribe(
+      res => {
+          if(res != 'close') 
+          {
+            if(res.url && res.url.startsWith('https'))
+              this.signDocumentUnRegister(this.theMember.id, res.url);
+            else
+            {
+              this.toastService.show("No se ha podido firmar el documento correctamente.",
+              "¡Ups!", 
+              { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+              );
+            }
+          }
+            
+      }
+    );
+  }
+
+
+
+  signDocumentUnRegister(idmember: string, unregister_document_url_signed : string)
+  {
+    this.membersService.signDocumentUnRegister(idmember, unregister_document_url_signed).subscribe(
+      res => {
+        this.isProcessing = false;
+        this.theMember.unregister_document_url_signed = unregister_document_url_signed;
+        this.is_document_signed = 'FIRMADO';
+        this.toastService.show("Documento firmado correctamente.",
+            "¡Ok!", 
+            { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+          );
+        this.getMembers(0);
+      },
+      error => {
+        this.isProcessing = false;
+        console.error("signDocumentUnRegister():"+JSON.stringify(error));
+        this.toastService.show("No se ha podido firmar la autorización correctamente.",
+          "¡Ups!", 
+          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+         );
+      }
+    );
+  }
+
+
 
 }

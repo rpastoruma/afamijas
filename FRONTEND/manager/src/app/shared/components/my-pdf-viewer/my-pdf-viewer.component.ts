@@ -10,6 +10,7 @@ import { SigningPadComponent } from '../signing-pad/signing-pad.component';
 export class MyPdfViewerComponent implements OnInit {
 
   @Input() pdfSrc : string;
+  @Input() fullname : string;
   @Input() forSigning : boolean = false;
   @Input() openExternal : boolean = false;
 
@@ -21,7 +22,8 @@ export class MyPdfViewerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    
+    console.log("pdfSrc=" + this.pdfSrc);
+    console.log("fullname=" + this.fullname);
   }
 
   goBack() {
@@ -37,6 +39,7 @@ export class MyPdfViewerComponent implements OnInit {
       closeOnEsc: false,
       context: {
         urlpdf: this.pdfSrc,
+        fullname : this.fullname
       }
     }).onClose.subscribe(
       res => {

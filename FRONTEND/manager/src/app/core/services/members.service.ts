@@ -32,7 +32,14 @@ export class MembersService {
     form.append('documenttype', theMember.documenttype);
 
     form.append('is_document_signed', is_document_signed.toString());
-    if(theMember.register_document_url && theMember.register_document_url!='') form.append('register_document_url', theMember.register_document_url);
+
+    if(is_document_signed && theMember.register_document_url_signed && theMember.register_document_url_signed!='')
+      form.append('register_document_url', theMember.register_document_url_signed);
+    else
+    {
+      if(theMember.register_document_url && theMember.register_document_url!='') 
+        form.append('register_document_url', theMember.register_document_url);
+    }
 
 
     if(theMember.surname2 && theMember.surname2!='') form.append('surname2', theMember.surname2);
@@ -68,4 +75,24 @@ export class MembersService {
     return this.http.post<any>(ENV.url.members + '/unregisterMember', form);
   }
   
+
+  signDocumentRegister(idmember: string, register_document_url_signed: string) {
+    const form = new FormData();
+    form.append('idmember', idmember);
+    form.append('register_document_url_signed', register_document_url_signed);
+
+    return this.http.post<any>(ENV.url.members + '/signDocumentRegister', form);
+  }
+  
+
+  signDocumentUnRegister(idmember: string, unregister_document_url_signed: string) {
+    const form = new FormData();
+    form.append('idmember', idmember);
+    form.append('unregister_document_url_signed', unregister_document_url_signed);
+
+    return this.http.post<any>(ENV.url.members + '/signDocumentUnRegister', form);
+  }
+
+
+
 }

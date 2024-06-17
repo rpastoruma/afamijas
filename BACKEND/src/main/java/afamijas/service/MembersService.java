@@ -31,6 +31,7 @@ public interface MembersService
     String uploadUnRegisterDocument(String id, MultipartFile file) throws Exception;
 
 
+    void signDocumentRegister(String idmember, String registerDocumentUrlSigned);
 
-
+    void signDocumentUnRegister(String idmember, String unregisterDocumentUrlSigned);
 }

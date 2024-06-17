@@ -195,6 +195,49 @@ public class MembersController extends AbstractBaseController
 
 
 
+	@RequestMapping(method=RequestMethod.POST, value="signDocumentRegister", produces="application/json")
+	public ResponseEntity<?> signDocumentRegister(
+			@RequestParam(value = "idmember", required = true) String idmember,
+			@RequestParam(value = "register_document_url_signed", required = true) String register_document_url_signed,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			this.membersService.signDocumentRegister(idmember, register_document_url_signed);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="signDocumentUnRegister", produces="application/json")
+	public ResponseEntity<?> signDocumentUnRegister(
+			@RequestParam(value = "idmember", required = true) String idmember,
+			@RequestParam(value = "unregister_document_url_signed", required = true) String unregister_document_url_signed,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			this.membersService.signDocumentUnRegister(idmember, unregister_document_url_signed);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 
 

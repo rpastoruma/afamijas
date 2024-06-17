@@ -14,6 +14,7 @@ import { MediaService } from 'src/app/core/services/media.service';
 export class SigningPadComponent implements OnInit{
 
   @Input() urlpdf : string;
+  @Input() fullname : string;
   @ViewChild('signPad', {static: false}) signPad!: ElementRef<HTMLCanvasElement>;
  
   private signatureImg?: string;
@@ -38,6 +39,10 @@ export class SigningPadComponent implements OnInit{
 
     const htmlElement = document.querySelector('html');
     htmlElement.style.setProperty('overflow', 'hidden');
+
+    console.log("urlpdf=" + this.urlpdf);
+    console.log("fullname=" + this.fullname);
+
 
   }
 
@@ -130,7 +135,10 @@ export class SigningPadComponent implements OnInit{
     const pngImage = await pdfDoc.embedPng(this.signatureImg);
     const pngDims = pngImage.scale(0.75)
 
-    page.drawText('Firmado por ' + this.getFullname() + '\n' + this.date2Text(), {
+    let resfullname = this.getFullname();
+    if(this.fullname) resfullname = this.fullname;
+
+    page.drawText('Firmado por ' + resfullname + '\n' + this.date2Text(), {
       x: page.getWidth() / 2 - pngDims.width / 2 - 60,
       y: page.getHeight() / 2 - pngDims.height,
       size: 14,

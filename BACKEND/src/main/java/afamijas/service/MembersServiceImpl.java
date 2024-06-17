@@ -213,6 +213,27 @@ public class MembersServiceImpl implements MembersService
 			return null;
 	}
 
+	@Override
+	public void signDocumentRegister(String idmember, String registerDocumentUrlSigned)
+	{
+		User member = this.usersRepository.findOne(idmember);
+		if(member!=null)
+		{
+			member.setRegister_document_url_signed(registerDocumentUrlSigned);
+			this.usersRepository.save(member);
+		}
+	}
+
+	@Override
+	public void signDocumentUnRegister(String idmember, String unregisterDocumentUrlSigned)
+	{
+		User member = this.usersRepository.findOne(idmember);
+		if(member!=null)
+		{
+			member.setUnregister_document_url_signed(unregisterDocumentUrlSigned);
+			this.usersRepository.save(member);
+		}
+	}
 
 
 }
