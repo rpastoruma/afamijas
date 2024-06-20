@@ -108,8 +108,6 @@ public class MembersServiceImpl implements MembersService
 
 			member.setRegister_document_url("");
 			member.setRegister_document_url_signed("");
-
-
 		}
 
 		if(register_document_url!=null)

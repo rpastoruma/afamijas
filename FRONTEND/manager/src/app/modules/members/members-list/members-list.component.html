@@ -100,7 +100,7 @@
             <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theMember.documentid" name="theMember-documentid" type="text" >
 
             <div style="width: 100%; text-align: right;">
-            <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+            <button [disabled]="theMember.name=='' || theMember.surname1=='' || !validEmail(theMember.email) || !validPhone(theMember.phone) || !validDocumentId(theMember.documentid, theMember.documenttype)" nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
                 SIGUIENTE &gt;&gt;
             </button>
             </div>
@@ -144,7 +144,7 @@
                     &lt;&lt; ANTERIOR
                 </button>
                 &nbsp;&nbsp;
-                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
+                <button [disabled]="!validPostalAddress(theMember)" nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
                     SIGUIENTE &gt;&gt;
                 </button>
             </div>
@@ -173,18 +173,18 @@
                 <hr/>
                 
                 Banco: 
-                <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theMember.bank_name" name="theMember-bank_name" type="number" >
+                <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theMember.bank_name" name="theMember-bank_name" type="text" >
                         
                 Nombre y apellidos del titular de la cuenta: 
-                <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theMember.bank_account_holder_fullname" name="theMember-bank_account_holder_fullname" type="number" >
+                <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theMember.bank_account_holder_fullname" name="theMember-bank_account_holder_fullname" type="text" >
         
                 
                 DNI del titular de la cuenta: 
-                <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theMember.bank_account_holder_dni" name="theMember-bank_account_holder_dni" type="number" >
+                <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theMember.bank_account_holder_dni" name="theMember-bank_account_holder_dni" type="text" >
             
                 
                 IBAN Cuenta bancaria: 
-                <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theMember.bank_account_iban" name="theMember-bank_account_iban" type="number" >
+                <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theMember.bank_account_iban" name="theMember-bank_account_iban" type="text" >
             </div>
 
 
@@ -193,7 +193,7 @@
                     &lt;&lt; ANTERIOR
                 </button>
                 &nbsp;&nbsp;
-                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step4');">
+                <button  [disabled]="!validFee(theMember)" nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step4');">
                     SIGUIENTE &gt;&gt;
                 </button>
             </div>
@@ -244,7 +244,13 @@
     </div>
 
     <div class="modal-footer">
-        <button [disabled]="isProcessing"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveMember();">
+        <button [disabled]="isProcessing 
+        || theMember.name=='' || theMember.surname1=='' || !validEmail(theMember.email) || !validPhone(theMember.phone) || !validDocumentId(theMember.documentid, theMember.documenttype)
+        || !validPostalAddress(theMember)
+        || !validFee(theMember)
+        || !validDoc(theMember)
+        " 
+        nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveMember();">
             GUARDAR CAMBIOS
         </button>
     </div>

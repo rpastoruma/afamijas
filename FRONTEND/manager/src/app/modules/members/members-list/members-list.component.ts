@@ -12,6 +12,8 @@ import { HttpEventType } from '@angular/common/http';
 import { MediaService } from 'src/app/core/services/media.service';
 import { MyPdfViewerComponent } from 'src/app/shared/components/my-pdf-viewer/my-pdf-viewer.component';
 import { FrontValuesService } from 'src/app/core/services/front-values.service';
+import { isPhone } from 'spain-phone';
+import * as EmailValidator from 'email-validator';
 
 @Component({
   selector: 'app-members-list',
@@ -237,10 +239,11 @@ export class MembersListComponent  implements OnInit{
       error => {
         this.isProcessing = false;
         console.error("getStateAndCitiesByPostalCodeAndCountryId():"+JSON.stringify(error));
+        /*
         this.toastService.show("No se han podido obtener las ciudades por código postal.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-         );
+         );*/
       }
     );
   }
@@ -373,7 +376,6 @@ export class MembersListComponent  implements OnInit{
       }
     ); 
   }
-
 
 
 
@@ -632,5 +634,81 @@ cancelUpload() {
   }
 
 
+
+
+  validEmail(email :string)
+  {
+    return EmailValidator.validate(email);
+  }
+  
+  validPhone(phone : string)
+  {
+    return isPhone(phone);
+  }
+
+
+  validDocumentId(documentId: string, documentType: string)
+  {
+    documentId = documentId.toUpperCase();
+    this.theMember.documentid = documentId;
+
+    const dni_letters = "TRWAGMYFPDXBNJZSQVHLCKE";
+    if(documentType == 'DNI')
+    {
+      let letter = dni_letters.charAt( parseInt( documentId, 10 ) % 23 );
+      if(letter == documentId.charAt(8) && documentId.length==9) return true;
+      else return false;
+    }
+    else if(documentType == 'NIE')
+    {
+      if(this.validDocumentId(documentId, 'DNI')) return false;
+
+      let nie_prefix = documentId.charAt( 0 );
+      switch (nie_prefix)
+      {
+          case 'X': nie_prefix = '0'; break;
+          case 'Y': nie_prefix = '1'; break;
+          case 'Z': nie_prefix = '2'; break;
+      }
+      const dni = nie_prefix + documentId.substring(1);
+      let letter = dni_letters.charAt( parseInt( dni, 10 ) % 23 );
+  
+      if(letter == dni.charAt(8)  && documentId.length==9) return true;
+      else return false;
+    }
+    else
+      return true;
+  }
+
+
+  validPostalAddress(theMember : MemberDTO)
+  {
+    return theMember.postalcode && theMember.postalcode.length>0 && theMember.postaladdress  && theMember.postaladdress.length>0 && theMember.idstate && theMember.idcity 
+  }
+  
+
+  validFee(theMember : MemberDTO)
+  {
+    if(theMember.fee_payment == 'SEDE')
+    {
+      return theMember.fee_euros > 0 && theMember.fee_period.length > 0;
+    }
+    else if(theMember.fee_payment == 'DOMICILIACIÓN')
+    {
+      return theMember.fee_euros > 0 && theMember.fee_period.length > 0 && theMember.bank_account_holder_dni.length > 0 && theMember.bank_account_holder_fullname.length > 0 && theMember.bank_account_iban.length > 0 && theMember.bank_name.length > 0;
+    }
+  }
+
+  validDoc(theMember : MemberDTO)
+  {
+    if(this.is_document_signed)
+    {
+      return theMember.register_document_url_signed && theMember.register_document_url_signed.startsWith("https://");
+    }
+    else
+    {
+      return theMember.register_document_url && theMember.register_document_url.startsWith("https://");
+    }
+  }
 
 }
