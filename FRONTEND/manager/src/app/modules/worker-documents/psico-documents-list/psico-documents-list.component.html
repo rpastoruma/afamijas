@@ -1,0 +1,803 @@
+<nb-card>
+    <nb-card-header>
+        <div class="row float-start" >
+            <h4>Documentos Psicología</h4>
+        </div>
+        <button [disabled]="theIdpatient==''" [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openAddDocumentModal1()">INFORME NEUROPSICOLÓGICO</button>&nbsp;&nbsp;
+        <button [disabled]="theIdpatient==''" style="margin-right: 10px;" [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openAddDocumentModal()">AÑADIR EVALUACIÓN</button>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div [hidden]="!canModify()" id="filtersOnlyCanModify">
+                    
+            <div style="margin-bottom: 10px;">
+                Para el usuario:
+                <ng-select (change)="getDocsPsico(0)" [multiple]="false" [(ngModel)]="theIdpatient" name="idpatient" [clearable]="false" notFoundText="No se encuentran usuarios">
+                    <ng-option value="">TODOS</ng-option>
+                    <ng-option *ngFor="let u of allPatients" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}} - ({{u.membernumber}})</ng-option>
+                </ng-select>
+            </div>
+    
+            <div style="margin-bottom: 10px;">
+                Tipo de evaluación:
+                <ng-select (change)="getDocsPsico(0)" [multiple]="false" [(ngModel)]="theType" name="status" [clearable]="false">
+                    <ng-option value="">TODOS</ng-option>
+                    <ng-option value="PSICO_CONGNITIVA">Evaluación Cognitiva</ng-option>
+                    <ng-option value="PSICO_CONDUCTUAL">Evaluación Conductual</ng-option>
+                    <ng-option value="PSICO_FUNCIONAL">Evaluación Funcional</ng-option>
+                </ng-select>
+            </div>
+        
+            <div style="margin-bottom: 10px;">
+                Con el texto:
+                <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theText" name="theText" type="text"   >
+            </div>
+
+            <hr/>
+        </div>
+
+
+        <app-custom-table
+            [actions]="actions"
+            [keys]="['Usuario:', 'Tipo de documento:',  'Descripción:', 'Fecha subida:', 'Subido por:']"
+            [values]="docs"
+            [align]="['left', 'left', 'left', 'left', 'left']"
+            [filters]="[false, false, false, false, false]"
+            [sort]="[false, false, false, false, false]"
+            [widthToCollapse]="750"
+            [withPagination]="true"
+            [totalPages]="totalPages"
+            [page]="page"
+            [size]="size"
+            [loadingE]="loadingExcel"
+            [loading]="loadingPDF"
+            [hasExport]="canModify()"
+            (actionSelected)="action($event)"
+            (changePage)="setPage($event)"
+            (filterEvent)="filter(0)"
+            [isProcessing]="isProcessing"
+            (exportData)="getExportData($event)"
+            [showSearchButton]="true"
+
+        >
+
+        </app-custom-table>
+    </nb-card-body>
+
+
+    
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+
+
+
+<ng-template #modalContent let-close="close">
+    <div class="modal-header">
+        <h6 *ngIf="theDoc.id==''">Añadir nuevo documento de evaluación</h6>        
+        <h6 *ngIf="theDoc.id!=''">Modificar documento de evaluación</h6>
+        <nb-icon (click)="close()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+
+            <div *ngIf="theDoc.url==''" matTooltip="Seleccionar imagen" class="file-upload">
+                <button mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione documento a subir</button>
+                <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileSelected($event)" #fileUpload>
+                &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+            </div>       
+            <div *ngIf="theDoc.url!=''" matTooltip="Seleccionar imagen" class="file-upload">
+                <a class="form-control" target="_blank" href="{{theDoc.url}}"><i class="fa-solid fa-paperclip"></i> Abrir documento</a>
+                <br/>
+            </div>       
+
+
+            <div style="margin-bottom: 10px;">
+                Para el usuario:
+                <ng-select [multiple]="false" [(ngModel)]="theIdpatient" name="theDoc-idpatient" [clearable]="false" notFoundText="No se encuentran usuarios">
+                    <ng-option *ngFor="let u of allPatients" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}} - ({{u.documentid}})</ng-option>
+                </ng-select>
+            </div>
+
+            <div style="margin-bottom: 10px;">
+                Tipo (obligatorio):
+                <ng-select (change)="getDocsPsico(0)" [multiple]="false" [(ngModel)]="theDoc.type" name="theDoc-type" [clearable]="false">
+                    <ng-option value="PSICO_CONGNITIVA">Evaluación Cognitiva</ng-option>
+                    <ng-option value="PSICO_CONDUCTUAL">Evaluación Conductual</ng-option>
+                    <ng-option value="PSICO_FUNCIONAL">Evaluación Funcional</ng-option>
+                </ng-select>
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                Descripción (opcional): 
+                <textarea rows="3" class="form-control" [(ngModel)]="theDoc.description"></textarea>
+            </div>
+
+                
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button nbButton status="warning" type="button" class="btn btn-outline-secondary" (click)="close();">
+            CERRAR
+        </button>
+        &nbsp;
+        <button  *ngIf="theDoc.id==''" [disabled]="isProcessing || !theDoc.url.startsWith('https:') || theDoc.type.trim()==''"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveDoc();">
+            AÑADIR DOCUMENTO
+        </button>        
+        <button  *ngIf="theDoc.id!=''" [disabled]="isProcessing || !theDoc.url.startsWith('https:') || theDoc.type.trim()==''"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveDoc();">
+            MODIFICAR DOCUMENTO
+        </button>
+    </div>
+</ng-template>
+  
+
+
+<ng-template #modalContent1 let-close="close">
+    <div class="modal-header"> 
+        <h6>Informe NeuroPsicológico</h6>
+        <p>{{thePatient.documentid}} - {{thePatient.name}} {{thePatient.surname1}} {{thePatient.surname2}}</p>
+        <p>Nº expediente: {{thePatient.fs_num_expediente}}</p>
+        <nb-icon (click)="close();" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+
+
+
+            <div id="step1">
+
+                                   
+           <div style="margin-top:10px">
+            Motivo de consulta:
+            <textarea class="form-control" [(ngModel)]="thePatient.ins_motivo_consulta" >
+            </textarea>
+             </div>
+
+            
+            <div style="margin-top:10px">
+                Antecedentes:
+                <textarea class="form-control" [(ngModel)]="thePatient.ins_antecedentes" >
+                </textarea>
+           </div>
+
+            
+           <div style="margin-top:10px">
+            Diagnóstico:
+            <textarea class="form-control" [(ngModel)]="thePatient.ins_diagnostico" >
+            </textarea>
+            </div>
+
+
+                        
+
+            <div style="margin-top:10px">
+                Fecha de informe: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.ins_fecha_informe" name="thePatient-ins_fecha_informe" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay2]"
+                >
+                <div *ngIf="!thePatient.ins_fecha_informe" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+            
+        </div>
+        
+        
+
+
+
+        <div style="display: none;" id="step2">
+                        
+           <div style="margin-top:10px">
+            Texto previo a resumen de puntuaciones:
+            <textarea class="form-control" [(ngModel)]="thePatient.ins_texto_pre_puntuaciones" >
+            </textarea>
+            </div>
+
+
+            <div style="margin-top:10px">
+                Fecha 1: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.ins_fecha1" name="thePatient-ins_fecha1" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay2]"
+                >
+            </div>
+
+
+            <div style="margin-top:10px">
+                Orientación:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal1()" [(ngModel)]="thePatient.ins_orientacion1" name="thePatient-ins_orientacion1" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Lenguaje:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal1()" [(ngModel)]="thePatient.ins_lenguaje1" name="thePatient-ins_lenguaje1" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Memoria:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal1()" [(ngModel)]="thePatient.ins_memoria1" name="thePatient-ins_memoria1" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Atención/cálculo:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal1()" [(ngModel)]="thePatient.ins_atencalculo1" name="thePatient-ins_atencalculo1" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Praxis:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal1()" [(ngModel)]="thePatient.ins_praxis1" name="thePatient-ins_praxis1" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Pensamiento Abstracto:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal1()" [(ngModel)]="thePatient.ins_pensabstracto1" name="thePatient-ins_pensabstracto1" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Percepción:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal1()" [(ngModel)]="thePatient.ins_percecpcion1" name="thePatient-ins_percecpcion1" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                TOTAL:
+                <input readonly="readonly" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.ins_total1" name="thePatient-ins_total1" type="number" >
+            </div>
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step1');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+        </div>
+
+
+
+
+
+
+        
+
+
+        <div style="display: none;" id="step3">
+                        
+ 
+ 
+             <div style="margin-top:10px">
+                 Fecha 2: 
+                 <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.ins_fecha4" name="thePatient-ins_fecha2" type="text" [altInput]="true"
+                 [convertModelValue]="true"
+                 [enableTime]="false"
+                 dateFormat="YY-m-d"
+                 altFormat="d/m/Y"
+                 placeholder=""
+                 [disable]="[disabledDay2]"
+                 >
+             </div>
+ 
+ 
+
+             <div style="margin-top:10px">
+                Orientación:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal2()" [(ngModel)]="thePatient.ins_orientacion2" name="thePatient-ins_orientacion2" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Lenguaje:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal2()" [(ngModel)]="thePatient.ins_lenguaje2" name="thePatient-ins_lenguaje2" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Memoria:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal2()" [(ngModel)]="thePatient.ins_memoria2" name="thePatient-ins_memoria2" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Atención/cálculo:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal2()" [(ngModel)]="thePatient.ins_atencalculo2" name="thePatient-ins_atencalculo2" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Praxis:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal2()" [(ngModel)]="thePatient.ins_praxis2" name="thePatient-ins_praxis2" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Pensamiento Abstracto:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal2()" [(ngModel)]="thePatient.ins_pensabstracto2" name="thePatient-ins_pensabstracto2" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Percepción:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal2()" [(ngModel)]="thePatient.ins_percecpcion2" name="thePatient-ins_percecpcion2" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                TOTAL:
+                <input readonly="readonly" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.ins_total2" name="thePatient-ins_total2" type="number" >
+            </div>
+
+             <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                 <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+                     &lt;&lt; ANTERIOR
+                 </button>
+                 &nbsp;&nbsp;
+                 <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step4');">
+                     SIGUIENTE &gt;&gt;
+                 </button>
+             </div>
+ 
+         </div>
+ 
+
+
+
+
+
+
+        
+
+
+         <div style="display: none;" id="step4">
+                        
+ 
+ 
+            <div style="margin-top:10px">
+                Fecha 3: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.ins_fecha4" name="thePatient-ins_fecha3" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay2]"
+                >
+            </div>
+
+
+
+            <div style="margin-top:10px">
+                Orientación:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal3()" [(ngModel)]="thePatient.ins_orientacion3" name="thePatient-ins_orientacion3" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Lenguaje:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal3()" [(ngModel)]="thePatient.ins_lenguaje3" name="thePatient-ins_lenguaje3" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Memoria:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal3()" [(ngModel)]="thePatient.ins_memoria3" name="thePatient-ins_memoria3" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Atención/cálculo:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal3()" [(ngModel)]="thePatient.ins_atencalculo3" name="thePatient-ins_atencalculo3" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Praxis:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal3()" [(ngModel)]="thePatient.ins_praxis3" name="thePatient-ins_praxis3" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Pensamiento Abstracto:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal3()" [(ngModel)]="thePatient.ins_pensabstracto3" name="thePatient-ins_pensabstracto3" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Percepción:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal3()" [(ngModel)]="thePatient.ins_percecpcion3" name="thePatient-ins_percecpcion3" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                TOTAL:
+                <input readonly="readonly" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.ins_total3" name="thePatient-ins_total3" type="number" >
+            </div>
+
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step5');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+        
+
+
+        <div style="display: none;" id="step5">
+                        
+ 
+ 
+            <div style="margin-top:10px">
+                Fecha 4: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.ins_fecha4" name="thePatient-ins_fecha4" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay2]"
+                >
+            </div>
+
+
+            <div style="margin-top:10px">
+                Orientación:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal4()" [(ngModel)]="thePatient.ins_orientacion4" name="thePatient-ins_orientacion4" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Lenguaje:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal4()" [(ngModel)]="thePatient.ins_lenguaje4" name="thePatient-ins_lenguaje4" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Memoria:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal4()" [(ngModel)]="thePatient.ins_memoria4" name="thePatient-ins_memoria4" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Atención/cálculo:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal4()" [(ngModel)]="thePatient.ins_atencalculo4" name="thePatient-ins_atencalculo4" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Praxis:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal4()" [(ngModel)]="thePatient.ins_praxis4" name="thePatient-ins_praxis4" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Pensamiento Abstracto:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal4()" [(ngModel)]="thePatient.ins_pensabstracto4" name="thePatient-ins_pensabstracto4" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Percepción:
+                <input style="margin-bottom: 15px" class="form-control" (change)="updateTotal4()" [(ngModel)]="thePatient.ins_percecpcion4" name="thePatient-ins_percecpcion4" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                TOTAL:
+                <input readonly="readonly" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.ins_total4" name="thePatient-ins_total4" type="number" >
+            </div>
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step4');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step6');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+
+
+        
+        
+        <div style="display: none;" id="step6">
+
+          
+            <b>MMSE</b>
+
+            <div style="margin-top:10px">
+                Fecha MMSE 1: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.ins_fecha_mms1" name="thePatient-ins_fecha_mms1" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay2]"
+                >
+            </div>
+
+            <div style="margin-top:10px">
+                Puntuación 1:
+                <input style="margin-bottom: 15px" class="form-control"  [(ngModel)]="thePatient.ins_mmse1" name="thePatient-ins_mmse1" type="number" >
+            </div>
+
+
+
+            <div style="margin-top:10px">
+                Fecha MMSE 2: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.ins_fecha_mms2" name="thePatient-ins_fecha_mms2" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay2]"
+                >
+            </div>
+
+            <div style="margin-top:10px">
+                Puntuación 2:
+                <input style="margin-bottom: 15px" class="form-control"  [(ngModel)]="thePatient.ins_mmse2" name="thePatient-ins_mmse2" type="number" >
+            </div>
+
+
+
+            <div style="margin-top:10px">
+                Fecha MMSE 3: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.ins_fecha_mms3" name="thePatient-ins_fecha_mms3" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay2]"
+                >
+            </div>
+
+            <div style="margin-top:10px">
+                Puntuación 3:
+                <input style="margin-bottom: 15px" class="form-control"  [(ngModel)]="thePatient.ins_mmse3" name="thePatient-ins_mmse3" type="number" >
+            </div>
+
+
+
+            <div style="margin-top:10px">
+                Fecha MMSE 4: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.ins_fecha_mms4" name="thePatient-ins_fecha_mms4" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay2]"
+                >
+            </div>
+
+            <div style="margin-top:10px">
+                Puntuación 4:
+                <input style="margin-bottom: 15px" class="form-control"  [(ngModel)]="thePatient.ins_mmse4" name="thePatient-ins_mmse4" type="number" >
+            </div>
+
+
+            <div style="margin-top:10px">
+                Texto redactable después MMSE:
+                <textarea class="form-control" [(ngModel)]="thePatient.ins_texto_post_puntuaciones" >
+                </textarea>
+                </div>
+    
+
+                
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step5');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step7');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+
+        </div>
+
+
+
+
+        
+        
+        <div style="display: none;" id="step7">
+
+          
+            <b>Puntuaciones evaluación funcional</b>
+
+            <div style="margin-top:10px">
+                Fecha Evaulación funcional 1: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.ins_fecha_ind1" name="thePatient-ins_fecha_ind1" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay2]"
+                >
+            </div>
+
+            <div style="margin-top:10px">
+                Índice de Barthel 1:
+                <input style="margin-bottom: 15px" class="form-control"  [(ngModel)]="thePatient.ins_indbathel1" name="thePatient-ins_indbathel1" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Escalas de Lawton y Brody 1:
+                <input style="margin-bottom: 15px" class="form-control"  [(ngModel)]="thePatient.ins_indlawton1" name="thePatient-ins_indlawton1" type="number" >
+            </div>
+
+
+
+            <div style="margin-top:10px">
+                Fecha Evaulación funcional 2: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.ins_fecha_ind2" name="thePatient-ins_fecha_ind2" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay2]"
+                >
+            </div>
+
+            <div style="margin-top:10px">
+                Índice de Barthel 2:
+                <input style="margin-bottom: 15px" class="form-control"  [(ngModel)]="thePatient.ins_indbathel2" name="thePatient-ins_indbathel2" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Escalas de Lawton y Brody 2:
+                <input style="margin-bottom: 15px" class="form-control"  [(ngModel)]="thePatient.ins_indlawton2" name="thePatient-ins_indlawton2" type="number" >
+            </div>
+
+
+
+
+
+            <div style="margin-top:10px">
+                Fecha Evaulación funcional 3: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.ins_fecha_ind3" name="thePatient-ins_fecha_ind3" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay2]"
+                >
+            </div>
+
+            <div style="margin-top:10px">
+                Índice de Barthel 3:
+                <input style="margin-bottom: 15px" class="form-control"  [(ngModel)]="thePatient.ins_indbathel3" name="thePatient-ins_indbathel3" type="number" >
+            </div>
+
+            <div style="margin-top:10px">
+                Escalas de Lawton y Brody 3:
+                <input style="margin-bottom: 15px" class="form-control"  [(ngModel)]="thePatient.ins_indlawton3" name="thePatient-ins_indlawton3" type="number" >
+            </div>
+
+
+
+                
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step6');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step8');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+        
+        
+        <div style="display: none;" id="step8">
+
+          
+            <b>Evaluación conductual</b>
+
+            <div style="margin-top:10px">
+                Texto rellenable antes de conclusión:
+                <textarea class="form-control" [(ngModel)]="thePatient.ins_texto_eval_conductual" >
+                </textarea>
+            </div>
+
+            <div style="margin-top:10px">
+                Conclusión:
+                <textarea class="form-control" [(ngModel)]="thePatient.ins_texto_conclusion" >
+                </textarea>
+            </div>
+
+
+
+
+
+                
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step7');">
+                    &lt;&lt; ANTERIOR
+                </button>
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+
+        </div>
+
+        
+
+    </div>
+
+
+
+    <div class="modal-footer">
+        <button [disabled]="isProcessing" 
+        nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveInformeNeuroPsicologico();">
+            GUARDAR Y GENERAR INFORME NEUROPSICOLÓGICO
+        </button>
+    </div>
+
+
+</ng-template>
+
+<nb-card *ngIf="hayreport">
+<nb-card-body>
+    <div sytle="width:100%" #idhtml></div>
+    <nb-card-footer>
+        <button style="margin-right: 10px;" nbButton class="float-end" status="primary" (click)="imprimirInformeNeuro()">Descargar Informe Neuropsicológico</button>
+    </nb-card-footer>
+</nb-card-body>
+
+
+</nb-card>

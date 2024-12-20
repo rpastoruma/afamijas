@@ -264,7 +264,7 @@ public class RelativesServiceImpl implements RelativesService
 		Criteria criteria = new Criteria().where("idrelative").is(idrelative).and("roles").in(Arrays.asList("PATIENT")).and("status").is("A");
 		query.addCriteria(criteria);
 		try { if(debug_queries) System.out.println("getPatients:" + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
-		return this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
+		return this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null, null)).toList();
 	}
 
 

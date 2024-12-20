@@ -273,7 +273,7 @@ export class MembersListComponent  implements OnInit{
         } 
         else 
         {
-          const minFields = ['34%','33%','33%'];
+          const minFields = ['10%','30%','20%','20%','20%'];
           const keystranslate = keys.map(item => item);
           this.pdfService.exportDataToPDF(title, keystranslate, fields, title, final, minFields);
           this.loadingPDF = false;
@@ -564,7 +564,7 @@ cancelUpload() {
       error => {
         this.isProcessing = false;
         console.error("signDocumentRegister():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido firmar la autorización correctamente.",
+        this.toastService.show("No se ha podido firmar el documento correctamente.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
@@ -584,7 +584,7 @@ cancelUpload() {
       closeOnEsc: false,
       context: {
         pdfSrc: this.theMember.unregister_document_url,
-        fullname : this.theMember.fullname,
+        fullname : this.getFullName(),
         forSigning : true,
         openExternal : true
       }
@@ -625,7 +625,7 @@ cancelUpload() {
       error => {
         this.isProcessing = false;
         console.error("signDocumentUnRegister():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido firmar la autorización correctamente.",
+        this.toastService.show("No se ha podido firmar el documento correctamente.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );

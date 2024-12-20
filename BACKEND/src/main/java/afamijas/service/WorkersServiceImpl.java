@@ -111,7 +111,7 @@ public class WorkersServiceImpl implements WorkersService
 		if(dni!=null) query.addCriteria(Criteria.where("documentid").is(dni));
 		if(groupcode!=null) query.addCriteria(Criteria.where("groupcode").is(groupcode));
 
-		List<PatientDTO> list = this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
+		List<PatientDTO> list = this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null, null)).toList();
 
 		return PageableExecutionUtils.getPage(
 				list,
@@ -128,7 +128,7 @@ public class WorkersServiceImpl implements WorkersService
 		if(groupcode!=null) criteria.and("groupcode").is(groupcode);
 		query.addCriteria(criteria);
 		try { if(debug_queries) System.out.println("getAllPatients: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
-		return this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null)).toList();
+		return this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null, null)).toList();
 	}
 
 

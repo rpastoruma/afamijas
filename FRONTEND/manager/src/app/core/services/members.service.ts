@@ -31,6 +31,8 @@ export class MembersService {
     form.append('documentid', theMember.documentid);
     form.append('documenttype', theMember.documenttype);
 
+    if(theMember.surname2 && theMember.surname2!='') form.append('surname2', theMember.surname2);
+    if(theMember.phone && theMember.phone!='') form.append('phone', theMember.phone);
     form.append('is_document_signed', is_document_signed.toString());
 
     if(is_document_signed && theMember.register_document_url_signed && theMember.register_document_url_signed!='')
@@ -42,8 +44,6 @@ export class MembersService {
     }
 
 
-    if(theMember.surname2 && theMember.surname2!='') form.append('surname2', theMember.surname2);
-    if(theMember.phone && theMember.phone!='') form.append('phone', theMember.phone);
     
     if(theMember.postaladdress && theMember.postaladdress!='') form.append('postaladdress', theMember.postaladdress);
     if(theMember.idcity) form.append('idcity', theMember.idcity.toString());

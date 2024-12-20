@@ -28,12 +28,15 @@ export interface PatientDTO {
     surname1 : string;
     surname2 : string;
     dni : string;
+    documenttype : string;
     phone : string;
     postaladdress : string;
-    idcity : string;
+    idcity : number;
     cityname : string;
-    idstate : string;
+    idstate : number;
     statename : string;
+    idcountry : number;
+    countryname : string;
     postalcode : string;
     signature : string;
     photo_url : string;
@@ -53,6 +56,32 @@ export interface PatientDTO {
     medication_description_morning : string;
     medication_description_evening : string;
     groupcode : string;
+
+    birthdate : Date;
+    relativerelation : string;
+
+    servicetype : string;
+    tallerpsico : boolean;
+
+    transportservice : boolean;
+    transportservice_text : string;
+
+    comedorservice : boolean;
+    comedorservice_text : string;
+
+    ayudadomicilioservice : boolean;
+    ayudadomicilioservice_text : string;
+
+    duchaservice : boolean;
+    duchaservice_text : string;
+
+    register_document_url : string;
+    register_document_url_signed : string;
+    unregister_document_url : string;
+    unregister_document_url_signed : string;
+
+    unregister_reason : string
+
 }
 
 

@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +59,9 @@ public class User
 
 	private String gender;
 
+	private LocalDate birthdate;
+
+
 	private LocalDateTime created;
 
 	private LocalDateTime modified;
@@ -79,6 +83,8 @@ public class User
 	// PATIENTS:
 
 	private String idrelative;
+
+	private String relativerelation;
 
 	private String idroute;
 
@@ -119,6 +125,31 @@ public class User
 	private String V_site_turn1; // MIJASPUEBLO, LACALA, LASLAGUNAS, CERAMICA
 
 	private String V_site_turn2; // MIJASPUEBLO, LACALA, LASLAGUNAS, CERAMICA
+
+
+	private String servicetype; // TALLER, CENTRO_DIA_PRIVADO, CENTRO_DIA_CONCERTADO
+
+	private Boolean tallerpsico;
+
+	private Boolean transportservice;
+	private String transportservice_text;
+
+
+	private Boolean comedorservice;
+	private String comedorservice_text;
+
+
+
+	private Boolean ayudadomicilioservice;
+	private String ayudadomicilioservice_text;
+
+
+
+	private Boolean duchaservice;
+	private String ducha_text;
+
+
+
 
 
 	public String getIdRouteStopForDay(LocalDateTime thetime)
@@ -674,6 +705,104 @@ public class User
 
 	public void setIdcountry(Integer idcountry) {
 		this.idcountry = idcountry;
+	}
+
+
+	public String getRelativerelation() {
+		return relativerelation;
+	}
+
+	public void setRelativerelation(String relativerelation) {
+		this.relativerelation = relativerelation;
+	}
+
+	public LocalDate getBirthdate() {
+		return birthdate;
+	}
+
+	public void setBirthdate(LocalDate birthdate) {
+		this.birthdate = birthdate;
+	}
+
+
+	public String getServicetype() {
+		return servicetype;
+	}
+
+	public void setServicetype(String servicetype) {
+		this.servicetype = servicetype;
+	}
+
+	public Boolean getTallerpsico() {
+		return tallerpsico;
+	}
+
+	public void setTallerpsico(Boolean tallerpsico) {
+		this.tallerpsico = tallerpsico;
+	}
+
+	public Boolean getTransportservice() {
+		return transportservice;
+	}
+
+	public void setTransportservice(Boolean transportservice) {
+		this.transportservice = transportservice;
+	}
+
+	public String getTransportservice_text() {
+		return transportservice_text;
+	}
+
+	public void setTransportservice_text(String transportservice_text) {
+		this.transportservice_text = transportservice_text;
+	}
+
+	public Boolean getComedorservice() {
+		return comedorservice;
+	}
+
+	public void setComedorservice(Boolean comedorservice) {
+		this.comedorservice = comedorservice;
+	}
+
+	public String getComedorservice_text() {
+		return comedorservice_text;
+	}
+
+	public void setComedorservice_text(String comedorservice_text) {
+		this.comedorservice_text = comedorservice_text;
+	}
+
+	public Boolean getAyudadomicilioservice() {
+		return ayudadomicilioservice;
+	}
+
+	public void setAyudadomicilioservice(Boolean ayudadomicilioservice) {
+		this.ayudadomicilioservice = ayudadomicilioservice;
+	}
+
+	public String getAyudadomicilioservice_text() {
+		return ayudadomicilioservice_text;
+	}
+
+	public void setAyudadomicilioservice_text(String ayudadomicilioservice_text) {
+		this.ayudadomicilioservice_text = ayudadomicilioservice_text;
+	}
+
+	public Boolean getDuchaservice() {
+		return duchaservice;
+	}
+
+	public void setDuchaservice(Boolean duchaservice) {
+		this.duchaservice = duchaservice;
+	}
+
+	public String getDucha_text() {
+		return ducha_text;
+	}
+
+	public void setDucha_text(String ducha_text) {
+		this.ducha_text = ducha_text;
 	}
 
 	@Transient

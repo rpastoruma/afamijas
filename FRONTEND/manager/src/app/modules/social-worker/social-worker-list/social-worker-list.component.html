@@ -1,0 +1,896 @@
+<nb-card>
+    <nb-card-header>
+        <div class="row float-start" >
+            <h4>Documentos de Trabajador Social</h4>
+        </div>
+        
+    </nb-card-header>
+    <nb-card-body>
+
+
+        <input class="form-control" type="text" [(ngModel)]="name_surnames" name="name_surnames" placeholder="Nombre / apellidos" />
+
+        <br/>
+        <input class="form-control" type="text" [(ngModel)]="documentid" name="documentid"  placeholder="DNI / documento de identidad" />
+
+
+        <hr/>
+ 
+        <app-custom-table
+            [actions]="actions"
+            [keys]="['Nombre', 'DNI', 'Familiar/Cuidador principal', 'Tipo de servicio']"
+            [values]="patients"
+            [align]="['left', 'left', 'left', 'left']"
+            [filters]="[false, false, false, false]"
+            [sort]="[false, false, false, false]"
+            [widthToCollapse]="750"
+            [withPagination]="true"
+            [totalPages]="totalPages"
+            [page]="page"
+            [size]="size"
+            [loadingE]="loadingExcel"
+            [loading]="loadingPDF"
+            [hasExport]="true"
+            (actionSelected)="action($event)"
+            (changePage)="setPage($event)"
+            (filterEvent)="filter(0)"
+            [isProcessing]="isProcessing"
+            (exportData)="getExportData($event)"
+            [showSearchButton]="true"
+
+        >
+
+        </app-custom-table>
+    </nb-card-body>
+
+</nb-card>
+
+
+
+<ng-template #modalContent1 let-close="close">
+    <div class="modal-header"> 
+        <h6>Ficha social</h6>
+        <p>{{thePatient.documentid}} - {{thePatient.name}} {{thePatient.surname1}} {{thePatient.surname2}}</p>
+        <p>Nº expediente: {{thePatient.fs_num_expediente}}</p>
+        <nb-icon (click)="closeModal();close();" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+
+
+
+            <div id="step1">
+
+
+
+            
+            Servicios demandados en el centro:
+
+            
+            <div style="margin-top:10px">
+            <input type="checkbox" [(ngModel)]="thePatient.fs_talleres_estimulacion" [ngModelOptions]="{standalone: true}"/> - Talleres de psicoestimulación 
+            </div>
+
+            <div style="margin-top:10px">
+            <input type="checkbox" [(ngModel)]="thePatient.transportservice" [ngModelOptions]="{standalone: true}"/> - Servicio de transporte
+            </div>
+
+            <div style="margin-top:10px">
+            <input type="checkbox" [(ngModel)]="thePatient.fs_gradior_stimmulus" [ngModelOptions]="{standalone: true}"/> - Gradior /Stimmulus
+            </div>
+
+            <div style="margin-top:10px">
+            <input type="checkbox" [(ngModel)]="thePatient.fs_sad" [ngModelOptions]="{standalone: true}"/> - S.A.D.
+            </div>
+
+            <div style="margin-top:10px">
+            <input type="checkbox" [(ngModel)]="thePatient.fs_other" [ngModelOptions]="{standalone: true}"/> - Otros
+            <input *ngIf="thePatient.fs_other" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.fs_other_text" name="thePatient-fs_other_text" type="text" >
+            </div>
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+            
+        </div>
+        
+        
+        <div style="display: none;" id="step2">
+
+            El usuario/a:
+            
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.fs_comer_solo" [ngModelOptions]="{standalone: true}"/> - Puede comer solo 
+            </div>
+    
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.fs_lavarse_solo" [ngModelOptions]="{standalone: true}"/> - Puede lavarse solo 
+            </div>
+    
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.fs_salir_sin_perderse" [ngModelOptions]="{standalone: true}"/> - Puede salir sin perderse
+            </div>
+    
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.fs_reconocer_caras" [ngModelOptions]="{standalone: true}"/> - Puede reconocer caras
+            </div>
+    
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.fs_leer_y_escribir" [ngModelOptions]="{standalone: true}"/> - Puede escribir y leer
+            </div>
+
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.fs_conversar" [ngModelOptions]="{standalone: true}"/> - Puede conversar
+            </div>
+    
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.fs_reconocer_objetos_cotidianos" [ngModelOptions]="{standalone: true}"/> - Puede reconocer objetos cotidianos
+            </div>
+
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.fs_incontenencia_urinaria" [ngModelOptions]="{standalone: true}"/> - Tiene incontetinencia urinaria
+            </div>    
+    
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.fs_dificultad_orientarse" [ngModelOptions]="{standalone: true}"/> - Tiene dificultad para orientarse en espacio/tiempo 
+            </div>
+
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.fs_sufrir_alucinaciones" [ngModelOptions]="{standalone: true}"/> - Ha sufrido alucinaciones
+            </div>
+    
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.fs_fases_agitacion" [ngModelOptions]="{standalone: true}"/> - Ha pasado por fases de agitación y/o conducta violencia (Verbal o Física)
+            </div>
+    
+    
+            <div style="margin-top:10px">
+                Puede moviliziarse como: 
+                <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="thePatient.fs_movilizarse" name="thePatient-documenttype" [clearable]="false">
+                    <ng-option value="Autónomo">Autónomo</ng-option>
+                    <ng-option value="Supervisado">Supervisado</ng-option>
+                    <ng-option value="Dependiente">Dependiente</ng-option>
+                </ng-select>
+            </div>
+
+    
+    
+                <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                    <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step1');">
+                        &lt;&lt; ANTERIOR
+                    </button>
+                    &nbsp;&nbsp;
+                    <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
+                        SIGUIENTE &gt;&gt;
+                    </button>
+                </div>
+
+        </div>
+
+
+        
+        
+        <div style="display: none;" id="step3">
+
+            Datos médicos importantes:
+            
+           <div style="margin-top:10px">
+                <textarea class="form-control" [(ngModel)]="thePatient.fs_datos_medicos" >
+                </textarea>
+           </div>
+
+           <div style="margin-top:10px">
+             Valoración sobre trámites sociales:
+           </div>
+
+           
+    
+           <div style="margin-top:10px">
+            <input type="checkbox" [(ngModel)]="thePatient.fs_grado_minusvalia" [ngModelOptions]="{standalone: true}"/> - Grado minusvalía
+            <input *ngIf="thePatient.fs_grado_minusvalia" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.fs_grado_minusvalia_text" name="thePatient-fs_grado_minusvalia_text" type="text" >
+            </div>
+           
+                          
+    
+           <div style="margin-top:10px">
+            <input type="checkbox" [(ngModel)]="thePatient.fs_grado_dependencia" [ngModelOptions]="{standalone: true}"/> - Reconocimiento Grado de Dependencia
+            <input *ngIf="thePatient.fs_grado_dependencia" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.fs_grado_dependencia_text" name="thePatient-fs_grado_dependencia_text" type="text" >
+            </div>
+           
+    
+           <div style="margin-top:10px">
+            <input type="checkbox" [(ngModel)]="thePatient.fs_incapacitacion_judicial" [ngModelOptions]="{standalone: true}"/> - Incapacitación Judicial
+            </div>
+           
+    
+           <div style="margin-top:10px">
+            <input type="checkbox" [(ngModel)]="thePatient.fs_ayudas_externas" [ngModelOptions]="{standalone: true}"/> - Recibe alguna ayuda externa
+            <input *ngIf="thePatient.fs_ayudas_externas" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.fs_ayudas_externas_text" name="thePatient-fs_ayudas_externas_text" type="text" >
+            </div>
+               
+    
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+                    &lt;&lt; ANTERIOR
+                </button>
+            </div>
+
+        </div>
+
+
+
+        </div>
+
+        
+
+    </div>
+
+
+
+    <div class="modal-footer">
+        <button [disabled]="isProcessing" 
+        nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="savePatientFichaSocial();">
+            GUARDAR Y GENERAR FICHA SOCIAL
+        </button>
+    </div>
+
+
+</ng-template>
+  
+
+
+<ng-template #modalContent2 let-close="close">
+    <div class="modal-header"> 
+        <h6>Historia social</h6>
+        <p>{{thePatient.documentid}} - {{thePatient.name}} {{thePatient.surname1}} {{thePatient.surname2}}</p>
+        <p>Nº expediente: {{thePatient.fs_num_expediente}}</p>
+        <nb-icon (click)="closeModal();close();" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+
+            <div id="hs_step1">
+
+                <div style="margin-top:10px">
+                    <input type="checkbox" [(ngModel)]="thePatient.hs_beca" [ngModelOptions]="{standalone: true}"/> - Recibe beca del ayuntamiento 
+                </div>
+                                                
+                <div style="margin-top:10px">
+                    Diagnóstico: 
+                    <input class="form-control" [(ngModel)]="thePatient.hs_diagnostico" name="thePatient-hs_diagnostico" type="text" >
+                </div>
+
+                <div style="margin-top:10px">
+                    <input type="checkbox" [(ngModel)]="thePatient.hs_autonomia" [ngModelOptions]="{standalone: true}"/> - Autonomía para ABVD
+                </div>
+
+                <div style="margin-top:10px">
+                    <input type="checkbox" [(ngModel)]="thePatient.hs_ayuda_abd" [ngModelOptions]="{standalone: true}"/> - Ayuda para algunas ABD ¿Necesita de terceros?
+                </div>
+
+                <div style="margin-top:10px">
+                    <b>Unidad de convivencia:</b>
+                </div>
+                <div style="margin-top:10px">
+                    <input type="checkbox" [(ngModel)]="thePatient.hs_uc_solo" [ngModelOptions]="{standalone: true}"/> - Solo/a
+                </div>
+                <div style="margin-top:10px">
+                    <input [disabled]="thePatient.hs_uc_solo" type="checkbox" [(ngModel)]="thePatient.hs_uc_conyuge" [ngModelOptions]="{standalone: true}"/> - Cónyuge
+                </div>
+                <div style="margin-top:10px">
+                    <input [disabled]="thePatient.hs_uc_solo" type="checkbox" [(ngModel)]="thePatient.hs_uc_hijos" [ngModelOptions]="{standalone: true}"/> - Hijos u otros parientes
+                </div>
+                <div style="margin-top:10px">
+                    <input type="checkbox" [(ngModel)]="thePatient.hs_uc_other" [ngModelOptions]="{standalone: true}"/> - Otros:
+                </div>
+                <div style="margin-top:10px">
+                    <input *ngIf="thePatient.hs_uc_other" class="form-control" [(ngModel)]="thePatient.hs_uc_other_text" name="thePatient-hs_uc_other_text" type="text" >
+                </div>
+
+                <div style="margin-top:10px">
+                    Nivel formativo/de cultura del usuario/a: 
+                    <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="thePatient.hs_nivel_formativo" name="thePatient-hs_nivel_formativo" [clearable]="false">
+                        <ng-option value="No sabe ni leer ni escribir">No sabe ni leer ni escribir</ng-option>
+                        <ng-option value="Sabe leer y escribir">Sabe leer y escribir</ng-option>
+                        <ng-option value="Sin estudios">Sin estudios</ng-option>
+                        <ng-option value="Estudios primarios">Estudios primarios</ng-option>
+                        <ng-option value="Estudios secundarios">Estudios secundarios</ng-option>
+                        <ng-option value="Estudios grado medio">Estudios grado medio</ng-option>
+                    </ng-select>
+                </div>
+
+
+ 
+
+
+            <div style="margin-top:10px;width: 100%; text-align: right;">
+            <button nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goHS_Step('hs_step2');">
+                SIGUIENTE &gt;&gt;
+            </button>
+            </div>
+
+
+            </div>
+            
+            
+            <div style="display: none;" id="hs_step2">
+
+                <div style="margin-top:10px">
+                    <b>ADAPTACIÓN AL CENTRO</b>
+                </div>
+
+                <div style="margin-top:10px">
+                    Interacción con los demás usuarios/as: 
+                    <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="thePatient.hs_interaccion_demas" name="thePatient-hs_interaccion_demas" [clearable]="false">
+                        <ng-option value="Frecuente (adecuada)">Frecuente (adecuada)</ng-option>
+                        <ng-option value="Frecuente (inadecuada)">Frecuente (inadecuada)</ng-option>
+                        <ng-option value="Esporádica">Esporádica</ng-option>
+                        <ng-option value="Solo con determinados usuarios/as">Solo con determinados usuarios/as</ng-option>
+                    </ng-select>
+                </div>
+
+                <div style="margin-top:10px">
+                    Interacción con los profesionales: 
+                    <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="thePatient.hs_interaccion_profesioneales" name="thePatient-hs_interaccion_profesioneales" [clearable]="false">
+                        <ng-option value="Frecuente (adecuada)">Frecuente (adecuada)</ng-option>
+                        <ng-option value="Frecuente (inadecuada)">Frecuente (inadecuada)</ng-option>
+                        <ng-option value="Esporádica">Esporádica</ng-option>
+                        <ng-option value="Solo por iniciativa del personal">Solo por iniciativa del personal</ng-option>
+                    </ng-select>
+                </div>
+
+                <div style="margin-top:10px">
+                    Participación en las actividades: 
+                    <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="thePatient.hs_participacion_actividades" name="thePatient-hs_participacion_actividades" [clearable]="false">
+                        <ng-option value="Esporádica">Esporádica</ng-option>
+                        <ng-option value="A petición del personal">A petición del personal</ng-option>
+                        <ng-option value="No participa o lo hace tras mucho insistir">No participa o lo hace tras mucho insistir</ng-option>
+                    </ng-select>
+                </div>
+
+                <div style="margin-top:10px">
+                    Nivel de integración en la dinámica del centro: 
+                    <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="thePatient.hs_integracion_dinamica" name="thePatient-hs_integracion_dinamica" [clearable]="false">
+                        <ng-option value="Alto">Alto</ng-option>
+                        <ng-option value="Medio">Medio</ng-option>
+                        <ng-option value="Bajo">Bajo</ng-option>
+                    </ng-select>
+                </div>
+
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;">
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goHS_Step('hs_step1');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goHS_Step('hs_step3');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+
+        </div>
+        
+        
+        
+        <div style="display: none;" id="hs_step3">
+
+            
+            <div style="margin-top:10px">
+                <b>SITUACIÓN SOCIOSANITARIA</b>
+            </div>
+    
+
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.fs_grado_minusvalia" [ngModelOptions]="{standalone: true}"/> - Tiene reconocido el grado de minusvalía
+                <div *ngIf="thePatient.fs_grado_minusvalia">Grado: <input  style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.fs_grado_minusvalia_text" name="thePatient-fs_grado_minusvalia_text" type="text" ></div>
+                <div *ngIf="thePatient.fs_grado_minusvalia">Tipo: <input class="form-control" [(ngModel)]="thePatient.hs_grado_minusvalia_tipo" name="thePatient-hs_grado_minusvalia_tipo" type="text" ></div>
+                <div *ngIf="thePatient.fs_grado_minusvalia">Desde cuándo: <input class="form-control" [(ngModel)]="thePatient.hs_grado_minusvalia_cuando" name="thePatient-hs_grado_minusvalia_cuando" type="text" ></div>
+            </div>
+
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.hs_ley_dependencia_solicitada" [ngModelOptions]="{standalone: true}"/> - Tiene solicitada la ley de dependencia
+                <div *ngIf="thePatient.hs_ley_dependencia_solicitada" >Grado <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.hs_ley_dependencia_grado" name="thePatient-hs_ley_dependencia_grado" type="text" ></div>
+            </div>
+
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.hs_recibe_servicio_administracion" [ngModelOptions]="{standalone: true}"/> - Recibe algún servicio a través de alguna administración
+            </div>
+
+            
+           <div style="margin-top:10px">
+                Patologías importantes y tratamientos a seguir:
+                <textarea class="form-control" [(ngModel)]="thePatient.hs_patologias" >
+                </textarea>
+                <input type="checkbox" [(ngModel)]="thePatient.hs_diabetico" [ngModelOptions]="{standalone: true}"/> - Diabético
+                <input type="checkbox" [(ngModel)]="thePatient.hs_hipertenso" [ngModelOptions]="{standalone: true}"/> - Hipertenso
+           </div>
+
+
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.hs_alimenta_bien" [ngModelOptions]="{standalone: true}"/> - Se alimenta de forma adecuada
+                <input type="checkbox" [(ngModel)]="thePatient.hs_duerme_bien" [ngModelOptions]="{standalone: true}"/> - Duerme bien
+                <input type="checkbox" [(ngModel)]="thePatient.hs_fuma_bebe" [ngModelOptions]="{standalone: true}"/> - Ha fumado/bebido
+                <input type="checkbox" [(ngModel)]="thePatient.hs_drogas" [ngModelOptions]="{standalone: true}"/> - Ha consumido otras drogas:
+                <input *ngIf="thePatient.hs_drogas" placeholder="Especificar qué otras drogas" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.hs_drogas_text" name="thePatient-hs_drogas_text" type="text" >
+            </div>
+
+            
+            <div style="margin-top:10px">
+                Valoración general del estado de salud:
+                <textarea class="form-control" [(ngModel)]="thePatient.hs_valoracion_salud" >
+                </textarea>
+           </div>
+
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goHS_Step('hs_step2');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goHS_Step('hs_step4');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+            
+        </div>
+        
+
+
+        
+        <div style="display: none;" id="hs_step4">
+
+                 
+            <div style="margin-top:10px">
+                <b>SITUACIÓN FAMILIAR</b>
+            </div>
+    
+
+            <div style="margin-top:10px">
+                <div>FAMILIA:</div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_fam_dificultades_convivencia" [ngModelOptions]="{standalone: true}"/> - Dificultades para la convivencia </div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_fam_dificultades_economicas" [ngModelOptions]="{standalone: true}"/> - Dificultades económicas </div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_fam_dificultad_cuidados" [ngModelOptions]="{standalone: true}"/> - Dificultades de cuidados por problemas de salud del cuidador/a </div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_fam_sin_apoyo" [ngModelOptions]="{standalone: true}"/> - Sin apoyo de otros familiares u otro apoyo social</div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_fam_agotamiento_cuidador" [ngModelOptions]="{standalone: true}"/> - Agotamiento del cuidador </div>
+            </div>
+
+            <div style="margin-top:10px">
+                <div>VIVIENDA:</div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_viv_sin_domicilio" [ngModelOptions]="{standalone: true}"/> - Sin domicilio </div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_viv_ruinas" [ngModelOptions]="{standalone: true}"/> - En ruinas o desahucio </div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_viv_barreras" [ngModelOptions]="{standalone: true}"/> - Barreras arquitectónicas </div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_viv_inhabitabilidad" [ngModelOptions]="{standalone: true}"/> - Inhabitabilidad</div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_alquiler_elevado" [ngModelOptions]="{standalone: true}"/> - Alquiler elevado </div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_escaleras_exteriores" [ngModelOptions]="{standalone: true}"/> - Escaleras exteriores </div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_escaleras_interiores" [ngModelOptions]="{standalone: true}"/> - Escaleras interiores para acceso a patio </div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_banera" [ngModelOptions]="{standalone: true}"/> - Bañera </div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_alfombras" [ngModelOptions]="{standalone: true}"/> - Alfombras </div>
+                <div><input type="checkbox" [(ngModel)]="thePatient.hs_otros" [ngModelOptions]="{standalone: true}"/> - Otros: </div>
+                <div><input *ngIf="thePatient.hs_otros" placeholder="Especificar otros..." style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.hs_otros_text" name="thePatient-hs_otros_text" type="text" >
+                </div>
+            </div>
+
+
+            <div style="margin-top:10px">
+                <div>Composición familiar:</div>
+                <div style="display:flex">
+                    <input placeholder="Nombre y apellidos" style="margin-bottom: 15px;width:40%" class="form-control" [(ngModel)]="thePatient.hs_nombre1" name="thePatient-hs_nombre1" type="text" >
+                    <input placeholder="Parentesco" style="margin-bottom: 15px;width:20%" class="form-control" [(ngModel)]="thePatient.hs_parentesco1" name="thePatient-hs_parentesco1" type="text" >
+                    <input placeholder="Edad" style="margin-bottom: 15px;width:15%" class="form-control" [(ngModel)]="thePatient.hs_edad1" name="thePatient-hs_edad1" type="number" >
+                    <input placeholder="Profesión" style="margin-bottom: 15px;width:25%" class="form-control" [(ngModel)]="thePatient.hs_profesion1" name="thePatient-hs_profesion1" type="text" >
+                </div>
+                <div style="display:flex">
+                    <input placeholder="Nombre y apellidos" style="margin-bottom: 15px;width:40%" class="form-control" [(ngModel)]="thePatient.hs_nombre2" name="thePatient-hs_nombre2" type="text" >
+                    <input placeholder="Parentesco" style="margin-bottom: 15px;width:20%" class="form-control" [(ngModel)]="thePatient.hs_parentesco2" name="thePatient-hs_parentesco2" type="text" >
+                    <input placeholder="Edad" style="margin-bottom: 15px;width:15%" class="form-control" [(ngModel)]="thePatient.hs_edad2" name="thePatient-hs_edad2" type="number" >
+                    <input placeholder="Profesión" style="margin-bottom: 15px;width:25%" class="form-control" [(ngModel)]="thePatient.hs_profesion2" name="thePatient-hs_profesion2" type="text" >
+                </div>
+                <div style="display:flex">
+                    <input placeholder="Nombre y apellidos" style="margin-bottom: 15px;width:40%" class="form-control" [(ngModel)]="thePatient.hs_nombre3" name="thePatient-hs_nombre3" type="text" >
+                    <input placeholder="Parentesco" style="margin-bottom: 15px;width:20%" class="form-control" [(ngModel)]="thePatient.hs_parentesco3" name="thePatient-hs_parentesco3" type="text" >
+                    <input placeholder="Edad" style="margin-bottom: 15px;width:15%" class="form-control" [(ngModel)]="thePatient.hs_edad3" name="thePatient-hs_edad3" type="number" >
+                    <input placeholder="Profesión" style="margin-bottom: 15px;width:25%" class="form-control" [(ngModel)]="thePatient.hs_profesion3" name="thePatient-hs_profesion3" type="text" >
+                </div>
+                <div style="display:flex">
+                    <input placeholder="Nombre y apellidos" style="margin-bottom: 15px;width:40%" class="form-control" [(ngModel)]="thePatient.hs_nombre4" name="thePatient-hs_nombre4" type="text" >
+                    <input placeholder="Parentesco" style="margin-bottom: 15px;width:20%" class="form-control" [(ngModel)]="thePatient.hs_parentesco4" name="thePatient-hs_parentesco4" type="text" >
+                    <input placeholder="Edad" style="margin-bottom: 15px;width:15%" class="form-control" [(ngModel)]="thePatient.hs_edad4" name="thePatient-hs_edad4" type="number" >
+                    <input placeholder="Profesión" style="margin-bottom: 15px;width:25%" class="form-control" [(ngModel)]="thePatient.hs_profesion4" name="thePatient-hs_profesion4" type="text" >
+                </div>
+            </div>
+
+            
+    
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.hs_tiene_pareja" [ngModelOptions]="{standalone: true}"/> - Tiene pareja
+                <div><input *ngIf="thePatient.hs_tiene_pareja" placeholder="¿Qué relación tiene con la pareja?" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.hs_relacion_pareja" name="thePatient-hs_relacion_pareja" type="text" ></div>
+            </div>
+    
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.hs_tiene_hijos" [ngModelOptions]="{standalone: true}"/> - Tiene hijos
+                <div><input *ngIf="thePatient.hs_tiene_hijos" placeholder="¿Qué relación tiene con los hijos?" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.hs_relacion_hijos" name="thePatient-hs_relacion_hijos" type="text" ></div>
+            </div>
+    
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.hs_tiene_hermanos" [ngModelOptions]="{standalone: true}"/> - Tiene hermanos
+                <div><input *ngIf="thePatient.hs_tiene_hermanos" placeholder="¿Qué relación tiene con los hermanos?" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.hs_relacion_hermanos" name="thePatient-hs_relacion_hermanos" type="text" ></div>
+            </div>
+
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.hs_visitas_familiares" [ngModelOptions]="{standalone: true}"/> - Recibe visitas de familiares
+                <div><input *ngIf="thePatient.hs_visitas_familiares" placeholder="¿Cada cuánto?" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.hs_visitas_cuanto" name="thePatient-hs_visitas_cuanto" type="text" ></div>
+            </div>
+
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.hs_apoyo_amigos" [ngModelOptions]="{standalone: true}"/> - Tiene apoyo de amigos o vecinos
+            </div>
+
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.hs_relacion_familia" [ngModelOptions]="{standalone: true}"/> - Tiene relación con familia extensa: primos, sobrinos...
+            </div>
+
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.hs_acude_otras" [ngModelOptions]="{standalone: true}"/> - Acude a otras asociaciones culturales o sociales
+            </div>
+
+            
+
+    
+    
+                <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                    <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goHS_Step('hs_step3');">
+                        &lt;&lt; ANTERIOR
+                    </button>
+                    &nbsp;&nbsp;
+                    <button  [disabled]="!validService(thePatient)" nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goHS_Step('hs_step5');">
+                        SIGUIENTE &gt;&gt;
+                    </button>
+                </div>
+
+        </div>
+
+
+        
+        
+        <div style="display: none;" id="hs_step5">
+
+                        
+           <div style="margin-top:10px">
+             <b>SITUACIÓN SOCIO-ECONÓMICA</b> 
+           </div>
+
+        
+           <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.hs_recibe_pension" [ngModelOptions]="{standalone: true}"/> - Percibe alguna pesión
+                <div><input *ngIf="thePatient.hs_recibe_pension" placeholder="¿Qué cuantía?" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.hs_cuantia_pension" name="thePatient-hs_cuantia_pension" type="number" ></div>
+           </div>
+
+           <div style="margin-top:10px">
+            <div>¿Cobra alguna otra prestación? (Dependencia...)</div>
+            <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.hs_otra_prestacion" name="thePatient-hs_otra_prestacion" type="text" >
+           </div>
+
+
+           <div style="margin-top:10px">
+            <div>Otros ingresos (alquileres, pensión cónyuge...)</div>
+            <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.hs_otros_ingresos" name="thePatient-hs_otros_ingresos" type="text" >
+           </div>
+
+
+           <div style="margin-top:10px">
+            <div>¿Es beneficiaria de otros recursos? (Teleasistencia, ayuda a domicilio...)</div>
+            <input  style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.hs_otros_recursos" name="thePatient-hs_otros_recursos" type="text" >
+           </div>
+
+
+    
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goHS_Step('hs_step4');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  [disabled]="!validService(thePatient)" nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goHS_Step('hs_step6');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+        </div>
+
+
+
+        
+        
+        <div style="display: none;" id="hs_step6">
+
+                        
+            <div style="margin-top:10px">
+                <b>INTERPRETACIÓN Y VALORACIÓN PROFESIONAL</b> 
+              </div>
+  
+              <div style="margin-top:10px">
+                  <textarea rows="10" class="form-control" [(ngModel)]="thePatient.hs_valoracion_profesional" >
+                  </textarea>
+             </div>
+  
+  
+             
+             <div style="margin-top:10px">
+                <b>OBSERVACIONES</b> 
+              </div>
+  
+              <div style="margin-top:10px">
+                  <textarea rows="10" class="form-control" [(ngModel)]="thePatient.hs_observaciones" >
+                  </textarea>
+             </div>
+  
+  
+             
+     
+             <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                 <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goHS_Step('hs_step5');">
+                     &lt;&lt; ANTERIOR
+                 </button>
+             </div>
+ 
+         </div>
+ 
+
+
+
+        </div>
+
+        
+
+    </div>
+
+
+
+    <div class="modal-footer">
+        <button [disabled]="isProcessing" nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="savePatientHistoriaSocial();">
+            GUARDAR Y GENERAR HISTORIA SOCIAL
+        </button>
+    </div>
+
+
+</ng-template>
+  
+
+
+<ng-template #modalContent3 let-close="close">
+    <div class="modal-header"> 
+        <h6>Informe social</h6>
+        <p>{{thePatient.documentid}} - {{thePatient.name}} {{thePatient.surname1}} {{thePatient.surname2}}</p>
+        <p>Nº expediente: {{thePatient.fs_num_expediente}}</p>
+        <nb-icon (click)="closeModal();close();" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+
+            <div id="is_step1">
+
+                <div style="margin-top:10px">
+                    <b>INTRODUCCIÓN</b>
+                </div>
+
+                <div style="margin-top:10px">
+                    Tiempo que se conece al usuario/a en el centro: 
+                    <input class="form-control" [(ngModel)]="thePatient.is_tiempo_conoce_usuario" name="thePatient-is_tiempo_conoce_usuario" type="text" >
+                </div>
+
+                <div style="margin-top:10px">
+                    Servicios que le presta el centro: 
+                    <input class="form-control" [(ngModel)]="thePatient.is_servicios_prestados" name="thePatient-is_servicios_prestados" type="text" >
+                </div>
+
+                <div style="margin-top:10px">
+                    Cómo se ha adaptado al centro (si está residiendo...): 
+                    <input class="form-control" [(ngModel)]="thePatient.is_como_adaptado" name="thePatient-is_como_adaptado" type="text" >
+                </div>
+
+                <div style="margin-top:10px">
+                    <input type="checkbox" [(ngModel)]="thePatient.is_acudio_voluntad_propia" [ngModelOptions]="{standalone: true}"/> - Vino por voluntad propia
+                </div>
+
+                <div style="margin-top:10px">
+                    Quién influyó en la decisión: 
+                    <input class="form-control" [(ngModel)]="thePatient.is_quien_influyo_decision" name="thePatient-is_quien_influyo_decision" type="text" >
+                </div>
+
+                <div style="margin-top:10px">
+                    Qué actividades/tareas realiza en el centro: 
+                    <input class="form-control" [(ngModel)]="thePatient.is_que_actividades" name="thePatient-is_que_actividades" type="text" >
+                </div>
+
+                <div style="margin-top:10px">
+                    Cómo se relaciona con los compañeros/as: 
+                    <input class="form-control" [(ngModel)]="thePatient.is_como_relaciona" name="thePatient-is_como_relaciona" type="text" >
+                </div>
+
+                <div style="margin-top:10px">
+                    Cómo pasa un día normal: 
+                    <input class="form-control" [(ngModel)]="thePatient.is_como_pasa_dia" name="thePatient-is_como_pasa_dia" type="text" >
+                </div>
+ 
+
+
+            <div style="margin-top:10px;width: 100%; text-align: right;">
+            <button nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goIS_Step('is_step2');">
+                SIGUIENTE &gt;&gt;
+            </button>
+            </div>
+
+            </div>
+
+
+            
+            <div style="display: none;" id="is_step2">
+
+                <div style="margin-top:10px">
+                    <b>SITUACIÓN SANITARIA</b>
+                </div>
+
+                <div style="margin-top:10px">
+                    <input type="checkbox" [(ngModel)]="thePatient.is_problemas_psico" [ngModelOptions]="{standalone: true}"/> - Tiene problemas psicológicos o psiquiátricos
+                    <div *ngIf="thePatient.is_problemas_psico" ><input placeholder="Especificar..."  style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.is_problemas_psico_text" name="thePatient-is_problemas_psico_text" type="text" ></div>
+                </div>
+    
+                <div style="margin-top:10px">
+                    <input type="checkbox" [(ngModel)]="thePatient.is_recibe_tratamiento" [ngModelOptions]="{standalone: true}"/> - Recibe tratamiento
+                    <div *ngIf="thePatient.is_recibe_tratamiento" ><input placeholder="Especificar..."  style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.is_recibe_tratamiento_text" name="thePatient-is_problemas_psico_text" type="text" ></div>
+                </div>
+    
+
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;">
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goIS_Step('is_step1');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goIS_Step('is_step3');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+        </div>
+        
+        
+        
+        <div style="display: none;" id="is_step3">
+
+            
+            <div style="margin-top:10px">
+                <b>SITUACIÓN FAMILIAR</b>
+            </div>
+    
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.is_familia_estru" [ngModelOptions]="{standalone: true}"/> - ¿Familia desestructurada o estructurada?
+                <div *ngIf="thePatient.is_familia_estru" ><input placeholder="Especificar..."  style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.is_familia_estru_text" name="thePatient-is_problemas_psico_text" type="text" ></div>
+            </div>
+
+
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goIS_Step('is_step2');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goIS_Step('is_step4');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+            
+        </div>
+        
+
+
+        
+        <div style="display: none;" id="is_step4">
+
+                 
+            <div style="margin-top:10px">
+                <b>SITUACIÓN ECONÓMICA</b>
+            </div>
+    
+
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.is_recibe_ingresos_actividad_laboral" [ngModelOptions]="{standalone: true}"/> - Recibe ingresos por actividad laboral
+            </div>
+
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.is_esta_buscando_empleo" [ngModelOptions]="{standalone: true}"/> - Está en búsqueda de empleo
+            </div>
+
+
+            <div style="margin-top:10px">
+                Vive en (piso, casa tutelada, residencia...): 
+                <input class="form-control" [(ngModel)]="thePatient.is_vive_en" name="thePatient-is_vive_en" type="text" >
+            </div>
+
+            <div style="margin-top:10px">
+                <input type="checkbox" [(ngModel)]="thePatient.is_cubiertas_necesidades_diarias" [ngModelOptions]="{standalone: true}"/> - Tiene cubiertas sus necesidades diarias
+            </div>
+
+
+    
+    
+                <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                    <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goIS_Step('is_step3');">
+                        &lt;&lt; ANTERIOR
+                    </button>
+                    &nbsp;&nbsp;
+                    <button  [disabled]="!validService(thePatient)" nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goIS_Step('is_step5');">
+                        SIGUIENTE &gt;&gt;
+                    </button>
+                </div>
+
+        </div>
+
+
+        
+        
+        
+        <div style="display: none;" id="is_step5">
+
+                        
+            <div style="margin-top:10px">
+                <b>INTERPRETACIÓN Y VALORACIÓN PROFESIONAL</b> 
+              </div>
+  
+              <div style="margin-top:10px">
+                  <textarea rows="10" class="form-control" [(ngModel)]="thePatient.is_valoracion_profesional" >
+                  </textarea>
+             </div>
+  
+  
+             
+             <div style="margin-top:10px">
+                <b>PROPUESTA</b> 
+              </div>
+  
+              <div style="margin-top:10px">
+                  <textarea rows="10" class="form-control" [(ngModel)]="thePatient.is_propuesta" >
+                  </textarea>
+             </div>
+  
+  
+             
+     
+             <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                 <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goIS_Step('hs_step4');">
+                     &lt;&lt; ANTERIOR
+                 </button>
+             </div>
+ 
+         </div>
+ 
+
+
+
+        </div>
+
+        
+
+    </div>
+
+
+
+    <div class="modal-footer">
+        <button [disabled]="isProcessing" nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="savePatientInformeSocial();">
+            GUARDAR Y GENERAR HISTORIA SOCIAL
+        </button>
+    </div>
+
+
+</ng-template>
+  

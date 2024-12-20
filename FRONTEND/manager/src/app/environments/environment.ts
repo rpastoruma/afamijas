@@ -18,6 +18,7 @@ export const environment = {
       relatives : ADMIN_URL + 'relatives',
       workers : ADMIN_URL + 'workers',
       members : ADMIN_URL + 'members',
+      patients : ADMIN_URL + 'patients',
       invoices : ADMIN_URL + 'invoices',
       media : ADMIN_URL + 'media'
     }

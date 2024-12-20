@@ -1,0 +1,30 @@
+<nb-card  >
+
+    <nb-card-header>
+        <div class="modal-header float-end">
+            <!--nb-icon (click)="openHTMLExternal()" class="sidebar-toggle" icon="external-link-outline" title="Tamaño máximo en otra pestaña"></nb-icon>
+            &nbsp;-->
+            <nb-icon (click)="goBack()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+        </div>
+        <ngx-editor-menu [toolbar]="toolbar" [editor]="editor"> </ngx-editor-menu>
+    </nb-card-header>
+
+    <nb-card-body>
+        <div class="NgxEditor__Wrapper">
+            <table #idhtml>
+            <ngx-editor  [editor]="editor" [ngModel]="html" [disabled]="false" [placeholder]=""></ngx-editor>
+            </table>
+        </div>
+    </nb-card-body>
+
+    <nb-card-footer>
+        <button nbButton status="primary" type="button" class="btn btn-outline-secondary float-end" (click)="saveAsPDF(thefilename); ">
+            GUARDAR Y FIRMAR
+        </button>
+    </nb-card-footer>
+
+</nb-card>
+
+
+
+

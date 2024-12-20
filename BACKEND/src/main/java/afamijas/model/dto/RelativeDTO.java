@@ -3,6 +3,7 @@ package afamijas.model.dto;
 
 import afamijas.model.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 
 import java.time.LocalDateTime;
 
@@ -109,7 +110,7 @@ public class PatientDTO
         if(relative!=null)
         {
             this.relativefullname = relative.getFullname();
-            if(!relative.getIs_principal_keeper())
+            if(relative.getIs_principal_keeper()== null || !relative.getIs_principal_keeper())
             {
                 this.principal_keeper_fullname = relative.getPrincipal_keeper_fullname();
                 this.principal_keeper_phone = relative.getPrincipal_keeper_phone();
@@ -125,6 +126,16 @@ public class PatientDTO
         this.groupcode = user.getGroupcode();
     }
 
+
+    @Transient
+    public String getFullname()
+    {
+        String n = this.name == null?"": this.name;
+        String s1 = this.surname1 == null?"": this.surname1;
+        String s2 = this.surname2 == null?"": this.surname2;
+        String fullname = ((n + " " + s1).trim() + " " + s2).trim();
+        return fullname.equals("")?this.username:fullname;
+    }
 
     public String getId() {
         return id;
