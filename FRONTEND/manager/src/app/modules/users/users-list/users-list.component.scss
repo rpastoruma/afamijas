@@ -9,3 +9,9 @@
     margin-top: 10px;
     margin-bottom: 15px;
   }
+
+  .form-control { margin-bottom: 0 !important; }
+
+  ::ng-deep   .form-control { margin-bottom: 0 !important; }
+
+

@@ -213,7 +213,7 @@ export class SigningPadComponent implements OnInit{
   
   getFullname() {
     const data: LoginResponse = this.localStorageService.getObject('logged');
-    return data.fullname + (data.dni?', con DNI/NIE: ' + data.dni:'');
+    return data.fullname + (data.documentid?', con DNI/NIE: ' + data.documentid:'');
   }
 
 }

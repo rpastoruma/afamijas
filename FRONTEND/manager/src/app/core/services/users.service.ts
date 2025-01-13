@@ -35,6 +35,12 @@ export class UsersService {
     return this.http.get<any>(url, {});
   }
 
+  getPatientById(id : string) {
+    let url = ENV.url.workers + `/getPatientById?id=` +  id;
+    return this.http.get<any>(url, {});
+ }
+  
+
   getAllMembers() {
     let url = ENV.url.workers + `/getAllMembers`;
     return this.http.get<any>(url, {});

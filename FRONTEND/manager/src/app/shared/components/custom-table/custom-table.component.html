@@ -81,9 +81,18 @@
                                     <nb-icon icon="eye-outline" (click)="actionEvent('show', value.id, value)"></nb-icon>
                                 </a>
                                 
+                                <a class="buttonAlert" *ngIf="alertAction" nbTooltip="{{alertAction.text}}">
+                                    <nb-icon icon="alert-circle-outline" (click)="actionEvent('alert', value.id, value)"></nb-icon>
+                                </a>
+                                
+                                <a class="buttonBook" *ngIf="bookAction" nbTooltip="{{bookAction.text}}">
+                                    <nb-icon icon="book-open-outline" (click)="actionEvent('book', value.id, value)"></nb-icon>
+                                </a>
+
                                 <a class="buttonEdit" *ngIf="editAction && !value.noedit" nbTooltip="{{editAction.text}}">
                                     <nb-icon icon="edit-2-outline" id="edit" (click)="actionEvent('edit', value.id)"></nb-icon>
                                 </a>
+
                                 <a class="buttonEdit" *ngIf="editAction && value.noedit" nbTooltip="{{editAction.textNoedit}}">
                                     <nb-icon icon="edit-2-outline" id="edit" style="color: lightgray;"></nb-icon>
                                 </a>
@@ -189,6 +198,17 @@
                                 <a class="buttonShow" *ngIf="showAction" >
                                     <nb-icon style="font-size:28px !important" icon="eye-outline" (click)="actionEvent('show', valueRow.id, valueRow)"></nb-icon>
                                 </a>
+
+                                <a class="buttonAlert" *ngIf="alertAction" >
+                                    <nb-icon style="font-size:28px !important" icon="alert-circle-outline" (click)="actionEvent('alert', valueRow.id, valueRow)"></nb-icon>
+                                </a>
+
+                                <a class="buttonBook" *ngIf="bookAction" >
+                                    <nb-icon style="font-size:28px !important" icon="book-open-outline" (click)="actionEvent('book', valueRow.id, valueRow)"></nb-icon>
+                                </a>
+
+
+                                
 
                                 <a class="buttonEdit" *ngIf="editAction && !valueRow.noedit" >
                                     <nb-icon style="font-size:28px !important" icon="edit-2-outline" id="edit" (click)="actionEvent('edit', valueRow.id)"></nb-icon>

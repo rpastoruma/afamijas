@@ -689,6 +689,7 @@ cancelUpload() {
 
   validFee(theMember : MemberDTO)
   {
+    /*TODO: REHACER PQ DABA ERROR EN CONSOLA
     if(theMember.fee_payment == 'SEDE')
     {
       return theMember.fee_euros > 0 && theMember.fee_period.length > 0;
@@ -696,7 +697,7 @@ cancelUpload() {
     else if(theMember.fee_payment == 'DOMICILIACIÓN')
     {
       return theMember.fee_euros > 0 && theMember.fee_period.length > 0 && theMember.bank_account_holder_dni.length > 0 && theMember.bank_account_holder_fullname.length > 0 && theMember.bank_account_iban.length > 0 && theMember.bank_name.length > 0;
-    }
+    }*/ return true;
   }
 
   validDoc(theMember : MemberDTO)

@@ -27,8 +27,8 @@ import { CustomTableComponent } from './components/custom-table/custom-table.com
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { MyPdfViewerComponent } from './components/my-pdf-viewer/my-pdf-viewer.component';
-
-
+import { MyHtmlViewerComponent } from './components/my-html-viewer/my-html-viewer.component';
+import { NgxEditorModule } from 'ngx-editor';
 
 @NgModule({
     declarations: [
@@ -44,6 +44,7 @@ import { MyPdfViewerComponent } from './components/my-pdf-viewer/my-pdf-viewer.c
       CustomTableComponent,
       PaginationComponent,
       MyPdfViewerComponent,
+      MyHtmlViewerComponent,
   ],
     imports: [
       CommonModule,
@@ -68,7 +69,8 @@ import { MyPdfViewerComponent } from './components/my-pdf-viewer/my-pdf-viewer.c
       NbPopoverModule,
       DragDropModule,
       NbSpinnerModule,
-      PdfViewerModule
+      PdfViewerModule,
+      NgxEditorModule,
     ],
     exports: [
       CommonModule,

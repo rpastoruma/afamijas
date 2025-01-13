@@ -157,6 +157,9 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
       expanded: false,
     }
   ];  
+
+
+  
     
   //MENÚ SOCIOS
   export const MENU_MEMBERS: NbMenuItem[] = [
@@ -169,7 +172,19 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
     }
   ];  
 
+  //MENÚ USUARIOS (PACIENTES)
+  export const MENU_PATIENTS: NbMenuItem[] = [
+    {
+      title: 'Usuarios',
+      icon: { icon: 'fa-user', pack: 'fas' },
+      link: '/users',
+      data: 'menu.users',
+      expanded: false,
+    }
+  ];  
 
+
+  
   
     
   //MENÚ RECIBOS
@@ -191,6 +206,34 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
       icon: { icon: 'fa-file-invoice', pack: 'fas' },
       link: '/invoices',
       data: 'menu.invoices',
+      expanded: false,
+    }
+  ];  
+
+
+
+
+  //MENÜ PSICOLOGÍA
+  export const MENU_PSICO: NbMenuItem[] = [
+    {
+      title: 'Docs Psico',
+      icon: { icon: 'fa-file-contract', pack: 'fas' },
+      link: '/worker-docs/psico',
+      data: 'menu.worker-psico',
+      expanded: false,
+    }
+  ];  
+
+
+  
+
+  //MENÜ TRABSOCIAL
+  export const MENU_SOCIAL_WORKER: NbMenuItem[] = [
+    {
+      title: 'Trab. Social',
+      icon: { icon: 'fa-people-arrows', pack: 'fas' },
+      link: '/social-worker-docs',
+      data: 'menu.social-worker',
       expanded: false,
     }
   ];  

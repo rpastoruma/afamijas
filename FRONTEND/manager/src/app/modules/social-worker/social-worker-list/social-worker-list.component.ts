@@ -1,16 +1,16 @@
 
 
-import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import { Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { NbDialogService, NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
-import {  parseDataExport, ActionDTO, CountryDTO, StateDTO, CityDTO, PatientDTO } from 'src/app/shared/models/models';
+import {  parseDataExport, ActionDTO, CountryDTO, StateDTO, CityDTO, PatientDTO, MemberDTO } from 'src/app/shared/models/models';
 import { PatientsService } from 'src/app/core/services/patients.service';
 import { PdfService } from 'src/app/core/services/pdf-service.service';
 import { ExcelService } from 'src/app/core/services/excel-service.service';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { DeleteConfirmComponent } from 'src/app/shared/components/delete-confirm/delete-confirm.component';
-import { Subscription, finalize } from 'rxjs';
-import { HttpEventType } from '@angular/common/http';
+import { Subscription, catchError, finalize, of } from 'rxjs';
+import { HttpClient, HttpEventType } from '@angular/common/http';
 import { MediaService } from 'src/app/core/services/media.service';
 import { MyPdfViewerComponent } from 'src/app/shared/components/my-pdf-viewer/my-pdf-viewer.component';
 import { FrontValuesService } from 'src/app/core/services/front-values.service';
@@ -20,7 +20,12 @@ import { RelativeDTO } from 'src/app/shared/models/models';
 import { PDFDocument, StandardFonts, degrees, rgb } from 'pdf-lib'
 import { saveAs } from 'file-saver';
 import { MyHtmlViewerComponent } from 'src/app/shared/components/my-html-viewer/my-html-viewer.component';
+import { UsersService } from 'src/app/core/services/users.service';
 
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import htmlToPdfmake from 'html-to-pdfmake';
 
 @Component({
   selector: 'app-social-worker-list',
@@ -35,7 +40,12 @@ export class SocialWorkerListComponent implements OnInit{
   @ViewChild('modalContent2', { static: true }) modalContent2: TemplateRef<any>;
   @ViewChild('modalContent3', { static: true }) modalContent3: TemplateRef<any>;
 
-  
+  @ViewChild('modalContent4', { static: true }) modalContent4: TemplateRef<any>;
+  modalRef4?: NgbModalRef;
+
+    //PARÁMETROS LISTADO
+    theIdpatient : string = '';
+
 
   requiredFileType:string  =".pdf";
   fileName = '';
@@ -54,6 +64,8 @@ export class SocialWorkerListComponent implements OnInit{
 
   patients: any[]  = []; // amy => formato del listado
   patientsObjects: PatientDTO[]  = [];
+  
+  allPatients : MemberDTO[] = [];
 
   loadingExcel : boolean = false;
   loadingPDF : boolean = false;
@@ -62,9 +74,12 @@ export class SocialWorkerListComponent implements OnInit{
   exportData: any[];
 
   actions : ActionDTO[] = [];
-
    
   allRelatives : RelativeDTO[];
+
+    hayreport2 : boolean = false;
+    @ViewChild('idhtml2') pdfTable2!: ElementRef;
+    
 
   thePatient : PatientDTO = {
     id: '',
@@ -333,7 +348,16 @@ export class SocialWorkerListComponent implements OnInit{
     ins_indlawton3: 0,
     ins_texto_eval_conductual: '',
     ins_texto_conclusion: '',
-    ins_url: ''
+    ins_url: '',
+    ips_url: '',
+    ips_fecha_informe: new Date(),
+    ips_sanitarios: '',
+    ips_sociofamiliar: '',
+    ips_evalcognitiva: '',
+    ips_evalconductual: '',
+    ips_evalfuncional: '',
+    ips_situacioneconomica: '',
+    ips_observaciones: ''
   }
 
   theCountries : CountryDTO[] = [];
@@ -373,7 +397,9 @@ export class SocialWorkerListComponent implements OnInit{
     private modal: NgbModal, 
     private dialogService : NbDialogService,
     private mediaService : MediaService,
-    private frontValuesService : FrontValuesService
+    private frontValuesService : FrontValuesService,
+    private usersService : UsersService,
+    private http: HttpClient
 
   )
    {
@@ -389,12 +415,16 @@ export class SocialWorkerListComponent implements OnInit{
   {
       this.isProcessing = true;
       if(page) this.page = page;
-      this.patientsService.getPatients(this.page, this.size, this.name_surnames, this.documentid, this.status).subscribe(
+      this.patientsService.getPatients(this.page, this.size,  this.theIdpatient,  this.name_surnames, this.documentid, this.status).subscribe(
         res => {
           this.isProcessing = false;
+          this.allPatients = res.content;
           this.patients = res.content.map(item => { return {id: item.id, values: [item.fullname, item.documentid, item.relativefullname, item.servicetype]  }; });
           this.patientsObjects = res.content.map(item => this.convertDates(item));
           this.totalPages = res.totalPages;
+
+          if(this.theIdpatient && this.theIdpatient!='')
+            this.getPatientById();
         },
         error => 
         {
@@ -983,4 +1013,200 @@ cancelUpload() {
     this.getPatients(this.page);
   }
 
+
+  openAddDocumentModal2()
+  {
+    this.modalRef4 = this.modal.open(this.modalContent4, { size: 'lg' });
+  }
+
+
+  
+  canModify() : boolean
+  {
+    return this.authService.isManager() || this.authService.isAdmin();
+  }
+
+
+  disabledDay2(date) 
+  {
+     date.setDate(date.getDate());
+     return date >= new Date();
+  }
+
+  
+  goStepB(step :string)
+  {
+
+    document.getElementById('stepB1').style.display = 'none';
+    document.getElementById('stepB2').style.display = 'none';
+    document.getElementById('stepB3').style.display = 'none';
+    document.getElementById('stepB4').style.display = 'none';
+    document.getElementById('stepB5').style.display = 'none';
+    document.getElementById('stepB6').style.display = 'none';
+    document.getElementById('stepB7').style.display = 'none';
+
+    document.getElementById(step).style.display = 'block';
+  }
+
+
+
+
+saveInformePsicoSocial()
+{
+  this.patientsService.saveInformePsicoSocial(this.thePatient).subscribe(
+    res => {
+      this.isProcessing = false;
+      this.thePatient = res;
+// Suponiendo que `res` es el objeto con las fechas en formato LocalDate
+
+this.thePatient.ips_fecha_informe = this.localDateTime2Date(res.ips_fecha_informe);
+
+this.hayreport2 = true;
+this.http.get(this.thePatient.ips_url , {responseType: 'text'}).pipe(
+  catchError(error => {
+    this.hayreport2 = false;
+    return of('ERROR.');
+  })
+)
+.subscribe({
+  next: response => {
+    this.pdfTable2.nativeElement.innerHTML = response;
+    this.closeModal1();
+  },
+  error: error => {
+    this.hayreport2 = false;
+    console.error('Error en la suscripción:', error);
+  }
+});
+
+
+    },
+    error => {
+      this.isProcessing = false;
+      console.error("saveInformePsicoSocial():"+JSON.stringify(error));
+      this.toastService.show("No se ha podido grabar el informe psico-social correctamente.",
+        "¡Ups!", 
+        { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+       );
+    }
+  );
+
+
+}
+
+closeModal1(): void {
+  if (this.modalRef4) {
+    this.modalRef4.close(); // Cierra el modal
+  }
+}
+
+
+imprimirInformePsicoSocial()
+{
+ const pdfTable = this.pdfTable2.nativeElement;
+
+    const htmlSections = pdfTable.innerHTML.split('<!--#PAGEBREAK#-->');
+
+    let pdfMakeContent = [];
+    htmlSections.forEach((section, index) => 
+      {
+        const cleanedSection = section.replace(/-->/g, '<!-- -->');
+
+        const sectionContent = htmlToPdfmake(cleanedSection);
+
+        // Agrega estilos de texto y tabla a cada sección
+        sectionContent.forEach((content: any) => {
+          if (content.table) {
+            // Ajusta el estilo de la tabla, como tamaño de fuente
+            content.style = 'tableStyle';
+          }
+        });
+
+          pdfMakeContent = pdfMakeContent.concat(sectionContent);
+
+          if (index < htmlSections.length - 1) {
+            pdfMakeContent.push({ text: '', pageBreak: 'after' });
+          }
+        });
+
+      const documentDefinition = {
+        content: pdfMakeContent,
+        styles: {
+          tableStyle: {
+            fontSize: 10, // Tamaño de fuente para las tablas
+            margin: [0, 5, 0, 5] // Márgenes alrededor de las tablas
+          }
+        },
+        defaultStyle: {
+          fontSize: 12 // Tamaño de fuente predeterminado
+        }
+      };
+
+
+      pdfMake.createPdf(documentDefinition).download(this.thePatient.documentid + "-informe-psicosocial" + ".pdf");
+  }
+
+
+
+
+copiarHtml2() {
+  const range = document.createRange();
+  const selection = window.getSelection();
+
+  // Seleccionar el contenido del elemento
+  range.selectNodeContents(this.pdfTable2.nativeElement);
+  selection?.removeAllRanges(); // Limpiar cualquier selección existente
+  selection?.addRange(range);
+
+  // Usar la API de portapapeles para copiar con formato
+  try {
+    const success = document.execCommand('copy');
+    if (success) {
+      console.log('Contenido copiado con formato.');
+    } else {
+      console.error('Error al copiar el contenido.');
+    }
+  } catch (err) {
+    console.error('Error al intentar copiar:', err);
+  }
+
+  // Limpiar la selección después de copiar
+  selection?.removeAllRanges();
+}
+
+
+
+    
+getPatientById()
+{
+    this.isProcessing = true;
+    this.usersService.getPatientById(this.theIdpatient).subscribe(
+      res => {
+        this.thePatient = res;
+
+        this.thePatient.ins_fecha_informe = this.localDateTime2Date(res.ins_fecha_informe);
+        this.thePatient.ins_fecha1 = this.localDateTime2Date(res.ins_fecha1);
+        this.thePatient.ins_fecha2 = this.localDateTime2Date(res.ins_fecha2);
+        this.thePatient.ins_fecha3 = this.localDateTime2Date(res.ins_fecha3);
+        this.thePatient.ins_fecha4 = this.localDateTime2Date(res.ins_fecha4);
+        this.thePatient.ins_fecha_mms1 = this.localDateTime2Date(res.ins_fecha_mms1);
+        this.thePatient.ins_fecha_mms2 = this.localDateTime2Date(res.ins_fecha_mms2);
+        this.thePatient.ins_fecha_mms3 = this.localDateTime2Date(res.ins_fecha_mms3);
+        this.thePatient.ins_fecha_mms4 = this.localDateTime2Date(res.ins_fecha_mms4);
+        this.thePatient.ins_fecha_ind1 = this.localDateTime2Date(res.ins_fecha_ind1);
+        this.thePatient.ins_fecha_ind2 = this.localDateTime2Date(res.ins_fecha_ind2);
+        this.thePatient.ins_fecha_ind3 = this.localDateTime2Date(res.ins_fecha_ind3);
+        this.thePatient.ips_fecha_informe = this.localDateTime2Date(res.ips_fecha_informe);
+
+
+        this.isProcessing = false;
+      },
+      error => 
+      {
+        console.error("getPatientById():"+JSON.stringify(error));
+      }
+    );
+}
+
+  
 }

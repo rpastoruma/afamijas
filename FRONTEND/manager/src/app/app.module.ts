@@ -23,7 +23,7 @@ import { NbToastrModule } from '@nebular/theme';
     NbIconModule,
     NgbModule,
     NbToastrModule.forRoot()
-  ],
+    ],
   providers: [
   ],
   bootstrap: [AppComponent]

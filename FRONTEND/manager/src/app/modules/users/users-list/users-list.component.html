@@ -3,7 +3,7 @@
         <div class="row float-start" >
             <h4>Listado de usuarios</h4>
         </div>
-        <button nbButton class="float-end" status="primary" (click)="openSaveUserModal(true)">ALTA DE USUARIO</button>
+        <button nbButton class="float-end" status="primary" (click)="openSavePatientModal(true)">ALTA DE USUARIO</button>
         
     </nb-card-header>
     <nb-card-body>
@@ -15,17 +15,18 @@
         <input class="form-control" type="text" [(ngModel)]="documentid" name="documentid"  placeholder="DNI / documento de identidad" />
 
         <br/>
-        <ng-select (change)="getUsers()" [multiple]="false" [(ngModel)]="status" name="status" [clearable]="false">
+        <ng-select (change)="getPatients()" [multiple]="false" [(ngModel)]="status" name="status" [clearable]="false">
             <ng-option value="A">USUARIOS ACTIVOS</ng-option>
+            <ng-option value="P">USUARIOS PENDIENTES DE COMPLETAR DOCUMENTACIÓN</ng-option>
             <ng-option value="D">USUARIOS DADOS DE BAJA</ng-option>
         </ng-select>
-
+ 
         <hr/>
-
+ 
         <app-custom-table
             [actions]="actions"
-            [keys]="['Nombre', 'DNI', 'Email', 'Teléfono']"
-            [values]="members"
+            [keys]="['Nombre', 'DNI', 'Familiar/Cuidador principal', 'Tipo de servicio']"
+            [values]="patients"
             [align]="['left', 'left', 'left', 'left']"
             [filters]="[false, false, false, false]"
             [sort]="[false, false, false, false]"
@@ -56,8 +57,8 @@
 
 <ng-template #modalContent let-close="close">
     <div class="modal-header"> 
-        <h6 *ngIf="theUser.id!=''" >Modificar datos para usuario {{theUser.documentid}} - {{theUser.fullname}}</h6>
-        <h6 *ngIf="theUser.id==''" >Alta de nuevo usuario</h6>
+        <h6 *ngIf="thePatient.id!=''" >Modificar datos para usuario {{thePatient.documentid}} - {{thePatient.name}} {{thePatient.surname1}} {{thePatient.surname2}}</h6>
+        <h6 *ngIf="thePatient.id==''" >Alta de nuevo usuario</h6>
         <nb-icon (click)="close()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
     </div>
 
@@ -65,186 +66,638 @@
         <div>
 
             <div id="step1">
-            Nombre: 
-            <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theUser.name" name="theUser-name" type="text" >
+            <div>
+                Número de expediente: 
+                <input class="form-control" [(ngModel)]="thePatient.fs_num_expediente" name="thePatient-fs_num_expediente" type="text" >
+                <div *ngIf="thePatient.fs_num_expediente.trim()==''" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
+
+            <div style="margin-top:10px">
+                Fecha de inscripción: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.fs_fecha_inscripcion" name="thePatient-fs_fecha_inscripcion" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay2]"
+                >
+                <div *ngIf="!thePatient.fs_fecha_inscripcion" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
 
 
-            Primer apellido: 
-            <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theUser.surname1" name="theUser-surname1" type="text" >
+            <div style="margin-top:10px">
+                Nombre: 
+                <input class="form-control" [(ngModel)]="thePatient.name" name="thePatient-name" type="text" >
+                <div *ngIf="thePatient.name.trim()==''" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
 
+            <div style="margin-top:10px">
+                Primer apellido: 
+                <input class="form-control" [(ngModel)]="thePatient.surname1" name="thePatient-surname1" type="text" >
+                <div *ngIf="thePatient.surname1.trim()==''" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
 
-            Segundo apellido: 
-            <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theUser.surname2" name="theUser-surname2" type="text" >
+            <div style="margin-top:10px">
+                Segundo apellido: 
+                <input class="form-control" [(ngModel)]="thePatient.surname2" name="thePatient-surname2" type="text" >
+            </div>
      
 
-            Fecha de nacimiento: 
-            <input style="margin-bottom: 15px" class="form-control" mwlFlatpickr [(ngModel)]="theUser.birthdate" name="theUser-birthdate" type="text" [altInput]="true"
-            [convertModelValue]="true"
-            [enableTime]="false"
-            dateFormat="YY-m-d"
-            altFormat="d/m/Y"
-            placeholder=""
-            >
+            <div style="margin-top:10px">
+                Fecha de nacimiento: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.birthdate" name="thePatient-birthdate" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay]"
+                >
+                <div *ngIf="!thePatient.birthdate" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
             
-            Tipo de documento de identidad: 
-            <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theUser.documenttype" name="theUser-documenttype" [clearable]="false">
-                <ng-option value="DNI">DNI</ng-option>
-                <ng-option value="PASAPORTE">PASAPORTE</ng-option>
-                <ng-option value="NIE">NIE</ng-option>
-            </ng-select>
-            <br/>
-
-            Documento de identidad: 
-            <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theUser.documentid" name="theUser-documentid" type="text" >
-
-                        
-            Familiar o cuidador principal: 
-            <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theUser.idrelative" name="theUser-idrelative" [clearable]="false">
-                <ng-option *ngFor="let x of theRelatives" [value]="x.id">{{x.documentid}} - {{x.fullname}}</ng-option>
-            </ng-select>
-            <br/>
+            <div style="margin-top:10px">
+                Sexo: 
+                <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="thePatient.gender" name="thePatient-gender" [clearable]="false">
+                    <ng-option value="Mujer">Mujer</ng-option>
+                    <ng-option value="Hombre">Hombre</ng-option>
+                </ng-select>
+            </div>
 
 
-            Relacion con el usuario:
-            <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theUser.relativerelation" name="theUser-relativerelation" type="text" >
+            <div style="margin-top:10px">
+                Tipo de documento de identidad: 
+                <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="thePatient.documenttype" name="thePatient-documenttype" [clearable]="false">
+                    <ng-option value="DNI">DNI</ng-option>
+                    <ng-option value="PASAPORTE">PASAPORTE</ng-option>
+                    <ng-option value="NIE">NIE</ng-option>
+                </ng-select>
+            </div>
+
+
+
+
+            <div style="margin-top:10px">
+                Documento de identidad: 
+                <input  class="form-control" [(ngModel)]="thePatient.documentid" name="thePatient-documentid" type="text" >
+                <div *ngIf="!thePatient.documentid || thePatient.documentid.trim()==''" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+                <div *ngIf="thePatient.documentid && !validDocumentId(thePatient.documentid, thePatient.documenttype)" style="color:red;width: 100%; text-align: right; font-size:10px">Documento de identidad no válido</div>
+            </div>
+
+                    
+            <div style="margin-top:10px">
+                Estado civil: 
+                <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="thePatient.fs_estado_civil" name="thePatient-fs_estado_civil" [clearable]="false">
+                    <ng-option value="Soltera/o">Soltera/o</ng-option>
+                    <ng-option value="Casada/o">Casada/o</ng-option>
+                    <ng-option value="Divorciada/o">Divorciada/o</ng-option>
+                    <ng-option value="Viuda/o">Viuda/o</ng-option>
+                </ng-select>
+            </div>
+
+            <div style="margin-top:10px">
+                Nº afiliación Seguridad Social:
+                <input class="form-control" [(ngModel)]="thePatient.fs_num_ss" name="thePatient-fs_num_ss" type="text" >
+            </div>
+
+
+
+            <div style="margin-top:10px">
+                Familiar o cuidador principal: 
+                <ng-select [searchable]="true" [multiple]="false" [(ngModel)]="thePatient.idrelative" name="thePatient-idrelative" notFoundText="No se encuentra familiares" [clearable]="false">
+                    <ng-option *ngFor="let x of allRelatives" [value]="x.id">{{x.documentid}} - {{x.fullname}}</ng-option>
+                </ng-select>
+                <div *ngIf="!thePatient.idrelative" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
+
+            <div style="margin-top:10px">
+                Relacion con el usuario:
+                <input class="form-control" [(ngModel)]="thePatient.relativerelation" name="thePatient-relativerelation" type="text" >
+                <div *ngIf="thePatient.relativerelation==''" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
  
 
 
-            <div style="width: 100%; text-align: right;">
-            <button [disabled]="theUser.name=='' || theUser.surname1=='' || !validDocumentId(theUser.documentid, theUser.documenttype)" nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+            <div style="margin-top:10px;width: 100%; text-align: right;">
+            <button [disabled]="thePatient.name=='' || thePatient.surname1=='' || thePatient.fs_num_expediente=='' ||  !thePatient.birthdate  || !thePatient.fs_fecha_inscripcion  || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient)" nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
                 SIGUIENTE &gt;&gt;
             </button>
             </div>
 
 
-            </div><div style="display: none;" id="step2">
+            </div>
+            
+            
+            <div style="display: none;" id="step2">
 
-            País: 
-            <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theUser.idcountry" name="theUser-idcountry" (change)="getStates()" [clearable]="false">
-                <ng-option *ngFor="let x of theCountries" [value]="x.id">{{x.emoji}} - {{x.name}}</ng-option>
-            </ng-select>
-            <br/>
-
-
-            Código postal: 
-            <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theUser.postalcode" (change)="getStateAndCitiesByPostalCodeAndCountryId()" name="theUser-postalcode" type="text" >
-         
-
-            Provincia: 
-            <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theUser.idstate" name="theUser-idstate" (change)="theUser.postalcode=''; getCities()" [clearable]="false">
-                <ng-option *ngFor="let x of theStates" [value]="x.id">{{x.name}}</ng-option>
-            </ng-select>
-            <br/>
+            <div>
+                País: 
+                <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="thePatient.idcountry" name="thePatient-idcountry" (change)="getStates()" [clearable]="false">
+                    <ng-option *ngFor="let x of theCountries" [value]="x.id">{{x.emoji}} - {{x.name}}</ng-option>
+                </ng-select>
+            </div>
 
 
-            Localidad: 
-            <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theUser.idcity" name="theUser-idcity" [clearable]="false">
-                <ng-option *ngFor="let x of theCities" [value]="x.id">{{x.name}}</ng-option>
-            </ng-select>
-            <br/>
+            <div style="margin-top:10px">
+                Código postal: 
+                <input class="form-control" [(ngModel)]="thePatient.postalcode" (change)="getStateAndCitiesByPostalCodeAndCountryId()" name="thePatient-postalcode" type="text" >
+                <div *ngIf="!(thePatient.postalcode && thePatient.postalcode.length>0)" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
 
+            <div style="margin-top:10px">
+                Provincia: 
+                <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="thePatient.idstate" name="thePatient-idstate" (change)="thePatient.postalcode=''; getCities()" [clearable]="false">
+                    <ng-option *ngFor="let x of theStates" [value]="x.id">{{x.name}}</ng-option>
+                </ng-select>
+                <div *ngIf="!thePatient.idstate" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
 
-            Dirección postal: 
-            <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theUser.postaladdress" name="theUser-postaladdress" type="text" >
+            <div style="margin-top:10px">
+                Localidad: 
+                <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="thePatient.idcity" name="thePatient-idcity" [clearable]="false">
+                    <ng-option *ngFor="let x of theCities" [value]="x.id">{{x.name}}</ng-option>
+                </ng-select>
+                <div *ngIf="!thePatient.idcity" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
+
+            <div style="margin-top:10px">
+                Dirección postal: 
+                <input class="form-control" [(ngModel)]="thePatient.postaladdress" name="thePatient-postaladdress" type="text" >
+                <div *ngIf="!(thePatient.postaladdress  && thePatient.postaladdress.length>0)" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
  
+            			
+            <div style="margin-top:10px">
+                Teléfonos:
+                <input class="form-control" [(ngModel)]="thePatient.phone" name="thePatient-phone" type="text" >
+                <div *ngIf="thePatient.phone==''" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
+			
 
             <div style="margin-top:30px; width: 100%; text-align: right;">
                 <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step1');">
                     &lt;&lt; ANTERIOR
                 </button>
                 &nbsp;&nbsp;
-                <button [disabled]="!validPostalAddress(theUser)" nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
+                <button [disabled]="!validPostalAddress(thePatient)" nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
                     SIGUIENTE &gt;&gt;
                 </button>
             </div>
 
 
-        </div><div style="display: none;" id="step3">
+        </div>
+        
+        
+        
+        <div style="display: none;" id="step3">
 
 
-
-
-
-            Tipo de servicio: 
-            <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="theUser.servicetype" name="theUser-servicetype" [clearable]="false">
-                <ng-option value="CENTRO_DIA_PRIVADO">CENTRO DE DÍA PRIVADO</ng-option>
-                <ng-option value="CENTRO_DIA_CONCERTADO">CENTRO DE DÍA CONCERTADO</ng-option>
-                <ng-option value="TALLER">TALLER DE ESTIMULACIÓN</ng-option>
-            </ng-select>
-
-            
-            <br/>
-            <input type="checkbox" [(ngModel)]="theUser.tallerpsico" [ngModelOptions]="{standalone: true}"/> - Servicio de psicoestimulación a domicilio
-
-            <br/>
-            <input type="checkbox" [(ngModel)]="theUser.transportservice" [ngModelOptions]="{standalone: true}"/> - Servicio de transporte
-            <input *ngIf="theUser.transportservice" style="margin-bottom: 15px" class="form-control" [(ngModel)]="theUser.transportservice_text" name="theUser-transportservice_text" type="text" >
-
-            <br/>
-            <input type="checkbox" [(ngModel)]="theUser.comedorservice" [ngModelOptions]="{standalone: true}"/> - Servicio de comedor
-            <input *ngIf="theUser.comedorservice" style="margin-bottom: 15px" class="form-control" [(ngModel)]="theUser.comedorservice_text" name="theUser-comedorservice_text" type="text" >
-
-            <br/>
-            <input type="checkbox" [(ngModel)]="theUser.ayudadomicilioservice" [ngModelOptions]="{standalone: true}"/> - Servicio de ayuda a domicilio
-            <input *ngIf="theUser.ayudadomicilioservice" style="margin-bottom: 15px" class="form-control" [(ngModel)]="theUser.ayudadomicilioservice_text" name="theUser-ayudadomicilioservice_text" type="text" >
-
-          
-            <br/>
-            <input type="checkbox" [(ngModel)]="theUser.duchaservice" [ngModelOptions]="{standalone: true}"/> - Servicio de ducha
-            <input *ngIf="theUser.duchaservice" style="margin-bottom: 15px" class="form-control" [(ngModel)]="theUser.duchaoservice_text" name="theUser-duchaservice_text" type="text" >
+            <div>
+                Tipo de servicio: 
+                <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="thePatient.servicetype" name="thePatient-servicetype" [clearable]="false">
+                    <ng-option value="CENTRO_DIA_PRIVADO">CENTRO DE DÍA PRIVADO</ng-option>
+                    <ng-option value="CENTRO_DIA_CONCERTADO">CENTRO DE DÍA CONCERTADO</ng-option>
+                    <ng-option value="TALLER">TALLER DE ESTIMULACIÓN</ng-option>
+                </ng-select>
+                <div *ngIf="!thePatient.servicetype" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
 
             
+            <div style="margin-top:10px">
+            <input type="checkbox" [(ngModel)]="thePatient.tallerpsico" [ngModelOptions]="{standalone: true}"/> - Servicio de psicoestimulación a domicilio
+            </div>
+
+            <div style="margin-top:10px">
+            <input type="checkbox" [(ngModel)]="thePatient.transportservice" [ngModelOptions]="{standalone: true}"/> - Servicio de transporte
+            <input *ngIf="thePatient.transportservice" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.transportservice_text" name="thePatient-transportservice_text" type="text" >
+            </div>
+
+            <div style="margin-top:10px">
+            <input type="checkbox" [(ngModel)]="thePatient.comedorservice" [ngModelOptions]="{standalone: true}"/> - Servicio de comedor
+            <input *ngIf="thePatient.comedorservice" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.comedorservice_text" name="thePatient-comedorservice_text" type="text" >
+            </div>
+
+            <div style="margin-top:10px">
+            <input type="checkbox" [(ngModel)]="thePatient.ayudadomicilioservice" [ngModelOptions]="{standalone: true}"/> - Servicio de ayuda a domicilio
+            <input *ngIf="thePatient.ayudadomicilioservice" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.ayudadomicilioservice_text" name="thePatient-ayudadomicilioservice_text" type="text" >
+            </div>
+
+            <div style="margin-top:10px">
+            <input type="checkbox" [(ngModel)]="thePatient.duchaservice" [ngModelOptions]="{standalone: true}"/> - Servicio de ducha
+            <input *ngIf="thePatient.duchaservice" style="margin-bottom: 15px" class="form-control" [(ngModel)]="thePatient.duchaservice_text" name="thePatient-duchaservice_text" type="text" >
+            </div>
+           
 
 
-            <div style="margin-top:30px; width: 100%; text-align: right;">
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
                 <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
                     &lt;&lt; ANTERIOR
                 </button>
                 &nbsp;&nbsp;
-                <button  [disabled]="!validService(theUser)" nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step4');">
+                <button  [disabled]="!validService(thePatient)" nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step4');">
                     SIGUIENTE &gt;&gt;
                 </button>
             </div>
 
             
-        </div><div style="display: none;" id="step4">
+        </div>
+        
+        
+        <div style="display: none;" id="step4">
 
-            Documento de alta:
+            Documentos de alta:
 
-            <div *ngIf="theUser.register_document_url && theUser.register_document_url!='' && !(theUser.register_document_url_signed && theUser.register_document_url_signed!='') " matTooltip="Documento de alta" class="file-upload">
-                <a class="form-control" target="_blank" href="{{theUser.register_document_url}}"><i class="fa-solid fa-paperclip"></i> Documento subido previamente (sin firmar)</a>
-                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="openDocumentRegister();">
-                    FIRMAR DOCUMENTO
-                </button>
-                <br/>
+            <!--DOCUMENTO DE ALTA-->
+            <div *ngIf="thePatient.register_document_url && thePatient.register_document_url!='' && !(thePatient.register_document_url_signed && thePatient.register_document_url_signed!='') " matTooltip="Documento de alta" class="file-upload">
+                <a class="form-control" target="_blank" href="{{thePatient.register_document_url}}"><i class="fa-solid fa-paperclip"></i> Documento de alta SIN FIRMAR</a> 
+
+                <div style="margin-top: 15px;" matTooltip="Seleccione documento firmado para subir" class="file-upload">
+                    <button mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione documento de alta firmado</button>
+                    <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegisterSignedSelected($event)" #fileUpload>
+                    &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                </div>       
             </div>       
 
-
-            <div *ngIf="theUser.register_document_url_signed && theUser.register_document_url_signed!=''" matTooltip="Documento de alta" class="file-upload">
-                <a class="form-control" target="_blank" href="{{theUser.register_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Documento subido previamente (firmado por usuario)</a>
+            <div *ngIf="thePatient.register_document_url_signed && thePatient.register_document_url_signed!=''" matTooltip="Documento de alta" class="file-upload">
+                <a class="form-control" target="_blank" href="{{thePatient.register_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Documento de alta FIRMADO</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
                 <br/>
             </div>     
-            
+
+
+
+
+            <!--FIN DOCUMENTO DE ALTA-->
+
+            <div style="margin-top:10px;width:100%;text-align: center;" *ngIf="thePatient.servicetype == 'CENTRO_DIA_CONCERTADO' && thePatient.register19_document_url==''">Generando documentos de alta...</div>
+            <div style="margin-top:10px;width:100%;text-align: center;" *ngIf="thePatient.servicetype == 'CENTRO_DIA_PRIVADO' && thePatient.register21_document_url==''">Generando documentos de alta...</div>
+            <div style="margin-top:10px;width:100%;text-align: center;" *ngIf="thePatient.servicetype == 'TALLER' && thePatient.register25_document_url==''">Generando documentos de alta...</div>
+        
+
+            <!--CENTRO DÍA CONCERTADO-->
+            <div *ngIf="thePatient.servicetype == 'CENTRO_DIA_CONCERTADO'">
+                <div *ngIf="thePatient.register19_document_url && thePatient.register19_document_url!='' && !(thePatient.register19_document_url_signed && thePatient.register19_document_url_signed!='') " class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register19_document_url, 'contrato_de_ingreso-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Contrato de ingreso SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione contrato de ingreso para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione contrato de ingreso firmado</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister19SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register19_document_url_signed && thePatient.register19_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register19_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Contrato de ingreso FIRMADO</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register19_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
+
+
+
+
+                <!--div *ngIf="thePatient.register20_document_url && thePatient.register20_document_url!='' && !(thePatient.register20_document_url_signed && thePatient.register20_document_url_signed!='') " matTooltip="Declaración de pertenencias" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register20_document_url, 'declaracion-pertenencias-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Declaración de pertenencias SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione declaración de pertenencias para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione declaración de pertenencias firmada</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister20SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register20_document_url_signed && thePatient.register20_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register20_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Declaración de pertenencias FIRMADA</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register20_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div-->     
+
+
+
+
+                <div *ngIf="thePatient.register24_document_url && thePatient.register24_document_url!='' && !(thePatient.register24_document_url_signed && thePatient.register24_document_url_signed!='') " matTooltip="Autorización toma de medicación" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register24_document_url, 'autorizacion-toma-medicacion-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Autorización toma de medicación SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione autorización toma de medicación para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione autorización toma de medicación firmada</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister24SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register24_document_url_signed && thePatient.register24_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register24_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Autorización toma de medicación FIRMADA</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register24_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
+
+
+
+
+                <div *ngIf="thePatient.register25_document_url && thePatient.register25_document_url!='' && !(thePatient.register25_document_url_signed && thePatient.register25_document_url_signed!='') " matTooltip="Consentimiento uso datos personales" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register25_document_url, 'consentimiento-uso-datos-personales-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Consentimiento uso datos personales SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione consentimiento uso datos personales para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione consentimiento uso datos personales firmado</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister25SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register25_document_url_signed && thePatient.register25_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register25_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Consentimiento uso datos personales FIRMADO</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register25_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
+
+
+
+
+                <div *ngIf="thePatient.register26_document_url && thePatient.register26_document_url!='' && !(thePatient.register26_document_url_signed && thePatient.register26_document_url_signed!='') " matTooltip="Declaración responsable" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register26_document_url, 'declaracion-responsable-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Declaración responsable SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione declaración responsable para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione declaración responsable firmada</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister26SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register26_document_url_signed && thePatient.register26_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register26_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Declaración responsable FIRMADA</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register26_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
+
+
+
+
+
+                <div *ngIf="thePatient.register27_document_url && thePatient.register27_document_url!='' && !(thePatient.register27_document_url_signed && thePatient.register27_document_url_signed!='') " matTooltip="Certificado régimen interno" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register27_document_url, 'certificado-regimen-interno-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Certificado régimen interno SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione certificado régimen interno para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione certificado régimen interno firmado</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister27SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register27_document_url_signed && thePatient.register27_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register27_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Certificado régimen interno FIRMADO</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register27_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
+
+            </div>
+            <!-- FIN CENTRO DÍA CONCERTADO-->
+
+
+            <!--  CENTRO DÍA PRIVADO-->
+            <div *ngIf="thePatient.servicetype == 'CENTRO_DIA_PRIVADO'">
+                <div *ngIf="thePatient.register21_document_url && thePatient.register21_document_url!='' && !(thePatient.register21_document_url_signed && thePatient.register21_document_url_signed!='') " class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register21_document_url, 'contrato_de_ingreso-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Contrato de ingreso SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione contrato de ingreso para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione contrato de ingreso firmado</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister21SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register21_document_url_signed && thePatient.register21_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register21_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Contrato de ingreso FIRMADO</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register21_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
+
+
+
+                <!--div *ngIf="thePatient.register22_document_url && thePatient.register22_document_url!='' && !(thePatient.register22_document_url_signed && thePatient.register22_document_url_signed!='') " matTooltip="Declaración de pertenencias" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register22_document_url, 'declaracion-pertenencias-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Declaración de pertenencias SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione declaración de pertenencias para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione declaración de pertenencias firmada</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister22SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register22_document_url_signed && thePatient.register22_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register22_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Declaración de pertenencias FIRMADA</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register22_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div-->     
+
+                
+
+
+
+                <div *ngIf="thePatient.register23_document_url && thePatient.register23_document_url!='' && !(thePatient.register23_document_url_signed && thePatient.register23_document_url_signed!='') " matTooltip="Declaración conocimiento plaza concertada" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register23_document_url, 'declaracion-conocimiento-plaza-concertada-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Declaración conocimiento plaza concertada SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione declaración conocimiento plaza concertada para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione declaración conocimiento plaza concertada firmada</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister23SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register23_document_url_signed && thePatient.register23_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register23_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Declaración conocimiento plaza concertada FIRMADA</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register23_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
+
+
+
+                
+
+
+
+                <div *ngIf="thePatient.register28_document_url && thePatient.register28_document_url!='' && !(thePatient.register28_document_url_signed && thePatient.register28_document_url_signed!='') " matTooltip="Solicitud de subvención" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register28_document_url, 'solicitud-subvencion-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Solicitud de subvención SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione solicitud de subvención para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione solicitud de subvención firmada</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister28SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register28_document_url_signed && thePatient.register28_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register28_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Solicitud de subvención FIRMADA</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register28_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
+
+
+
+            </div>
+            <!-- FIN CENTRO DÍA PRIVADO-->
+
+
+            <!-- TALLER -->
+            <div *ngIf="thePatient.servicetype == 'TALLER'">
+
+
+                <div *ngIf="thePatient.register25_document_url && thePatient.register25_document_url!='' && !(thePatient.register25_document_url_signed && thePatient.register25_document_url_signed!='') " matTooltip="Consentimiento uso datos personales" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register25_document_url, 'consentimiento-uso-datos-personales-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Consentimiento uso datos personales SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione consentimiento uso datos personales para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione consentimiento uso datos personales firmado</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister25SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register25_document_url_signed && thePatient.register25_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register25_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Consentimiento uso datos personales FIRMADO</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register25_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
+
+
+
+
+                <div *ngIf="thePatient.register26_document_url && thePatient.register26_document_url!='' && !(thePatient.register26_document_url_signed && thePatient.register26_document_url_signed!='') " matTooltip="Declaración responsable" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register26_document_url, 'declaracion-responsabe-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Declaración responsable SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione declaración responsable para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione declaración responsable firmada</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister26SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register26_document_url_signed && thePatient.register26_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register26_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Declaración responsable FIRMADA</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register26_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
+
+
+                <div *ngIf="thePatient.register28_document_url && thePatient.register28_document_url!='' && !(thePatient.register28_document_url_signed && thePatient.register28_document_url_signed!='') " matTooltip="Solicitud de subvención" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register28_document_url, 'solicitud-subvencion-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Solicitud de subvención SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione solicitud de subvención para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione solicitud de subvención firmada</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister28SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register28_document_url_signed && thePatient.register28_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register28_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Solicitud de subvención FIRMADA</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register28_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
+
+
+                <div *ngIf="thePatient.register29_document_url && thePatient.register29_document_url!='' && !(thePatient.register29_document_url_signed && thePatient.register29_document_url_signed!='') " matTooltip="Contrato admisión talleres" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register29_document_url, 'contrato_admision_talleres-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Contrato admisión talleres SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione contrato admisión talleres para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione contrato admisión talleres firmado</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister29SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register29_document_url_signed && thePatient.register29_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register29_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Contrato admisión talleres FIRMADO</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register29_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
+
+
+                
+
+                <!--div *ngIf="thePatient.register30_document_url && thePatient.register30_document_url!='' && !(thePatient.register30_document_url_signed && thePatient.register30_document_url_signed!='') " matTooltip="Contrato admisión talleres (inglés)" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register30_document_url, 'contrato_admision_talleres_ingles-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Contrato admisión talleres (inglés) SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione contrato admisión talleres (inglés) para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione contrato admisión talleres (inglés) firmado</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister30SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register30_document_url_signed && thePatient.register30_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register30_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Contrato admisión talleres (inglés) FIRMADO</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register30_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div-->     
+
+
+            </div>
+            <!-- FIN TALLER-->
+
+
+
+
             <div style="margin-top:30px; width: 100%; text-align: right;">
                 <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
                     &lt;&lt; ANTERIOR
                 </button>
             </div>
-
-
-            </div><!--step4-->
-            
         </div>
+        </div>
+
     </div>
 
     <div class="modal-footer">
         <button [disabled]="isProcessing 
-        || theUser.name=='' || theUser.surname1=='' || !validEmail(theUser.email) || !validPhone(theUser.phone) || !validDocumentId(theUser.documentid, theUser.documenttype)
-        || !validPostalAddress(theUser)
-        || !validFee(theUser)
-        || !validDoc(theUser)
+        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+        || !validPostalAddress(thePatient) 
+        || !validService(thePatient) 
+        || !validDoc(thePatient)
         " 
-        nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveMember();">
+        nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="savePatient();">
             GUARDAR CAMBIOS
         </button>
     </div>
@@ -255,7 +708,7 @@
 
 <ng-template #modalUnregister let-close="close">
     <div class="modal-header"> 
-        <h6>Confirmar baja para el socio {{theUser.membernumber}} - {{theUser.fullname}}</h6>
+        <h6>Confirmar baja para el usuario {{thePatient.documentid}} - {{thePatient.name}} {{thePatient.surname1}} {{thePatient.surname2}}</h6>
         <nb-icon (click)="close()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
     </div>
 
@@ -263,28 +716,25 @@
         <div>
 
             Razón de la baja: 
-            <textarea class="form-control" [(ngModel)]="theUser.unregister_reason" >
+            <textarea class="form-control" [(ngModel)]="thePatient.unregister_reason" >
             </textarea>
             <br/>
 
+            <!--
             Documento de baja:
            
-            <ng-select style="margin-top: 10px;" [searchable]="false" [multiple]="false" [(ngModel)]="is_document_signed" name="is_document_signed" [clearable]="false">
-                <ng-option value="SIN_FIRMA">Voy a aportar el documento SIN FIRMAR por el socio</ng-option>
-                <ng-option value="FIRMADO">Voy a aportar el documento FIRMADO el socio</ng-option>
-            </ng-select>
-
+            
 
             <div  matTooltip="Seleccionar documento de baja" class="file-upload">
                 <button mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione documento a subir</button>
-                <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileSelected($event, 'BAJA')" #fileUpload>
+                <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileUnRegister($event)" #fileUpload>
                 &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
             </div>       
 
 
 
-            <div *ngIf="theUser.unregister_document_url && theUser.unregister_document_url!='' && !(theUser.unregister_document_url_signed && theUser.unregister_document_url_signed!='') " matTooltip="Documento de baja" class="file-upload">
-                <a class="form-control" target="_blank" href="{{theUser.unregister_document_url}}"><i class="fa-solid fa-paperclip"></i> Documento subido previamente (sin firmar)</a>
+            <div *ngIf="thePatient.unregister_document_url && thePatient.unregister_document_url!='' && !(thePatient.unregister_document_url_signed && thePatient.unregister_document_url_signed!='') " matTooltip="Documento de baja" class="file-upload">
+                <a class="form-control" target="_blank" href="{{thePatient.unregister_document_url}}"><i class="fa-solid fa-paperclip"></i> Documento subido previamente (sin firmar)</a>
                 <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="openDocumentUnRegister();">
                     FIRMAR DOCUMENTO
                 </button>
@@ -293,10 +743,10 @@
             </div>       
 
 
-            <div *ngIf="theUser.unregister_document_url_signed && theUser.unregister_document_url_signed!=''" matTooltip="Documento de baja" class="file-upload">
-                <a class="form-control" target="_blank" href="{{theUser.unregister_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Documento subido previamente (firmado por socio)</a>
+            <div *ngIf="thePatient.unregister_document_url_signed && thePatient.unregister_document_url_signed!=''" matTooltip="Documento de baja" class="file-upload">
+                <a class="form-control" target="_blank" href="{{thePatient.unregister_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Documento subido previamente (firmado por socio)</a>
                 <br/>
-            </div>       
+            </div-->       
             
                 
 
@@ -305,9 +755,9 @@
     </div>
 
     <div class="modal-footer">
-        <button [disabled]="isProcessing"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="unregisterMember();">
-            <span *ngIf="theUser.status=='A'">DAR DE BAJA AL SOCIO</span>
-            <span *ngIf="theUser.status=='D'">ACTUALIZAR BAJA AL SOCIO</span>
+        <button [disabled]="isProcessing"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="unregisterPatient();">
+            <span *ngIf="thePatient.status!='D'">DAR DE BAJA AL SOCIO</span>
+            <span *ngIf="thePatient.status=='D'">ACTUALIZAR BAJA AL SOCIO</span>
         </button>
     </div>
 </ng-template>

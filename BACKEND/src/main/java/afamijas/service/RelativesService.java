@@ -14,6 +14,7 @@ import java.util.List;
 public interface RelativesService
 {
 
+
     RouteDTO getRoute(String idpatient);
 
     RouteDTO changeRouteStop(String idpatient, String idroutestop, LocalDate from, LocalDate to);
@@ -35,5 +36,7 @@ public interface RelativesService
 
     Page<PermissionDTO> getPermissions(String idpatient, String status, int page, int size, String orderby, String orderasc);
 
+
+    List<RelativeDTO> getAllRelatives();
 
 }

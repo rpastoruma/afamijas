@@ -32,7 +32,7 @@ export class HeaderComponent implements OnInit {
       id: this.authenticationService.getUserId(),
       name: this.cropFullname(this.authenticationService.getFullname()),
       roles: this.authenticationService.getRoles(), 
-      dni:  this.authenticationService.getDni(),
+      documentid:  this.authenticationService.getDocumentid(),
       photo_url:  this.authenticationService.getPhotoURL(),
     };
 

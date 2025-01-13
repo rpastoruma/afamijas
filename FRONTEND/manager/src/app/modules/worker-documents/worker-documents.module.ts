@@ -5,12 +5,14 @@ import { WorkerDocumentsListComponent } from './worker-documents-list/worker-doc
 import { SharedModule } from 'src/app/shared/shared.module';
 import { WorkerDocumentsRoutingModule } from './worker-documents.routing.module';
 import { FormsModule } from '@angular/forms';
+import { PsicoDocumentsListComponent } from './psico-documents-list/psico-documents-list.component';
 
 
 
 @NgModule({
   declarations: [
-    WorkerDocumentsListComponent
+    WorkerDocumentsListComponent,
+    PsicoDocumentsListComponent
   ],
   imports: [
     CommonModule,

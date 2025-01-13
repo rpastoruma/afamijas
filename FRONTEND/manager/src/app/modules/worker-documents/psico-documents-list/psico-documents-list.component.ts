@@ -31,6 +31,11 @@ export class PsicoDocumentsListComponent implements OnInit {
   modalRef?: NgbModalRef;
   @ViewChild('modalContent1', { static: true }) modalContent1: TemplateRef<any>;
   modalRef1?: NgbModalRef;
+  @ViewChild('modalContent2', { static: true }) modalContent2: TemplateRef<any>;
+  modalRef2?: NgbModalRef;
+
+  @ViewChild('firstTextarea') firstTextarea!: ElementRef;
+  
 
   //PARÁMETROS LISTADO
   theIdpatient : string = '';
@@ -61,6 +66,10 @@ export class PsicoDocumentsListComponent implements OnInit {
   
   hayreport : boolean = false;
   @ViewChild('idhtml') pdfTable!: ElementRef;
+
+  hayreport2 : boolean = false;
+  @ViewChild('idhtml2') pdfTable2!: ElementRef;
+  
   
   thePatient : PatientDTO = {
     id: '',
@@ -329,7 +338,16 @@ export class PsicoDocumentsListComponent implements OnInit {
     ins_indlawton3: 0,
     ins_texto_eval_conductual: '',
     ins_texto_conclusion: '',
-    ins_url: ''
+    ins_url: '',
+    ips_url: '',
+    ips_fecha_informe: new Date(),
+    ips_sanitarios: '',
+    ips_sociofamiliar: '',
+    ips_evalcognitiva: '',
+    ips_evalconductual: '',
+    ips_evalfuncional: '',
+    ips_situacioneconomica: '',
+    ips_observaciones: ''
   }
 
 
@@ -415,6 +433,8 @@ export class PsicoDocumentsListComponent implements OnInit {
           this.thePatient.ins_fecha_ind1 = this.localDateTime2Date(res.ins_fecha_ind1);
           this.thePatient.ins_fecha_ind2 = this.localDateTime2Date(res.ins_fecha_ind2);
           this.thePatient.ins_fecha_ind3 = this.localDateTime2Date(res.ins_fecha_ind3);
+          this.thePatient.ips_fecha_informe = this.localDateTime2Date(res.ips_fecha_informe);
+
 
           this.isProcessing = false;
         },
@@ -429,6 +449,7 @@ export class PsicoDocumentsListComponent implements OnInit {
   getDocsPsico(page :number) 
   {
     this.hayreport = false;
+    this.hayreport2 = false;
 
     this.isProcessing = true;
     //if(!this.dayfrom) this.dayfrom = null;
@@ -582,10 +603,23 @@ export class PsicoDocumentsListComponent implements OnInit {
     this.modalRef1 = this.modal.open(this.modalContent1, { size: 'lg' });
   }
 
+  
+  openAddDocumentModal2()
+  {
+
+    this.modalRef2 = this.modal.open(this.modalContent2, { size: 'lg' });
+
+  }
 
   closeModal1(): void {
     if (this.modalRef1) {
       this.modalRef1.close(); // Cierra el modal
+    }
+  }
+
+  closeModal2(): void {
+    if (this.modalRef2) {
+      this.modalRef2.close(); // Cierra el modal
     }
   }
 
@@ -793,6 +827,20 @@ this.uploadSub = null;
     document.getElementById(step).style.display = 'block';
   }
 
+  goStepB(step :string)
+  {
+
+    document.getElementById('stepB1').style.display = 'none';
+    document.getElementById('stepB2').style.display = 'none';
+    document.getElementById('stepB3').style.display = 'none';
+    document.getElementById('stepB4').style.display = 'none';
+    document.getElementById('stepB5').style.display = 'none';
+    document.getElementById('stepB6').style.display = 'none';
+    document.getElementById('stepB7').style.display = 'none';
+
+    document.getElementById(step).style.display = 'block';
+  }
+
 
 updateTotal1() {
     this.thePatient.ins_total1 = 
@@ -886,6 +934,8 @@ openDocumentRegisterHTML(thedocument : string, thefilename : string, pre : boole
 
 saveInformeNeuroPsicologico()
 {
+  this.hayreport2 = false;
+
   this.patientsService.saveInformeNeuroPsicologico(this.thePatient).subscribe(
     res => {
       this.isProcessing = false;
@@ -938,28 +988,199 @@ this.http.get(this.thePatient.ins_url , {responseType: 'text'}).pipe(
 
 }
 
+
+
+
+
+saveInformePsicoSocial()
+{
+  this.hayreport = false;
+  this.patientsService.saveInformePsicoSocial(this.thePatient).subscribe(
+    res => {
+      this.isProcessing = false;
+      this.thePatient = res;
+// Suponiendo que `res` es el objeto con las fechas en formato LocalDate
+
+this.thePatient.ips_fecha_informe = this.localDateTime2Date(res.ips_fecha_informe);
+
+this.hayreport2 = true;
+this.http.get(this.thePatient.ips_url , {responseType: 'text'}).pipe(
+  catchError(error => {
+    this.hayreport2 = false;
+    return of('ERROR.');
+  })
+)
+.subscribe({
+  next: response => {
+    this.pdfTable2.nativeElement.innerHTML = response;
+    this.closeModal2();
+  },
+  error: error => {
+    this.hayreport2 = false;
+    console.error('Error en la suscripción:', error);
+  }
+});
+
+
+    },
+    error => {
+      this.isProcessing = false;
+      console.error("saveInformePsicoSocial():"+JSON.stringify(error));
+      this.toastService.show("No se ha podido grabar el informe psico-social correctamente.",
+        "¡Ups!", 
+        { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+       );
+    }
+  );
+
+
+}
+
+
 imprimirInformeNeuro()
 {
  const pdfTable = this.pdfTable.nativeElement;
 
-    const htmlSections = pdfTable.innerHTML.split('#PAGEBREAK#');
+    const htmlSections = pdfTable.innerHTML.split('<!--#PAGEBREAK#-->');
 
     let pdfMakeContent = [];
-    htmlSections.forEach((section, index) => {
-      const sectionContent = htmlToPdfmake(section);
-      pdfMakeContent = pdfMakeContent.concat(sectionContent);
+    htmlSections.forEach((section, index) => 
+      {
+        const cleanedSection = section.replace(/-->/g, '<!-- -->');
 
-      if (index < htmlSections.length - 1) {
-        pdfMakeContent.push({ text: '', pageBreak: 'after' });
+        const sectionContent = htmlToPdfmake(cleanedSection);
+
+        // Agrega estilos de texto y tabla a cada sección
+        sectionContent.forEach((content: any) => {
+          if (content.table) {
+            // Ajusta el estilo de la tabla, como tamaño de fuente
+            content.style = 'tableStyle';
+          }
+        });
+
+          pdfMakeContent = pdfMakeContent.concat(sectionContent);
+
+          if (index < htmlSections.length - 1) {
+            pdfMakeContent.push({ text: '', pageBreak: 'after' });
+          }
+        });
+
+      const documentDefinition = {
+        content: pdfMakeContent,
+        styles: {
+          tableStyle: {
+            fontSize: 10, // Tamaño de fuente para las tablas
+            margin: [0, 5, 0, 5] // Márgenes alrededor de las tablas
+          }
+        },
+        defaultStyle: {
+          fontSize: 12 // Tamaño de fuente predeterminado
+        }
+      };
+
+
+      pdfMake.createPdf(documentDefinition).download(this.thePatient.documentid + "-informe-neuropsicologico" + ".pdf");
+  }
+
+
+  
+
+  
+imprimirInformePsicoSocial()
+{
+ const pdfTable = this.pdfTable2.nativeElement;
+
+    const htmlSections = pdfTable.innerHTML.split('<!--#PAGEBREAK#-->');
+
+    let pdfMakeContent = [];
+    htmlSections.forEach((section, index) => 
+      {
+        const cleanedSection = section.replace(/-->/g, '<!-- -->');
+
+        const sectionContent = htmlToPdfmake(cleanedSection);
+
+        // Agrega estilos de texto y tabla a cada sección
+        sectionContent.forEach((content: any) => {
+          if (content.table) {
+            // Ajusta el estilo de la tabla, como tamaño de fuente
+            content.style = 'tableStyle';
+          }
+        });
+
+          pdfMakeContent = pdfMakeContent.concat(sectionContent);
+
+          if (index < htmlSections.length - 1) {
+            pdfMakeContent.push({ text: '', pageBreak: 'after' });
+          }
+        });
+
+      const documentDefinition = {
+        content: pdfMakeContent,
+        styles: {
+          tableStyle: {
+            fontSize: 10, // Tamaño de fuente para las tablas
+            margin: [0, 5, 0, 5] // Márgenes alrededor de las tablas
+          }
+        },
+        defaultStyle: {
+          fontSize: 12 // Tamaño de fuente predeterminado
+        }
+      };
+
+
+      pdfMake.createPdf(documentDefinition).download(this.thePatient.documentid + "-informe-psicosocial" + ".pdf");
+  }
+
+
+  copiarHtml() {
+    const range = document.createRange();
+    const selection = window.getSelection();
+
+    // Seleccionar el contenido del elemento
+    range.selectNodeContents(this.pdfTable.nativeElement);
+    selection?.removeAllRanges(); // Limpiar cualquier selección existente
+    selection?.addRange(range);
+
+    // Usar la API de portapapeles para copiar con formato
+    try {
+      const success = document.execCommand('copy');
+      if (success) {
+        console.log('Contenido copiado con formato.');
+      } else {
+        console.error('Error al copiar el contenido.');
       }
-    });
+    } catch (err) {
+      console.error('Error al intentar copiar:', err);
+    }
 
-    const documentDefinition = {
-      content: pdfMakeContent
-    };
+    // Limpiar la selección después de copiar
+    selection?.removeAllRanges();
+  }
 
 
-    pdfMake.createPdf(documentDefinition).download(this.thePatient.documentid + "-informe-neuropsicologico" + ".pdf");
+  copiarHtml2() {
+    const range = document.createRange();
+    const selection = window.getSelection();
+
+    // Seleccionar el contenido del elemento
+    range.selectNodeContents(this.pdfTable2.nativeElement);
+    selection?.removeAllRanges(); // Limpiar cualquier selección existente
+    selection?.addRange(range);
+
+    // Usar la API de portapapeles para copiar con formato
+    try {
+      const success = document.execCommand('copy');
+      if (success) {
+        console.log('Contenido copiado con formato.');
+      } else {
+        console.error('Error al copiar el contenido.');
+      }
+    } catch (err) {
+      console.error('Error al intentar copiar:', err);
+    }
+
+    // Limpiar la selección después de copiar
+    selection?.removeAllRanges();
   }
 
 

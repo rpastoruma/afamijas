@@ -32,7 +32,9 @@ public class Template
             {
                 String key = (String) keys.next();
                 String value = (String) map.get(key);
+                if(value==null) value = "";
                 templateTXT = StringUtils.replaceString(templateTXT, "###" + key.toUpperCase() + "###", value);
+                templateTXT = StringUtils.replaceString(templateTXT, "###" + key.toLowerCase() + "###", value);
             }
             return templateTXT;
         }

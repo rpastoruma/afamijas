@@ -50,7 +50,7 @@ public class WorkersController extends AbstractBaseController
 	@RequestMapping(method=RequestMethod.GET, value="getActivePatients", produces="application/json")
 	public ResponseEntity<?> getActivePatients(
 			@RequestParam(value = "name_surnames", required = false) String name_surnames,
-			@RequestParam(value = "dni", required = false) String dni,
+			@RequestParam(value = "documentid", required = false) String documentid,
 			@RequestParam(value = "groupcode", required = false) String groupcode,
 			@RequestParam(value = "page", required = true) Integer page,
 			@RequestParam(value = "size", required = true) Integer size,
@@ -65,7 +65,7 @@ public class WorkersController extends AbstractBaseController
 
 			if(order==null) order = "name";
 			if(orderasc==null) orderasc = "ASC";
-			return new ResponseEntity<>(this.workersService.getActivePatients(name_surnames, dni, groupcode, page, size, order, orderasc), HttpStatus.OK);
+			return new ResponseEntity<>(this.workersService.getActivePatients(name_surnames, documentid, groupcode, page, size, order, orderasc), HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
@@ -248,6 +248,30 @@ public class WorkersController extends AbstractBaseController
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getPatientById", produces="application/json")
+	public ResponseEntity<?> getPatientById(
+			@RequestParam(value = "id", required = false) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			//PARA TODOS LOS TRABAJADORES
+			if(this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+
+			return new ResponseEntity<>(this.workersService.getPatientById(id), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
 
 
 	@RequestMapping(method=RequestMethod.GET, value="getAllMembers", produces="application/json")
@@ -1280,6 +1304,99 @@ public class WorkersController extends AbstractBaseController
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getDocsPsico", produces="application/json")
+	public ResponseEntity<?> getDocsPsico(
+			@RequestParam(value = "idpatient", required = false) String idpatient,
+			@RequestParam(value = "type", required = false) String type,
+			@RequestParam(value = "text", required = false) String text,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(order==null) order = "created";
+			if(orderasc==null) orderasc = "DESC";
+
+			return new ResponseEntity<>(this.workersService.getDocsPsico(this.getUser(), idpatient, type, text, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="saveDocPsico", produces="application/json")
+	public ResponseEntity<?> saveDocPsico(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "url", required = true) String url,
+			@RequestParam(value = "idpatient", required = true) String idpatient,
+			@RequestParam(value = "type", required = true) String type,
+			@RequestParam(value = "description", required = false) String description,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.saveDocPsico(id, this.getId(), idpatient, type, description, url);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteDocPsico", produces="application/json")
+	public ResponseEntity<?> deleteDocPsico(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.deleteDocPsico(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
 
 
 }

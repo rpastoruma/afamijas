@@ -1,18 +1,18 @@
 package afamijas.dao;
 
 import afamijas.model.Doc;
-import afamijas.model.HealthLog;
+import afamijas.model.DocPsico;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface DocsRepository extends MongoRepository<Doc, String>
+public interface DocsPsicoRepository extends MongoRepository<DocPsico, String>
 {
 
 	@Query("{ '_id' : ?0 }")
-	Doc findOne(String id);
+	DocPsico findOne(String id);
 
 
 

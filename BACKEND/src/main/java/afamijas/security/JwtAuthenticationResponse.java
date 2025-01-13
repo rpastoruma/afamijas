@@ -18,19 +18,19 @@ public class JwtAuthenticationResponse implements Serializable
 
     private final String username;
 
-    private final String dni;
+    private final String documentid;
 
     private final String fullname;
 
     private final String photo_url;
 
-    public JwtAuthenticationResponse(String token, List<String> roles, String userId, String username, String dni, String fullname, String photo_url)
+    public JwtAuthenticationResponse(String token, List<String> roles, String userId, String username, String documentid, String fullname, String photo_url)
     {
         this.token=token;
         this.roles=roles;
         this.userId=userId;
         this.username=username;
-        this.dni=dni;
+        this.documentid=documentid;
         this.fullname=fullname;
         this.photo_url = photo_url;
     }
@@ -52,9 +52,7 @@ public class JwtAuthenticationResponse implements Serializable
         return roles;
     }
 
-    public String getDni() {
-        return dni;
-    }
+
 
     public String getFullname() {
         return fullname;

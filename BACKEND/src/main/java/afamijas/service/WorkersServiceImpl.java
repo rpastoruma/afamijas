@@ -67,9 +67,17 @@ public class WorkersServiceImpl implements WorkersService
 
 	final NotificationsService notificationsService;
 
+	final DocsPsicoRepository docsPsicoRepository;
+
+	final CitiesRepository citiesRepository;
+
+	final StatesRepository statesRepository;
+
+	final CountriesRepository countriesRepository;
+
 
 	@Autowired
-	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, DocsRepository docsRepository, ReceiptsRepository receiptsRepository, InvoicesRepository invoicesRepository, MediaService mediaService, NotificationsService notificationsService)
+	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, DocsRepository docsRepository, ReceiptsRepository receiptsRepository, InvoicesRepository invoicesRepository, MediaService mediaService, NotificationsService notificationsService, DocsPsicoRepository docsPsicoRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, CountriesRepository countriesRepository)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -89,11 +97,15 @@ public class WorkersServiceImpl implements WorkersService
 		this.invoicesRepository = invoicesRepository;
 		this.mediaService = mediaService;
 		this.notificationsService = notificationsService;
+		this.docsPsicoRepository = docsPsicoRepository;
+		this.citiesRepository = citiesRepository;
+		this.statesRepository = statesRepository;
+		this.countriesRepository = countriesRepository;
 	}
 
 	//TODO: REVISAR SI LA PAGINACIÓN ESTÁ BIEN HECHA YA QUE NO ESTÁ COMO EN LAS OTRAS
 	@Override
-	public Page<PatientDTO> getActivePatients(String name_surnames, String dni, String groupcode, Integer page, Integer size, String order, String orderasc)
+	public Page<PatientDTO> getActivePatients(String name_surnames, String documentid, String groupcode, Integer page, Integer size, String order, String orderasc)
 	{
 		Pageable pageable = PageRequest.of(page, size);
 
@@ -108,7 +120,7 @@ public class WorkersServiceImpl implements WorkersService
 
 			query.addCriteria(names_or_criteria);
 		}
-		if(dni!=null) query.addCriteria(Criteria.where("documentid").is(dni));
+		if(documentid!=null) query.addCriteria(Criteria.where("documentid").is(documentid));
 		if(groupcode!=null) query.addCriteria(Criteria.where("groupcode").is(groupcode));
 
 		List<PatientDTO> list = this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null, null)).toList();
@@ -131,6 +143,22 @@ public class WorkersServiceImpl implements WorkersService
 		return this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null, null)).toList();
 	}
 
+	@Override
+	public PatientDTO getPatientById(String id)
+	{
+		Query query = new Query();
+		Criteria criteria = new Criteria().where("_id").is(id);
+		query.addCriteria(criteria);
+		try { if(debug_queries) System.out.println("getPatientById: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		User user = this.mongoTemplate.findOne(query, User.class);
+		return new PatientDTO(user,
+				this.citiesRepository.findOne(user.getIdcity()),
+				this.statesRepository.findOne(user.getIdstate()),
+				this.countriesRepository.findOne(user.getIdcountry()),
+				this.usersRepository.findOne(user.getIdrelative()),
+				null);
+	}
 
 
 
@@ -1058,12 +1086,10 @@ public class WorkersServiceImpl implements WorkersService
 
 
 		Doc doc;
-		String oldurl = null;
 		if(id!=null)
 		{
 			doc = this.docsRepository.findOne(id);
 			if(doc==null) return;
-			oldurl = doc.getUrl();
 		}
 		else
 		{
@@ -1249,7 +1275,64 @@ public class WorkersServiceImpl implements WorkersService
 
 
 
+	@Override
+	public Page<DocPsicoDTO> getDocsPsico(User user, String idpatient, String type, String text, Integer page, Integer size, String orderby, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
 
+		if(idpatient!=null)	query.addCriteria(Criteria.where("idpatient").is(idpatient));
+		if(type!=null)	query.addCriteria(Criteria.where("type").is(type));
+		if(text!=null && !text.trim().equals("")) query.addCriteria(Criteria.where("description").regex(".*"+text+".*", "i"));
+		long total = this.mongoTemplate.count(query, DocPsico.class);
+
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { if(debug_queries) System.out.println("getDocsPsico: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		//EN LOS USUARIOS WORKER INCLUIMOS TAMBIÉN LOS QUE PUDIERAN ESTAR BORRADOS POR ESO FINDONE NO FILTRA POR STATUS
+		List<DocPsicoDTO> list = this.mongoTemplate.find(query, DocPsico.class).stream().map(x -> new DocPsicoDTO(x, this.usersRepository.findOne(x.getIdworker()), this.usersRepository.findOne(x.getIdpatient()))).toList();
+
+		return new PageImpl<>(list, pageable, total);
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void saveDocPsico(String id, String idworker, String idpatient, String type, String description, String url)
+	{
+		DocPsico doc;
+		if(id!=null)
+		{
+			doc = this.docsPsicoRepository.findOne(id);
+			if(doc==null) return;
+		}
+		else
+		{
+			doc = new DocPsico();
+			doc.setUrl(url);
+		}
+
+		doc.setIdworker(idworker);
+		doc.setIdpatient(idpatient);
+		doc.setType(type);
+		doc.setDescription(description);
+
+		doc = this.docsPsicoRepository.save(doc);
+
+		/* TODO ¿ACTIVAR?
+		if(id==null)
+			this.notificationsService.create(null, Arrays.asList("ADMIN"), doc.getType().equals("PSICO_REPORT")?"Nuevo informe psicológico":"Nueva evaluación psicológica", "NORMAL", doc.getDescription(), url);
+		else
+			this.notificationsService.create(null, Arrays.asList("ADMIN"), doc.getType().equals("PSICO_REPORT")?"Modificado informe psicológico":"Modificada evaluación psicológica", "NORMAL", doc.getDescription(), url);
+		*/
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void deleteDocPsico(String id)
+	{
+		DocPsico doc = this.docsPsicoRepository.findOne(id);
+		if(doc!=null) this.docsPsicoRepository.delete(doc);
+	}
 
 	/*
 	@Override

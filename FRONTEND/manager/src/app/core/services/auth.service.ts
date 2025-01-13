@@ -51,9 +51,9 @@ export class AuthService {
     return data.username;
   }
 
-  getDni() {
+  getDocumentid() {
     const data: LoginResponse = this.localStorageService.getObject('logged');
-    return data.dni;
+    return data.documentid;
   }
 
   getFullname() {

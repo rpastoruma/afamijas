@@ -36,6 +36,8 @@ import { canViewHealthLogsGuard } from './guards/can-view-health-logs.guard';
 import { canViewDocsGuard } from './guards/can-view-docs.guard';
 import { canAccessMembersGuard } from './guards/can-access-members.guard';
 import { canAccessInvoicesGuard } from './guards/can-access-invoices.guard';
+import { canViewDocsPsicoGuard } from './guards/can-view-docs-psico.guard';
+import { canViewSocialWorkerGuard } from './guards/can-view-social-worker.guard';
 
 
 const routes: Routes = [
@@ -141,6 +143,24 @@ const routes: Routes = [
       component: BodyLayoutComponent,
       canActivate : [canViewDocsGuard],
       loadChildren: () => import('../modules/worker-documents/worker-documents.module').then(m => m.WorkerDocumentsModule) 
+    },
+    {
+      path : 'worker-docs-psico', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewDocsPsicoGuard],
+      loadChildren: () => import('../modules/worker-documents/worker-documents.module').then(m => m.WorkerDocumentsModule) 
+    },
+    {
+      path : 'social-worker-docs', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewSocialWorkerGuard],
+      loadChildren: () => import('../modules/social-worker/social-worker.module').then(m => m.SocialWorkerModule) 
+    },
+    {
+      path : 'users', 
+      component: BodyLayoutComponent,
+      canActivate : [canAccessMembersGuard],
+      loadChildren: () => import('../modules/users/users.module').then(m => m.UsersModule) 
     },
     {
       path : 'members', 

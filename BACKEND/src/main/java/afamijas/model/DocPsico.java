@@ -9,29 +9,25 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Document(collection = "docs")
-public class Doc
+@Document(collection = "docs_psico")
+public class DocPsico
 {
 	@Id
 	private String _id;
 
 	private String idworker;
 
-	private String title;
+	private String idpatient;
+
+	private String type;
 
 	private String description;
 
 	private String url;
 
-	private LocalDate dayfrom;
-
-	private LocalDate dayto;
-
-	private List<String> roles;
-
 	private LocalDateTime created;
 
-	public Doc() { this.created = LocalDateTime.now(); }
+	public DocPsico() { this.created = LocalDateTime.now(); }
 
 	public String get_id() {
 		return _id;
@@ -47,14 +43,6 @@ public class Doc
 
 	public void setIdworker(String idworker) {
 		this.idworker = idworker;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	public String getDescription() {
@@ -73,29 +61,6 @@ public class Doc
 		this.url = url;
 	}
 
-	public LocalDate getDayfrom() {
-		return dayfrom;
-	}
-
-	public void setDayfrom(LocalDate dayfrom) {
-		this.dayfrom = dayfrom;
-	}
-
-	public LocalDate getDayto() {
-		return dayto;
-	}
-
-	public void setDayto(LocalDate dayto) {
-		this.dayto = dayto;
-	}
-
-	public List<String> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(List<String> roles) {
-		this.roles = roles;
-	}
 
 	public LocalDateTime getCreated() {
 		return created;
@@ -105,12 +70,28 @@ public class Doc
 		this.created = created;
 	}
 
+	public String getIdpatient() {
+		return idpatient;
+	}
+
+	public void setIdpatient(String idpatient) {
+		this.idpatient = idpatient;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		Doc log = (Doc) o;
+		DocPsico log = (DocPsico) o;
 
 		return _id.equals(log._id);
 	}

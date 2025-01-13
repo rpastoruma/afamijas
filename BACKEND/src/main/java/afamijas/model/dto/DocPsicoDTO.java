@@ -1,14 +1,14 @@
 package afamijas.model.dto;
 
 import afamijas.model.Doc;
-import afamijas.model.HealthLog;
+import afamijas.model.DocPsico;
 import afamijas.model.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class DocDTO
+public class DocPsicoDTO
 {
 
     private String id;
@@ -17,33 +17,31 @@ public class DocDTO
 
     private String worker_fullname;
 
-    private String title;
+    private String idpatient;
+
+    private String patient_fullname;
+
+    private String type;
 
     private String description;
 
     private String url;
 
-    private LocalDate dayfrom;
-
-    private LocalDate dayto;
-
-    private List<String> roles;
-
     private LocalDateTime created;
 
-    public DocDTO(Doc doc, User worker)
+    public DocPsicoDTO(DocPsico doc, User worker, User patient)
     {
         this.id = doc.get_id();
         this.idworker = doc.getIdworker();
         if(worker!=null) this.worker_fullname = worker.getFullname();
-        this.title = doc.getTitle();
+        this.idpatient = doc.getIdpatient();
+        if(patient!=null) this.patient_fullname = patient.getFullname();
+        this.type = doc.getType();
         this.description = doc.getDescription();
         this.url = doc.getUrl();
-        this.dayfrom = doc.getDayfrom();
-        this.dayto = doc.getDayto();
-        this.roles = doc.getRoles();
         this.created = doc.getCreated();
     }
+
 
     public String getId() {
         return id;
@@ -69,12 +67,28 @@ public class DocDTO
         this.worker_fullname = worker_fullname;
     }
 
-    public String getTitle() {
-        return title;
+    public String getIdpatient() {
+        return idpatient;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setIdpatient(String idpatient) {
+        this.idpatient = idpatient;
+    }
+
+    public String getPatient_fullname() {
+        return patient_fullname;
+    }
+
+    public void setPatient_fullname(String patient_fullname) {
+        this.patient_fullname = patient_fullname;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getDescription() {
@@ -91,30 +105,6 @@ public class DocDTO
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public LocalDate getDayfrom() {
-        return dayfrom;
-    }
-
-    public void setDayfrom(LocalDate dayfrom) {
-        this.dayfrom = dayfrom;
-    }
-
-    public LocalDate getDayto() {
-        return dayto;
-    }
-
-    public void setDayto(LocalDate dayto) {
-        this.dayto = dayto;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
     }
 
     public LocalDateTime getCreated() {

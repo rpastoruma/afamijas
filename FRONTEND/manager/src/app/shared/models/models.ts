@@ -4,7 +4,7 @@ export interface LoginResponse {
     roles: string[];
     userId: string;
     username: string;
-    dni: string;
+    documentid: string;
     fullname : string;
     photo_url : string;
 }
@@ -27,7 +27,7 @@ export interface PatientDTO {
     name : string;
     surname1 : string;
     surname2 : string;
-    dni : string;
+    documentid : string;
     documenttype : string;
     phone : string;
     postaladdress : string;
@@ -75,12 +75,428 @@ export interface PatientDTO {
     duchaservice : boolean;
     duchaservice_text : string;
 
+    //ALTA:
+
     register_document_url : string;
     register_document_url_signed : string;
+
+    //PLAZA CONCERTADA:
+
+    register19_document_url : string;
+    register19_document_url_signed : string;
+
+    register20_document_url : string;
+    register20_document_url_signed : string;
+
+    register24_document_url : string;
+    register24_document_url_signed : string;
+
+    register25_document_url : string;
+    register25_document_url_signed : string;
+
+    register26_document_url : string;
+    register26_document_url_signed : string;
+
+    register27_document_url : string;
+    register27_document_url_signed : string;
+
+    //PLAZA PRIVADA:
+
+    register21_document_url : string;
+    register21_document_url_signed : string;
+
+    register22_document_url : string;
+    register22_document_url_signed : string;
+
+    register23_document_url : string;
+    register23_document_url_signed : string;
+
+    register28_document_url : string;
+    register28_document_url_signed : string;
+
+    //TALLER ESTIMULACIÓN:
+
+    //register25_document_url : string;
+    //register25_document_url_signed : string;
+
+    //register26_document_url : string;
+    //register26_document_url_signed : string;
+
+    //register28_document_url : string;
+    //register28_document_url_signed : string;
+
+    register29_document_url : string;
+    register29_document_url_signed : string;
+
+    register30_document_url : string;
+    register30_document_url_signed : string;
+
+    //BAJA:
+
     unregister_document_url : string;
     unregister_document_url_signed : string;
 
-    unregister_reason : string
+    unregister_reason : string;
+
+    status : string;
+
+    fullname: string;
+
+    language : string;
+
+
+    //FICHA SOCIAL
+    fs_url : string;
+
+    fs_fecha_inscripcion : Date;
+
+    fs_num_expediente : string;
+
+    fs_num_ss : string;
+
+    fs_estado_civil : string;
+
+    fs_talleres_estimulacion : boolean;
+
+
+    fs_gradior_stimmulus : boolean;
+
+    fs_sad : boolean;
+
+    fs_other : boolean;
+
+    fs_other_text : string;
+
+    fs_comer_solo : boolean;
+
+    fs_lavarse_solo : boolean;
+
+    fs_salir_sin_perderse : boolean;
+
+    fs_reconocer_caras : boolean;
+
+    fs_leer_y_escribir : boolean;
+
+    fs_incontenencia_urinaria : boolean;
+
+    fs_conversar : boolean;
+
+    fs_reconocer_objetos_cotidianos : boolean;
+
+    fs_sufrir_alucinaciones : boolean;
+
+    fs_fases_agitacion : boolean;
+
+    fs_dificultad_orientarse : boolean;
+
+    fs_movilizarse : string;
+
+    fs_datos_medicos : string;
+
+    fs_grado_minusvalia : boolean;
+
+    fs_grado_minusvalia_text : string;
+
+    fs_grado_dependencia : boolean;
+
+    fs_grado_dependencia_text : string;
+
+    fs_incapacitacion_judicial : boolean;
+
+    fs_ayudas_externas : boolean;
+
+    fs_ayudas_externas_text : string;
+
+
+
+    //HISTORIA SOCIAL
+    hs_url : string;
+
+    hs_beca: boolean;
+
+    hs_diagnostico: string;
+   
+    hs_autonomia: boolean;
+   
+    hs_ayuda_abd: boolean;
+   
+    hs_uc_solo: boolean;
+   
+    hs_uc_conyuge: boolean;
+   
+    hs_uc_hijos: boolean;
+   
+    hs_uc_other: boolean;
+   
+    hs_uc_other_text: string;
+   
+    hs_nivel_formativo: string;
+   
+    hs_interaccion_demas: string;
+   
+    hs_interaccion_profesioneales: string;
+   
+    hs_participacion_actividades: string;
+   
+    hs_integracion_dinamica: string;
+   
+    hs_grado_minusvalia_tipo: string;
+   
+    hs_grado_minusvalia_cuando: string;
+   
+    hs_ley_dependencia_solicitada: boolean;
+   
+    hs_ley_dependencia_grado: string;
+   
+    hs_recibe_servicio_administracion: boolean;
+   
+    hs_patologias: string;
+   
+    hs_diabetico: boolean;
+   
+    hs_hipertenso: boolean;
+   
+    hs_alimenta_bien: boolean;
+   
+    hs_duerme_bien: boolean;
+   
+    hs_fuma_bebe: boolean;
+   
+    hs_drogas: boolean;
+   
+    hs_drogas_text: string;
+   
+    hs_valoracion_salud: string;
+   
+    hs_fam_dificultades_convivencia: boolean;
+   
+    hs_fam_dificultades_economicas: boolean;
+   
+    hs_fam_dificultad_cuidados: boolean;
+   
+    hs_fam_sin_apoyo: boolean;
+   
+    hs_fam_agotamiento_cuidador: boolean;
+   
+    hs_viv_sin_domicilio: boolean;
+   
+    hs_viv_ruinas: boolean;
+   
+    hs_viv_barreras: boolean;
+   
+    hs_viv_inhabitabilidad: boolean;
+   
+    hs_alquiler_elevado: boolean;
+   
+    hs_escaleras_exteriores: boolean;
+   
+    hs_escaleras_interiores: boolean;
+   
+    hs_banera: boolean;
+   
+    hs_alfombras: boolean;
+   
+    hs_otros: boolean;
+   
+    hs_otros_text: string;
+   
+    hs_nombre1: string;
+    hs_parentesco1: string;
+    hs_edad1: number;
+    hs_profesion1: string;
+   
+    hs_nombre2: string;
+    hs_parentesco2: string;
+    hs_edad2: number;
+    hs_profesion2: string;
+   
+    hs_nombre3: string;
+    hs_parentesco3: string;
+    hs_edad3: number;
+    hs_profesion3: string;
+   
+    hs_nombre4: string;
+    hs_parentesco4: string;
+    hs_edad4: number;
+    hs_profesion4: string;
+   
+    hs_tiene_pareja: boolean;
+   
+    hs_relacion_pareja: string;
+   
+    hs_tiene_hijos: boolean;
+   
+    hs_relacion_hijos: string;
+   
+    hs_tiene_hermanos: boolean;
+   
+    hs_relacion_hermanos: string;
+   
+    hs_visitas_familiares: boolean;
+   
+    hs_visitas_cuanto: string;
+   
+    hs_apoyo_amigos: boolean;
+   
+    hs_relacion_familia: boolean;
+   
+    hs_acude_otras: boolean;
+   
+    hs_recibe_pension: boolean;
+   
+    hs_cuantia_pension: number;
+   
+    hs_otra_prestacion: string;
+   
+    hs_otros_ingresos: string;
+   
+    hs_otros_recursos: string;
+   
+    hs_valoracion_profesional: string;
+   
+    hs_observaciones: string;
+   
+
+    //INFORME SOCIAL
+    is_url : string;
+    is_tiempo_conoce_usuario: string;
+    is_servicios_prestados: string;
+    is_como_adaptado: string;
+    is_acudio_voluntad_propia: boolean;
+    is_quien_influyo_decision: string;
+    is_que_actividades: string;
+    is_como_relaciona: string;
+    is_como_pasa_dia: string;
+
+    is_problemas_psico: boolean;
+    is_problemas_psico_text: string;
+
+    is_recibe_tratamiento: boolean;
+    is_recibe_tratamiento_text: string;
+
+    is_familia_estru: boolean;
+    is_familia_estru_text: string;
+
+    is_recibe_ingresos_actividad_laboral: boolean;
+    is_esta_buscando_empleo: boolean;
+
+    is_vive_en: string;
+    is_cubiertas_necesidades_diarias: boolean;
+
+    is_valoracion_profesional: string;
+    is_propuesta: string;
+
+
+    //INFORME NEUROPSICOLOGICO
+    ins_url : string;
+
+    ins_fecha_informe: Date;
+
+    ins_motivo_consulta: string;
+  
+    ins_antecedentes: string;
+  
+    ins_diagnostico: string;
+  
+    ins_texto_pre_puntuaciones: string;
+  
+    ins_fecha1: Date;
+    ins_fecha2: Date;
+    ins_fecha3: Date;
+    ins_fecha4: Date;
+  
+    ins_orientacion1: number;
+    ins_orientacion2: number;
+    ins_orientacion3: number;
+    ins_orientacion4: number;
+  
+    ins_lenguaje1: number;
+    ins_lenguaje2: number;
+    ins_lenguaje3: number;
+    ins_lenguaje4: number;
+  
+    ins_memoria1: number;
+    ins_memoria2: number;
+    ins_memoria3: number;
+    ins_memoria4: number;
+  
+    ins_atencalculo1: number;
+    ins_atencalculo2: number;
+    ins_atencalculo3: number;
+    ins_atencalculo4: number;
+  
+    ins_praxis1: number;
+    ins_praxis2: number;
+    ins_praxis3: number;
+    ins_praxis4: number;
+  
+    ins_pensabstracto1: number;
+    ins_pensabstracto2: number;
+    ins_pensabstracto3: number;
+    ins_pensabstracto4: number;
+  
+    ins_percecpcion1: number;
+    ins_percecpcion2: number;
+    ins_percecpcion3: number;
+    ins_percecpcion4: number;
+  
+    ins_total1: number;
+    ins_total2: number;
+    ins_total3: number;
+    ins_total4: number;
+  
+    ins_fecha_mms1: Date;
+    ins_fecha_mms2: Date;
+    ins_fecha_mms3: Date;
+    ins_fecha_mms4: Date;
+  
+    ins_mmse1: number;
+    ins_mmse2: number;
+    ins_mmse3: number;
+    ins_mmse4: number;
+  
+    ins_texto_post_puntuaciones: string;
+  
+    ins_fecha_ind1: Date;
+    ins_fecha_ind2: Date;
+    ins_fecha_ind3: Date;
+  
+    ins_indbathel1: number;
+    ins_indbathel2: number;
+    ins_indbathel3: number;
+  
+    ins_indlawton1: number;
+    ins_indlawton2: number;
+    ins_indlawton3: number;
+  
+    ins_texto_eval_conductual: string;
+  
+    ins_texto_conclusion: string;    
+
+    ips_url: string; 
+    ips_fecha_informe: Date;
+    ips_sanitarios: string; 
+    ips_sociofamiliar: string; 
+    ips_evalcognitiva: string; 
+    ips_evalconductual: string; 
+    ips_evalfuncional: string; 
+    ips_situacioneconomica: string; 
+    ips_observaciones: string; 
+
+
+
+}
+
+
+export interface RelativeDTO {
+    id : string;
+    username : string;
+    email : string;
+    name : string;
+    surname1 : string;
+    surname2 : string;
+    documentid : string;
+    fullname : string;
 
 }
 
@@ -436,6 +852,30 @@ export interface DocDTO
 
 
 
+export interface DocPsicoDTO
+{
+    id : string;
+
+    idworker : string;
+
+    worker_fullname : string;
+
+    idpatient : string;
+
+    patient_fullname : string;
+
+    type : string
+
+    description : string;
+
+    url : string;
+
+    created : Date;
+}
+
+
+
+
 
 
 export interface ReceiptDTO
@@ -539,7 +979,7 @@ export function rolName(theRole)
     roleNames.set("KITCHEN", "Cocina");
     roleNames.set("MONITOR", "Monitor/a");
     roleNames.set("SOCIAL_WORKER", "Trabajo social");
-    roleNames.set("PSYCHOLOGIST", "Piscología");
+    roleNames.set("PSYCHOLOGIST", "Psicología");
     roleNames.set("MANAGER", "Dirección");
     roleNames.set("PHYSIOTHERAPIST", "Fisioterapia");
     roleNames.set("OCCUPATIONAL_THERAPIST", "Terapia ocupacional");
@@ -594,6 +1034,8 @@ export interface CityDTO {
     name : string;
     state_code : string;
     country_code : string;
+    state_name : string;
+    country_name : string;
 }
 
 

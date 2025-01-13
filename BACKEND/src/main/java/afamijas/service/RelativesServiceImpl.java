@@ -267,6 +267,17 @@ public class RelativesServiceImpl implements RelativesService
 		return this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, null, null)).toList();
 	}
 
+	@Override
+	public List<RelativeDTO> getAllRelatives()
+	{
+		Query query = new Query().with(Sort.by(Sort.Direction.ASC, "name"));;
+		Criteria criteria = new Criteria().where("status").is("A").and("roles").in(Arrays.asList("RELATIVE"));
+		query.addCriteria(criteria);
+		try { if(debug_queries) System.out.println("getAllRelatives:" + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		return this.mongoTemplate.find(query, User.class).stream().map(x -> new RelativeDTO(x)).toList();
+	}
+
+
 
 	@Override
 	public Page<RelativeAbsenceDTO> getRelativeAbsences(String idpatient, String idrelative, LocalDateTime from, LocalDateTime to, int page, int size, String orderby, String orderasc)

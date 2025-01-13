@@ -3,16 +3,18 @@
         <div class="row float-start" >
             <h4>Documentos de Trabajador Social</h4>
         </div>
+        <button [disabled]="theIdpatient==''" [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openAddDocumentModal2()">INFORME PSICO-SOCIAL</button>
         
     </nb-card-header>
     <nb-card-body>
 
-
-        <input class="form-control" type="text" [(ngModel)]="name_surnames" name="name_surnames" placeholder="Nombre / apellidos" />
-
-        <br/>
-        <input class="form-control" type="text" [(ngModel)]="documentid" name="documentid"  placeholder="DNI / documento de identidad" />
-
+            <div style="margin-bottom: 10px;">
+                Para el usuario:
+                <ng-select (change)="getPatients(0)" [multiple]="false" [(ngModel)]="theIdpatient" name="idpatient" [clearable]="false" notFoundText="No se encuentran usuarios">
+                    <ng-option value="">TODOS</ng-option>
+                    <ng-option *ngFor="let u of allPatients" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}} - ({{u.membernumber}})</ng-option>
+                </ng-select>
+            </div>
 
         <hr/>
  
@@ -894,3 +896,235 @@
 
 </ng-template>
   
+
+
+
+
+<ng-template #modalContent4 let-close="close">
+    <div class="modal-header"> 
+        <h6>Informe Psico-Social</h6>
+        <p>{{thePatient.documentid}} - {{thePatient.name}} {{thePatient.surname1}} {{thePatient.surname2}}</p>
+        <p>Nº expediente: {{thePatient.fs_num_expediente}}</p>
+        <nb-icon (click)="close();" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        
+        <div>
+
+
+            <div id="stepB1">
+
+                                   
+                       
+
+
+            <div style="margin-top:10px">
+                Datos sanitarios:
+                <textarea class="form-control" [(ngModel)]="thePatient.ips_sanitarios" >
+                </textarea>
+             </div>
+    
+                
+
+             <div style="margin-top:10px">
+                Fecha de informe: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.ips_fecha_informe" name="thePatient-ips_fecha_informe" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay2]"
+                >
+                <div *ngIf="!thePatient.ips_fecha_informe" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
+            </div>
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStepB('stepB2');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+            
+        </div>
+        
+        
+
+        <div style="display: none;" id="stepB2">
+                        
+            
+            <div style="margin-top:10px">
+                Situación socio familiar:
+                <textarea class="form-control" [(ngModel)]="thePatient.ips_sociofamiliar" >
+                </textarea>
+             </div>
+    
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStepB('stepB1');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStepB('stepB3');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+        </div>
+
+
+        <div style="display: none;" id="stepB3">
+                        
+ 
+            <div style="margin-top:10px">
+                Evaluación cognitiva:
+                <textarea [disabled]="true" class="form-control" [(ngModel)]="thePatient.ips_evalcognitiva" >
+                </textarea>
+             </div>
+    
+
+             <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                 <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStepB('stepB2');">
+                     &lt;&lt; ANTERIOR
+                 </button>
+                 &nbsp;&nbsp;
+                 <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStepB('stepB4');">
+                     SIGUIENTE &gt;&gt;
+                 </button>
+             </div>
+ 
+         </div>
+ 
+
+         <div style="display: none;" id="stepB4">
+                        
+ 
+  
+            <div style="margin-top:10px">
+                Evaluación conductual:
+                <textarea [disabled]="true" class="form-control" [(ngModel)]="thePatient.ips_evalconductual" >
+                </textarea>
+             </div>
+    
+
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStepB('stepB3');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStepB('stepB5');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+        </div>
+
+
+        <div style="display: none;" id="stepB5">
+                        
+ 
+ 
+
+            <div style="margin-top:10px">
+                Evaluación funcional:
+                <textarea [disabled]="true" class="form-control" [(ngModel)]="thePatient.ips_evalfuncional" >
+                </textarea>
+             </div>
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStepB('stepB4');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStepB('stepB6');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+        </div>
+
+       
+        
+        <div style="display: none;" id="stepB6">
+
+            <div style="margin-top:10px">
+                Situacion económica:
+                <textarea class="form-control" [(ngModel)]="thePatient.ips_situacioneconomica" >
+                </textarea>
+             </div>
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStepB('stepB5');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStepB('stepB7');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+
+        </div>
+
+
+        
+        
+        <div style="display: none;" id="stepB7">
+
+          
+            <div style="margin-top:10px">
+                Observaciones:
+                <textarea class="form-control" [(ngModel)]="thePatient.ips_observaciones" >
+                </textarea>
+             </div>
+
+
+
+                
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStepB('stepB6');">
+                    &lt;&lt; ANTERIOR
+                </button>
+            </div>
+
+
+        </div>
+
+
+
+
+
+        </div>
+
+        
+
+    </div>
+
+
+
+    <div class="modal-footer">
+        <button [disabled]="isProcessing" 
+        nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveInformePsicoSocial();">
+            GUARDAR Y GENERAR INFORME PSICO-SOCIAL
+        </button>
+    </div>
+
+
+</ng-template>
+
+<nb-card *ngIf="hayreport2">
+    <nb-card-body>
+        <div sytle="width:100%" #idhtml2></div>
+        <nb-card-footer>
+            <button style="margin-right: 10px;" nbButton class="float-end" status="primary" (click)="copiarHtml2()">Copiar al portapapeles</button>
+            <button style="margin-right: 10px;" nbButton class="float-end" status="primary" (click)="imprimirInformePsicoSocial()">Descargar Informe Psico-Social</button>
+        </nb-card-footer>
+    </nb-card-body>
+</nb-card>

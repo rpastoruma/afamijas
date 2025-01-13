@@ -42,7 +42,7 @@ public interface UsersRepository extends MongoRepository<User, String>
 	List<User> findUserBySurname2(String surname2, String status);
 
 	@Query("{ 'documentid' : ?0, 'status' : ?1  }")
-	List<User> findUserByDNI(String dni, String status);
+	List<User> findUserByDNI(String documentid, String status);
 
 	@Query("{ 'roles' : { $in : ?0 }, 'status' : ?1 }")
 	List<User> findUsersByRoleAndStatus(List<String> roles, String status);

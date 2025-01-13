@@ -16,10 +16,11 @@ import java.util.List;
 public interface WorkersService
 {
 
-    Page<PatientDTO> getActivePatients(String name_surnames, String dni, String groupcode, Integer page, Integer size, String order, String orderasc);
+    Page<PatientDTO> getActivePatients(String name_surnames, String documentid, String groupcode, Integer page, Integer size, String order, String orderasc);
 
     List<PatientDTO> getAllPatients(String groupcode);
 
+    PatientDTO getPatientById(String id);
 
     List<MemberDTO> getAllMembers();
 
@@ -154,4 +155,16 @@ public interface WorkersService
 
     @Transactional(propagation= Propagation.REQUIRES_NEW)
     void deleteInvoice(String id);
+
+
+
+
+
+    Page<DocPsicoDTO> getDocsPsico(User user, String idptient, String type, String text, Integer page, Integer size, String orderby, String orderasc);
+
+    void saveDocPsico(String id, String idworker, String idpatient, String type, String description, String url);
+
+    void deleteDocPsico(String id);
+
+
 }

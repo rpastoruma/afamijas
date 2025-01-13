@@ -55,6 +55,8 @@ export class CustomTableComponent implements OnInit, OnDestroy {
   approveAction: any;
   activateAction: any;
   showAction: any;
+  alertAction: any;
+  bookAction: any;
   changeLanguageEvent: Subscription;
   states = [];
   @Input() loading = false;
@@ -122,6 +124,8 @@ export class CustomTableComponent implements OnInit, OnDestroy {
     this.staysAbroadAction = this.actions.find(item => item.action === 'abroads');
     this.statusAction = this.actions.find(item => item.action === 'status');
     this.showAction = this.actions.find(item => item.action === 'show');
+    this.alertAction = this.actions.find(item => item.action === 'alert');
+    this.bookAction = this.actions.find(item => item.action === 'book');
     this.evaluateAction = this.actions.find(item => item.action === 'evaluate');
     this.noAction = this.actions.find(item => item.action === 'noaction');
     this.transferAction = this.actions.find(item => item.action === 'transfer');
@@ -217,7 +221,7 @@ export class CustomTableComponent implements OnInit, OnDestroy {
 
   hasAction() {
     return this.awardsAction || this.editAction || this.deleteAction || this.staysAbroadAction
-    || this.statusAction || this.showAction || this.evaluateAction || this.noAction || this.transferAction
+    || this.statusAction || this.showAction || this.evaluateAction || this.alertAction || this.bookAction || this.noAction || this.transferAction
     || this.incidenceAction || this.approveAction || this.activateAction || this.duplicateAction;
   }
 

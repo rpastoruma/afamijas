@@ -35,7 +35,8 @@
               "node_modules/@nebular/theme/styles/prebuilt/default.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
               "node_modules/flatpickr/dist/flatpickr.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/quill/dist/quill.snow.css"
             ],
             "scripts": [
               "node_modules/@fortawesome/fontawesome-free/js/all.js"
@@ -102,7 +103,8 @@
             ],
             "styles": [
               "node_modules/angular-calendar/css/angular-calendar.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/quill/dist/quill.snow.css"
             ],
             "scripts": []
           }
