@@ -310,7 +310,8 @@ public class StringUtils
             // Incrementamos el número
             int incrementedNumber = Integer.parseInt(lastNumber) + 1;
             // Construimos la cadena con el tramo incrementado
-            return input.substring(0, matcher.start()) + incrementedNumber + input.substring(matcher.end());
+            //return input.substring(0, matcher.start()) + incrementedNumber + input.substring(matcher.end());
+            return incrementedNumber + "";
         } else {
             // Si no hay números en la cadena, devolvemos la cadena original
             return input;

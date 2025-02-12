@@ -1410,7 +1410,7 @@ public class WorkersServiceImpl implements WorkersService
 
 			String last_nunmber = this.atencionesRepository.findHighestNumber();
 			if(last_nunmber==null || last_nunmber.trim().equals("")) last_nunmber = "0/" + getInitials(clientfullname);
-			last_nunmber = StringUtils.incrementLastNumber(last_nunmber);
+			last_nunmber = StringUtils.incrementLastNumber(last_nunmber) +  "/" + getInitials(clientfullname);
 			atencion.setNumber(last_nunmber);
 		}
 
