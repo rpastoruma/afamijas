@@ -31,86 +31,86 @@ export class PatientsService {
   savePatient(thePatient: PatientDTO) 
   {
     const form = new FormData();
-    if(thePatient.id && thePatient.id!='') form.append('id', thePatient.id);
-    form.append('name', thePatient.name);
-    form.append('surname1', thePatient.surname1);
-    if(thePatient.surname2) form.append('surname2', thePatient.surname2);
-    form.append('birthdate', this.formatDate2(thePatient.birthdate));
-    form.append('gender', thePatient.gender);
-    form.append('documentid', thePatient.documentid);
-    form.append('documenttype', thePatient.documenttype);
+    if (thePatient.id && thePatient.id != '') form.append('id', thePatient.id);
 
-    form.append('idrelative', thePatient.idrelative);
-    form.append('relativerelation', thePatient.relativerelation);
-
-    form.append('postaladdress', thePatient.postaladdress);
-    form.append('idcity', thePatient.idcity.toString());
-    form.append('idstate', thePatient.idstate.toString());
-    form.append('idcountry', thePatient.idcountry.toString());
-    form.append('postalcode', thePatient.postalcode);
-
-    form.append('fs_num_expediente', thePatient.fs_num_expediente);
-    form.append('fs_fecha_inscripcion', this.formatDate2(thePatient.fs_fecha_inscripcion));
-    form.append('fs_num_ss', thePatient.fs_num_ss==null?"":thePatient.fs_num_ss);
-    form.append('fs_estado_civil', thePatient.fs_estado_civil);
-    form.append('phone', thePatient.phone);
-
-    form.append('language', thePatient.language);
-
-    form.append('servicetype', thePatient.servicetype);
-    form.append('tallerpsico', thePatient.tallerpsico.toString());
-
-    form.append('transportservice', thePatient.transportservice.toString());
-    form.append('comedorservice', thePatient.comedorservice.toString());
-    form.append('ayudadomicilioservice', thePatient.ayudadomicilioservice.toString());
-    form.append('duchaservice', thePatient.duchaservice.toString());
-
-
-    form.append('transportservice_text', thePatient.transportservice_text);
-    form.append('comedorservice_text', thePatient.comedorservice_text);
-    form.append('ayudadomicilioservice_text', thePatient.ayudadomicilioservice_text);
-    form.append('duchaservice_text', thePatient.duchaservice_text);
-
-
-    form.append('register_document_url', thePatient.register_document_url);
-    if(thePatient.register_document_url_signed && thePatient.register_document_url_signed.startsWith('https://')) form.append('register_document_url_signed', thePatient.register_document_url_signed);
-
-    form.append('register19_document_url', thePatient.register19_document_url);
-    if(thePatient.register19_document_url_signed && thePatient.register19_document_url_signed.startsWith('https://')) form.append('register19_document_url_signed', thePatient.register19_document_url_signed);
-
-    form.append('register20_document_url', thePatient.register20_document_url);
-    if(thePatient.register20_document_url_signed && thePatient.register20_document_url_signed.startsWith('https://')) form.append('register20_document_url_signed', thePatient.register20_document_url_signed);
-
-    form.append('register21_document_url', thePatient.register21_document_url);
-    if(thePatient.register21_document_url_signed && thePatient.register21_document_url_signed.startsWith('https://')) form.append('register21_document_url_signed', thePatient.register21_document_url_signed);
-
-    form.append('register22_document_url', thePatient.register22_document_url);
-    if(thePatient.register22_document_url_signed && thePatient.register22_document_url_signed.startsWith('https://')) form.append('register22_document_url_signed', thePatient.register22_document_url_signed);
-
-    form.append('register23_document_url', thePatient.register23_document_url);
-    if(thePatient.register23_document_url_signed && thePatient.register23_document_url_signed.startsWith('https://')) form.append('register23_document_url_signed', thePatient.register23_document_url_signed);
-
-    form.append('register24_document_url', thePatient.register24_document_url);
-    if(thePatient.register24_document_url_signed && thePatient.register24_document_url_signed.startsWith('https://')) form.append('register24_document_url_signed', thePatient.register24_document_url_signed);
-
-    form.append('register25_document_url', thePatient.register25_document_url);
-    if(thePatient.register25_document_url_signed && thePatient.register25_document_url_signed.startsWith('https://')) form.append('register25_document_url_signed', thePatient.register25_document_url_signed);
-
-    form.append('register26_document_url', thePatient.register26_document_url);
-    if(thePatient.register26_document_url_signed && thePatient.register26_document_url_signed.startsWith('https://')) form.append('register26_document_url_signed', thePatient.register26_document_url_signed);
-
-    form.append('register27_document_url', thePatient.register27_document_url);
-    if(thePatient.register27_document_url_signed && thePatient.register27_document_url_signed.startsWith('https://')) form.append('register27_document_url_signed', thePatient.register27_document_url_signed);
-
-    form.append('register28_document_url', thePatient.register28_document_url);
-    if(thePatient.register28_document_url_signed && thePatient.register28_document_url_signed.startsWith('https://')) form.append('register28_document_url_signed', thePatient.register28_document_url_signed);
-
-    form.append('register29_document_url', thePatient.register29_document_url);
-    if(thePatient.register29_document_url_signed && thePatient.register29_document_url_signed.startsWith('https://')) form.append('register29_document_url_signed', thePatient.register29_document_url_signed);
-
-    form.append('register30_document_url', thePatient.register30_document_url);
-    if(thePatient.register30_document_url_signed && thePatient.register30_document_url_signed.startsWith('https://')) form.append('register30_document_url_signed', thePatient.register30_document_url_signed);
-
+    if (thePatient.name && thePatient.name != '') form.append('name', thePatient.name);
+    if (thePatient.surname1 && thePatient.surname1 != '') form.append('surname1', thePatient.surname1);
+    if (thePatient.surname2 && thePatient.surname2 != '') form.append('surname2', thePatient.surname2);
+    if (thePatient.birthdate) form.append('birthdate', this.formatDate2(thePatient.birthdate));
+    if (thePatient.gender && thePatient.gender != '') form.append('gender', thePatient.gender);
+    if (thePatient.documentid && thePatient.documentid != '') form.append('documentid', thePatient.documentid);
+    if (thePatient.documenttype && thePatient.documenttype != '') form.append('documenttype', thePatient.documenttype);
+    
+    if (thePatient.idrelative && thePatient.idrelative != '') form.append('idrelative', thePatient.idrelative);
+    if (thePatient.relativerelation && thePatient.relativerelation != '') form.append('relativerelation', thePatient.relativerelation);
+    
+    if (thePatient.postaladdress && thePatient.postaladdress != '') form.append('postaladdress', thePatient.postaladdress);
+    if (thePatient.idcity) form.append('idcity', thePatient.idcity.toString());
+    if (thePatient.idstate) form.append('idstate', thePatient.idstate.toString());
+    if (thePatient.idcountry) form.append('idcountry', thePatient.idcountry.toString());
+    if (thePatient.postalcode && thePatient.postalcode != '') form.append('postalcode', thePatient.postalcode);
+    
+    if (thePatient.num_contrato && thePatient.num_contrato != '') form.append('num_contrato', thePatient.num_contrato);
+    if (thePatient.fs_num_expediente && thePatient.fs_num_expediente != '') form.append('fs_num_expediente', thePatient.fs_num_expediente);
+    if (thePatient.fs_fecha_inscripcion) form.append('fs_fecha_inscripcion', this.formatDate2(thePatient.fs_fecha_inscripcion));
+    if (thePatient.fs_num_ss != null) form.append('fs_num_ss', thePatient.fs_num_ss == null ? "" : thePatient.fs_num_ss);
+    if (thePatient.fs_estado_civil && thePatient.fs_estado_civil != '') form.append('fs_estado_civil', thePatient.fs_estado_civil);
+    if (thePatient.phone && thePatient.phone != '') form.append('phone', thePatient.phone);
+    
+    if (thePatient.language && thePatient.language != '') form.append('language', thePatient.language);
+    
+    if (thePatient.servicetype && thePatient.servicetype != '') form.append('servicetype', thePatient.servicetype);
+    if (thePatient.tallerpsico) form.append('tallerpsico', thePatient.tallerpsico.toString());
+    
+    if (thePatient.transportservice) form.append('transportservice', thePatient.transportservice.toString());
+    if (thePatient.comedorservice) form.append('comedorservice', thePatient.comedorservice.toString());
+    if (thePatient.ayudadomicilioservice) form.append('ayudadomicilioservice', thePatient.ayudadomicilioservice.toString());
+    if (thePatient.duchaservice) form.append('duchaservice', thePatient.duchaservice.toString());
+    
+    if (thePatient.transportservice_text && thePatient.transportservice_text != '') form.append('transportservice_text', thePatient.transportservice_text);
+    if (thePatient.comedorservice_text && thePatient.comedorservice_text != '') form.append('comedorservice_text', thePatient.comedorservice_text);
+    if (thePatient.ayudadomicilioservice_text && thePatient.ayudadomicilioservice_text != '') form.append('ayudadomicilioservice_text', thePatient.ayudadomicilioservice_text);
+    if (thePatient.duchaservice_text && thePatient.duchaservice_text != '') form.append('duchaservice_text', thePatient.duchaservice_text);
+    
+    if (thePatient.register_document_url && thePatient.register_document_url != '') form.append('register_document_url', thePatient.register_document_url);
+    if (thePatient.register_document_url_signed && thePatient.register_document_url_signed.startsWith('https://')) form.append('register_document_url_signed', thePatient.register_document_url_signed);
+    
+    if (thePatient.register19_document_url && thePatient.register19_document_url != '') form.append('register19_document_url', thePatient.register19_document_url);
+    if (thePatient.register19_document_url_signed && thePatient.register19_document_url_signed.startsWith('https://')) form.append('register19_document_url_signed', thePatient.register19_document_url_signed);
+    
+    if (thePatient.register20_document_url && thePatient.register20_document_url != '') form.append('register20_document_url', thePatient.register20_document_url);
+    if (thePatient.register20_document_url_signed && thePatient.register20_document_url_signed.startsWith('https://')) form.append('register20_document_url_signed', thePatient.register20_document_url_signed);
+    
+    if (thePatient.register21_document_url && thePatient.register21_document_url != '') form.append('register21_document_url', thePatient.register21_document_url);
+    if (thePatient.register21_document_url_signed && thePatient.register21_document_url_signed.startsWith('https://')) form.append('register21_document_url_signed', thePatient.register21_document_url_signed);
+    
+    if (thePatient.register22_document_url && thePatient.register22_document_url != '') form.append('register22_document_url', thePatient.register22_document_url);
+    if (thePatient.register22_document_url_signed && thePatient.register22_document_url_signed.startsWith('https://')) form.append('register22_document_url_signed', thePatient.register22_document_url_signed);
+    
+    if (thePatient.register23_document_url && thePatient.register23_document_url != '') form.append('register23_document_url', thePatient.register23_document_url);
+    if (thePatient.register23_document_url_signed && thePatient.register23_document_url_signed.startsWith('https://')) form.append('register23_document_url_signed', thePatient.register23_document_url_signed);
+    
+    if (thePatient.register24_document_url && thePatient.register24_document_url != '') form.append('register24_document_url', thePatient.register24_document_url);
+    if (thePatient.register24_document_url_signed && thePatient.register24_document_url_signed.startsWith('https://')) form.append('register24_document_url_signed', thePatient.register24_document_url_signed);
+    
+    if (thePatient.register25_document_url && thePatient.register25_document_url != '') form.append('register25_document_url', thePatient.register25_document_url);
+    if (thePatient.register25_document_url_signed && thePatient.register25_document_url_signed.startsWith('https://')) form.append('register25_document_url_signed', thePatient.register25_document_url_signed);
+    
+    if (thePatient.register26_document_url && thePatient.register26_document_url != '') form.append('register26_document_url', thePatient.register26_document_url);
+    if (thePatient.register26_document_url_signed && thePatient.register26_document_url_signed.startsWith('https://')) form.append('register26_document_url_signed', thePatient.register26_document_url_signed);
+    
+    if (thePatient.register27_document_url && thePatient.register27_document_url != '') form.append('register27_document_url', thePatient.register27_document_url);
+    if (thePatient.register27_document_url_signed && thePatient.register27_document_url_signed.startsWith('https://')) form.append('register27_document_url_signed', thePatient.register27_document_url_signed);
+    
+    if (thePatient.register28_document_url && thePatient.register28_document_url != '') form.append('register28_document_url', thePatient.register28_document_url);
+    if (thePatient.register28_document_url_signed && thePatient.register28_document_url_signed.startsWith('https://')) form.append('register28_document_url_signed', thePatient.register28_document_url_signed);
+    
+    if (thePatient.register29_document_url && thePatient.register29_document_url != '') form.append('register29_document_url', thePatient.register29_document_url);
+    if (thePatient.register29_document_url_signed && thePatient.register29_document_url_signed.startsWith('https://')) form.append('register29_document_url_signed', thePatient.register29_document_url_signed);
+    
+    if (thePatient.register30_document_url && thePatient.register30_document_url != '') form.append('register30_document_url', thePatient.register30_document_url);
+    if (thePatient.register30_document_url_signed && thePatient.register30_document_url_signed.startsWith('https://')) form.append('register30_document_url_signed', thePatient.register30_document_url_signed);
+    
 
     return this.http.post<any>(ENV.url.patients + '/savePatient', form);
   }

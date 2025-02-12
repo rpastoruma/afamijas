@@ -205,7 +205,7 @@
            
             <ng-select style="margin-top: 10px;" [searchable]="false" [multiple]="false" [(ngModel)]="is_document_signed" name="is_document_signed" [clearable]="false">
                 <ng-option value="SIN_FIRMA">Voy a aportar el documento SIN FIRMAR por el socio</ng-option>
-                <ng-option value="FIRMADO">Voy a aportar el documento FIRMADO el socio</ng-option>
+                <ng-option value="FIRMADO">Voy a aportar el documento FIRMADO por el socio</ng-option>
             </ng-select>
 
 
@@ -277,7 +277,7 @@
            
             <ng-select style="margin-top: 10px;" [searchable]="false" [multiple]="false" [(ngModel)]="is_document_signed" name="is_document_signed" [clearable]="false">
                 <ng-option value="SIN_FIRMA">Voy a aportar el documento SIN FIRMAR por el socio</ng-option>
-                <ng-option value="FIRMADO">Voy a aportar el documento FIRMADO el socio</ng-option>
+                <ng-option value="FIRMADO">Voy a aportar el documento FIRMADO por el socio</ng-option>
             </ng-select>
 
 
@@ -289,11 +289,11 @@
 
 
 
-            <div *ngIf="theMember.unregister_document_url && theMember.unregister_document_url!='' && !(theMember.unregister_document_url_signed && theMember.unregister_document_url_signed!='') " matTooltip="Documento de baja" class="file-upload">
+            <div *ngIf="theMember.unregister_document_url && theMember.unregister_document_url!=''  " matTooltip="Documento de baja" class="file-upload">
                 <a class="form-control" target="_blank" href="{{theMember.unregister_document_url}}"><i class="fa-solid fa-paperclip"></i> Documento subido previamente (sin firmar)</a>
-                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="openDocumentUnRegister();">
+                <!--button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="openDocumentUnRegister();">
                     FIRMAR DOCUMENTO
-                </button>
+                </button-->
 
                 <br/>
             </div>       
@@ -311,8 +311,8 @@
     </div>
 
     <div class="modal-footer">
-        <button [disabled]="isProcessing"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="unregisterMember();">
-            <span *ngIf="theMember.status=='A'">DAR DE BAJA AL SOCIO</span>
+        <button  *ngIf="theMember.unregister_document_url_signed && theMember.unregister_document_url_signed!=''" [disabled]="isProcessing"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="unregisterMember();">
+            <span  *ngIf="theMember.status=='A'">DAR DE BAJA AL SOCIO</span>
             <span *ngIf="theMember.status=='D'">ACTUALIZAR BAJA AL SOCIO</span>
         </button>
     </div>

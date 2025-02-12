@@ -357,7 +357,8 @@ export class SocialWorkerListComponent implements OnInit{
     ips_evalconductual: '',
     ips_evalfuncional: '',
     ips_situacioneconomica: '',
-    ips_observaciones: ''
+    ips_observaciones: '',
+    num_contrato: ''
   }
 
   theCountries : CountryDTO[] = [];
@@ -570,7 +571,7 @@ export class SocialWorkerListComponent implements OnInit{
     if(format === 'excel') this.loadingExcel = true;
     else if(format === 'pdf') this.loadingPDF = true;
 
-    this.patientsService.getPatients(0, 100000000, this.name_surnames, this.documentid, this.status).subscribe(
+    this.patientsService.getPatients(0, 100000000, this.theIdpatient, this.name_surnames, this.documentid, this.status).subscribe(
       res => {
         const header = {};
         const keys = ['Nombre', 'DNI', 'Email', 'Teléfono'];

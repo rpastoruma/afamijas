@@ -237,3 +237,18 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
       expanded: false,
     }
   ];  
+
+
+  
+  
+
+  //MENÜ ATENCIONES
+  export const MENU_ATENCIONES: NbMenuItem[] = [
+    {
+      title: 'Atenciones',
+      icon: { icon: 'fa-phone', pack: 'fas' },
+      link: '/atenciones',
+      data: 'menu.atenciones',
+      expanded: false,
+    }
+  ];  

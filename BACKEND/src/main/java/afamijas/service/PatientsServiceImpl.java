@@ -8,6 +8,7 @@ import afamijas.model.*;
 import afamijas.model.dto.PatientDTO;
 import afamijas.queuemail.model.dto.SendingResultDTO;
 import afamijas.utils.FileUtils;
+import afamijas.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -127,7 +128,7 @@ public class PatientsServiceImpl implements PatientsService
 	public PatientDTO savePatient(String id, String name, String surname1, String surname2, LocalDate birthdate, String gender, String documentid, String documenttype,
 								  String idrelative, String relativerelation,
 								  String postaladdress, Integer idcity, Integer idstate, Integer idcountry, String postalcode,
-								  String fs_num_expediente, LocalDate fs_fecha_inscripcion, String fs_num_ss, String fs_estado_civil, String phone,
+								  String num_contrato, String fs_num_expediente, LocalDate fs_fecha_inscripcion, String fs_num_ss, String fs_estado_civil, String phone,
 								  String servicetype, Boolean tallerpsico, Boolean transportservice, String transportservice_text, Boolean comedorservice, String comedorservice_text, Boolean ayudadomicilioservice, String ayudadomicilioservice_text, Boolean duchaservice, String duchaservice_text,
 								  String register_document_url, String register_document_url_signed,
 								  String register19_document_url, String register19_document_url_signed,
@@ -189,7 +190,32 @@ public class PatientsServiceImpl implements PatientsService
 		patient.setPostaladdress(postaladdress);
 		patient.setPostalcode(postalcode);
 
-		patient.setFs_num_expediente(fs_num_expediente);
+		if(num_contrato==null || num_contrato.trim().equals(""))
+		{
+			String last_num_contrato = this.usersRepository.findHighestNumContrato();
+			if(last_num_contrato==null || last_num_contrato.trim().equals("")) last_num_contrato = "1";
+			num_contrato = StringUtils.incrementLastNumber(last_num_contrato);
+			patient.setNum_contrato(num_contrato);
+		}
+		else
+		{
+			num_contrato = StringUtils.numberFoString(num_contrato);
+			patient.setNum_contrato(num_contrato);
+		}
+
+		if(fs_num_expediente==null || fs_num_expediente.trim().equals(""))
+		{
+			String last_fs_num_expediente = this.usersRepository.findHighestFsNumExpediente();
+			if(last_fs_num_expediente==null || last_fs_num_expediente.trim().equals("")) last_fs_num_expediente = "1";
+			fs_num_expediente = StringUtils.incrementLastNumber(last_fs_num_expediente);
+			patient.setFs_num_expediente(fs_num_expediente);
+		}
+		else
+		{
+			fs_num_expediente = StringUtils.numberFoString(fs_num_expediente);
+			patient.setFs_num_expediente(fs_num_expediente);
+		}
+
 		patient.setFs_fecha_inscripcion(fs_fecha_inscripcion);
 		patient.setFs_num_ss(fs_num_ss);
 		patient.setFs_estado_civil(fs_estado_civil);
@@ -305,6 +331,7 @@ public class PatientsServiceImpl implements PatientsService
 			patient.setRegister21_document_url(register21_document_url);
 			patient.setRegister21_document_url_signed(register21_document_url_signed);
 
+			/*
 			if(register22_document_url==null || register22_document_url.equals(""))
 			{
 				register22_document_url_signed = null;
@@ -314,7 +341,7 @@ public class PatientsServiceImpl implements PatientsService
 				register22_document_url = this.getCDNURL("register22", patient.get_id(), values);
 			}
 			patient.setRegister22_document_url(register22_document_url);
-			patient.setRegister22_document_url_signed(register22_document_url_signed);
+			patient.setRegister22_document_url_signed(register22_document_url_signed);*/
 
 			if(register23_document_url==null || register23_document_url.equals(""))
 			{

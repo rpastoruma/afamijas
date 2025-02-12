@@ -2,6 +2,7 @@ package afamijas.controller;
 
 
 import afamijas.model.CalendarEvent;
+import afamijas.model.dto.AtencionDTO;
 import afamijas.model.dto.CalendarEventDTO;
 import afamijas.service.ErrorsService;
 import afamijas.service.MediaService;
@@ -9,6 +10,7 @@ import afamijas.service.UsersService;
 import afamijas.service.WorkersService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -1393,6 +1395,97 @@ public class WorkersController extends AbstractBaseController
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getAtenciones", produces="application/json")
+	public ResponseEntity<?> getAtenciones(
+			@RequestParam(value = "dayfrom", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			@RequestParam(value = "dayto", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(order==null) order = "created";
+			if(orderasc==null) orderasc = "DESC";
+
+			return new ResponseEntity<>(this.workersService.getAtenciones(dayfrom, dayto, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@RequestMapping(method=RequestMethod.POST, value="registerAtencion", produces="application/json")
+	public ResponseEntity<?> registerAtencion(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "number", required = false) String number,
+			@RequestParam(value = "datedone", required = true)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate datedone,
+			@RequestParam(value = "clientfullname", required = true) String clientfullname,
+			@RequestParam(value = "sex", required = true) String sex,
+			@RequestParam(value = "nationality", required = true) String nationality,
+			@RequestParam(value = "relationship", required = true) String relationship,
+			@RequestParam(value = "why", required = true) String why,
+			@RequestParam(value = "via", required = true) String via,
+			@RequestParam(value = "professional", required = false) String professional,
+			@RequestParam(value = "observations", required = false) String observations,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN()  && !isMANAGER()  && !isSOCIAL_WORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.registerAtencion(id, this.getId(), number, datedone, clientfullname, sex, nationality, relationship, why, via, professional, observations);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteAtencion", produces="application/json")
+	public ResponseEntity<?> deleteAtencion(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.deleteAtencion(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 
 
 

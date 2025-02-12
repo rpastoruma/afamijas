@@ -17,7 +17,7 @@ public interface PatientsService
     PatientDTO savePatient(String id, String name, String surname1, String surname2, LocalDate birthdate, String gender, String documentid, String documenttype,
                            String idrelative, String relativerelation,
                            String postaladdress, Integer idcity, Integer idstate, Integer idcountry, String postalcode,
-                           String fs_num_expediente, LocalDate fs_fecha_inscripcion, String fs_num_ss, String fs_estado_civil, String phone,
+                           String num_contrato, String fs_num_expediente, LocalDate fs_fecha_inscripcion, String fs_num_ss, String fs_estado_civil, String phone,
                            String servicetype, Boolean tallerpsico, Boolean transportservice, String transportservice_text, Boolean comedorservice, String comedorservice_text, Boolean ayudadomicilioservice, String ayudadomicilioservice_text, Boolean duchaservice, String duchaservice_text,
                            String register_document_url, String register_document_url_signed,
                            String register19_document_url, String register19_document_url_signed,

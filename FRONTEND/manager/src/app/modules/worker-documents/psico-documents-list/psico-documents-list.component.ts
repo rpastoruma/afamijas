@@ -347,7 +347,8 @@ export class PsicoDocumentsListComponent implements OnInit {
     ips_evalconductual: '',
     ips_evalfuncional: '',
     ips_situacioneconomica: '',
-    ips_observaciones: ''
+    ips_observaciones: '',
+    num_contrato: ''
   }
 
 

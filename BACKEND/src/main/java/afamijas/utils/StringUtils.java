@@ -281,9 +281,41 @@ public class StringUtils
 
     }
 
+    public static String numberFoString(String input) {
+        if (input == null || input.isEmpty()) {
+            return input; // Retorna la entrada si es nula o vacía
+        }
 
+        // Verifica si la cadena contiene números utilizando una expresión regular
+        if (input.matches(".*\\d.*")) {
+            return input; // Si tiene números, devuelve la cadena tal cual
+        } else {
+            return input + "1"; // Si no tiene números, concatena "1"
+        }
+    }
 
+    public static String incrementLastNumber(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
 
+        // Utilizamos una expresión regular para encontrar el último tramo de números
+        String regex = "(\\d+)(?!.*\\d)";
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+        java.util.regex.Matcher matcher = pattern.matcher(input);
+
+        if (matcher.find()) {
+            // Obtenemos el último tramo de números
+            String lastNumber = matcher.group(1);
+            // Incrementamos el número
+            int incrementedNumber = Integer.parseInt(lastNumber) + 1;
+            // Construimos la cadena con el tramo incrementado
+            return input.substring(0, matcher.start()) + incrementedNumber + input.substring(matcher.end());
+        } else {
+            // Si no hay números en la cadena, devolvemos la cadena original
+            return input;
+        }
+    }
 
 
 }

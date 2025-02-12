@@ -155,7 +155,8 @@ public class PatientsController extends AbstractBaseController
 			@RequestParam(value = "idcountry", required = true) Integer idcountry,
 			@RequestParam(value = "postalcode", required = true) String postalcode,
 
-			@RequestParam(value = "fs_num_expediente", required = true) String fs_num_expediente,
+			@RequestParam(value = "num_contrato", required = false) String num_contrato,
+			@RequestParam(value = "fs_num_expediente", required = false) String fs_num_expediente,
 			@RequestParam(value = "fs_fecha_inscripcion", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fs_fecha_inscripcion,
 			@RequestParam(value = "fs_num_ss", required = false) String fs_num_ss,
 			@RequestParam(value = "fs_estado_civil", required = true) String fs_estado_civil,
@@ -220,7 +221,7 @@ public class PatientsController extends AbstractBaseController
 			return new ResponseEntity<>(this.patientsService.savePatient(id, name, surname1, surname2, birthdate, gender, documentid, documenttype,
 					idrelative, relativerelation,
 					postaladdress, idcity, idstate, idcountry, postalcode,
-					fs_num_expediente, fs_fecha_inscripcion, fs_num_ss, fs_estado_civil, phone,
+					num_contrato, fs_num_expediente, fs_fecha_inscripcion, fs_num_ss, fs_estado_civil, phone,
 					servicetype, tallerpsico, transportservice, transportservice_text, comedorservice, comedorservice_text, ayudadomicilioservice, ayudadomicilioservice_text, duchaservice, duchaservice_text,
 					register_document_url,  register_document_url_signed,
 					register19_document_url,  register19_document_url_signed,

@@ -1,0 +1,348 @@
+import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
+import { parseDataExport, ActionDTO, rolName, AtencionDTO } from 'src/app/shared/models/models';
+import { UsersService } from 'src/app/core/services/users.service';
+import { PdfService } from 'src/app/core/services/pdf-service.service';
+import { ExcelService } from 'src/app/core/services/excel-service.service';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { flatpickrFactory } from '../../calendar/mycalendar.module'; 
+import { Subscription, finalize } from 'rxjs';
+import { HttpEventType } from '@angular/common/http';
+import { AtencionesService } from 'src/app/core/services/atenciones.service';
+import { ActivatedRoute, Router } from '@angular/router';
+
+@Component({
+  selector: 'app-atenciones-list',
+  templateUrl: './atenciones-list.component.html',
+  styleUrls: ['./atenciones-list.component.scss']
+})
+export class AtencionesListComponent implements OnInit {
+
+  
+
+  @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
+
+  //PARÁMETROS LISTADO
+  dayfrom : Date = null; 
+  dayto : Date = null;
+
+  page : number = 0;
+  size : number = 20;
+  totalPages : number = 0;
+
+  
+
+  theAtencion : AtencionDTO = {
+    id: '',
+    idworker: '',
+    workerfullname: '',
+    number: '',
+    datedone: new Date(),
+    clientfullname: '',
+    sex: '',
+    nationality: '',
+    relationship: '',
+    why: '',
+    via: '',
+    professional: '',
+    observations: ''
+  };
+
+  
+  atenciones: any[]  = []; // any => formato del listado
+  atencionesObjects: AtencionDTO[]  = [];
+
+  loadingExcel : boolean = false;
+  loadingPDF : boolean = false;
+  isProcessing : boolean = true;
+
+  exportData: any[];
+
+  actions : ActionDTO[] = [];
+
+
+  constructor(
+    public toastService: NbToastrService,
+    private pdfService : PdfService,
+    private excelService : ExcelService,
+    private authService : AuthService,
+    private modal: NgbModal, 
+    private atencionesService : AtencionesService,
+    private usersService : UsersService,
+    private router: Router,
+    private route: ActivatedRoute
+
+  ) {
+   }
+
+  ngOnInit(): void {
+    flatpickrFactory();
+    this.dayfrom = null;
+    this.dayto = null;
+    if(!this.canModify()) this.actions = [];
+    if(this.canModify()) this.actions = [{action: 'edit', text: 'Modificar atención'}, {action: 'delete', text: 'Eliminar atención'}];
+    this.getAtenciones(0);
+  }
+
+
+  roleName(therole) { return rolName(therole); }
+  
+
+  
+
+
+
+  getAtenciones(page :number) 
+  {
+    this.isProcessing = true;
+    //if(!this.dayfrom) this.dayfrom = null;
+    //if(!this.dayto) this.dayto = null;
+    this.page = page
+    this.atencionesService.getAtenciones(this.page, this.size, this.dayfrom, this.dayto).subscribe(
+      res => {
+        this.isProcessing = false;
+        this.atenciones = res.content.map(item => { return {id: item.id, values: [item.number, this.date2Text1(item.datedone), item.clientfullname, item.why ] }; });
+        this.atencionesObjects = res.content;
+
+        this.totalPages = res.totalPages;
+      },
+      error => {
+        this.isProcessing = false;
+        console.error("getAtenciones():"+JSON.stringify(error));
+        this.toastService.show("No se han podido obtener las atenciones.",
+          "¡Ups!", 
+          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+         );
+      }
+    );
+  }
+
+
+
+  
+  getExportData(format: string) 
+  {
+    if(format === 'excel') this.loadingExcel = true;
+    else if(format === 'pdf') this.loadingPDF = true;
+
+    if(!this.dayfrom) this.dayfrom = new Date();
+    if(!this.dayto) this.dayto = new Date();
+
+    this.atencionesService.getAtenciones(0, 100000000, this.dayfrom, this.dayto).subscribe(
+      res => {
+        const header = {};
+        const keys = ['Nº atención:', 'Fecha:', 'Nombre completo:', 'Género:', 'Nacionalidad:', 'Parentesco:', 'Motivo:', 'Vía atención:', 'Profesional:', 'Observaciones:'];
+        const fields = ['number', 'datedone', 'clientfullname', 'sex', 'nationality', 'relationship', 'why', 'via', 'professional', 'observations'];
+        fields.forEach((key, i) => header[key] = keys[i]);
+        this.exportData = res && res.content ? res.content.map(item => [item.number, this.date2Text1(item.datedone), item.clientfullname, item.sex, item.nationality, item.relationship, item.why, item.via, item.professional, item.observations ]) : null;
+        const final = parseDataExport(fields, this.exportData);
+        const title = 'Atenciones';
+
+        if (format === 'excel') 
+        {
+          this.excelService.exportAsExcelFile(title, [header].concat(final), title, fields);
+          this.loadingExcel = false;
+          this.loadingPDF = false;
+        } 
+        else 
+        {
+          const minFields = ['10%','10%','10%','10%','10%','10%','10%','10%','10%','10%'];
+          const keystranslate = keys.map(item => item);
+          this.pdfService.exportDataToPDF(title, keystranslate, fields, title, final, minFields);
+          this.loadingPDF = false;
+        }
+      },
+      _ => {
+        this.loadingExcel = false;
+        this.loadingPDF = false;
+      }
+    );
+  }
+
+
+  filter(page: number) {
+    this.getAtenciones(page);
+  }
+
+
+  setPage(event) {
+    this.page = event;
+    this.getAtenciones(this.page);
+  }
+
+  action(event) 
+  {
+    if (event && event[0] === 'edit') 
+    {
+      const selected = { ...this.atencionesObjects.find(item => item.id === event[1])};
+      this.openAddAtencionModal(selected);
+    } 
+    else if (event && event[0] === 'delete') 
+    {
+      this.deleteAtencion(event[1]);
+    }
+
+
+  }
+
+
+  canModify() : boolean
+  {
+    return this.authService.isManager() || this.authService.isAdmin();
+  }
+
+
+
+  openAddAtencionModal(selected? : AtencionDTO)
+  {
+    console.warn(JSON.stringify(selected));
+    if(!selected)
+    {
+      this.theAtencion.id =''; 
+      this.theAtencion.number = '';
+      this.theAtencion.datedone = new Date();
+      this.theAtencion.clientfullname =''; 
+      this.theAtencion.sex =''; 
+      this.theAtencion.clientfullname =''; 
+      this.theAtencion.nationality =''; 
+      this.theAtencion.relationship =''; 
+      this.theAtencion.why =''; 
+      this.theAtencion.via =''; 
+      this.theAtencion.professional =''; 
+      this.theAtencion.observations =''; 
+    }
+    else
+    {
+      this.theAtencion = selected;
+      this.theAtencion.datedone = this.localDateTime2Date(this.theAtencion.datedone);
+    }
+
+
+
+    this.modal.open(this.modalContent, { size: 'lg' });
+  }
+
+  saveAtencion()
+  {
+    this.isProcessing = true;
+    this.atencionesService.registerAtencion(this.theAtencion).subscribe(
+      res => {
+        this.isProcessing = false;
+        this.toastService.show("Atención grabada correctamente.",
+            "¡Ok!", 
+            { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+          );
+        this.getAtenciones(this.page);
+        this.modal.dismissAll();
+      },
+      error => {
+        this.isProcessing = false;
+        console.error("saveAtencion():"+JSON.stringify(error));
+        this.toastService.show("No se ha podido añadir la atención.",
+          "¡Ups!", 
+          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+         );
+      }
+    );
+  }
+
+
+  deleteAtencion(id : string)
+  {
+    this.atencionesService.deleteAtencion(id).subscribe(
+      res => {
+        this.isProcessing = false;
+        this.toastService.show("Atención eliminada correctamente.",
+            "¡Ok!", 
+            { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+          );
+        this.getAtenciones(this.page);
+      },
+      error => {
+        this.isProcessing = false;
+        console.error("deleteAtencion():"+JSON.stringify(error));
+        this.toastService.show("No se ha podido eliminar la atención.",
+          "¡Ups!", 
+          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+         );
+      }
+    );
+  }
+
+
+
+  
+
+
+  disabledDay(date) {
+    return false;
+    /*
+    date.setDate(date.getDate());
+   return date > new Date();
+   */
+  }
+
+  
+  //[2024,3,1,13,0,...] --> Date
+  localDateTime2Date(thedate : any) : Date
+  {
+    if(!thedate || thedate.length==0) return null;
+    let sdate = '';
+    if(thedate[0]) sdate += thedate[0];
+    if(thedate[1]) sdate += ('-' + this.completeZeros(thedate[1]));
+    if(thedate[2]) sdate += ('-' + this.completeZeros(thedate[2]));
+    if(thedate[3] || thedate[3]==0) sdate += ('T' + this.completeZeros(thedate[3]));
+    if(thedate[4] || thedate[4]==0) sdate += (':' + this.completeZeros(thedate[4]));
+    if(thedate[5] || thedate[5]==0) sdate += (':' + this.completeZeros(thedate[5]));
+    if(thedate[6] || thedate[6]==0) sdate += ('.' + thedate[6]);
+
+    const result : Date = new Date(Date.parse(sdate));
+    if(result.getFullYear()==2100) return null;
+    return result;
+  }
+
+  date2Text(thedate : any)
+  {
+    if(!thedate) return '';
+    if(thedate instanceof Date) return this.date2Text2(thedate);
+    else return this.date2Text1(thedate);
+  }
+
+  date2Text1(thelocaldatetime : number[])
+  {
+    if(!thelocaldatetime) return '';
+    let thedate : Date = this.localDateTime2Date(thelocaldatetime);
+    if(!thedate) return '';
+    let daysOfWeek = [ 'domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado' ];
+    const dayOfWeek = daysOfWeek[thedate.getDay()];
+    
+    if(thedate.getFullYear()==2100) return 'No expira';
+
+    return 'El ' + daysOfWeek[thedate.getDay()] + " " + this.completeZeros(thedate.getDate()) + "/" + this.completeZeros(thedate.getMonth()+1) + "/" + (thedate.getFullYear()+"");
+  }
+
+
+  date2Text2(thedate : Date)
+  {
+    if(!thedate) return '';
+    let daysOfWeek = [ 'domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado' ];
+    const dayOfWeek = daysOfWeek[thedate.getDay()];
+    //return 'el ' + daysOfWeek[thedate.getDay()] + " " + this.completeZeros(thedate.getDate()) + "/" + this.completeZeros(thedate.getMonth()+1) + "/" + (thedate.getFullYear()+"") + " a las " +  this.completeZeros(thedate.getHours()) + ":" + this.completeZeros(thedate.getMinutes()) + " h.";
+    return 'el ' + daysOfWeek[thedate.getDay()] + " " + this.completeZeros(thedate.getDate()) + "/" + this.completeZeros(thedate.getMonth()+1) + "/" + (thedate.getFullYear()+"");
+  }
+
+
+
+
+  completeZeros(x : number) : string
+  {
+    if(x<=9) return "0" + x;
+    else return ""+x;
+  }
+
+
+
+  
+
+}

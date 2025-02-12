@@ -144,6 +144,7 @@ export interface PatientDTO {
 
     language : string;
 
+    num_contrato: string;
 
     //FICHA SOCIAL
     fs_url : string;
@@ -917,6 +918,36 @@ export interface InvoiceDTO
     status : string;
 }
 
+
+
+export interface AtencionDTO
+{
+    id : string;
+
+    idworker : string;
+
+    workerfullname : string;
+
+    number : string
+
+    datedone : Date;
+
+    clientfullname : string;
+
+    sex : string;
+
+    nationality : string;
+
+    relationship : string;
+
+    why : string;
+
+    via : string;
+
+    professional : string;
+
+    observations : string;
+}
 
 
 //TODO: Revisar si se está haciendo bien ya que es copiada de proyectos antiguos

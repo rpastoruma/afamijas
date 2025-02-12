@@ -38,6 +38,7 @@ import { canAccessMembersGuard } from './guards/can-access-members.guard';
 import { canAccessInvoicesGuard } from './guards/can-access-invoices.guard';
 import { canViewDocsPsicoGuard } from './guards/can-view-docs-psico.guard';
 import { canViewSocialWorkerGuard } from './guards/can-view-social-worker.guard';
+import { canAccessAtencionesGuard } from './guards/can-access-atenciones.guard';
 
 
 const routes: Routes = [
@@ -173,6 +174,12 @@ const routes: Routes = [
       component: BodyLayoutComponent,
       canActivate : [canAccessInvoicesGuard],
       loadChildren: () => import('../modules/invoices/invoices.module').then(m => m.InvoicesModule) 
+    },
+    {
+      path : 'atenciones', 
+      component: BodyLayoutComponent,
+      canActivate : [canAccessAtencionesGuard],
+      loadChildren: () => import('../modules/atenciones/atenciones.module').then(m => m.AtencionesModule) 
     },
     
     {

@@ -67,7 +67,7 @@ public class PatientDTO
 
     private String principal_keeper_phone;
 
-
+    private String num_contrato;
 
     private RouteDTO routeDTO;
 
@@ -561,6 +561,8 @@ public class PatientDTO
         this.documenttype = user.getDocumenttype();
         this.phone = user.getPhone();
         this.postaladdress = user.getPostaladdress();
+
+        this.num_contrato = user.getNum_contrato();
 
         this.idcity  = user.getIdcity();
         if(city!=null) this.cityname = city.getName();
@@ -3146,5 +3148,13 @@ public class PatientDTO
 
     public void setIps_observaciones(String ips_observaciones) {
         this.ips_observaciones = ips_observaciones;
+    }
+
+    public String getNum_contrato() {
+        return num_contrato;
+    }
+
+    public void setNum_contrato(String num_contrato) {
+        this.num_contrato = num_contrato;
     }
 }

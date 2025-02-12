@@ -69,8 +69,15 @@
             <div>
                 Número de expediente: 
                 <input class="form-control" [(ngModel)]="thePatient.fs_num_expediente" name="thePatient-fs_num_expediente" type="text" >
-                <div *ngIf="thePatient.fs_num_expediente.trim()==''" style="color:red;width: 100%; text-align: right; font-size:10px">Campo obligatorio</div>
             </div>
+
+
+            <div>
+                Número de contrato: 
+                <input class="form-control" [(ngModel)]="thePatient.num_contrato" name="thePatient-num_contrato" type="text" >
+            </div>
+
+
 
             <div style="margin-top:10px">
                 Fecha de inscripción: 
@@ -180,7 +187,7 @@
 
 
             <div style="margin-top:10px;width: 100%; text-align: right;">
-            <button [disabled]="thePatient.name=='' || thePatient.surname1=='' || thePatient.fs_num_expediente=='' ||  !thePatient.birthdate  || !thePatient.fs_fecha_inscripcion  || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient)" nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+            <button [disabled]="thePatient.name=='' || thePatient.surname1=='' ||  !thePatient.birthdate  || !thePatient.fs_fecha_inscripcion  || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient)" nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
                 SIGUIENTE &gt;&gt;
             </button>
             </div>
@@ -756,8 +763,8 @@
 
     <div class="modal-footer">
         <button [disabled]="isProcessing"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="unregisterPatient();">
-            <span *ngIf="thePatient.status!='D'">DAR DE BAJA AL SOCIO</span>
-            <span *ngIf="thePatient.status=='D'">ACTUALIZAR BAJA AL SOCIO</span>
+            <span *ngIf="thePatient.status!='D'">DAR DE BAJA AL USUARIO</span>
+            <span *ngIf="thePatient.status=='D'">ACTUALIZAR BAJA AL USUARIO</span>
         </button>
     </div>
 </ng-template>

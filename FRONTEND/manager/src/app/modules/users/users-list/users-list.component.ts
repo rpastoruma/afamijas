@@ -338,7 +338,8 @@ export class UsersListComponent  implements OnInit{
     ips_evalconductual: '',
     ips_evalfuncional: '',
     ips_situacioneconomica: '',
-    ips_observaciones: ''
+    ips_observaciones: '',
+    num_contrato: ''
   }
 
   theCountries : CountryDTO[] = [];
@@ -392,9 +393,12 @@ export class UsersListComponent  implements OnInit{
 
   getPatients(page? : number)
   {
+    console.log("this.name_surnames=" + this.name_surnames);
+    console.log("this.documentid=" + this.documentid);
+    console.log("this.status=" + this.status);
       this.isProcessing = true;
       if(page) this.page = page;
-      this.patientsService.getPatients(this.page, this.size, this.name_surnames, this.documentid, this.status).subscribe(
+      this.patientsService.getPatients(this.page, this.size, null, this.name_surnames, this.documentid, this.status).subscribe(
         res => {
           this.isProcessing = false;
           this.patients = res.content.map(item => { return {id: item.id, values: [item.fullname, item.documentid, item.relativefullname, item.servicetype]  }; });
@@ -545,7 +549,7 @@ export class UsersListComponent  implements OnInit{
     if(format === 'excel') this.loadingExcel = true;
     else if(format === 'pdf') this.loadingPDF = true;
 
-    this.patientsService.getPatients(0, 100000000, this.name_surnames, this.documentid, this.status).subscribe(
+    this.patientsService.getPatients(0, 100000000, null, this.name_surnames, this.documentid, this.status).subscribe(
       res => {
         const header = {};
         const keys = ['Nombre', 'DNI', 'Email', 'Teléfono'];
@@ -642,6 +646,7 @@ export class UsersListComponent  implements OnInit{
         if(pending && pending==true)
         {
           this.thePatient = res;
+          this.createRegisterDocument(this.thePatient); 
           this.thePatient.birthdate = this.localDateTime2Date(res.birthdate);
           this.thePatient.fs_fecha_inscripcion = this.localDateTime2Date(res.fs_fecha_inscripcion);
         }
@@ -700,7 +705,8 @@ export class UsersListComponent  implements OnInit{
       if(!(this.thePatient.register_document_url_signed && this.thePatient.register_document_url_signed.startsWith("https:")))
       {
         this.thePatient.register_document_url = '';   
-        this.createRegisterDocument(this.thePatient); 
+        //this.createRegisterDocument(this.thePatient); 
+        this.savePatient(true);
       }
     }
 
@@ -906,7 +912,7 @@ export class UsersListComponent  implements OnInit{
           );*/
           saveAs(file, "documento_de_alta_" + thePatient.documentid + ".pdf");
           thePatient.register_document_url = res.url;
-          this.savePatient(true);
+          //this.savePatient(true);
       },
       error => {
         if(error.status && error.status == 200)
@@ -916,7 +922,7 @@ export class UsersListComponent  implements OnInit{
             { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );*/
           saveAs(file, "documento_de_alta_" + thePatient.documentid + ".pdf");
-          this.savePatient(true);
+          //this.savePatient(true);
         }
         else
         {

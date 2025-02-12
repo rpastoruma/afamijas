@@ -167,4 +167,15 @@ public interface WorkersService
     void deleteDocPsico(String id);
 
 
+
+
+    Page<AtencionDTO> getAtenciones(LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String order, String orderasc);
+
+    void registerAtencion(String id, String idworker, String number, LocalDate datedone, String clientfullname, String sex, String nationality, String relationship, String why, String via, String professional, String observations);
+
+    void deleteAtencion(String id);
+
+
+
+
 }

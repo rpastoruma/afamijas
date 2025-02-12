@@ -128,6 +128,7 @@ public class User
 
 	//ALTA PACIENTE:
 
+	private String num_contrato;
 	private LocalDate birthdate;
 	private String relativerelation;
 
@@ -3060,6 +3061,14 @@ public class User
 
 	public void setIps_observaciones(String ips_observaciones) {
 		this.ips_observaciones = ips_observaciones;
+	}
+
+	public String getNum_contrato() {
+		return num_contrato;
+	}
+
+	public void setNum_contrato(String num_contrato) {
+		this.num_contrato = num_contrato;
 	}
 
 	@Override

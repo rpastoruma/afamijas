@@ -3,6 +3,7 @@ package afamijas.service;
 import afamijas.dao.*;
 import afamijas.model.*;
 import afamijas.model.dto.*;
+import afamijas.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
@@ -74,10 +75,11 @@ public class WorkersServiceImpl implements WorkersService
 	final StatesRepository statesRepository;
 
 	final CountriesRepository countriesRepository;
+	final AtencionesRepository atencionesRepository;
 
 
 	@Autowired
-	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, DocsRepository docsRepository, ReceiptsRepository receiptsRepository, InvoicesRepository invoicesRepository, MediaService mediaService, NotificationsService notificationsService, DocsPsicoRepository docsPsicoRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, CountriesRepository countriesRepository)
+	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, DocsRepository docsRepository, ReceiptsRepository receiptsRepository, InvoicesRepository invoicesRepository, MediaService mediaService, NotificationsService notificationsService, DocsPsicoRepository docsPsicoRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, CountriesRepository countriesRepository, AtencionesRepository atencionesRepository)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -101,6 +103,7 @@ public class WorkersServiceImpl implements WorkersService
 		this.citiesRepository = citiesRepository;
 		this.statesRepository = statesRepository;
 		this.countriesRepository = countriesRepository;
+		this.atencionesRepository = atencionesRepository;
 	}
 
 	//TODO: REVISAR SI LA PAGINACIÓN ESTÁ BIEN HECHA YA QUE NO ESTÁ COMO EN LAS OTRAS
@@ -1357,5 +1360,98 @@ public class WorkersServiceImpl implements WorkersService
 
 		this.menusRepository.save(menu);
 	}*/
+
+
+
+
+
+	// SOLO PARA ADMIN y MANAGER
+	public Page<AtencionDTO> getAtenciones(LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String order, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		if(dayfrom!=null && dayto!=null)
+			query.addCriteria(new Criteria().andOperator(new Criteria().where("datedone").gte(dayfrom), new Criteria().where("datedone").lte(dayto)));
+		else if(dayfrom!=null && dayto==null)
+			query.addCriteria(Criteria.where("datedone").gte(dayfrom));
+		else if(dayto!=null && dayfrom==null)
+			query.addCriteria(Criteria.where("datedone").lte(dayto));
+
+		long total = this.mongoTemplate.count(query, Invoice.class);
+
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, order));
+		try { if(debug_queries) System.out.println("getAtenciones: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		//EN LOS USUARIOS WORKER INCLUIMOS TAMBIÉN LOS QUE PUDIERAN ESTAR BORRADOS POR ESO FINDONE NO FILTRA POR STATUS
+		List<AtencionDTO> list = this.mongoTemplate.find(query, Atencion.class).stream().map(x -> new AtencionDTO(x, this.usersRepository.findOne(x.getIdworker()))).toList();
+
+		return new PageImpl<>(list, pageable, total);
+	}
+
+
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void registerAtencion(String id, String idworker, String number, LocalDate datedone, String clientfullname, String sex, String nationality, String relationship, String why, String via, String professional, String observations)
+	{
+		Atencion atencion;
+		if(id!=null)
+		{
+			atencion = this.atencionesRepository.findOne(id);
+			if(atencion==null) return;
+			atencion.setNumber(number);
+		}
+		else
+		{
+			atencion = new Atencion();
+			atencion.setIdworker(idworker);
+
+			String last_nunmber = this.atencionesRepository.findHighestNumber();
+			if(last_nunmber==null || last_nunmber.trim().equals("")) last_nunmber = "0/" + getInitials(clientfullname);
+			last_nunmber = StringUtils.incrementLastNumber(last_nunmber);
+			atencion.setNumber(last_nunmber);
+		}
+
+		atencion.setDatedone(datedone);
+		atencion.setClientfullname(clientfullname);
+		atencion.setSex(sex);
+		atencion.setNationality(nationality);
+		atencion.setRelationship(relationship);
+		atencion.setWhy(why);
+		atencion.setVia(via);
+		atencion.setProfessional(professional);
+		atencion.setObservations(observations);
+
+		atencion = this.atencionesRepository.save(atencion);
+
+		//this.notificationsService.create(idpatient, null, status.equals("PAID")?"Factura pagada":"Factura pendiente", "NORMAL", duedate.format(DateTimeFormatter.ofPattern("yyyy-MM-d")) + ": " + total + " euros.", invoice.getUrl());
+	}
+
+
+	private String getInitials(String nombresYApellidos)
+	{
+		if(nombresYApellidos==null || nombresYApellidos.trim().equals(""))  return "";
+		String[] partes = nombresYApellidos.split(" ");
+		StringBuilder iniciales = new StringBuilder();
+
+		for (String parte : partes) {
+			if (!parte.isEmpty()) {
+				iniciales.append(parte.charAt(0));  // Agregar la primera letra de cada palabra
+			}
+		}
+
+		return iniciales.toString().toUpperCase();
+	}
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void deleteAtencion(String id)
+	{
+		Atencion atencion = this.atencionesRepository.findOne(id);
+		if(atencion!=null) this.atencionesRepository.delete(atencion);
+	}
 
 }

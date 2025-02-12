@@ -1,6 +1,7 @@
 package afamijas.dao;
 
 import afamijas.model.User;
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -51,4 +52,19 @@ public interface UsersRepository extends MongoRepository<User, String>
 	@Query("{ 'status' : ?0 }")
 	List<User> findUsersByStatus(String status);
 
+	// Agregación para encontrar el mayor num_contrato
+	@Aggregation(pipeline = {
+			"{ $sort: { num_contrato: -1 } }",  // Ordenamos de mayor a menor
+			"{ $limit: 1 }",                    // Limitar a 1 resultado
+			"{ $project: { _id: 0, num_contrato: 1 } }"  // Proyectamos solo el campo num_contrato
+	})
+	String findHighestNumContrato();
+
+	// Agregación para encontrar el mayor fs_num_expediente
+	@Aggregation(pipeline = {
+			"{ $sort: { fs_num_expediente: -1 } }",  // Ordenamos de mayor a menor
+			"{ $limit: 1 }",                        // Limitar a 1 resultado
+			"{ $project: { _id: 0, fs_num_expediente: 1 } }"  // Proyectamos solo el campo fs_num_expediente
+	})
+	String findHighestFsNumExpediente();
 }
