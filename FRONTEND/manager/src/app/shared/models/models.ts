@@ -485,6 +485,40 @@ export interface PatientDTO {
     ips_observaciones: string; 
 
 
+    //PAI FISIO:
+
+    pai_fisio_fecha_valoracion: Date;
+    pai_fisio_prob_salud: string;
+    pai_fisio_dolres: string;
+    pai_fisio_duerme: string;
+    pai_fisio_nec_aliment: string;
+    pai_fisio_hab_saludables: string;
+    pai_fisio_atencion_preven: string;
+    pai_fisio_acceso_atencion: string;
+    pai_fisio_medicacion_requerida: string;
+    pai_fisio_alergias: string;
+    pai_fisio_upp: string;
+    pai_fisio_autonomo: string;
+    pai_fisio_ayudas_tecnicas: string;
+    pai_fisio_movilidad_mmss: string;
+    pai_fisio_movilidad_mmii: string;
+    pai_fisio_movilidad_cuello: string;
+    pai_fisio_movilida_tronco: string;
+    pai_fisio_equilibrio: string;
+    pai_fisio_bipedestacion: string;
+    pai_fisio_marcha: string;
+    pai_fisio_riesgo_caidas: string;
+    pai_fisio_deformidades: string;
+    pai_fisio_disfruta_ocio: string;
+    pai_fisio_espacios_ocio: string;
+    pai_fisio_relaciones_entorno: string;
+    pai_fisio_objetivos: string;
+    pai_fisio_tratamiento: string;
+    pai_fisio_valoraciones: string;
+    pai_fisio_actuaciones: string;
+    pai_fisio_incidencias: string;
+    pai_fisio_url : string;
+
 
 }
 

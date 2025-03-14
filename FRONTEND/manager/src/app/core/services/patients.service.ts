@@ -376,6 +376,43 @@ export class PatientsService {
     return this.http.post<any>(ENV.url.patients + '/saveInformePsicoSocial', form);
   }
 
+  savePAIFisio(thePatient: PatientDTO) {
+    const form = new FormData();
+    if (thePatient.id && thePatient.id != '') form.append('id', thePatient.id);
+  
+    if (thePatient.pai_fisio_fecha_valoracion) form.append('pai_fisio_fecha_valoracion', this.formatDate2(thePatient.pai_fisio_fecha_valoracion));
+    if (thePatient.pai_fisio_prob_salud) form.append('pai_fisio_prob_salud', thePatient.pai_fisio_prob_salud);
+    if (thePatient.pai_fisio_dolres) form.append('pai_fisio_dolres', thePatient.pai_fisio_dolres);
+    if (thePatient.pai_fisio_duerme) form.append('pai_fisio_duerme', thePatient.pai_fisio_duerme);
+    if (thePatient.pai_fisio_nec_aliment) form.append('pai_fisio_nec_aliment', thePatient.pai_fisio_nec_aliment);
+    if (thePatient.pai_fisio_hab_saludables) form.append('pai_fisio_hab_saludables', thePatient.pai_fisio_hab_saludables);
+    if (thePatient.pai_fisio_atencion_preven) form.append('pai_fisio_atencion_preven', thePatient.pai_fisio_atencion_preven);
+    if (thePatient.pai_fisio_acceso_atencion) form.append('pai_fisio_acceso_atencion', thePatient.pai_fisio_acceso_atencion);
+    if (thePatient.pai_fisio_medicacion_requerida) form.append('pai_fisio_medicacion_requerida', thePatient.pai_fisio_medicacion_requerida);
+    if (thePatient.pai_fisio_alergias) form.append('pai_fisio_alergias', thePatient.pai_fisio_alergias);
+    if (thePatient.pai_fisio_upp) form.append('pai_fisio_upp', thePatient.pai_fisio_upp);
+    if (thePatient.pai_fisio_autonomo) form.append('pai_fisio_autonomo', thePatient.pai_fisio_autonomo);
+    if (thePatient.pai_fisio_ayudas_tecnicas) form.append('pai_fisio_ayudas_tecnicas', thePatient.pai_fisio_ayudas_tecnicas);
+    if (thePatient.pai_fisio_movilidad_mmss) form.append('pai_fisio_movilidad_mmss', thePatient.pai_fisio_movilidad_mmss);
+    if (thePatient.pai_fisio_movilidad_mmii) form.append('pai_fisio_movilidad_mmii', thePatient.pai_fisio_movilidad_mmii);
+    if (thePatient.pai_fisio_movilidad_cuello) form.append('pai_fisio_movilidad_cuello', thePatient.pai_fisio_movilidad_cuello);
+    if (thePatient.pai_fisio_movilida_tronco) form.append('pai_fisio_movilida_tronco', thePatient.pai_fisio_movilida_tronco);
+    if (thePatient.pai_fisio_equilibrio) form.append('pai_fisio_equilibrio', thePatient.pai_fisio_equilibrio);
+    if (thePatient.pai_fisio_bipedestacion) form.append('pai_fisio_bipedestacion', thePatient.pai_fisio_bipedestacion);
+    if (thePatient.pai_fisio_marcha) form.append('pai_fisio_marcha', thePatient.pai_fisio_marcha);
+    if (thePatient.pai_fisio_riesgo_caidas) form.append('pai_fisio_riesgo_caidas', thePatient.pai_fisio_riesgo_caidas);
+    if (thePatient.pai_fisio_deformidades) form.append('pai_fisio_deformidades', thePatient.pai_fisio_deformidades);
+    if (thePatient.pai_fisio_disfruta_ocio) form.append('pai_fisio_disfruta_ocio', thePatient.pai_fisio_disfruta_ocio);
+    if (thePatient.pai_fisio_espacios_ocio) form.append('pai_fisio_espacios_ocio', thePatient.pai_fisio_espacios_ocio);
+    if (thePatient.pai_fisio_relaciones_entorno) form.append('pai_fisio_relaciones_entorno', thePatient.pai_fisio_relaciones_entorno);
+    if (thePatient.pai_fisio_objetivos) form.append('pai_fisio_objetivos', thePatient.pai_fisio_objetivos);
+    if (thePatient.pai_fisio_tratamiento) form.append('pai_fisio_tratamiento', thePatient.pai_fisio_tratamiento);
+    if (thePatient.pai_fisio_valoraciones) form.append('pai_fisio_valoraciones', thePatient.pai_fisio_valoraciones);
+    if (thePatient.pai_fisio_actuaciones) form.append('pai_fisio_actuaciones', thePatient.pai_fisio_actuaciones);
+    if (thePatient.pai_fisio_incidencias) form.append('pai_fisio_incidencias', thePatient.pai_fisio_incidencias);
+  
+    return this.http.post<any>(ENV.url.patients + '/savePAIFisio', form);
+  }
   
 
   unregisterPatient(id: string, unregister_reason: string, unregister_document_url: string, is_document_signed: boolean) 

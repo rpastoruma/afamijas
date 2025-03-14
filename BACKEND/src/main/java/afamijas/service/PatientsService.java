@@ -237,4 +237,40 @@ public interface PatientsService
                                            ) throws Exception;
 
     PatientDTO saveInformePsicoSocial(String id, LocalDate ipsFechaInforme, String ipsSanitarios, String ipsSociofamiliar, String ipsEvalcognitiva, String ipsEvalconductual, String ipsEvalfuncional, String ipsSituacioneconomica, String ipsObservaciones) throws Exception;
+
+    public PatientDTO savePAIFisio(
+            String id,
+            LocalDate paiFisioFechaValoracion,
+            String paiFisioProbSalud,
+            String paiFisioDolores,
+            String paiFisioDuerme,
+            String paiFisioNecAliment,
+            String paiFisioHabSaludables,
+            String paiFisioAtencionPreven,
+            String paiFisioAccesoAtencion,
+            String paiFisioMedicacionRequerida,
+            String paiFisioAlergias,
+            String paiFisioUpp,
+            String paiFisioAutonomo,
+            String paiFisioAyudasTecnicas,
+            String paiFisioMovilidadMmss,
+            String paiFisioMovilidadMmii,
+            String paiFisioMovilidadCuello,
+            String paiFisioMovilidaTronco,
+            String paiFisioEquilibrio,
+            String paiFisioBipedestacion,
+            String paiFisioMarcha,
+            String paiFisioRiesgoCaidas,
+            String paiFisioDeformidades,
+            String paiFisioDisfrutaOcio,
+            String paiFisioEspaciosOcio,
+            String paiFisioRelacionesEntorno,
+            String paiFisioObjetivos,
+            String paiFisioTratamiento,
+            String paiFisioValoraciones,
+            String paiFisioActuaciones,
+            String paiFisioIncidencias
+    ) throws Exception;
+
+
 }

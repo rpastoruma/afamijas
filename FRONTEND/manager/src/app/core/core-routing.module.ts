@@ -39,6 +39,7 @@ import { canAccessInvoicesGuard } from './guards/can-access-invoices.guard';
 import { canViewDocsPsicoGuard } from './guards/can-view-docs-psico.guard';
 import { canViewSocialWorkerGuard } from './guards/can-view-social-worker.guard';
 import { canAccessAtencionesGuard } from './guards/can-access-atenciones.guard';
+import { canViewFisioWorkerGuard } from './guards/can-view-fisio-worker.guard';
 
 
 const routes: Routes = [
@@ -156,6 +157,12 @@ const routes: Routes = [
       component: BodyLayoutComponent,
       canActivate : [canViewSocialWorkerGuard],
       loadChildren: () => import('../modules/social-worker/social-worker.module').then(m => m.SocialWorkerModule) 
+    },
+    {
+      path : 'pai-fisio', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewFisioWorkerGuard],
+      loadChildren: () => import('../modules/pai-fisio/pai-fisio.module').then(m => m.PaiFisioModule) 
     },
     {
       path : 'users', 

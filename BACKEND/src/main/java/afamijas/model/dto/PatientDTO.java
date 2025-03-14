@@ -549,6 +549,72 @@ public class PatientDTO
 
 
 
+
+    //PAI FISIO
+    private LocalDate pai_fisio_fecha_valoracion;
+
+    private String pai_fisio_prob_salud;
+
+    private String pai_fisio_dolres;
+
+    private String pai_fisio_duerme;
+
+    private String pai_fisio_nec_aliment;
+
+    private String pai_fisio_hab_saludables;
+
+    private String pai_fisio_atencion_preven;
+
+    private String pai_fisio_acceso_atencion;
+
+    private String pai_fisio_medicacion_requerida;
+
+    private String pai_fisio_alergias;
+
+    private String pai_fisio_upp;
+
+    private String pai_fisio_autonomo;
+
+    private String pai_fisio_ayudas_tecnicas;
+
+    private String pai_fisio_movilidad_mmss;
+
+    private String pai_fisio_movilidad_mmii;
+
+    private String pai_fisio_movilidad_cuello;
+
+    private String pai_fisio_movilida_tronco;
+
+    private String pai_fisio_equilibrio;
+
+    private String pai_fisio_bipedestacion;
+
+    private String pai_fisio_marcha;
+
+    private String pai_fisio_riesgo_caidas;
+
+    private String pai_fisio_deformidades;
+
+    private String pai_fisio_disfruta_ocio;
+
+    private String pai_fisio_espacios_ocio;
+
+    private String pai_fisio_relaciones_entorno;
+
+    private String pai_fisio_objetivos;
+
+    private String pai_fisio_tratamiento;
+
+    private String pai_fisio_valoraciones; //CUADRO RESUMEN
+
+    private String pai_fisio_actuaciones; //CUADRO RESUMEN
+
+    private String pai_fisio_incidencias;  //CUADRO RESUMEN
+
+    private String pai_fisio_url; //TRANSIENT
+
+
+
     public PatientDTO(User user, City city, State state, Country country, User relative, RouteDTO routeDTO)
     {
         this.id = user.get_id();
@@ -921,6 +987,37 @@ public class PatientDTO
         this.ips_sociofamiliar = user.getIps_sociofamiliar();
         this.ips_observaciones = user.getIps_observaciones();
 
+
+        this.pai_fisio_fecha_valoracion = user.getPai_fisio_fecha_valoracion();
+        this.pai_fisio_prob_salud = user.getPai_fisio_prob_salud();
+        this.pai_fisio_dolres = user.getPai_fisio_dolres();
+        this.pai_fisio_duerme = user.getPai_fisio_duerme();
+        this.pai_fisio_nec_aliment = user.getPai_fisio_nec_aliment();
+        this.pai_fisio_hab_saludables = user.getPai_fisio_hab_saludables();
+        this.pai_fisio_atencion_preven = user.getPai_fisio_atencion_preven();
+        this.pai_fisio_acceso_atencion = user.getPai_fisio_acceso_atencion();
+        this.pai_fisio_medicacion_requerida = user.getPai_fisio_medicacion_requerida();
+        this.pai_fisio_alergias = user.getPai_fisio_alergias();
+        this.pai_fisio_upp = user.getPai_fisio_upp();
+        this.pai_fisio_autonomo = user.getPai_fisio_autonomo();
+        this.pai_fisio_ayudas_tecnicas = user.getPai_fisio_ayudas_tecnicas();
+        this.pai_fisio_movilidad_mmss = user.getPai_fisio_movilidad_mmss();
+        this.pai_fisio_movilidad_mmii = user.getPai_fisio_movilidad_mmii();
+        this.pai_fisio_movilidad_cuello = user.getPai_fisio_movilidad_cuello();
+        this.pai_fisio_movilida_tronco = user.getPai_fisio_movilida_tronco();
+        this.pai_fisio_equilibrio = user.getPai_fisio_equilibrio();
+        this.pai_fisio_bipedestacion = user.getPai_fisio_bipedestacion();
+        this.pai_fisio_marcha = user.getPai_fisio_marcha();
+        this.pai_fisio_riesgo_caidas = user.getPai_fisio_riesgo_caidas();
+        this.pai_fisio_deformidades = user.getPai_fisio_deformidades();
+        this.pai_fisio_disfruta_ocio = user.getPai_fisio_disfruta_ocio();
+        this.pai_fisio_espacios_ocio = user.getPai_fisio_espacios_ocio();
+        this.pai_fisio_relaciones_entorno = user.getPai_fisio_relaciones_entorno();
+        this.pai_fisio_objetivos = user.getPai_fisio_objetivos();
+        this.pai_fisio_tratamiento = user.getPai_fisio_tratamiento();
+        this.pai_fisio_valoraciones = user.getPai_fisio_valoraciones();
+        this.pai_fisio_actuaciones = user.getPai_fisio_actuaciones();
+        this.pai_fisio_incidencias = user.getPai_fisio_incidencias();
 
     }
 
@@ -3156,5 +3253,253 @@ public class PatientDTO
 
     public void setNum_contrato(String num_contrato) {
         this.num_contrato = num_contrato;
+    }
+
+    public LocalDate getPai_fisio_fecha_valoracion() {
+        return pai_fisio_fecha_valoracion;
+    }
+
+    public void setPai_fisio_fecha_valoracion(LocalDate pai_fisio_fecha_valoracion) {
+        this.pai_fisio_fecha_valoracion = pai_fisio_fecha_valoracion;
+    }
+
+    public String getPai_fisio_prob_salud() {
+        return pai_fisio_prob_salud;
+    }
+
+    public void setPai_fisio_prob_salud(String pai_fisio_prob_salud) {
+        this.pai_fisio_prob_salud = pai_fisio_prob_salud;
+    }
+
+    public String getPai_fisio_dolres() {
+        return pai_fisio_dolres;
+    }
+
+    public void setPai_fisio_dolres(String pai_fisio_dolres) {
+        this.pai_fisio_dolres = pai_fisio_dolres;
+    }
+
+    public String getPai_fisio_duerme() {
+        return pai_fisio_duerme;
+    }
+
+    public void setPai_fisio_duerme(String pai_fisio_duerme) {
+        this.pai_fisio_duerme = pai_fisio_duerme;
+    }
+
+    public String getPai_fisio_nec_aliment() {
+        return pai_fisio_nec_aliment;
+    }
+
+    public void setPai_fisio_nec_aliment(String pai_fisio_nec_aliment) {
+        this.pai_fisio_nec_aliment = pai_fisio_nec_aliment;
+    }
+
+    public String getPai_fisio_hab_saludables() {
+        return pai_fisio_hab_saludables;
+    }
+
+    public void setPai_fisio_hab_saludables(String pai_fisio_hab_saludables) {
+        this.pai_fisio_hab_saludables = pai_fisio_hab_saludables;
+    }
+
+    public String getPai_fisio_atencion_preven() {
+        return pai_fisio_atencion_preven;
+    }
+
+    public void setPai_fisio_atencion_preven(String pai_fisio_atencion_preven) {
+        this.pai_fisio_atencion_preven = pai_fisio_atencion_preven;
+    }
+
+    public String getPai_fisio_acceso_atencion() {
+        return pai_fisio_acceso_atencion;
+    }
+
+    public void setPai_fisio_acceso_atencion(String pai_fisio_acceso_atencion) {
+        this.pai_fisio_acceso_atencion = pai_fisio_acceso_atencion;
+    }
+
+    public String getPai_fisio_medicacion_requerida() {
+        return pai_fisio_medicacion_requerida;
+    }
+
+    public void setPai_fisio_medicacion_requerida(String pai_fisio_medicacion_requerida) {
+        this.pai_fisio_medicacion_requerida = pai_fisio_medicacion_requerida;
+    }
+
+    public String getPai_fisio_alergias() {
+        return pai_fisio_alergias;
+    }
+
+    public void setPai_fisio_alergias(String pai_fisio_alergias) {
+        this.pai_fisio_alergias = pai_fisio_alergias;
+    }
+
+    public String getPai_fisio_upp() {
+        return pai_fisio_upp;
+    }
+
+    public void setPai_fisio_upp(String pai_fisio_upp) {
+        this.pai_fisio_upp = pai_fisio_upp;
+    }
+
+    public String getPai_fisio_autonomo() {
+        return pai_fisio_autonomo;
+    }
+
+    public void setPai_fisio_autonomo(String pai_fisio_autonomo) {
+        this.pai_fisio_autonomo = pai_fisio_autonomo;
+    }
+
+    public String getPai_fisio_ayudas_tecnicas() {
+        return pai_fisio_ayudas_tecnicas;
+    }
+
+    public void setPai_fisio_ayudas_tecnicas(String pai_fisio_ayudas_tecnicas) {
+        this.pai_fisio_ayudas_tecnicas = pai_fisio_ayudas_tecnicas;
+    }
+
+    public String getPai_fisio_movilidad_mmss() {
+        return pai_fisio_movilidad_mmss;
+    }
+
+    public void setPai_fisio_movilidad_mmss(String pai_fisio_movilidad_mmss) {
+        this.pai_fisio_movilidad_mmss = pai_fisio_movilidad_mmss;
+    }
+
+    public String getPai_fisio_movilidad_mmii() {
+        return pai_fisio_movilidad_mmii;
+    }
+
+    public void setPai_fisio_movilidad_mmii(String pai_fisio_movilidad_mmii) {
+        this.pai_fisio_movilidad_mmii = pai_fisio_movilidad_mmii;
+    }
+
+    public String getPai_fisio_movilidad_cuello() {
+        return pai_fisio_movilidad_cuello;
+    }
+
+    public void setPai_fisio_movilidad_cuello(String pai_fisio_movilidad_cuello) {
+        this.pai_fisio_movilidad_cuello = pai_fisio_movilidad_cuello;
+    }
+
+    public String getPai_fisio_movilida_tronco() {
+        return pai_fisio_movilida_tronco;
+    }
+
+    public void setPai_fisio_movilida_tronco(String pai_fisio_movilida_tronco) {
+        this.pai_fisio_movilida_tronco = pai_fisio_movilida_tronco;
+    }
+
+    public String getPai_fisio_equilibrio() {
+        return pai_fisio_equilibrio;
+    }
+
+    public void setPai_fisio_equilibrio(String pai_fisio_equilibrio) {
+        this.pai_fisio_equilibrio = pai_fisio_equilibrio;
+    }
+
+    public String getPai_fisio_bipedestacion() {
+        return pai_fisio_bipedestacion;
+    }
+
+    public void setPai_fisio_bipedestacion(String pai_fisio_bipedestacion) {
+        this.pai_fisio_bipedestacion = pai_fisio_bipedestacion;
+    }
+
+    public String getPai_fisio_marcha() {
+        return pai_fisio_marcha;
+    }
+
+    public void setPai_fisio_marcha(String pai_fisio_marcha) {
+        this.pai_fisio_marcha = pai_fisio_marcha;
+    }
+
+    public String getPai_fisio_riesgo_caidas() {
+        return pai_fisio_riesgo_caidas;
+    }
+
+    public void setPai_fisio_riesgo_caidas(String pai_fisio_riesgo_caidas) {
+        this.pai_fisio_riesgo_caidas = pai_fisio_riesgo_caidas;
+    }
+
+    public String getPai_fisio_deformidades() {
+        return pai_fisio_deformidades;
+    }
+
+    public void setPai_fisio_deformidades(String pai_fisio_deformidades) {
+        this.pai_fisio_deformidades = pai_fisio_deformidades;
+    }
+
+    public String getPai_fisio_disfruta_ocio() {
+        return pai_fisio_disfruta_ocio;
+    }
+
+    public void setPai_fisio_disfruta_ocio(String pai_fisio_disfruta_ocio) {
+        this.pai_fisio_disfruta_ocio = pai_fisio_disfruta_ocio;
+    }
+
+    public String getPai_fisio_espacios_ocio() {
+        return pai_fisio_espacios_ocio;
+    }
+
+    public void setPai_fisio_espacios_ocio(String pai_fisio_espacios_ocio) {
+        this.pai_fisio_espacios_ocio = pai_fisio_espacios_ocio;
+    }
+
+    public String getPai_fisio_relaciones_entorno() {
+        return pai_fisio_relaciones_entorno;
+    }
+
+    public void setPai_fisio_relaciones_entorno(String pai_fisio_relaciones_entorno) {
+        this.pai_fisio_relaciones_entorno = pai_fisio_relaciones_entorno;
+    }
+
+    public String getPai_fisio_objetivos() {
+        return pai_fisio_objetivos;
+    }
+
+    public void setPai_fisio_objetivos(String pai_fisio_objetivos) {
+        this.pai_fisio_objetivos = pai_fisio_objetivos;
+    }
+
+    public String getPai_fisio_tratamiento() {
+        return pai_fisio_tratamiento;
+    }
+
+    public void setPai_fisio_tratamiento(String pai_fisio_tratamiento) {
+        this.pai_fisio_tratamiento = pai_fisio_tratamiento;
+    }
+
+    public String getPai_fisio_valoraciones() {
+        return pai_fisio_valoraciones;
+    }
+
+    public void setPai_fisio_valoraciones(String pai_fisio_valoraciones) {
+        this.pai_fisio_valoraciones = pai_fisio_valoraciones;
+    }
+
+    public String getPai_fisio_actuaciones() {
+        return pai_fisio_actuaciones;
+    }
+
+    public void setPai_fisio_actuaciones(String pai_fisio_actuaciones) {
+        this.pai_fisio_actuaciones = pai_fisio_actuaciones;
+    }
+
+    public String getPai_fisio_incidencias() {
+        return pai_fisio_incidencias;
+    }
+
+    public void setPai_fisio_incidencias(String pai_fisio_incidencias) {
+        this.pai_fisio_incidencias = pai_fisio_incidencias;
+    }
+
+    public String getPai_fisio_url() {
+        return pai_fisio_url;
+    }
+
+    public void setPai_fisio_url(String pai_fisio_url) {
+        this.pai_fisio_url = pai_fisio_url;
     }
 }

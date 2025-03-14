@@ -790,5 +790,64 @@ public class PatientsController extends AbstractBaseController
 	}
 
 
+	@RequestMapping(method = RequestMethod.POST, value = "savePAIFisio", produces = "application/json")
+	public ResponseEntity<?> savePAIFisio(
+			@RequestParam(value = "id", required = true) String id,
+
+			@RequestParam(value = "pai_fisio_fecha_valoracion", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate pai_fisio_fecha_valoracion,
+			@RequestParam(value = "pai_fisio_prob_salud", required = false) String pai_fisio_prob_salud,
+			@RequestParam(value = "pai_fisio_dolres", required = false) String pai_fisio_dolres,
+			@RequestParam(value = "pai_fisio_duerme", required = false) String pai_fisio_duerme,
+			@RequestParam(value = "pai_fisio_nec_aliment", required = false) String pai_fisio_nec_aliment,
+			@RequestParam(value = "pai_fisio_hab_saludables", required = false) String pai_fisio_hab_saludables,
+			@RequestParam(value = "pai_fisio_atencion_preven", required = false) String pai_fisio_atencion_preven,
+			@RequestParam(value = "pai_fisio_acceso_atencion", required = false) String pai_fisio_acceso_atencion,
+			@RequestParam(value = "pai_fisio_medicacion_requerida", required = false) String pai_fisio_medicacion_requerida,
+			@RequestParam(value = "pai_fisio_alergias", required = false) String pai_fisio_alergias,
+			@RequestParam(value = "pai_fisio_upp", required = false) String pai_fisio_upp,
+			@RequestParam(value = "pai_fisio_autonomo", required = false) String pai_fisio_autonomo,
+			@RequestParam(value = "pai_fisio_ayudas_tecnicas", required = false) String pai_fisio_ayudas_tecnicas,
+			@RequestParam(value = "pai_fisio_movilidad_mmss", required = false) String pai_fisio_movilidad_mmss,
+			@RequestParam(value = "pai_fisio_movilidad_mmii", required = false) String pai_fisio_movilidad_mmii,
+			@RequestParam(value = "pai_fisio_movilidad_cuello", required = false) String pai_fisio_movilidad_cuello,
+			@RequestParam(value = "pai_fisio_movilida_tronco", required = false) String pai_fisio_movilida_tronco,
+			@RequestParam(value = "pai_fisio_equilibrio", required = false) String pai_fisio_equilibrio,
+			@RequestParam(value = "pai_fisio_bipedestacion", required = false) String pai_fisio_bipedestacion,
+			@RequestParam(value = "pai_fisio_marcha", required = false) String pai_fisio_marcha,
+			@RequestParam(value = "pai_fisio_riesgo_caidas", required = false) String pai_fisio_riesgo_caidas,
+			@RequestParam(value = "pai_fisio_deformidades", required = false) String pai_fisio_deformidades,
+			@RequestParam(value = "pai_fisio_disfruta_ocio", required = false) String pai_fisio_disfruta_ocio,
+			@RequestParam(value = "pai_fisio_espacios_ocio", required = false) String pai_fisio_espacios_ocio,
+			@RequestParam(value = "pai_fisio_relaciones_entorno", required = false) String pai_fisio_relaciones_entorno,
+			@RequestParam(value = "pai_fisio_objetivos", required = false) String pai_fisio_objetivos,
+			@RequestParam(value = "pai_fisio_tratamiento", required = false) String pai_fisio_tratamiento,
+			@RequestParam(value = "pai_fisio_valoraciones", required = false) String pai_fisio_valoraciones,
+			@RequestParam(value = "pai_fisio_actuaciones", required = false) String pai_fisio_actuaciones,
+			@RequestParam(value = "pai_fisio_incidencias", required = false) String pai_fisio_incidencias,
+
+			HttpServletRequest request)
+	{
+		try {
+			if (!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			return new ResponseEntity<>(this.patientsService.savePAIFisio(
+					id, pai_fisio_fecha_valoracion, pai_fisio_prob_salud, pai_fisio_dolres, pai_fisio_duerme,
+					pai_fisio_nec_aliment, pai_fisio_hab_saludables, pai_fisio_atencion_preven, pai_fisio_acceso_atencion,
+					pai_fisio_medicacion_requerida, pai_fisio_alergias, pai_fisio_upp, pai_fisio_autonomo,
+					pai_fisio_ayudas_tecnicas, pai_fisio_movilidad_mmss, pai_fisio_movilidad_mmii, pai_fisio_movilidad_cuello,
+					pai_fisio_movilida_tronco, pai_fisio_equilibrio, pai_fisio_bipedestacion, pai_fisio_marcha,
+					pai_fisio_riesgo_caidas, pai_fisio_deformidades, pai_fisio_disfruta_ocio, pai_fisio_espacios_ocio,
+					pai_fisio_relaciones_entorno, pai_fisio_objetivos, pai_fisio_tratamiento, pai_fisio_valoraciones,
+					pai_fisio_actuaciones, pai_fisio_incidencias), HttpStatus.OK);
+		} catch (Exception e) {
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
 }
 

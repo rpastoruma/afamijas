@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { hasRole, RoleCode, } from 'src/app/shared/models/models';
 import { AuthService } from '../../services/auth.service'; 
-import { MENU_CLEANING, MENU_DOCS, MENU_FEEDINGS, MENU_FOODS, MENU_HEALTH, MENU_INVOICES, MENU_ITEMS, MENU_LEGIONELLA, MENU_MEDICATION, MENU_MEMBERS, MENU_PATIENTS, MENU_RECEIPTS, MENU_RELATIVE_ITEMS, MENU_TEMP, MENU_PSICO, MENU_SOCIAL_WORKER, MENU_ATENCIONES } from './pages-menu';
+import { MENU_CLEANING, MENU_DOCS, MENU_FEEDINGS, MENU_FOODS, MENU_HEALTH, MENU_INVOICES, MENU_ITEMS, MENU_LEGIONELLA, MENU_MEDICATION, MENU_MEMBERS, MENU_PATIENTS, MENU_RECEIPTS, MENU_RELATIVE_ITEMS, MENU_TEMP, MENU_PSICO, MENU_SOCIAL_WORKER, MENU_ATENCIONES, MENU_FISIO } from './pages-menu';
 
 @Component({
   selector: 'app-body-layout',
@@ -86,6 +86,13 @@ export class BodyLayoutComponent implements OnInit {
         this.menu = this.menu.concat(MENU_SOCIAL_WORKER);
         this.menu = this.menu.concat(MENU_ATENCIONES);
       } 
+
+
+      if (hasRole(roles, RoleCode.PHYSIOTHERAPIST) ) 
+      {
+          this.menu = this.menu.concat(MENU_FISIO);
+      } 
+      
     
 
       if (hasRole(roles, RoleCode.ADMIN) || hasRole(roles, RoleCode.MANAGER) ) 
@@ -96,6 +103,7 @@ export class BodyLayoutComponent implements OnInit {
         this.menu = this.menu.concat(MENU_PSICO);
         this.menu = this.menu.concat(MENU_SOCIAL_WORKER);
         this.menu = this.menu.concat(MENU_ATENCIONES);
+        this.menu = this.menu.concat(MENU_FISIO); //TODO: QUITAR
       } 
   
 

@@ -1457,4 +1457,141 @@ public class PatientsServiceImpl implements PatientsService
 	}
 
 
+
+
+	public PatientDTO savePAIFisio(
+			String id,
+			LocalDate paiFisioFechaValoracion,
+			String paiFisioProbSalud,
+			String paiFisioDolores,
+			String paiFisioDuerme,
+			String paiFisioNecAliment,
+			String paiFisioHabSaludables,
+			String paiFisioAtencionPreven,
+			String paiFisioAccesoAtencion,
+			String paiFisioMedicacionRequerida,
+			String paiFisioAlergias,
+			String paiFisioUpp,
+			String paiFisioAutonomo,
+			String paiFisioAyudasTecnicas,
+			String paiFisioMovilidadMmss,
+			String paiFisioMovilidadMmii,
+			String paiFisioMovilidadCuello,
+			String paiFisioMovilidaTronco,
+			String paiFisioEquilibrio,
+			String paiFisioBipedestacion,
+			String paiFisioMarcha,
+			String paiFisioRiesgoCaidas,
+			String paiFisioDeformidades,
+			String paiFisioDisfrutaOcio,
+			String paiFisioEspaciosOcio,
+			String paiFisioRelacionesEntorno,
+			String paiFisioObjetivos,
+			String paiFisioTratamiento,
+			String paiFisioValoraciones,
+			String paiFisioActuaciones,
+			String paiFisioIncidencias
+	) throws Exception {
+
+		User patient = this.usersRepository.findOne(id);
+		if (patient == null) return null;
+
+		patient.setPai_fisio_fecha_valoracion(paiFisioFechaValoracion);
+		patient.setPai_fisio_prob_salud(paiFisioProbSalud);
+		patient.setPai_fisio_dolres(paiFisioDolores);
+		patient.setPai_fisio_duerme(paiFisioDuerme);
+		patient.setPai_fisio_nec_aliment(paiFisioNecAliment);
+		patient.setPai_fisio_hab_saludables(paiFisioHabSaludables);
+		patient.setPai_fisio_atencion_preven(paiFisioAtencionPreven);
+		patient.setPai_fisio_acceso_atencion(paiFisioAccesoAtencion);
+		patient.setPai_fisio_medicacion_requerida(paiFisioMedicacionRequerida);
+		patient.setPai_fisio_alergias(paiFisioAlergias);
+		patient.setPai_fisio_upp(paiFisioUpp);
+		patient.setPai_fisio_autonomo(paiFisioAutonomo);
+		patient.setPai_fisio_ayudas_tecnicas(paiFisioAyudasTecnicas);
+		patient.setPai_fisio_movilidad_mmss(paiFisioMovilidadMmss);
+		patient.setPai_fisio_movilidad_mmii(paiFisioMovilidadMmii);
+		patient.setPai_fisio_movilidad_cuello(paiFisioMovilidadCuello);
+		patient.setPai_fisio_movilida_tronco(paiFisioMovilidaTronco);
+		patient.setPai_fisio_equilibrio(paiFisioEquilibrio);
+		patient.setPai_fisio_bipedestacion(paiFisioBipedestacion);
+		patient.setPai_fisio_marcha(paiFisioMarcha);
+		patient.setPai_fisio_riesgo_caidas(paiFisioRiesgoCaidas);
+		patient.setPai_fisio_deformidades(paiFisioDeformidades);
+		patient.setPai_fisio_disfruta_ocio(paiFisioDisfrutaOcio);
+		patient.setPai_fisio_espacios_ocio(paiFisioEspaciosOcio);
+		patient.setPai_fisio_relaciones_entorno(paiFisioRelacionesEntorno);
+		patient.setPai_fisio_objetivos(paiFisioObjetivos);
+		patient.setPai_fisio_tratamiento(paiFisioTratamiento);
+		patient.setPai_fisio_valoraciones(paiFisioValoraciones);
+		patient.setPai_fisio_actuaciones(paiFisioActuaciones);
+		patient.setPai_fisio_incidencias(paiFisioIncidencias);
+
+		patient = this.usersRepository.save(patient);
+
+		City city = this.citiesRepository.findOne(patient.getIdcity());
+		State state = this.statesRepository.findOne(patient.getIdstate());
+		Country country = this.countriesRepository.findOne(patient.getIdcountry());
+		User relative = this.usersRepository.findOne(patient.getIdrelative());
+
+		HashMap<String, String> values = new HashMap<>();
+
+		values.put("NAME", patient.getName());
+		values.put("SURNAME1", patient.getSurname1());
+		values.put("SURNAME2", patient.getSurname2());
+		/*
+		values.put("POSTALADDRESS", patient.getPostaladdress());
+		values.put("POSTALCODE", patient.getPostalcode());
+		values.put("CITYNAME", city != null ? city.getName() : "");
+		values.put("STATENAME", state != null ? state.getName() : "");
+		values.put("BIRTHDATE", patient.getBirthdate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		values.put("SEX", patient.getGender());
+		values.put("FS_ESTADO_CIVIL", patient.getFs_estado_civil());
+		values.put("OCUPACION_ANTERIOR", patient.getOcupacionAnterior());
+		values.put("NIVEL_FORMATIVO", patient.getHs_nivel_formativo());
+		 */
+
+		values.put("pai_fisio_prob_salud", patient.getPai_fisio_prob_salud());
+		values.put("pai_fisio_dolres", patient.getPai_fisio_dolres());
+		values.put("pai_fisio_duerme", patient.getPai_fisio_duerme());
+		values.put("pai_fisio_nec_aliment", patient.getPai_fisio_nec_aliment());
+		values.put("pai_fisio_hab_saludables", patient.getPai_fisio_hab_saludables());
+		values.put("pai_fisio_atencion_preven", patient.getPai_fisio_atencion_preven());
+		values.put("pai_fisio_acceso_atencion", patient.getPai_fisio_acceso_atencion());
+		values.put("pai_fisio_medicacion_requerida", patient.getPai_fisio_medicacion_requerida());
+		values.put("pai_fisio_alergias", patient.getPai_fisio_alergias());
+		values.put("pai_fisio_upp", patient.getPai_fisio_upp());
+		values.put("pai_fisio_autonomo", patient.getPai_fisio_autonomo());
+		values.put("pai_fisio_ayudas_tecnicas", patient.getPai_fisio_ayudas_tecnicas());
+		values.put("pai_fisio_movilidad_mmss", patient.getPai_fisio_movilidad_mmss());
+		values.put("pai_fisio_movilidad_mmii", patient.getPai_fisio_movilidad_mmii());
+		values.put("pai_fisio_movilidad_cuello", patient.getPai_fisio_movilidad_cuello());
+		values.put("pai_fisio_movilida_tronco", patient.getPai_fisio_movilida_tronco());
+		values.put("pai_fisio_equilibrio", patient.getPai_fisio_equilibrio());
+		values.put("pai_fisio_bipedestacion", patient.getPai_fisio_bipedestacion());
+		values.put("pai_fisio_marcha", patient.getPai_fisio_marcha());
+		values.put("pai_fisio_riesgo_caidas", patient.getPai_fisio_riesgo_caidas());
+		values.put("pai_fisio_deformidades", patient.getPai_fisio_deformidades());
+		values.put("pai_fisio_disfruta_ocio", patient.getPai_fisio_disfruta_ocio());
+		values.put("pai_fisio_espacios_ocio", patient.getPai_fisio_espacios_ocio());
+		values.put("pai_fisio_relaciones_entorno", patient.getPai_fisio_relaciones_entorno());
+		values.put("pai_fisio_objetivos", patient.getPai_fisio_objetivos());
+		values.put("pai_fisio_tratamiento", patient.getPai_fisio_tratamiento());
+		values.put("pai_fisio_valoraciones", patient.getPai_fisio_valoraciones());
+		values.put("pai_fisio_actuaciones", patient.getPai_fisio_actuaciones());
+		values.put("pai_fisio_incidencias", patient.getPai_fisio_incidencias());
+
+		try {
+			values.put("pai_fisio_fecha_valoracion", patient.getPai_fisio_fecha_valoracion().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		} catch (Exception e) {
+			values.put("pai_fisio_fecha_valoracion", "");
+		}
+
+		String paiFisioUrl = this.getCDNURL("pai_fisio", patient.get_id(), values);
+		PatientDTO res = new PatientDTO(patient, city, state, country, relative, null);
+		res.setPai_fisio_url(paiFisioUrl);
+		return res;
+	}
+
+
 }

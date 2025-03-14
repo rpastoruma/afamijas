@@ -239,6 +239,19 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
   ];  
 
 
+   
+
+  //MENÜ TRABSOCIAL
+  export const MENU_FISIO: NbMenuItem[] = [
+    {
+      title: 'PAI Fisioterapia',
+      icon: { icon: 'fa-file-circle-check', pack: 'fas' },
+      link: '/pai-fisio',
+      data: 'menu.pai-fisio',
+      expanded: false,
+    }
+  ];  
+
   
   
 
