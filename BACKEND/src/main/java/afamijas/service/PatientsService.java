@@ -272,5 +272,42 @@ public interface PatientsService
             String paiFisioIncidencias
     ) throws Exception;
 
+    PatientDTO savePAIPsico(
+            String id,
+            String paiPsicoAcude,
+            String paiPsicoSintomas,
+            String paiPsicoDiagnostico,
+            String paiPsicoQuienDiagnostica,
+            LocalDate paiPsicoFechaDiagnostico,
+            String paiPsicoFormaEvaluacion,
+            String paiPsicoSintomatologiaActual,
+            String paiPsicoAntecedentes,
+            String paiPsicoBreveHistorial,
+            String paiPsicoOrientacion,
+            String paiPsicoLenguaje,
+            String paiPsicoMemoria,
+            String paiPsicoAtencion,
+            String paiPsicoPraxi,
+            String paiPsicoPensamientoAbstracto,
+            String paiPsicoPercepcion,
+            String paiPsicoFuncionEjecutiva,
+            String paiPsicoEscalaFolstein,
+            String paiPsicoEvaluacionConductual,
+            String paiPsicoPlanActValoracionS1,
+            String paiPsicoPlanActValoracionS2,
+            String paiPsicoPlanActInstrumentosS1,
+            String paiPsicoPlanActInstrumentosS2,
+            String paiPsicoPlanActObjetivosS1,
+            String paiPsicoPlanActObjetivosS2,
+            String paiPsicoPlanActActividadesS1,
+            String paiPsicoPlanActActividadesS2,
+            String paiPsicoPlanActIncidenciasS1,
+            String paiPsicoPlanActIncidenciasS2,
+            String paiPsicoValoraciones,
+            String paiPsicoActuaciones,
+            String paiPsicoIncidencias
+    ) throws Exception;
+
+
 
 }

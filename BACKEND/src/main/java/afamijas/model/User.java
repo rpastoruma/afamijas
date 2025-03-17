@@ -645,6 +645,74 @@ public class User
 
 
 
+	//PAI PSICO
+
+	private String pai_psico_acude;
+
+	private String pai_psico_sintomas;
+
+	private String pai_psico_diagnostico;
+
+	private String pai_psico_quien_diagnostica;
+
+	private LocalDate pai_psico_fecha_diagnostico;
+
+	private String pai_psico_forma_evalucion;
+
+	private String pai_psico_sintomatologia_actual;
+
+	private String pai_psico_antecedentes;
+
+	private String pai_psico_breve_historial;
+
+	private String pai_psico_orientacion;
+
+	private String pai_psico_lenguaje;
+
+	private String pai_psico_memoria;
+
+	private String pai_psico_atencion;
+
+	private String pai_psico_praxi;
+
+	private String pai_psico_pensamiento_abstracto;
+
+	private String pai_psico_percepcion;
+
+	private String pai_psico_funcion_ejecutiva;
+
+	private String pai_psico_escala_folstein;
+
+	private String pai_psico_evaluacion_conductual;
+
+	private String pai_psico_plan_act_valoracion_s1;
+
+	private String pai_psico_plan_act_valoracion_s2;
+
+	private String pai_psico_plan_act_instrumentos_s1;
+
+	private String pai_psico_plan_act_instrumentos_s2;
+
+	private String pai_psico_plan_act_objetivos_s1;
+
+	private String pai_psico_plan_act_objetivos_s2;
+
+	private String pai_psico_plan_act_actividades_s1;
+
+	private String pai_psico_plan_act_actividades_s2;
+
+	private String pai_psico_plan_act_incidencias_s1;
+
+	private String pai_psico_plan_act_incidencias_s2;
+
+
+	private String pai_psico_valoraciones; //CUADRO RESUMEN
+
+	private String pai_psico_actuaciones; //CUADRO RESUMEN
+
+	private String pai_psico_incidencias;  //CUADRO RESUMEN
+
+
 
 
 
@@ -3361,6 +3429,262 @@ public class User
 
 	public void setPai_fisio_incidencias(String pai_fisio_incidencias) {
 		this.pai_fisio_incidencias = pai_fisio_incidencias;
+	}
+
+	public String getPai_psico_acude() {
+		return pai_psico_acude;
+	}
+
+	public void setPai_psico_acude(String pai_psico_acude) {
+		this.pai_psico_acude = pai_psico_acude;
+	}
+
+	public String getPai_psico_sintomas() {
+		return pai_psico_sintomas;
+	}
+
+	public void setPai_psico_sintomas(String pai_psico_sintomas) {
+		this.pai_psico_sintomas = pai_psico_sintomas;
+	}
+
+	public String getPai_psico_diagnostico() {
+		return pai_psico_diagnostico;
+	}
+
+	public void setPai_psico_diagnostico(String pai_psico_diagnostico) {
+		this.pai_psico_diagnostico = pai_psico_diagnostico;
+	}
+
+	public String getPai_psico_quien_diagnostica() {
+		return pai_psico_quien_diagnostica;
+	}
+
+	public void setPai_psico_quien_diagnostica(String pai_psico_quien_diagnostica) {
+		this.pai_psico_quien_diagnostica = pai_psico_quien_diagnostica;
+	}
+
+	public LocalDate getPai_psico_fecha_diagnostico() {
+		return pai_psico_fecha_diagnostico;
+	}
+
+	public void setPai_psico_fecha_diagnostico(LocalDate pai_psico_fecha_diagnostico) {
+		this.pai_psico_fecha_diagnostico = pai_psico_fecha_diagnostico;
+	}
+
+	public String getPai_psico_forma_evalucion() {
+		return pai_psico_forma_evalucion;
+	}
+
+	public void setPai_psico_forma_evalucion(String pai_psico_forma_evalucion) {
+		this.pai_psico_forma_evalucion = pai_psico_forma_evalucion;
+	}
+
+	public String getPai_psico_sintomatologia_actual() {
+		return pai_psico_sintomatologia_actual;
+	}
+
+	public void setPai_psico_sintomatologia_actual(String pai_psico_sintomatologia_actual) {
+		this.pai_psico_sintomatologia_actual = pai_psico_sintomatologia_actual;
+	}
+
+	public String getPai_psico_antecedentes() {
+		return pai_psico_antecedentes;
+	}
+
+	public void setPai_psico_antecedentes(String pai_psico_antecedentes) {
+		this.pai_psico_antecedentes = pai_psico_antecedentes;
+	}
+
+	public String getPai_psico_breve_historial() {
+		return pai_psico_breve_historial;
+	}
+
+	public void setPai_psico_breve_historial(String pai_psico_breve_historial) {
+		this.pai_psico_breve_historial = pai_psico_breve_historial;
+	}
+
+	public String getPai_psico_orientacion() {
+		return pai_psico_orientacion;
+	}
+
+	public void setPai_psico_orientacion(String pai_psico_orientacion) {
+		this.pai_psico_orientacion = pai_psico_orientacion;
+	}
+
+	public String getPai_psico_lenguaje() {
+		return pai_psico_lenguaje;
+	}
+
+	public void setPai_psico_lenguaje(String pai_psico_lenguaje) {
+		this.pai_psico_lenguaje = pai_psico_lenguaje;
+	}
+
+	public String getPai_psico_memoria() {
+		return pai_psico_memoria;
+	}
+
+	public void setPai_psico_memoria(String pai_psico_memoria) {
+		this.pai_psico_memoria = pai_psico_memoria;
+	}
+
+	public String getPai_psico_atencion() {
+		return pai_psico_atencion;
+	}
+
+	public void setPai_psico_atencion(String pai_psico_atencion) {
+		this.pai_psico_atencion = pai_psico_atencion;
+	}
+
+	public String getPai_psico_praxi() {
+		return pai_psico_praxi;
+	}
+
+	public void setPai_psico_praxi(String pai_psico_praxi) {
+		this.pai_psico_praxi = pai_psico_praxi;
+	}
+
+	public String getPai_psico_pensamiento_abstracto() {
+		return pai_psico_pensamiento_abstracto;
+	}
+
+	public void setPai_psico_pensamiento_abstracto(String pai_psico_pensamiento_abstracto) {
+		this.pai_psico_pensamiento_abstracto = pai_psico_pensamiento_abstracto;
+	}
+
+	public String getPai_psico_percepcion() {
+		return pai_psico_percepcion;
+	}
+
+	public void setPai_psico_percepcion(String pai_psico_percepcion) {
+		this.pai_psico_percepcion = pai_psico_percepcion;
+	}
+
+	public String getPai_psico_funcion_ejecutiva() {
+		return pai_psico_funcion_ejecutiva;
+	}
+
+	public void setPai_psico_funcion_ejecutiva(String pai_psico_funcion_ejecutiva) {
+		this.pai_psico_funcion_ejecutiva = pai_psico_funcion_ejecutiva;
+	}
+
+	public String getPai_psico_escala_folstein() {
+		return pai_psico_escala_folstein;
+	}
+
+	public void setPai_psico_escala_folstein(String pai_psico_escala_folstein) {
+		this.pai_psico_escala_folstein = pai_psico_escala_folstein;
+	}
+
+	public String getPai_psico_evaluacion_conductual() {
+		return pai_psico_evaluacion_conductual;
+	}
+
+	public void setPai_psico_evaluacion_conductual(String pai_psico_evaluacion_conductual) {
+		this.pai_psico_evaluacion_conductual = pai_psico_evaluacion_conductual;
+	}
+
+	public String getPai_psico_plan_act_valoracion_s1() {
+		return pai_psico_plan_act_valoracion_s1;
+	}
+
+	public void setPai_psico_plan_act_valoracion_s1(String pai_psico_plan_act_valoracion_s1) {
+		this.pai_psico_plan_act_valoracion_s1 = pai_psico_plan_act_valoracion_s1;
+	}
+
+	public String getPai_psico_plan_act_valoracion_s2() {
+		return pai_psico_plan_act_valoracion_s2;
+	}
+
+	public void setPai_psico_plan_act_valoracion_s2(String pai_psico_plan_act_valoracion_s2) {
+		this.pai_psico_plan_act_valoracion_s2 = pai_psico_plan_act_valoracion_s2;
+	}
+
+	public String getPai_psico_plan_act_instrumentos_s1() {
+		return pai_psico_plan_act_instrumentos_s1;
+	}
+
+	public void setPai_psico_plan_act_instrumentos_s1(String pai_psico_plan_act_instrumentos_s1) {
+		this.pai_psico_plan_act_instrumentos_s1 = pai_psico_plan_act_instrumentos_s1;
+	}
+
+	public String getPai_psico_plan_act_instrumentos_s2() {
+		return pai_psico_plan_act_instrumentos_s2;
+	}
+
+	public void setPai_psico_plan_act_instrumentos_s2(String pai_psico_plan_act_instrumentos_s2) {
+		this.pai_psico_plan_act_instrumentos_s2 = pai_psico_plan_act_instrumentos_s2;
+	}
+
+	public String getPai_psico_plan_act_objetivos_s1() {
+		return pai_psico_plan_act_objetivos_s1;
+	}
+
+	public void setPai_psico_plan_act_objetivos_s1(String pai_psico_plan_act_objetivos_s1) {
+		this.pai_psico_plan_act_objetivos_s1 = pai_psico_plan_act_objetivos_s1;
+	}
+
+	public String getPai_psico_plan_act_objetivos_s2() {
+		return pai_psico_plan_act_objetivos_s2;
+	}
+
+	public void setPai_psico_plan_act_objetivos_s2(String pai_psico_plan_act_objetivos_s2) {
+		this.pai_psico_plan_act_objetivos_s2 = pai_psico_plan_act_objetivos_s2;
+	}
+
+	public String getPai_psico_plan_act_actividades_s1() {
+		return pai_psico_plan_act_actividades_s1;
+	}
+
+	public void setPai_psico_plan_act_actividades_s1(String pai_psico_plan_act_actividades_s1) {
+		this.pai_psico_plan_act_actividades_s1 = pai_psico_plan_act_actividades_s1;
+	}
+
+	public String getPai_psico_plan_act_actividades_s2() {
+		return pai_psico_plan_act_actividades_s2;
+	}
+
+	public void setPai_psico_plan_act_actividades_s2(String pai_psico_plan_act_actividades_s2) {
+		this.pai_psico_plan_act_actividades_s2 = pai_psico_plan_act_actividades_s2;
+	}
+
+	public String getPai_psico_plan_act_incidencias_s1() {
+		return pai_psico_plan_act_incidencias_s1;
+	}
+
+	public void setPai_psico_plan_act_incidencias_s1(String pai_psico_plan_act_incidencias_s1) {
+		this.pai_psico_plan_act_incidencias_s1 = pai_psico_plan_act_incidencias_s1;
+	}
+
+	public String getPai_psico_plan_act_incidencias_s2() {
+		return pai_psico_plan_act_incidencias_s2;
+	}
+
+	public void setPai_psico_plan_act_incidencias_s2(String pai_psico_plan_act_incidencias_s2) {
+		this.pai_psico_plan_act_incidencias_s2 = pai_psico_plan_act_incidencias_s2;
+	}
+
+	public String getPai_psico_valoraciones() {
+		return pai_psico_valoraciones;
+	}
+
+	public void setPai_psico_valoraciones(String pai_psico_valoraciones) {
+		this.pai_psico_valoraciones = pai_psico_valoraciones;
+	}
+
+	public String getPai_psico_actuaciones() {
+		return pai_psico_actuaciones;
+	}
+
+	public void setPai_psico_actuaciones(String pai_psico_actuaciones) {
+		this.pai_psico_actuaciones = pai_psico_actuaciones;
+	}
+
+	public String getPai_psico_incidencias() {
+		return pai_psico_incidencias;
+	}
+
+	public void setPai_psico_incidencias(String pai_psico_incidencias) {
+		this.pai_psico_incidencias = pai_psico_incidencias;
 	}
 
 	@Override

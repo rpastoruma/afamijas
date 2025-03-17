@@ -221,6 +221,13 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
       link: '/worker-docs/psico',
       data: 'menu.worker-psico',
       expanded: false,
+    },
+    {
+      title: 'PAI Psicología',
+      icon: { icon: 'fa-file-circle-check', pack: 'fas' },
+      link: '/pai-psico',
+      data: 'menu.pai-psico',
+      expanded: false,
     }
   ];  
 

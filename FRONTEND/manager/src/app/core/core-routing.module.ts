@@ -165,6 +165,12 @@ const routes: Routes = [
       loadChildren: () => import('../modules/pai-fisio/pai-fisio.module').then(m => m.PaiFisioModule) 
     },
     {
+      path : 'pai-psico',
+      component: BodyLayoutComponent,
+      canActivate : [canViewDocsPsicoGuard],
+      loadChildren: () => import('../modules/pai-psico/pai-psico.module').then(m => m.PaiPsicoModule) 
+    },
+    {
       path : 'users', 
       component: BodyLayoutComponent,
       canActivate : [canAccessMembersGuard],

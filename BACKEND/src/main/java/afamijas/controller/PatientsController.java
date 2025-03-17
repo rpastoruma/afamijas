@@ -847,6 +847,63 @@ public class PatientsController extends AbstractBaseController
 
 
 
+	@RequestMapping(method = RequestMethod.POST, value = "savePAIPsico", produces = "application/json")
+	public ResponseEntity<?> savePAIPsico(
+			@RequestParam(value = "id", required = true) String id,
+
+			@RequestParam(value = "pai_psico_acude", required = false) String pai_psico_acude,
+			@RequestParam(value = "pai_psico_sintomas", required = false) String pai_psico_sintomas,
+			@RequestParam(value = "pai_psico_diagnostico", required = false) String pai_psico_diagnostico,
+			@RequestParam(value = "pai_psico_quien_diagnostica", required = false) String pai_psico_quien_diagnostica,
+			@RequestParam(value = "pai_psico_fecha_diagnostico", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate pai_psico_fecha_diagnostico,
+			@RequestParam(value = "pai_psico_forma_evalucion", required = false) String pai_psico_forma_evalucion,
+			@RequestParam(value = "pai_psico_sintomatologia_actual", required = false) String pai_psico_sintomatologia_actual,
+			@RequestParam(value = "pai_psico_antecedentes", required = false) String pai_psico_antecedentes,
+			@RequestParam(value = "pai_psico_breve_historial", required = false) String pai_psico_breve_historial,
+			@RequestParam(value = "pai_psico_orientacion", required = false) String pai_psico_orientacion,
+			@RequestParam(value = "pai_psico_lenguaje", required = false) String pai_psico_lenguaje,
+			@RequestParam(value = "pai_psico_memoria", required = false) String pai_psico_memoria,
+			@RequestParam(value = "pai_psico_atencion", required = false) String pai_psico_atencion,
+			@RequestParam(value = "pai_psico_praxi", required = false) String pai_psico_praxi,
+			@RequestParam(value = "pai_psico_pensamiento_abstracto", required = false) String pai_psico_pensamiento_abstracto,
+			@RequestParam(value = "pai_psico_percepcion", required = false) String pai_psico_percepcion,
+			@RequestParam(value = "pai_psico_funcion_ejecutiva", required = false) String pai_psico_funcion_ejecutiva,
+			@RequestParam(value = "pai_psico_escala_folstein", required = false) String pai_psico_escala_folstein,
+			@RequestParam(value = "pai_psico_evaluacion_conductual", required = false) String pai_psico_evaluacion_conductual,
+			@RequestParam(value = "pai_psico_plan_act_valoracion_s1", required = false) String pai_psico_plan_act_valoracion_s1,
+			@RequestParam(value = "pai_psico_plan_act_valoracion_s2", required = false) String pai_psico_plan_act_valoracion_s2,
+			@RequestParam(value = "pai_psico_plan_act_instrumentos_s1", required = false) String pai_psico_plan_act_instrumentos_s1,
+			@RequestParam(value = "pai_psico_plan_act_instrumentos_s2", required = false) String pai_psico_plan_act_instrumentos_s2,
+			@RequestParam(value = "pai_psico_plan_act_objetivos_s1", required = false) String pai_psico_plan_act_objetivos_s1,
+			@RequestParam(value = "pai_psico_plan_act_objetivos_s2", required = false) String pai_psico_plan_act_objetivos_s2,
+			@RequestParam(value = "pai_psico_plan_act_actividades_s1", required = false) String pai_psico_plan_act_actividades_s1,
+			@RequestParam(value = "pai_psico_plan_act_actividades_s2", required = false) String pai_psico_plan_act_actividades_s2,
+			@RequestParam(value = "pai_psico_plan_act_incidencias_s1", required = false) String pai_psico_plan_act_incidencias_s1,
+			@RequestParam(value = "pai_psico_plan_act_incidencias_s2", required = false) String pai_psico_plan_act_incidencias_s2,
+			@RequestParam(value = "pai_psico_valoraciones", required = false) String pai_psico_valoraciones,
+			@RequestParam(value = "pai_psico_actuaciones", required = false) String pai_psico_actuaciones,
+			@RequestParam(value = "pai_psico_incidencias", required = false) String pai_psico_incidencias,
+
+			HttpServletRequest request) {
+		try {
+			if (!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			return new ResponseEntity<>(this.patientsService.savePAIPsico(
+					id, pai_psico_acude, pai_psico_sintomas, pai_psico_diagnostico, pai_psico_quien_diagnostica,
+					pai_psico_fecha_diagnostico, pai_psico_forma_evalucion, pai_psico_sintomatologia_actual,
+					pai_psico_antecedentes, pai_psico_breve_historial, pai_psico_orientacion, pai_psico_lenguaje,
+					pai_psico_memoria, pai_psico_atencion, pai_psico_praxi, pai_psico_pensamiento_abstracto,
+					pai_psico_percepcion, pai_psico_funcion_ejecutiva, pai_psico_escala_folstein,
+					pai_psico_evaluacion_conductual, pai_psico_plan_act_valoracion_s1, pai_psico_plan_act_valoracion_s2,
+					pai_psico_plan_act_instrumentos_s1, pai_psico_plan_act_instrumentos_s2, pai_psico_plan_act_objetivos_s1,
+					pai_psico_plan_act_objetivos_s2, pai_psico_plan_act_actividades_s1, pai_psico_plan_act_actividades_s2,
+					pai_psico_plan_act_incidencias_s1, pai_psico_plan_act_incidencias_s2, pai_psico_valoraciones,
+					pai_psico_actuaciones, pai_psico_incidencias), HttpStatus.OK);
+		} catch (Exception e) {
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 
 }

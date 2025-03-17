@@ -1,5 +1,4 @@
 
-
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { NbDialogService, NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import {  parseDataExport, ActionDTO, CountryDTO, StateDTO, CityDTO, PatientDTO, MemberDTO } from 'src/app/shared/models/models';
@@ -28,20 +27,15 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import htmlToPdfmake from 'html-to-pdfmake';
 
 @Component({
-  selector: 'app-social-worker-list',
-  templateUrl: './social-worker-list.component.html',
-  styleUrls: ['./social-worker-list.component.scss']
+  selector: 'app-pai-psico-list',
+  templateUrl: './pai-psico-list.component.html',
+  styleUrls: ['./pai-psico-list.component.scss']
 })
-export class SocialWorkerListComponent implements OnInit{
+export class PaiPsicoListComponent implements OnInit{
 
   
 
   @ViewChild('modalContent1', { static: true }) modalContent1: TemplateRef<any>;
-  @ViewChild('modalContent2', { static: true }) modalContent2: TemplateRef<any>;
-  @ViewChild('modalContent3', { static: true }) modalContent3: TemplateRef<any>;
-
-  @ViewChild('modalContent4', { static: true }) modalContent4: TemplateRef<any>;
-  modalRef4?: NgbModalRef;
 
     //PARÁMETROS LISTADO
     theIdpatient : string = '';
@@ -451,7 +445,7 @@ export class SocialWorkerListComponent implements OnInit{
   }
 
 
-  theNewPatient : PatientDTO = { ...this.thePatient };
+  
 
   constructor(
     public toastService: NbToastrService,
@@ -471,9 +465,8 @@ export class SocialWorkerListComponent implements OnInit{
     }
 
   ngOnInit(): void {
-    this.getAllRelatives();
     this.getPatients(0);
-    this.actions = [  {action: 'alert', text: 'Historia social'},  {action: 'show', text: 'Ficha social'},    {action: 'book', text: 'Informe social'}  ];
+    this.actions = [   {action: 'show', text: 'Ver/modificar datos del PAI'}  ];
   }
 
   getPatients(page? : number)
@@ -504,130 +497,6 @@ export class SocialWorkerListComponent implements OnInit{
   }
   
 
-  getAllRelatives()
-  {
-      this.isProcessing = true;
-      this.patientsService.getAllRelatives().subscribe(
-        res => {
-          this.isProcessing = false;
-          this.allRelatives = res;
-        },
-        error => 
-        {
-          this.isProcessing = false;
-          console.error("getAllRelatives():"+JSON.stringify(error));
-          this.toastService.show("No se pueden obtener los familiares.",
-          "¡Ups!", 
-          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-         );
-        }
-      );
-  }
-  
-
-
-  getCountries() 
-  {
-    this.isProcessing = true;
-    this.frontValuesService.getCountries().subscribe(
-      res => {
-        this.isProcessing = false;
-        this.theCountries = res;
-        console.log("this.thePatient.idcountry="  + this.thePatient.idcountry);
-        if(!this.thePatient.idcountry) this.thePatient.idcountry = 207; //ESPAÑA
-        this.getStates();
-      },
-      error => {
-        this.isProcessing = false;
-        console.error("getCountries():"+JSON.stringify(error));
-        this.toastService.show("No se han podido obtener los países.",
-          "¡Ups!", 
-          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-         );
-      }
-    );
-  }
-  
-  
-
-  getStates() 
-  {
-    this.isProcessing = true;
-    this.frontValuesService.getStates(this.thePatient.idcountry).subscribe(
-      res => {
-        this.isProcessing = false;
-        this.theStates = res;
-        if(this.theStates[0]) { if(!this.thePatient.idstate) this.thePatient.idstate = this.theStates[0].id; }
-        else this.thePatient.idstate = undefined;
-        this.getCities();
-      },
-      error => {
-        this.isProcessing = false;
-        console.error("getStates():"+JSON.stringify(error));
-        this.toastService.show("No se han podido obtener los estados.",
-          "¡Ups!", 
-          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-         );
-      }
-    );
-  }
-  
-
-  getCities() 
-  {
-    this.isProcessing = true;
-    this.frontValuesService.getCities(this.thePatient.idstate).subscribe(
-      res => {
-        this.isProcessing = false;
-        this.theCities = res;
-        if(this.theCities[0]) { if(!this.thePatient.idcity) this.thePatient.idcity = this.theCities[0].id; }
-        else this.thePatient.idcity = undefined;
-      },
-      error => {
-        this.isProcessing = false;
-        console.error("getStates():"+JSON.stringify(error));
-        this.toastService.show("No se han podido obtener las ciudades.",
-          "¡Ups!", 
-          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-         );
-      }
-    );
-  }
-  
-  
-
-  getStateAndCitiesByPostalCodeAndCountryId() 
-  {
-    if(this.thePatient.idcountry!=207) return; //solo para españa
-    this.isProcessing = true;
-    this.frontValuesService.getStateAndCitiesByPostalCodeAndCountryId(this.thePatient.postalcode, this.thePatient.idcountry).subscribe(
-      res => {
-        this.isProcessing = false;
-        if(res)
-        {
-          this.thePatient.idstate = res.state.id;
-          this.theCities = res.cities;
-          if(this.theCities[0]) this.thePatient.idcity = this.theCities[0].id;
-          else this.thePatient.idcity = undefined;
-        }
-        else
-        {
-          this.thePatient.idstate = undefined;
-          this.thePatient.idcity = undefined;
-        }
-      },
-      error => {
-        this.isProcessing = false;
-        console.error("getStateAndCitiesByPostalCodeAndCountryId():"+JSON.stringify(error));
-        /*
-        this.toastService.show("No se han podido obtener las ciudades por código postal.",
-          "¡Ups!", 
-          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-         );*/
-      }
-    );
-  }
-  
   
   
   getExportData(format: string) 
@@ -684,31 +553,14 @@ export class SocialWorkerListComponent implements OnInit{
         const selected = this.patientsObjects.find(item => item.id === event[1]);
         this.thePatient = selected;
   
-        this.openFichaSocial(false);
+        this.openPAIPsico();
     } 
-    else if (event && event[0] === 'alert') 
-      {
-        const selected = this.patientsObjects.find(item => item.id === event[1]);
-        this.thePatient = selected;
-  
-        this.openHistoriaSocial(false);
-      }
-      else if (event && event[0] === 'book') 
-        {
-          const selected = this.patientsObjects.find(item => item.id === event[1]);
-          this.thePatient = selected;
-    
-          this.openInformeSocial(false);
-        }
   }
 
 
 
-  openFichaSocial(isnew : boolean)
+  openPAIPsico()
   {
-    if(isnew) this.thePatient = {...this.theNewPatient};
-
-    this.getCountries();
 
 
     this.modal.open(this.modalContent1, { size: 'lg' });
@@ -716,46 +568,23 @@ export class SocialWorkerListComponent implements OnInit{
 
   
 
-  openHistoriaSocial(isnew : boolean)
-  {
-    if(isnew) this.thePatient = {...this.theNewPatient};
-
-    this.getCountries();
-
-
-    this.modal.open(this.modalContent2, { size: 'lg' });
-  }
-
-
-  openInformeSocial(isnew : boolean)
-  {
-    if(isnew) this.thePatient = {...this.theNewPatient};
-
-    this.getCountries();
-
-
-    this.modal.open(this.modalContent3, { size: 'lg' });
-  }
-
-
-
 
   
-  savePatientFichaSocial()
+  savePAIPsico()
   {
     
-    this.patientsService.savePatientFichaSocial(this.thePatient).subscribe(
+    this.patientsService.savePAIPsico(this.thePatient).subscribe(
       res => {
         this.isProcessing = false;
         this.thePatient = res;
-        this.thePatient.birthdate = this.localDateTime2Date(res.birthdate);
-        this.thePatient.fs_fecha_inscripcion = this.localDateTime2Date(res.fs_fecha_inscripcion);
-        this.openDocumentRegisterHTML(this.thePatient.fs_url, 'ficha_social-' + this.thePatient.documentid)
+        this.thePatient.pai_psico_fecha_diagnostico = this.localDateTime2Date(res.pai_psico_fecha_diagnostico);
+
+        this.openDocumentRegisterHTML(this.thePatient.pai_psico_url, 'PAI-PSICOLOGIA-' + this.thePatient.documentid)
       },
       error => {
         this.isProcessing = false;
-        console.error("savePatientFichaSocial():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido grabar la ficha social correctamente.",
+        console.error("savePAIPsico():"+JSON.stringify(error));
+        this.toastService.show("No se ha podido grabar el PAI de PSICOLOGIA.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
@@ -766,90 +595,21 @@ export class SocialWorkerListComponent implements OnInit{
 
   
 
-savePatientHistoriaSocial()
-{
-    
-  this.patientsService.savePatientHistoriaSocial(this.thePatient).subscribe(
-    res => {
-      this.isProcessing = false;
-      this.thePatient = res;
-      this.openDocumentRegisterHTML(this.thePatient.hs_url, 'historia_social-' + this.thePatient.documentid)
-    },
-    error => {
-      this.isProcessing = false;
-      console.error("savePatientHistoriaSocial():"+JSON.stringify(error));
-      this.toastService.show("No se ha podido grabar la historia social correctamente.",
-        "¡Ups!", 
-        { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-       );
-    }
-  ); 
-}
-
-
-  
-
-savePatientInformeSocial()
-{
-    
-  this.patientsService.savePatientInformeSocial(this.thePatient).subscribe(
-    res => {
-      this.isProcessing = false;
-      this.thePatient = res;
-      this.openDocumentRegisterHTML(this.thePatient.is_url, 'informe_social-' + this.thePatient.documentid)
-    },
-    error => {
-      this.isProcessing = false;
-      console.error("saveInformeHistoriaSocial():"+JSON.stringify(error));
-      this.toastService.show("No se ha podido grabar el informe social correctamente.",
-        "¡Ups!", 
-        { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-       );
-    }
-  ); 
-}
-
-
   goStep(step :string)
   {
 
     document.getElementById('step1').style.display = 'none';
     document.getElementById('step2').style.display = 'none';
     document.getElementById('step3').style.display = 'none';
+    document.getElementById('step4').style.display = 'none';
+    document.getElementById('step5').style.display = 'none';
+    document.getElementById('step6').style.display = 'none';
+    document.getElementById('step7').style.display = 'none';
+    document.getElementById('step8').style.display = 'none';
 
     document.getElementById(step).style.display = 'block';
   }
 
-
-
-
-  goHS_Step(step :string)
-  {
-
-    document.getElementById('hs_step1').style.display = 'none';
-    document.getElementById('hs_step2').style.display = 'none';
-    document.getElementById('hs_step3').style.display = 'none';
-    document.getElementById('hs_step4').style.display = 'none';
-    document.getElementById('hs_step5').style.display = 'none';
-    document.getElementById('hs_step6').style.display = 'none';
-
-    document.getElementById(step).style.display = 'block';
-  }
-
-
-
-
-  goIS_Step(step :string)
-  {
-
-    document.getElementById('is_step1').style.display = 'none';
-    document.getElementById('is_step2').style.display = 'none';
-    document.getElementById('is_step3').style.display = 'none';
-    document.getElementById('is_step4').style.display = 'none';
-    document.getElementById('is_step5').style.display = 'none';
-
-    document.getElementById(step).style.display = 'block';
-  }
 
 
 
@@ -915,99 +675,6 @@ cancelUpload() {
 
 
 
-  validEmail(email :string)
-  {
-    return EmailValidator.validate(email);
-  }
-  
-  validPhone(phone : string)
-  {
-    return isPhone(phone);
-  }
-
-
-  validDocumentId(documentId: string, documentType: string)
-  {
-    documentId = documentId.toUpperCase();
-    this.thePatient.documentid = documentId;
-
-    const dni_letters = "TRWAGMYFPDXBNJZSQVHLCKE";
-    if(documentType == 'DNI')
-    {
-      let letter = dni_letters.charAt( parseInt( documentId, 10 ) % 23 );
-      if(letter == documentId.charAt(8) && documentId.length==9) return true;
-      else return false;
-    }
-    else if(documentType == 'NIE')
-    {
-      if(this.validDocumentId(documentId, 'DNI')) return false;
-
-      let nie_prefix = documentId.charAt( 0 );
-      switch (nie_prefix)
-      {
-          case 'X': nie_prefix = '0'; break;
-          case 'Y': nie_prefix = '1'; break;
-          case 'Z': nie_prefix = '2'; break;
-      }
-      const dni = nie_prefix + documentId.substring(1);
-      let letter = dni_letters.charAt( parseInt( dni, 10 ) % 23 );
-  
-      if(letter == dni.charAt(8)  && documentId.length==9) return true;
-      else return false;
-    }
-    else
-      return true;
-  }
-
-  validRelative(thePatient : PatientDTO)
-  {
-    return thePatient.idrelative && thePatient.relativerelation.trim()!='';
-  }
-
-  validPostalAddress(thePatient : PatientDTO)
-  {
-    return thePatient.postalcode && thePatient.postalcode.length>0 && thePatient.postaladdress  && thePatient.postaladdress.length>0 && thePatient.idstate && thePatient.idcity 
-  }
-  
-
-  validService(thePatient : PatientDTO)
-  {
-    if(thePatient.servicetype == 'TALLER' || thePatient.servicetype == 'CENTRO_DIA_PRIVADO' || thePatient.servicetype == 'CENTRO_DIA_CONCERTADO') return true;
-    else return false;
-  }
-
-  /*
-  validDoc(thePatient : PatientDTO)
-  {
-    if(thePatient.servicetype == 'CENTRO_DIA_CONCERTADO')
-      return (thePatient.register_document_url_signed && thePatient.register_document_url_signed.startsWith("https://") )  &&
-              (thePatient.register19_document_url_signed && thePatient.register19_document_url_signed.startsWith("https://") )  &&
-              (thePatient.register20_document_url_signed && thePatient.register20_document_url_signed.startsWith("https://") )  &&
-              (thePatient.register24_document_url_signed && thePatient.register24_document_url_signed.startsWith("https://") )  &&
-              (thePatient.register25_document_url_signed && thePatient.register25_document_url_signed.startsWith("https://") )  &&
-              (thePatient.register26_document_url_signed && thePatient.register26_document_url_signed.startsWith("https://") )  &&
-              (thePatient.register27_document_url_signed && thePatient.register27_document_url_signed.startsWith("https://") )  
-
-      else if(thePatient.servicetype == 'CENTRO_DIA_PRIVADO')
-        return (thePatient.register_document_url_signed && thePatient.register_document_url_signed.startsWith("https://") )  &&
-                (thePatient.register21_document_url_signed && thePatient.register21_document_url_signed.startsWith("https://") )  &&
-                (thePatient.register22_document_url_signed && thePatient.register22_document_url_signed.startsWith("https://") )  &&
-                (thePatient.register23_document_url_signed && thePatient.register23_document_url_signed.startsWith("https://") )  &&
-                (thePatient.register28_document_url_signed && thePatient.register28_document_url_signed.startsWith("https://") )  
-    
-      else if(thePatient.servicetype == 'TALLER')
-        return (thePatient.register_document_url_signed && thePatient.register_document_url_signed.startsWith("https://") )  &&
-                (thePatient.register25_document_url_signed && thePatient.register25_document_url_signed.startsWith("https://") )  &&
-                (thePatient.register26_document_url_signed && thePatient.register26_document_url_signed.startsWith("https://") )  &&
-                (thePatient.register28_document_url_signed && thePatient.register28_document_url_signed.startsWith("https://") )  &&
-                ((thePatient.register29_document_url_signed && thePatient.register29_document_url_signed.startsWith("https://") )  ||
-                (thePatient.register30_document_url_signed && thePatient.register30_document_url_signed.startsWith("https://") )  )
-              
-
-  }
-
-*/
-
 
 
   formatDate2(thedate : Date)
@@ -1056,7 +723,7 @@ cancelUpload() {
   convertDates(patient: any)
   {
     patient.birthdate = this.localDateTime2Date(patient.birthdate);
-    patient.fs_fecha_inscripcion = this.localDateTime2Date(patient.fs_fecha_inscripcion);
+    patient.pai_psico_fecha_diagnostico = this.localDateTime2Date(patient.pai_psico_fecha_diagnostico);
     return patient;
   }
 
@@ -1070,18 +737,11 @@ cancelUpload() {
   removeDocument(documentname : string)
   {
     this.thePatient[documentname]='';
-    console.log('this.thePatient.register19_document_url_signed='+this.thePatient.register19_document_url_signed);
   }
 
   closeModal()
   {
     this.getPatients(this.page);
-  }
-
-
-  openAddDocumentModal2()
-  {
-    this.modalRef4 = this.modal.open(this.modalContent4, { size: 'lg' });
   }
 
 
@@ -1099,145 +759,6 @@ cancelUpload() {
   }
 
   
-  goStepB(step :string)
-  {
-
-    document.getElementById('stepB1').style.display = 'none';
-    document.getElementById('stepB2').style.display = 'none';
-    document.getElementById('stepB3').style.display = 'none';
-    document.getElementById('stepB4').style.display = 'none';
-    document.getElementById('stepB5').style.display = 'none';
-    document.getElementById('stepB6').style.display = 'none';
-    document.getElementById('stepB7').style.display = 'none';
-
-    document.getElementById(step).style.display = 'block';
-  }
-
-
-
-
-saveInformePsicoSocial()
-{
-  this.patientsService.saveInformePsicoSocial(this.thePatient).subscribe(
-    res => {
-      this.isProcessing = false;
-      this.thePatient = res;
-// Suponiendo que `res` es el objeto con las fechas en formato LocalDate
-
-this.thePatient.ips_fecha_informe = this.localDateTime2Date(res.ips_fecha_informe);
-
-this.hayreport2 = true;
-this.http.get(this.thePatient.ips_url , {responseType: 'text'}).pipe(
-  catchError(error => {
-    this.hayreport2 = false;
-    return of('ERROR.');
-  })
-)
-.subscribe({
-  next: response => {
-    this.pdfTable2.nativeElement.innerHTML = response;
-    this.closeModal1();
-  },
-  error: error => {
-    this.hayreport2 = false;
-    console.error('Error en la suscripción:', error);
-  }
-});
-
-
-    },
-    error => {
-      this.isProcessing = false;
-      console.error("saveInformePsicoSocial():"+JSON.stringify(error));
-      this.toastService.show("No se ha podido grabar el informe psico-social correctamente.",
-        "¡Ups!", 
-        { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-       );
-    }
-  );
-
-
-}
-
-closeModal1(): void {
-  if (this.modalRef4) {
-    this.modalRef4.close(); // Cierra el modal
-  }
-}
-
-
-imprimirInformePsicoSocial()
-{
- const pdfTable = this.pdfTable2.nativeElement;
-
-    const htmlSections = pdfTable.innerHTML.split('<!--#PAGEBREAK#-->');
-
-    let pdfMakeContent = [];
-    htmlSections.forEach((section, index) => 
-      {
-        const cleanedSection = section.replace(/-->/g, '<!-- -->');
-
-        const sectionContent = htmlToPdfmake(cleanedSection);
-
-        // Agrega estilos de texto y tabla a cada sección
-        sectionContent.forEach((content: any) => {
-          if (content.table) {
-            // Ajusta el estilo de la tabla, como tamaño de fuente
-            content.style = 'tableStyle';
-          }
-        });
-
-          pdfMakeContent = pdfMakeContent.concat(sectionContent);
-
-          if (index < htmlSections.length - 1) {
-            pdfMakeContent.push({ text: '', pageBreak: 'after' });
-          }
-        });
-
-      const documentDefinition = {
-        content: pdfMakeContent,
-        styles: {
-          tableStyle: {
-            fontSize: 10, // Tamaño de fuente para las tablas
-            margin: [0, 5, 0, 5] // Márgenes alrededor de las tablas
-          }
-        },
-        defaultStyle: {
-          fontSize: 12 // Tamaño de fuente predeterminado
-        }
-      };
-
-
-      pdfMake.createPdf(documentDefinition).download(this.thePatient.documentid + "-informe-psicosocial" + ".pdf");
-  }
-
-
-
-
-copiarHtml2() {
-  const range = document.createRange();
-  const selection = window.getSelection();
-
-  // Seleccionar el contenido del elemento
-  range.selectNodeContents(this.pdfTable2.nativeElement);
-  selection?.removeAllRanges(); // Limpiar cualquier selección existente
-  selection?.addRange(range);
-
-  // Usar la API de portapapeles para copiar con formato
-  try {
-    const success = document.execCommand('copy');
-    if (success) {
-      console.log('Contenido copiado con formato.');
-    } else {
-      console.error('Error al copiar el contenido.');
-    }
-  } catch (err) {
-    console.error('Error al intentar copiar:', err);
-  }
-
-  // Limpiar la selección después de copiar
-  selection?.removeAllRanges();
-}
 
 
 
@@ -1262,7 +783,8 @@ getPatientById()
         this.thePatient.ins_fecha_ind2 = this.localDateTime2Date(res.ins_fecha_ind2);
         this.thePatient.ins_fecha_ind3 = this.localDateTime2Date(res.ins_fecha_ind3);
         this.thePatient.ips_fecha_informe = this.localDateTime2Date(res.ips_fecha_informe);
-
+        this.thePatient.pai_fisio_fecha_valoracion = this.localDateTime2Date(res.pai_fisio_fecha_valoracion);
+        this.thePatient.pai_psico_fecha_diagnostico = this.localDateTime2Date(res.pai_psico_fecha_diagnostico);
 
         this.isProcessing = false;
       },

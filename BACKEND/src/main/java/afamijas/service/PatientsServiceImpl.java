@@ -1594,4 +1594,138 @@ public class PatientsServiceImpl implements PatientsService
 	}
 
 
+
+	public PatientDTO savePAIPsico(
+			String id,
+			String paiPsicoAcude,
+			String paiPsicoSintomas,
+			String paiPsicoDiagnostico,
+			String paiPsicoQuienDiagnostica,
+			LocalDate paiPsicoFechaDiagnostico,
+			String paiPsicoFormaEvaluacion,
+			String paiPsicoSintomatologiaActual,
+			String paiPsicoAntecedentes,
+			String paiPsicoBreveHistorial,
+			String paiPsicoOrientacion,
+			String paiPsicoLenguaje,
+			String paiPsicoMemoria,
+			String paiPsicoAtencion,
+			String paiPsicoPraxi,
+			String paiPsicoPensamientoAbstracto,
+			String paiPsicoPercepcion,
+			String paiPsicoFuncionEjecutiva,
+			String paiPsicoEscalaFolstein,
+			String paiPsicoEvaluacionConductual,
+			String paiPsicoPlanActValoracionS1,
+			String paiPsicoPlanActValoracionS2,
+			String paiPsicoPlanActInstrumentosS1,
+			String paiPsicoPlanActInstrumentosS2,
+			String paiPsicoPlanActObjetivosS1,
+			String paiPsicoPlanActObjetivosS2,
+			String paiPsicoPlanActActividadesS1,
+			String paiPsicoPlanActActividadesS2,
+			String paiPsicoPlanActIncidenciasS1,
+			String paiPsicoPlanActIncidenciasS2,
+			String paiPsicoValoraciones,
+			String paiPsicoActuaciones,
+			String paiPsicoIncidencias
+	) throws Exception {
+
+		User patient = this.usersRepository.findOne(id);
+		if (patient == null) return null;
+
+		patient.setPai_psico_acude(paiPsicoAcude);
+		patient.setPai_psico_sintomas(paiPsicoSintomas);
+		patient.setPai_psico_diagnostico(paiPsicoDiagnostico);
+		patient.setPai_psico_quien_diagnostica(paiPsicoQuienDiagnostica);
+		patient.setPai_psico_fecha_diagnostico(paiPsicoFechaDiagnostico);
+		patient.setPai_psico_forma_evalucion(paiPsicoFormaEvaluacion);
+		patient.setPai_psico_sintomatologia_actual(paiPsicoSintomatologiaActual);
+		patient.setPai_psico_antecedentes(paiPsicoAntecedentes);
+		patient.setPai_psico_breve_historial(paiPsicoBreveHistorial);
+		patient.setPai_psico_orientacion(paiPsicoOrientacion);
+		patient.setPai_psico_lenguaje(paiPsicoLenguaje);
+		patient.setPai_psico_memoria(paiPsicoMemoria);
+		patient.setPai_psico_atencion(paiPsicoAtencion);
+		patient.setPai_psico_praxi(paiPsicoPraxi);
+		patient.setPai_psico_pensamiento_abstracto(paiPsicoPensamientoAbstracto);
+		patient.setPai_psico_percepcion(paiPsicoPercepcion);
+		patient.setPai_psico_funcion_ejecutiva(paiPsicoFuncionEjecutiva);
+		patient.setPai_psico_escala_folstein(paiPsicoEscalaFolstein);
+		patient.setPai_psico_evaluacion_conductual(paiPsicoEvaluacionConductual);
+		patient.setPai_psico_plan_act_valoracion_s1(paiPsicoPlanActValoracionS1);
+		patient.setPai_psico_plan_act_valoracion_s2(paiPsicoPlanActValoracionS2);
+		patient.setPai_psico_plan_act_instrumentos_s1(paiPsicoPlanActInstrumentosS1);
+		patient.setPai_psico_plan_act_instrumentos_s2(paiPsicoPlanActInstrumentosS2);
+		patient.setPai_psico_plan_act_objetivos_s1(paiPsicoPlanActObjetivosS1);
+		patient.setPai_psico_plan_act_objetivos_s2(paiPsicoPlanActObjetivosS2);
+		patient.setPai_psico_plan_act_actividades_s1(paiPsicoPlanActActividadesS1);
+		patient.setPai_psico_plan_act_actividades_s2(paiPsicoPlanActActividadesS2);
+		patient.setPai_psico_plan_act_incidencias_s1(paiPsicoPlanActIncidenciasS1);
+		patient.setPai_psico_plan_act_incidencias_s2(paiPsicoPlanActIncidenciasS2);
+		patient.setPai_psico_valoraciones(paiPsicoValoraciones);
+		patient.setPai_psico_actuaciones(paiPsicoActuaciones);
+		patient.setPai_psico_incidencias(paiPsicoIncidencias);
+
+		patient = this.usersRepository.save(patient);
+
+		City city = this.citiesRepository.findOne(patient.getIdcity());
+		State state = this.statesRepository.findOne(patient.getIdstate());
+		Country country = this.countriesRepository.findOne(patient.getIdcountry());
+		User relative = this.usersRepository.findOne(patient.getIdrelative());
+
+		HashMap<String, String> values = new HashMap<>();
+
+		/*
+		values.put("NAME", patient.getName());
+		values.put("SURNAME1", patient.getSurname1());
+		values.put("SURNAME2", patient.getSurname2());
+		 */
+
+		values.put("pai_psico_acude", paiPsicoAcude);
+		values.put("pai_psico_sintomas", paiPsicoSintomas);
+		values.put("pai_psico_diagnostico", paiPsicoDiagnostico);
+		values.put("pai_psico_quien_diagnostica", paiPsicoQuienDiagnostica);
+		values.put("pai_psico_forma_evalucion", paiPsicoFormaEvaluacion);
+		values.put("pai_psico_sintomatologia_actual", paiPsicoSintomatologiaActual);
+		values.put("pai_psico_antecedentes", paiPsicoAntecedentes);
+		values.put("pai_psico_breve_historial", paiPsicoBreveHistorial);
+		values.put("pai_psico_orientacion", paiPsicoOrientacion);
+		values.put("pai_psico_lenguaje", paiPsicoLenguaje);
+		values.put("pai_psico_memoria", paiPsicoMemoria);
+		values.put("pai_psico_atencion", paiPsicoAtencion);
+		values.put("pai_psico_praxi", paiPsicoPraxi);
+		values.put("pai_psico_pensamiento_abstracto", paiPsicoPensamientoAbstracto);
+		values.put("pai_psico_percepcion", paiPsicoPercepcion);
+		values.put("pai_psico_funcion_ejecutiva", paiPsicoFuncionEjecutiva);
+		values.put("pai_psico_escala_folstein", paiPsicoEscalaFolstein);
+		values.put("pai_psico_evaluacion_conductual", paiPsicoEvaluacionConductual);
+		values.put("pai_psico_plan_act_valoracion_s1", paiPsicoPlanActValoracionS1);
+		values.put("pai_psico_plan_act_valoracion_s2", paiPsicoPlanActValoracionS2);
+		values.put("pai_psico_plan_act_instrumentos_s1", paiPsicoPlanActInstrumentosS1);
+		values.put("pai_psico_plan_act_instrumentos_s2", paiPsicoPlanActInstrumentosS2);
+		values.put("pai_psico_plan_act_objetivos_s1", paiPsicoPlanActObjetivosS1);
+		values.put("pai_psico_plan_act_objetivos_s2", paiPsicoPlanActObjetivosS2);
+		values.put("pai_psico_plan_act_actividades_s1", paiPsicoPlanActActividadesS1);
+		values.put("pai_psico_plan_act_actividades_s2", paiPsicoPlanActActividadesS2);
+		values.put("pai_psico_plan_act_incidencias_s1", paiPsicoPlanActIncidenciasS1);
+		values.put("pai_psico_plan_act_incidencias_s2", paiPsicoPlanActIncidenciasS2);
+		values.put("pai_psico_valoraciones", paiPsicoValoraciones);
+		values.put("pai_psico_actuaciones", paiPsicoActuaciones);
+		values.put("pai_psico_incidencias", paiPsicoIncidencias);
+
+		try {
+			values.put("pai_psico_fecha_diagnostico", patient.getPai_psico_fecha_diagnostico().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		} catch (Exception e) {
+			values.put("pai_psico_fecha_diagnostico", "");
+		}
+
+		String paiPsicoUrl = this.getCDNURL("pai_psico", patient.get_id(), values);
+		PatientDTO res = new PatientDTO(patient, city, state, country, relative, null);
+		res.setPai_psico_url(paiPsicoUrl);
+		return res;
+	}
+
+
+
 }

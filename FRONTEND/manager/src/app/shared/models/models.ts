@@ -520,6 +520,42 @@ export interface PatientDTO {
     pai_fisio_url : string;
 
 
+    //PAI PSICOLOGÍA:
+
+    pai_psico_acude: string;
+    pai_psico_sintomas: string;
+    pai_psico_diagnostico: string;
+    pai_psico_quien_diagnostica: string;
+    pai_psico_fecha_diagnostico: Date; 
+    pai_psico_forma_evalucion: string;
+    pai_psico_sintomatologia_actual: string;
+    pai_psico_antecedentes: string;
+    pai_psico_breve_historial: string;
+    pai_psico_orientacion: string;
+    pai_psico_lenguaje: string;
+    pai_psico_memoria: string;
+    pai_psico_atencion: string;
+    pai_psico_praxi: string;
+    pai_psico_pensamiento_abstracto: string;
+    pai_psico_percepcion: string;
+    pai_psico_funcion_ejecutiva: string;
+    pai_psico_escala_folstein: string;
+    pai_psico_evaluacion_conductual: string;
+    pai_psico_plan_act_valoracion_s1: string;
+    pai_psico_plan_act_valoracion_s2: string;
+    pai_psico_plan_act_instrumentos_s1: string;
+    pai_psico_plan_act_instrumentos_s2: string;
+    pai_psico_plan_act_objetivos_s1: string;
+    pai_psico_plan_act_objetivos_s2: string;
+    pai_psico_plan_act_actividades_s1: string;
+    pai_psico_plan_act_actividades_s2: string;
+    pai_psico_plan_act_incidencias_s1: string;
+    pai_psico_plan_act_incidencias_s2: string;
+    pai_psico_valoraciones: string; // CUADRO RESUMEN
+    pai_psico_actuaciones: string;  // CUADRO RESUMEN
+    pai_psico_incidencias: string;  // CUADRO RESUMEN
+    pai_psico_url: string;
+
 }
 
 

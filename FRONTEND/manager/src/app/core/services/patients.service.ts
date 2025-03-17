@@ -414,7 +414,47 @@ export class PatientsService {
     return this.http.post<any>(ENV.url.patients + '/savePAIFisio', form);
   }
   
-
+  savePAIPsico(thePatient: PatientDTO) {
+    const form = new FormData();
+    if (thePatient.id && thePatient.id !== '') form.append('id', thePatient.id);
+  
+    if (thePatient.pai_psico_acude) form.append('pai_psico_acude', thePatient.pai_psico_acude);
+    if (thePatient.pai_psico_sintomas) form.append('pai_psico_sintomas', thePatient.pai_psico_sintomas);
+    if (thePatient.pai_psico_diagnostico) form.append('pai_psico_diagnostico', thePatient.pai_psico_diagnostico);
+    if (thePatient.pai_psico_quien_diagnostica) form.append('pai_psico_quien_diagnostica', thePatient.pai_psico_quien_diagnostica);
+    if (thePatient.pai_psico_fecha_diagnostico) form.append('pai_psico_fecha_diagnostico', this.formatDate2(thePatient.pai_psico_fecha_diagnostico));
+    if (thePatient.pai_psico_forma_evalucion) form.append('pai_psico_forma_evalucion', thePatient.pai_psico_forma_evalucion);
+    if (thePatient.pai_psico_sintomatologia_actual) form.append('pai_psico_sintomatologia_actual', thePatient.pai_psico_sintomatologia_actual);
+    if (thePatient.pai_psico_antecedentes) form.append('pai_psico_antecedentes', thePatient.pai_psico_antecedentes);
+    if (thePatient.pai_psico_breve_historial) form.append('pai_psico_breve_historial', thePatient.pai_psico_breve_historial);
+    if (thePatient.pai_psico_orientacion) form.append('pai_psico_orientacion', thePatient.pai_psico_orientacion);
+    if (thePatient.pai_psico_lenguaje) form.append('pai_psico_lenguaje', thePatient.pai_psico_lenguaje);
+    if (thePatient.pai_psico_memoria) form.append('pai_psico_memoria', thePatient.pai_psico_memoria);
+    if (thePatient.pai_psico_atencion) form.append('pai_psico_atencion', thePatient.pai_psico_atencion);
+    if (thePatient.pai_psico_praxi) form.append('pai_psico_praxi', thePatient.pai_psico_praxi);
+    if (thePatient.pai_psico_pensamiento_abstracto) form.append('pai_psico_pensamiento_abstracto', thePatient.pai_psico_pensamiento_abstracto);
+    if (thePatient.pai_psico_percepcion) form.append('pai_psico_percepcion', thePatient.pai_psico_percepcion);
+    if (thePatient.pai_psico_funcion_ejecutiva) form.append('pai_psico_funcion_ejecutiva', thePatient.pai_psico_funcion_ejecutiva);
+    if (thePatient.pai_psico_escala_folstein) form.append('pai_psico_escala_folstein', thePatient.pai_psico_escala_folstein);
+    if (thePatient.pai_psico_evaluacion_conductual) form.append('pai_psico_evaluacion_conductual', thePatient.pai_psico_evaluacion_conductual);
+    if (thePatient.pai_psico_plan_act_valoracion_s1) form.append('pai_psico_plan_act_valoracion_s1', thePatient.pai_psico_plan_act_valoracion_s1);
+    if (thePatient.pai_psico_plan_act_valoracion_s2) form.append('pai_psico_plan_act_valoracion_s2', thePatient.pai_psico_plan_act_valoracion_s2);
+    if (thePatient.pai_psico_plan_act_instrumentos_s1) form.append('pai_psico_plan_act_instrumentos_s1', thePatient.pai_psico_plan_act_instrumentos_s1);
+    if (thePatient.pai_psico_plan_act_instrumentos_s2) form.append('pai_psico_plan_act_instrumentos_s2', thePatient.pai_psico_plan_act_instrumentos_s2);
+    if (thePatient.pai_psico_plan_act_objetivos_s1) form.append('pai_psico_plan_act_objetivos_s1', thePatient.pai_psico_plan_act_objetivos_s1);
+    if (thePatient.pai_psico_plan_act_objetivos_s2) form.append('pai_psico_plan_act_objetivos_s2', thePatient.pai_psico_plan_act_objetivos_s2);
+    if (thePatient.pai_psico_plan_act_actividades_s1) form.append('pai_psico_plan_act_actividades_s1', thePatient.pai_psico_plan_act_actividades_s1);
+    if (thePatient.pai_psico_plan_act_actividades_s2) form.append('pai_psico_plan_act_actividades_s2', thePatient.pai_psico_plan_act_actividades_s2);
+    if (thePatient.pai_psico_plan_act_incidencias_s1) form.append('pai_psico_plan_act_incidencias_s1', thePatient.pai_psico_plan_act_incidencias_s1);
+    if (thePatient.pai_psico_plan_act_incidencias_s2) form.append('pai_psico_plan_act_incidencias_s2', thePatient.pai_psico_plan_act_incidencias_s2);
+    if (thePatient.pai_psico_valoraciones) form.append('pai_psico_valoraciones', thePatient.pai_psico_valoraciones);
+    if (thePatient.pai_psico_actuaciones) form.append('pai_psico_actuaciones', thePatient.pai_psico_actuaciones);
+    if (thePatient.pai_psico_incidencias) form.append('pai_psico_incidencias', thePatient.pai_psico_incidencias);
+    if (thePatient.pai_psico_url) form.append('pai_psico_url', thePatient.pai_psico_url);
+  
+    return this.http.post<any>(ENV.url.patients + '/savePAIPsico', form);
+  }
+  
   unregisterPatient(id: string, unregister_reason: string, unregister_document_url: string, is_document_signed: boolean) 
   {
     const form = new FormData();

@@ -1,0 +1,461 @@
+<nb-card>
+    <nb-card-header>
+        <div class="row float-start" >
+            <h4>PAI Psicología</h4>
+        </div>
+        <!--button [disabled]="theIdpatient==''" [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openPAIFisio(true)">Completar PAI</button-->
+        
+    </nb-card-header>
+    <nb-card-body>
+
+            <div style="margin-bottom: 10px;">
+                Para el usuario:
+                <ng-select (change)="getPatients(0)" [multiple]="false" [(ngModel)]="theIdpatient" name="idpatient" [clearable]="false" notFoundText="No se encuentran usuarios">
+                    <ng-option value="">TODOS</ng-option>
+                    <ng-option *ngFor="let u of allPatients" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}} - ({{u.membernumber}})</ng-option>
+                </ng-select>
+            </div>
+
+        <hr/>
+ 
+        <app-custom-table
+            [actions]="actions"
+            [keys]="['Nombre', 'DNI', 'Familiar/Cuidador principal', 'Tipo de servicio']"
+            [values]="patients"
+            [align]="['left', 'left', 'left', 'left']"
+            [filters]="[false, false, false, false]"
+            [sort]="[false, false, false, false]"
+            [widthToCollapse]="750"
+            [withPagination]="true"
+            [totalPages]="totalPages"
+            [page]="page"
+            [size]="size"
+            [loadingE]="loadingExcel"
+            [loading]="loadingPDF"
+            [hasExport]="true"
+            (actionSelected)="action($event)"
+            (changePage)="setPage($event)"
+            (filterEvent)="filter(0)"
+            [isProcessing]="isProcessing"
+            (exportData)="getExportData($event)"
+            [showSearchButton]="true"
+
+        >
+
+        </app-custom-table>
+    </nb-card-body>
+
+</nb-card>
+
+
+
+<ng-template #modalContent1 let-close="close">
+    <div class="modal-header"> 
+        <h6>PAI</h6>
+        <p>{{thePatient.documentid}} - {{thePatient.name}} {{thePatient.surname1}} {{thePatient.surname2}}</p>
+        <p>Nº expediente: {{thePatient.fs_num_expediente}}</p>
+        <nb-icon (click)="closeModal();close();" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+
+
+
+            <div id="step1">
+
+            
+            
+            <b>Motivo de la consulta:</b><br/>
+
+            ¿Acude por diagnóstico médico o por sospechas de una posible demencia?
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_acude" >
+                 </textarea>
+            </div>
+            
+            Síntomas o señales que hacen sospechar una posible demencia
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_sintomas" >
+                 </textarea>
+            </div>
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+            
+        </div>
+        
+        
+        <div style="display: none;" id="step2">
+
+
+            
+            <b>Datos de la enfermedad:</b><br/>
+
+            Diagnostico:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_diagnostico" >
+                 </textarea>
+            </div>
+            
+            Quién diagnostica:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_quien_diagnostica" >
+                 </textarea>
+            </div>
+            
+
+            <div style="margin-top:10px">
+                Fecha: 
+                <input class="form-control" mwlFlatpickr [(ngModel)]="thePatient.pai_psico_fecha_diagnostico" name="thePatient-pai_psico_fecha_diagnostico" type="text" [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder=""
+                [disable]="[disabledDay2]"
+                >
+            </div>
+
+            
+            <div style="margin-bottom: 10px;">
+                Forma presentación y evolución:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_psico_forma_evalucion" name="thePatient-pai_psico_forma_evalucion" [clearable]="false" [searchable]="false">
+                    <ng-option value="Brusca o Insidiosa">Brusca o Insidiosa</ng-option>
+                    <ng-option value="Fluctuante o Progresiva">Fluctuante o Progresiva</ng-option>
+                </ng-select>
+            </div>
+            
+            Sintomatología actual más relevante:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_sintomatologia_actual" >
+                 </textarea>
+            </div>
+
+    
+    
+                <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                    <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step1');">
+                        &lt;&lt; ANTERIOR
+                    </button>
+                    &nbsp;&nbsp;
+                    <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
+                        SIGUIENTE &gt;&gt;
+                    </button>
+                </div>
+
+        </div>
+
+
+        
+        
+        <div style="display: none;" id="step3">
+
+
+            <b>Antecedentes de demencia:</b><br/>
+
+            ¿Ha tenido algún otro familiar que haya padecido E.A, Down, Parkinson, Hipertensión, etc….?
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_antecedentes" >
+                 </textarea>
+            </div>
+            
+           
+                                   
+    
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step4');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+        </div>
+
+
+        
+        
+        <div style="display: none;" id="step4">
+
+
+            <b>Breve historial piscológico:</b><br/>
+
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_breve_historial" >
+                 </textarea>
+            </div>
+
+                                   
+    
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step5');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+        </div>
+
+
+        
+        
+        <div style="display: none;" id="step5">
+
+
+            <b>Evaluación cognitiva:</b><br/>
+
+            <b>Mediante la subescala CAMCOG del test CAMDEX-R, se valoran las siguientes áreas:</b>
+            <br/>
+
+            ORIENTACIÓN
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_orientacion" >
+                 </textarea>
+            </div>
+            
+            LENGUAJE
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_lenguaje" >
+                 </textarea>
+            </div>
+            
+            MEMORIA
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_memoria" >
+                 </textarea>
+            </div>
+            
+            ATENCIÓN/CÁLCULO
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_atencion" >
+                 </textarea>
+            </div>
+            
+            PRAXIS
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_praxi" >
+                 </textarea>
+            </div>
+            
+            PENSAMIENTO ABSTRACTO
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_pensamiento_abstracto" >
+                 </textarea>
+            </div>
+            
+            PERCEPCIÓN
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_percepcion" >
+                 </textarea>
+            </div>
+            
+            FUNCIÓN EJECUTIVA
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_funcion_ejecutiva" >
+                 </textarea>
+            </div>
+            
+
+                        
+            Mediante la escala Mini-Mental de Folstein:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_escala_folstein" >
+                 </textarea>
+            </div>
+            
+            
+                                   
+    
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step4');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step6');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        
+        
+        <div style="display: none;" id="step6">
+
+
+            <b>Evaluación conductual:</b><br/>
+
+
+            A través del Inventario Neuropsiquiatrico (NPI), que revela alteraciones de conducta.:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_evaluacion_conductual" >
+                 </textarea>
+            </div>
+            
+    
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step5');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step7');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+
+            </div>
+
+        </div>
+
+
+                
+        <div style="display: none;" id="step7">
+
+
+            <b>PLAN DE ACTUACIÓN PROPUESTO POR EL ÁREA PSICOLOGICA::</b><br/>
+
+            Valoración necesidades (Cognitivo/conductual) SEMESTRE 1:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_plan_act_valoracion_s1" >
+                 </textarea>
+            </div>
+
+            Valoración necesidades (Cognitivo/conductual) SEMESTRE 2:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_plan_act_valoracion_s2" >
+                 </textarea>
+            </div>
+
+
+            Instrumentos (escalas, Hª) SEMESTRE 1:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_plan_act_instrumentos_s1" >
+                 </textarea>
+            </div>
+
+            Instrumentos (escalas, Hª) SEMESTRE 2:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_plan_act_instrumentos_s2" >
+                 </textarea>
+            </div>
+
+            Objetivos SEMESTRE 1:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_plan_act_objetivos_s1" >
+                 </textarea>
+            </div>
+
+            Objetivos SEMESTRE 2:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_plan_act_objetivos_s2" >
+                 </textarea>
+            </div>
+
+            Actuaciones/Actividades SEMESTRE 1:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_plan_act_actividades_s1" >
+                 </textarea>
+            </div>
+
+            Actuaciones/Actividades SEMESTRE 2:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_plan_act_actividades_s2" >
+                 </textarea>
+            </div>
+
+            Incidencias SEMESTRE 1:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_plan_act_incidencias_s1" >
+                 </textarea>
+            </div>
+
+            Incidencias SEMESTRE 2:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_plan_act_incidencias_s2" >
+                 </textarea>
+            </div>
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step6');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step8');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+
+            </div>
+
+        </div>
+
+
+        
+
+
+
+
+        
+        <div style="display: none;" id="step8">
+
+
+            <b>Resumen:</b><br/>
+
+            Valoración necesidades:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_valoraciones" >
+                 </textarea>
+            </div>
+
+            Actuaciones/actividades:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_actuaciones" >
+                 </textarea>
+            </div>
+
+            Incidencias:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_psico_incidencias" >
+                 </textarea>
+            </div>
+    
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step7');">
+                    &lt;&lt; ANTERIOR
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        </div>
+
+    </div>
+
+
+
+    <div class="modal-footer">
+        <button [disabled]="isProcessing" 
+        nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="savePAIPsico();">
+            GUARDAR Y GENERAR PAI
+        </button>
+    </div>
+
+
+</ng-template>
+  
+
+
+
