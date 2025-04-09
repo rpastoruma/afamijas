@@ -1,0 +1,545 @@
+<nb-card>
+    <nb-card-header>
+        <div class="row float-start" >
+            <h4>PAI Enfermería</h4>
+        </div>
+        <!--button [disabled]="theIdpatient==''" [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openPAIFisio(true)">Completar PAI</button-->
+        
+    </nb-card-header>
+    <nb-card-body>
+
+            <div style="margin-bottom: 10px;">
+                Para el usuario:
+                <ng-select (change)="getPatients(0)" [multiple]="false" [(ngModel)]="theIdpatient" name="idpatient" [clearable]="false" notFoundText="No se encuentran usuarios">
+                    <ng-option value="">TODOS</ng-option>
+                    <ng-option *ngFor="let u of allPatients" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}} - ({{u.membernumber}})</ng-option>
+                </ng-select>
+            </div>
+
+        <hr/>
+ 
+        <app-custom-table
+            [actions]="actions"
+            [keys]="['Nombre', 'DNI', 'Familiar/Cuidador principal', 'Tipo de servicio']"
+            [values]="patients"
+            [align]="['left', 'left', 'left', 'left']"
+            [filters]="[false, false, false, false]"
+            [sort]="[false, false, false, false]"
+            [widthToCollapse]="750"
+            [withPagination]="true"
+            [totalPages]="totalPages"
+            [page]="page"
+            [size]="size"
+            [loadingE]="loadingExcel"
+            [loading]="loadingPDF"
+            [hasExport]="true"
+            (actionSelected)="action($event)"
+            (changePage)="setPage($event)"
+            (filterEvent)="filter(0)"
+            [isProcessing]="isProcessing"
+            (exportData)="getExportData($event)"
+            [showSearchButton]="true"
+
+        >
+
+        </app-custom-table>
+    </nb-card-body>
+
+</nb-card>
+
+
+
+<ng-template #modalContent1 let-close="close">
+    <div class="modal-header"> 
+        <h6>PAI</h6>
+        <p>{{thePatient.documentid}} - {{thePatient.name}} {{thePatient.surname1}} {{thePatient.surname2}}</p>
+        <p>Nº expediente: {{thePatient.fs_num_expediente}}</p>
+        <nb-icon (click)="closeModal();close();" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+
+
+
+            <div id="step1">
+
+                <b>INFORMACIÓN CLÍNICA RELEVANTE</b>
+
+                <div style="margin-top:10px">
+                    Diagnóstico:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_diagnostico" >
+                    </textarea>
+               </div>
+
+
+            
+               <div style="margin-bottom: 10px;">
+                Problemas auditivos:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_problemas_audio" name="thePatient-pai_enfer_problemas_audio" [clearable]="false" [searchable]="false">
+                    <ng-option value="NO">NO</ng-option>
+                    <ng-option value="SÍ">SÍ</ng-option>
+                </ng-select>
+
+                <div *ngIf="thePatient.pai_enfer_problemas_audio=='SÍ'">
+                    Especificar:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_problemas_audio_text" >
+                    </textarea>
+                </div>
+            </div>
+
+                        
+            <div style="margin-bottom: 10px;">
+                Uso de audífono:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_uso_audifono" name="thePatient-pai_enfer_uso_audifono" [clearable]="false" [searchable]="false">
+                    <ng-option value="NO">NO</ng-option>
+                    <ng-option value="SÍ">SÍ</ng-option>
+                </ng-select>
+           </div>
+
+
+        
+
+           <div style="margin-bottom: 10px;">
+            Problemas visuales:
+            <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_problemas_vision" name="thePatient-pai_enfer_problemas_vision" [clearable]="false" [searchable]="false">
+                <ng-option value="NO">NO</ng-option>
+                <ng-option value="SÍ">SÍ</ng-option>
+            </ng-select>
+
+            <div *ngIf="thePatient.pai_enfer_problemas_vision=='SÍ'">
+                Especificar:
+                <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_problemas_vision_text" >
+                </textarea>
+            </div>
+        </div>
+
+                    
+        <div style="margin-bottom: 10px;">
+            Uso de gafas:
+            <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_uso_gafas" name="thePatient-pai_enfer_uso_gafas" [clearable]="false" [searchable]="false">
+                <ng-option value="NO">NO</ng-option>
+                <ng-option value="SÍ">SÍ</ng-option>
+            </ng-select>
+       </div>
+
+        
+        <div style="margin-bottom: 10px;">
+            Hipertensión/hipotensión:
+            <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_tension" name="thePatient-pai_enfer_tension" [clearable]="false" [searchable]="false">
+                <ng-option value="NO">NO</ng-option>
+                <ng-option value="SÍ">SÍ</ng-option>
+            </ng-select>
+
+        </div>
+
+
+        
+        <div style="margin-bottom: 10px;">
+            Uso de medicación:
+            <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_uso_medicacion" name="thePatient-pai_enfer_uso_medicacion" [clearable]="false" [searchable]="false">
+                <ng-option value="NO">NO</ng-option>
+                <ng-option value="SÍ">SÍ</ng-option>
+            </ng-select>
+
+        </div>
+
+
+        
+        <div style="margin-bottom: 10px;">
+            Diabetes:
+            <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_diabetes" name="thePatient-pai_enfer_diabetes" [clearable]="false" [searchable]="false">
+                <ng-option value="NO">NO</ng-option>
+                <ng-option value="SÍ">SÍ</ng-option>
+            </ng-select>
+
+            <div *ngIf="thePatient.pai_enfer_diabetes=='SÍ'">
+                Especificar si usa insulina o pastillas:
+                <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_diabetes_text" >
+                </textarea>
+            </div>
+        </div>
+
+
+
+               
+       <div style="margin-bottom: 10px;">
+        Alergias a algún medicamento:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_alergias" name="thePatient-pai_enfer_alergias" [clearable]="false" [searchable]="false">
+            <ng-option value="NO">NO</ng-option>
+            <ng-option value="SÍ">SÍ</ng-option>
+        </ng-select>
+
+    </div>
+
+
+    <div style="margin-bottom: 10px;">
+        Otras enfermedades relevantes:
+
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_otras_enfermedades" >
+            </textarea>
+       
+    </div>
+
+
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+            
+        </div>
+        
+        
+        <div style="display: none;" id="step2">
+
+
+            
+            <b>TRATAMIENTO ACTUAL (SEGÚN CONSTA EN INFORMES CLÍNICOS):</b><br/>
+
+            <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+                <div style="width: 24%;">
+                    Medicamento:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_medicamento_1" >
+                    </textarea>
+                </div>
+                <div style="width: 24%;">
+                    Dosis:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_dosis_1" >
+                    </textarea>
+                </div>
+                <div style="width: 24%;">
+                    Fecha Inicio:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_fecha_1" >
+                    </textarea>
+                </div>
+                <div style="width: 24%;">
+                    La toma para:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_para_1" >
+                    </textarea>
+                </div>                                                
+            </div>
+            
+            <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+                <div style="width: 24%;">
+                    Medicamento:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_medicamento_2" >
+                    </textarea>
+                </div>
+                <div style="width: 24%;">
+                    Dosis:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_dosis_2" >
+                    </textarea>
+                </div>
+                <div style="width: 24%;">
+                    Fecha Inicio:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_fecha_2" >
+                    </textarea>
+                </div>
+                <div style="width: 24%;">
+                    La toma para:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_para_2" >
+                    </textarea>
+                </div>                                                
+            </div>
+            
+            <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+                <div style="width: 24%;">
+                    Medicamento:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_medicamento_3" >
+                    </textarea>
+                </div>
+                <div style="width: 24%;">
+                    Dosis:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_dosis_3" >
+                    </textarea>
+                </div>
+                <div style="width: 24%;">
+                    Fecha Inicio:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_fecha_3" >
+                    </textarea>
+                </div>
+                <div style="width: 24%;">
+                    La toma para:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_para_3" >
+                    </textarea>
+                </div>                                                
+            </div>
+            
+            <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+                <div style="width: 24%;">
+                    Medicamento:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_medicamento_4" >
+                    </textarea>
+                </div>
+                <div style="width: 24%;">
+                    Dosis:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_dosis_4" >
+                    </textarea>
+                </div>
+                <div style="width: 24%;">
+                    Fecha Inicio:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_fecha_4" >
+                    </textarea>
+                </div>
+                <div style="width: 24%;">
+                    La toma para:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_tratamiento_para_4" >
+                    </textarea>
+                </div>                                                
+            </div>
+            
+
+
+            <div style="margin-bottom: 10px;">
+                TOMA ALGUNA MEDICACIÓN DURANTE SU ESTANCIA EN EL CENTRO:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_medicacion_centro" name="thePatient-pai_enfer_medicacion_centro" [clearable]="false" [searchable]="false">
+                    <ng-option value="NO">NO</ng-option>
+                    <ng-option value="SÍ">SÍ</ng-option>
+                </ng-select>
+    
+                <div *ngIf="thePatient.pai_enfer_medicacion_centro=='SÍ'">
+                    Especificar:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_medicacion_centro_text" >
+                    </textarea>
+                </div>
+            </div>
+    
+
+            
+            <div style="margin-bottom: 10px;">
+                    MEDICACIÓN PUNTUAL:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_medicacion_puntual" >
+                    </textarea>
+            </div>
+    
+    
+    
+                <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                    <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step1');">
+                        &lt;&lt; ANTERIOR
+                    </button>
+                    &nbsp;&nbsp;
+                    <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
+                        SIGUIENTE &gt;&gt;
+                    </button>
+                </div>
+
+        </div>
+
+
+        
+        
+        <div style="display: none;" id="step3">
+
+
+            <b>WC:</b><br/>
+
+            <div style="margin-bottom: 10px;">
+                CONTROL DE ESFINTERES:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_wc_esfinteres" name="thePatient-pai_enfer_wc_esfinteres" [clearable]="false" [searchable]="false">
+                    <ng-option value="SÍ">SÍ</ng-option>
+                    <ng-option value="NO">NO</ng-option>
+                </ng-select>
+            </div>
+
+
+            <div style="margin-bottom: 10px;">
+                USO DE ALGÚN SISTEMA DE RETENCIÓN:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_wc_retencion" name="thePatient-pai_enfer_wc_retencion" [clearable]="false" [searchable]="false">
+                    <ng-option value="NO">NO</ng-option>
+                    <ng-option value="PAÑAL">PAÑAL</ng-option>
+                    <ng-option value="COMPRESA">COMPRESA</ng-option>
+                    <ng-option value="COLECTOR">COLECTOR</ng-option>
+                    <ng-option value="OTRO">OTRO</ng-option>
+                </ng-select>
+            </div>
+
+            <div style="margin-bottom: 10px;">
+                PROBLEMAS DE ESTREÑIMIENTO:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_wc_estrenimiento" name="thePatient-pai_enfer_wc_estrenimiento" [clearable]="false" [searchable]="false">
+                    <ng-option value="SÍ">SÍ</ng-option>
+                    <ng-option value="NO">NO</ng-option>
+                </ng-select>
+            </div>
+
+            <div style="margin-bottom: 10px;">
+                ACOMPAÑAMIENTO AL BAÑO:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_wc_acompanam" name="thePatient-pai_enfer_wc_acompanam" [clearable]="false" [searchable]="false">
+                    <ng-option value="VA SOLO/A">VA SOLO/A</ng-option>
+                    <ng-option value="CON SUPERVISIÓN">CON SUPERVISIÓN</ng-option>
+                    <ng-option value="DEPENDIENTE">DEPENDIENTE</ng-option>
+                </ng-select>
+            </div>
+                                   
+    
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step4');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+        </div>
+
+
+        
+        
+        <div style="display: none;" id="step4">
+
+
+            <b>ALIMENTACIÖN:</b><br/>
+
+            <div style="margin-bottom: 10px;">
+                INTOLERANCIAS O ALERGIAS CONOCIDAS:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_alim_alergias" name="thePatient-pai_enfer_alim_alergias" [clearable]="false" [searchable]="false">
+                    <ng-option value="NO">NO</ng-option>
+                    <ng-option value="SÍ">SÍ</ng-option>
+                </ng-select>
+    
+                <div *ngIf="thePatient.pai_enfer_alim_alergias=='SÍ'">
+                    Especificar:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_alim_alergias_text" >
+                    </textarea>
+                </div>
+            </div>
+    
+
+            <div style="margin-bottom: 10px;">
+                DIETA ESPECIAL:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_alim_dieta" name="thePatient-pai_enfer_alim_dieta" [clearable]="false" [searchable]="false">
+                    <ng-option value="NO">NO</ng-option>
+                    <ng-option value="SÍ">SÍ</ng-option>
+                </ng-select>
+    
+                <div *ngIf="thePatient.pai_enfer_alim_dieta=='SÍ'">
+                    Especificar:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_alim_dieta_text" >
+                    </textarea>
+                </div>
+            </div>
+    
+    
+
+            <div style="margin-bottom: 10px;">
+                PROBLEMAS DE DEGLUCIÓN:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_alim_problemas_deglucion" name="thePatient-pai_enfer_alim_problemas_deglucion" [clearable]="false" [searchable]="false">
+                    <ng-option value="NO">NO</ng-option>
+                    <ng-option value="SÍ">SÍ</ng-option>
+                </ng-select>
+            </div>
+    
+    
+
+            <div style="margin-bottom: 10px;">
+                USO DE ESPESANTES:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_alim_espesantes" name="thePatient-pai_enfer_alim_espesantes" [clearable]="false" [searchable]="false">
+                    <ng-option value="NO">NO</ng-option>
+                    <ng-option value="SÍ">SÍ</ng-option>
+                </ng-select>
+            </div>
+    
+    
+
+            <div style="margin-bottom: 10px;">
+                NECESITA AYUDA PARA LA ALIMENTACIÓN:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_enfer_alim_ayuda" name="thePatient-pai_enfer_alim_ayuda" [clearable]="false" [searchable]="false">
+                    <ng-option value="NO">NO</ng-option>
+                    <ng-option value="SÍ">SÍ</ng-option>
+                </ng-select>
+            </div>
+    
+
+
+            <b>OBSERVACIONES:</b><br/>
+
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_alim_observaciones" >
+                 </textarea>
+            </div>
+                                   
+    
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step5');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+        </div>
+
+
+        
+     
+
+                
+        <div style="display: none;" id="step5">
+
+
+            
+            <b>Resumen:</b><br/>
+
+            Valoración necesidades:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_valoraciones" >
+                 </textarea>
+            </div>
+
+            Actuaciones/actividades:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_actuaciones" >
+                 </textarea>
+            </div>
+
+            Incidencias:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_enfer_incidencias" >
+                 </textarea>
+            </div>
+    
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step4');">
+                    &lt;&lt; ANTERIOR
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        
+
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+
+    <div class="modal-footer">
+        <button [disabled]="isProcessing" 
+        nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="savePAIEnfer();">
+            GUARDAR Y GENERAR PAI
+        </button>
+    </div>
+
+
+</ng-template>
+  
+
+
+

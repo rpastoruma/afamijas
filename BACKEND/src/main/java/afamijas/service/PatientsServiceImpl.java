@@ -1726,6 +1726,1163 @@ public class PatientsServiceImpl implements PatientsService
 		return res;
 	}
 
+	public PatientDTO savePAITocupa(
+			String id,
+			String paiTocupaNivelIndependencia,
+			String paiTocupaPlanMotriz,
+			String paiTocupaAlimentacion,
+			String paiTocupaWc,
+			String paiTocupaAseo,
+			String paiTocupaDeambular,
+			String paiTocupaTransferencias,
+			String paiTocupaVestido,
+			String paiTocupaBano,
+			String paiTocupaEscalones,
+			String paiTocupaEsfinteres,
+			String paiTocupaDinero,
+			String paiTocupaCompras,
+			String paiTocupaTelefono,
+			String paiTocupaCasa,
+			String paiTocupaCalle,
+			String paiTocupaMedicacion,
+			String paiTocupaIndiceBarthel,
+			String paiTocupaEscalaActividad,
+			String paiTocupaDisfrutaTiempo,
+			String paiTocupaEspaciosOcio,
+			String paiTocupaDisfrutaOcio,
+			String paiTocupaRelacionOtros,
+			String paiTocupaPropiosObjetivos,
+			String paiTocupaParticipaActividades,
+			String paiTocupaActividadesIniciativaPropia,
+			String pai_tocupa_valoraciones,
+			String pai_tocupa_actuaciones,
+			String pai_tocupa_incidencias
 
+
+
+	) throws Exception {
+
+		User patient = this.usersRepository.findOne(id);
+		if (patient == null) return null;
+
+		patient.setPai_tocupa_nivel_independencia(paiTocupaNivelIndependencia);
+		patient.setPai_tocupa_plan_motriz(paiTocupaPlanMotriz);
+		patient.setPai_tocupa_alimentacion(paiTocupaAlimentacion);
+		patient.setPai_tocupa_wc(paiTocupaWc);
+		patient.setPai_tocupa_aseo(paiTocupaAseo);
+		patient.setPai_tocupa_deambular(paiTocupaDeambular);
+		patient.setPai_tocupa_transferencias(paiTocupaTransferencias);
+		patient.setPai_tocupa_vestido(paiTocupaVestido);
+		patient.setPai_tocupa_bano(paiTocupaBano);
+		patient.setPai_tocupa_escaolones(paiTocupaEscalones);
+		patient.setPai_tocupa_esfinteres(paiTocupaEsfinteres);
+		patient.setPai_tocupa_dinero(paiTocupaDinero);
+		patient.setPai_tocupa_compras(paiTocupaCompras);
+		patient.setPai_tocupa_telefono(paiTocupaTelefono);
+		patient.setPai_tocupa_casa(paiTocupaCasa);
+		patient.setPai_tocupa_calle(paiTocupaCalle);
+		patient.setPai_tocupa_medicacion(paiTocupaMedicacion);
+		patient.setPai_tocupa_indice_barthel(paiTocupaIndiceBarthel);
+		patient.setPai_tocupa_escala_actividad(paiTocupaEscalaActividad);
+		patient.setPai_tocupa_disfruta_tiempo(paiTocupaDisfrutaTiempo);
+		patient.setPai_tocupa_espacios_ocio(paiTocupaEspaciosOcio);
+		patient.setPai_tocupa_disfruta_ocio(paiTocupaDisfrutaOcio);
+		patient.setPai_tocupa_relacion_otros(paiTocupaRelacionOtros);
+		patient.setPai_tocupa_propios_objetivos(paiTocupaPropiosObjetivos);
+		patient.setPai_tocupa_participa_actividades(paiTocupaParticipaActividades);
+		patient.setPai_tocupa_actividades_iniciativa_propia(paiTocupaActividadesIniciativaPropia);
+		patient.setPai_tocupa_valoraciones(pai_tocupa_valoraciones);
+		patient.setPai_tocupa_actuaciones(pai_tocupa_actuaciones);
+		patient.setPai_tocupa_incidencias(pai_tocupa_incidencias);
+
+
+		patient = this.usersRepository.save(patient);
+
+		City city = this.citiesRepository.findOne(patient.getIdcity());
+		State state = this.statesRepository.findOne(patient.getIdstate());
+		Country country = this.countriesRepository.findOne(patient.getIdcountry());
+		User relative = this.usersRepository.findOne(patient.getIdrelative());
+
+		HashMap<String, String> values = new HashMap<>();
+
+		values.put("FS_FECHA_INSCRIPCION", patient.getFs_fecha_inscripcion().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		values.put("NAME", patient.getName());
+		values.put("SURNAME1", patient.getSurname1());
+		values.put("SURNAME2", patient.getSurname2());
+
+		values.put("BIRTHDATE", patient.getBirthdate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		values.put("AGE", Period.between(patient.getBirthdate(), LocalDate.now()).getYears()+"");
+
+		values.put("RELATIVEFULLNAME", relative!=null?relative.getFullname() + " / " + patient.getRelativerelation():"");
+
+
+		values.put("pai_tocupa_nivel_independencia", paiTocupaNivelIndependencia);
+		values.put("pai_tocupa_plan_motriz", paiTocupaPlanMotriz);
+		values.put("pai_tocupa_alimentacion", paiTocupaAlimentacion);
+		values.put("pai_tocupa_wc", paiTocupaWc);
+		values.put("pai_tocupa_aseo", paiTocupaAseo);
+		values.put("pai_tocupa_deambular", paiTocupaDeambular);
+		values.put("pai_tocupa_transferencias", paiTocupaTransferencias);
+		values.put("pai_tocupa_vestido", paiTocupaVestido);
+		values.put("pai_tocupa_bano", paiTocupaBano);
+		values.put("pai_tocupa_escaolones", paiTocupaEscalones);
+		values.put("pai_tocupa_esfinteres", paiTocupaEsfinteres);
+		values.put("pai_tocupa_dinero", paiTocupaDinero);
+		values.put("pai_tocupa_compras", paiTocupaCompras);
+		values.put("pai_tocupa_telefono", paiTocupaTelefono);
+		values.put("pai_tocupa_casa", paiTocupaCasa);
+		values.put("pai_tocupa_calle", paiTocupaCalle);
+		values.put("pai_tocupa_medicacion", paiTocupaMedicacion);
+		values.put("pai_tocupa_indice_barthel", paiTocupaIndiceBarthel);
+		values.put("pai_tocupa_escala_actividad", paiTocupaEscalaActividad);
+		values.put("pai_tocupa_disfruta_tiempo", paiTocupaDisfrutaTiempo);
+		values.put("pai_tocupa_espacios_ocio", paiTocupaEspaciosOcio);
+		values.put("pai_tocupa_disfruta_ocio", paiTocupaDisfrutaOcio);
+		values.put("pai_tocupa_relacion_otros", paiTocupaRelacionOtros);
+		values.put("pai_tocupa_propios_objetivos", paiTocupaPropiosObjetivos);
+		values.put("pai_tocupa_participa_actividades", paiTocupaParticipaActividades);
+		values.put("pai_tocupa_actividades_iniciativa_propia", paiTocupaActividadesIniciativaPropia);
+		values.put("pai_tocupa_valoraciones", pai_tocupa_valoraciones);
+		values.put("pai_tocupa_actuaciones", pai_tocupa_actuaciones);
+		values.put("pai_tocupa_incidencias", pai_tocupa_incidencias);
+
+		String paiTocupaUrl = this.getCDNURL("pai_tocupa", patient.get_id(), values);
+		PatientDTO res = new PatientDTO(patient, city, state, country, relative, null);
+		res.setPai_tocupa_url(paiTocupaUrl);
+		return res;
+	}
+
+
+
+
+	public PatientDTO savePAIEnfer(
+			String id,
+			String pai_enfer_diagnostico,
+			String pai_enfer_problemas_audio,
+			String pai_enfer_problemas_audio_text,
+			String pai_enfer_uso_audifono,
+			String pai_enfer_problemas_vision,
+			String pai_enfer_problemas_vision_text,
+			String pai_enfer_uso_gafas,
+			String pai_enfer_tension,
+			String pai_enfer_uso_medicacion,
+			String pai_enfer_diabetes,
+			String pai_enfer_diabetes_text,
+			String pai_enfer_alergias,
+			String pai_enfer_otras_enfermedades,
+			String pai_enfer_tratamiento_medicamento_1,
+			String pai_enfer_tratamiento_medicamento_2,
+			String pai_enfer_tratamiento_medicamento_3,
+			String pai_enfer_tratamiento_medicamento_4,
+			String pai_enfer_tratamiento_dosis_1,
+			String pai_enfer_tratamiento_dosis_2,
+			String pai_enfer_tratamiento_dosis_3,
+			String pai_enfer_tratamiento_dosis_4,
+			String pai_enfer_tratamiento_fecha_1,
+			String pai_enfer_tratamiento_fecha_2,
+			String pai_enfer_tratamiento_fecha_3,
+			String pai_enfer_tratamiento_fecha_4,
+			String pai_enfer_tratamiento_para_1,
+			String pai_enfer_tratamiento_para_2,
+			String pai_enfer_tratamiento_para_3,
+			String pai_enfer_tratamiento_para_4,
+			String pai_enfer_medicacion_centro,
+			String pai_enfer_medicacion_centro_text,
+			String pai_enfer_medicacion_puntual,
+			String pai_enfer_wc_esfinteres,
+			String pai_enfer_wc_retencion,
+			String pai_enfer_wc_estrenimiento,
+			String pai_enfer_wc_acompanam,
+			String pai_enfer_alim_alergias,
+			String pai_enfer_alim_alergias_text,
+			String pai_enfer_alim_dieta,
+			String pai_enfer_alim_dieta_text,
+			String pai_enfer_alim_problemas_deglucion,
+			String pai_enfer_alim_espesantes,
+			String pai_enfer_alim_ayuda,
+			String pai_enfer_alim_observaciones,
+			String pai_enfer_valoraciones,
+			String pai_enfer_actuaciones,
+			String pai_enfer_incidencias
+	) throws Exception {
+
+		User patient = this.usersRepository.findOne(id);
+		if (patient == null) return null;
+
+		// Actualiza los campos del paciente con los valores proporcionados
+		patient.setPai_enfer_diagnostico(pai_enfer_diagnostico);
+		patient.setPai_enfer_problemas_audio(pai_enfer_problemas_audio);
+		patient.setPai_enfer_problemas_audio_text(pai_enfer_problemas_audio_text);
+		patient.setPai_enfer_uso_audifono(pai_enfer_uso_audifono);
+
+		patient.setPai_enfer_problemas_vision(pai_enfer_problemas_vision);
+		patient.setPai_enfer_problemas_vision_text(pai_enfer_problemas_vision_text);
+		patient.setPai_enfer_uso_gafas(pai_enfer_uso_gafas);
+		patient.setPai_enfer_tension(pai_enfer_tension);
+		patient.setPai_enfer_uso_medicacion(pai_enfer_uso_medicacion);
+		patient.setPai_enfer_diabetes(pai_enfer_diabetes);
+		patient.setPai_enfer_diabetes_text(pai_enfer_diabetes_text);
+		patient.setPai_enfer_alergias(pai_enfer_alergias);
+		patient.setPai_enfer_otras_enfermedades(pai_enfer_otras_enfermedades);
+		patient.setPai_enfer_tratamiento_medicamento_1(pai_enfer_tratamiento_medicamento_1);
+		patient.setPai_enfer_tratamiento_medicamento_2(pai_enfer_tratamiento_medicamento_2);
+		patient.setPai_enfer_tratamiento_medicamento_3(pai_enfer_tratamiento_medicamento_3);
+		patient.setPai_enfer_tratamiento_medicamento_4(pai_enfer_tratamiento_medicamento_4);
+		patient.setPai_enfer_tratamiento_dosis_1(pai_enfer_tratamiento_dosis_1);
+		patient.setPai_enfer_tratamiento_dosis_2(pai_enfer_tratamiento_dosis_2);
+		patient.setPai_enfer_tratamiento_dosis_3(pai_enfer_tratamiento_dosis_3);
+		patient.setPai_enfer_tratamiento_dosis_4(pai_enfer_tratamiento_dosis_4);
+		patient.setPai_enfer_tratamiento_fecha_1(pai_enfer_tratamiento_fecha_1);
+		patient.setPai_enfer_tratamiento_fecha_2(pai_enfer_tratamiento_fecha_2);
+		patient.setPai_enfer_tratamiento_fecha_3(pai_enfer_tratamiento_fecha_3);
+		patient.setPai_enfer_tratamiento_fecha_4(pai_enfer_tratamiento_fecha_4);
+		patient.setPai_enfer_tratamiento_para_1(pai_enfer_tratamiento_para_1);
+		patient.setPai_enfer_tratamiento_para_2(pai_enfer_tratamiento_para_2);
+		patient.setPai_enfer_tratamiento_para_3(pai_enfer_tratamiento_para_3);
+		patient.setPai_enfer_tratamiento_para_4(pai_enfer_tratamiento_para_4);
+		patient.setPai_enfer_medicacion_centro(pai_enfer_medicacion_centro);
+		patient.setPai_enfer_medicacion_centro_text(pai_enfer_medicacion_centro_text);
+		patient.setPai_enfer_medicacion_puntual(pai_enfer_medicacion_puntual);
+		patient.setPai_enfer_wc_esfinteres(pai_enfer_wc_esfinteres);
+		patient.setPai_enfer_wc_retencion(pai_enfer_wc_retencion);
+		patient.setPai_enfer_wc_estrenimiento(pai_enfer_wc_estrenimiento);
+		patient.setPai_enfer_wc_acompanam(pai_enfer_wc_acompanam);
+		patient.setPai_enfer_alim_alergias(pai_enfer_alim_alergias);
+		patient.setPai_enfer_alim_alergias_text(pai_enfer_alim_alergias_text);
+		patient.setPai_enfer_alim_dieta(pai_enfer_alim_dieta);
+		patient.setPai_enfer_alim_dieta_text(pai_enfer_alim_dieta_text);
+		patient.setPai_enfer_alim_problemas_deglucion(pai_enfer_alim_problemas_deglucion);
+		patient.setPai_enfer_alim_espesantes(pai_enfer_alim_espesantes);
+		patient.setPai_enfer_alim_ayuda(pai_enfer_alim_ayuda);
+		patient.setPai_enfer_alim_observaciones(pai_enfer_alim_observaciones);
+		patient.setPai_enfer_valoraciones(pai_enfer_valoraciones);
+		patient.setPai_enfer_actuaciones(pai_enfer_actuaciones);
+		patient.setPai_enfer_incidencias(pai_enfer_incidencias);
+
+		patient = this.usersRepository.save(patient);
+
+		City city = this.citiesRepository.findOne(patient.getIdcity());
+		State state = this.statesRepository.findOne(patient.getIdstate());
+		Country country = this.countriesRepository.findOne(patient.getIdcountry());
+		User relative = this.usersRepository.findOne(patient.getIdrelative());
+
+		HashMap<String, String> values = new HashMap<>();
+		// Aquí deberías formatear las fechas según tus necesidades
+		if (patient.getFs_fecha_inscripcion() != null) {
+			values.put("FS_FECHA_INSCRIPCION", patient.getFs_fecha_inscripcion().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		}
+		values.put("NAME", patient.getName());
+		values.put("SURNAME1", patient.getSurname1());
+		values.put("SURNAME2", patient.getSurname2());
+		values.put("FS_NUM_EXPEDIENTE", patient.getFs_num_expediente());
+
+
+		// Agrega todos los campos de pai_enfer al HashMap
+		values.put("pai_enfer_diagnostico", pai_enfer_diagnostico);
+		values.put("pai_enfer_problemas_audio", pai_enfer_problemas_audio);
+		values.put("pai_enfer_problemas_audio_text", pai_enfer_problemas_audio_text);
+		values.put("pai_enfer_uso_audifono", pai_enfer_uso_audifono);
+		values.put("pai_enfer_problemas_vision", pai_enfer_problemas_vision);
+		values.put("pai_enfer_problemas_vision_text", pai_enfer_problemas_vision_text);
+		values.put("pai_enfer_uso_gafas", pai_enfer_uso_gafas);
+		values.put("pai_enfer_tension", pai_enfer_tension);
+		values.put("pai_enfer_uso_medicacion", pai_enfer_uso_medicacion);
+		values.put("pai_enfer_diabetes", pai_enfer_diabetes);
+		values.put("pai_enfer_diabetes_text", pai_enfer_diabetes_text);
+		values.put("pai_enfer_alergias", pai_enfer_alergias);
+		values.put("pai_enfer_otras_enfermedades", pai_enfer_otras_enfermedades);
+
+		String med = "";
+		if(pai_enfer_tratamiento_medicamento_1!=null && !pai_enfer_tratamiento_medicamento_1.trim().equals(""))
+		{
+			med += "<li><b>MEDICAMENTO: </b> " + pai_enfer_tratamiento_medicamento_1;
+			med += " / <b>DOSIS: </b> " + pai_enfer_tratamiento_dosis_1;
+			med += " / <b>FECHA INICIO: </b> " + pai_enfer_tratamiento_fecha_1;
+			med += " / <b>LA TOMA PARA: </b> " + pai_enfer_tratamiento_para_1 + "</li>";
+		}
+		if (pai_enfer_tratamiento_medicamento_2 != null && !pai_enfer_tratamiento_medicamento_2.trim().equals("")) {
+			med += "<li><b>MEDICAMENTO: </b> " + pai_enfer_tratamiento_medicamento_2;
+			med += " / <b>DOSIS: </b> " + pai_enfer_tratamiento_dosis_2;
+			med += " / <b>FECHA INICIO: </b> " + pai_enfer_tratamiento_fecha_2;
+			med += " / <b>LA TOMA PARA: </b> " + pai_enfer_tratamiento_para_2 + "</li>";
+		}
+
+		if (pai_enfer_tratamiento_medicamento_3 != null && !pai_enfer_tratamiento_medicamento_3.trim().equals("")) {
+			med += "<li><b>MEDICAMENTO: </b> " + pai_enfer_tratamiento_medicamento_3;
+			med += " / <b>DOSIS: </b> " + pai_enfer_tratamiento_dosis_3;
+			med += " / <b>FECHA INICIO: </b> " + pai_enfer_tratamiento_fecha_3;
+			med += " / <b>LA TOMA PARA: </b> " + pai_enfer_tratamiento_para_3 + "</li>";
+		}
+
+		if (pai_enfer_tratamiento_medicamento_4 != null && !pai_enfer_tratamiento_medicamento_4.trim().equals("")) {
+			med += "<li><b>MEDICAMENTO: </b> " + pai_enfer_tratamiento_medicamento_4;
+			med += " / <b>DOSIS: </b> " + pai_enfer_tratamiento_dosis_4;
+			med += " / <b>FECHA INICIO: </b> " + pai_enfer_tratamiento_fecha_4;
+			med += " / <b>LA TOMA PARA: </b> " + pai_enfer_tratamiento_para_4 + "</li>";
+		}
+		values.put("med", med);
+
+		values.put("pai_enfer_tratamiento_medicamento_2", pai_enfer_tratamiento_medicamento_2);
+		values.put("pai_enfer_tratamiento_medicamento_3", pai_enfer_tratamiento_medicamento_3);
+		values.put("pai_enfer_tratamiento_medicamento_4", pai_enfer_tratamiento_medicamento_4);
+		values.put("pai_enfer_tratamiento_dosis_1", pai_enfer_tratamiento_dosis_1);
+		values.put("pai_enfer_tratamiento_dosis_2", pai_enfer_tratamiento_dosis_2);
+		values.put("pai_enfer_tratamiento_dosis_3", pai_enfer_tratamiento_dosis_3);
+		values.put("pai_enfer_tratamiento_dosis_4", pai_enfer_tratamiento_dosis_4);
+		values.put("pai_enfer_tratamiento_fecha_1", pai_enfer_tratamiento_fecha_1);
+		values.put("pai_enfer_tratamiento_fecha_2", pai_enfer_tratamiento_fecha_2);
+		values.put("pai_enfer_tratamiento_fecha_3", pai_enfer_tratamiento_fecha_3);
+		values.put("pai_enfer_tratamiento_fecha_4", pai_enfer_tratamiento_fecha_4);
+		values.put("pai_enfer_tratamiento_para_1", pai_enfer_tratamiento_para_1);
+		values.put("pai_enfer_tratamiento_para_2", pai_enfer_tratamiento_para_2);
+		values.put("pai_enfer_tratamiento_para_3", pai_enfer_tratamiento_para_3);
+		values.put("pai_enfer_tratamiento_para_4", pai_enfer_tratamiento_para_4);
+
+
+		values.put("pai_enfer_medicacion_centro", pai_enfer_medicacion_centro);
+		values.put("pai_enfer_medicacion_centro_text", pai_enfer_medicacion_centro_text);
+		values.put("pai_enfer_medicacion_puntual", pai_enfer_medicacion_puntual);
+		values.put("pai_enfer_wc_esfinteres", pai_enfer_wc_esfinteres);
+		values.put("pai_enfer_wc_retencion", pai_enfer_wc_retencion);
+		values.put("pai_enfer_wc_estrenimiento", pai_enfer_wc_estrenimiento);
+		values.put("pai_enfer_wc_acompanam", pai_enfer_wc_acompanam);
+		values.put("pai_enfer_alim_alergias", pai_enfer_alim_alergias);
+		values.put("pai_enfer_alim_alergias_text", pai_enfer_alim_alergias_text);
+		values.put("pai_enfer_alim_dieta", pai_enfer_alim_dieta);
+		values.put("pai_enfer_alim_dieta_text", pai_enfer_alim_dieta_text);
+		values.put("pai_enfer_alim_problemas_deglucion", pai_enfer_alim_problemas_deglucion);
+		values.put("pai_enfer_alim_espesantes", pai_enfer_alim_espesantes);
+		values.put("pai_enfer_alim_ayuda", pai_enfer_alim_ayuda);
+		values.put("pai_enfer_alim_observaciones", pai_enfer_alim_observaciones);
+		values.put("pai_enfer_valoraciones", pai_enfer_valoraciones);
+		values.put("pai_enfer_actuaciones", pai_enfer_actuaciones);
+		values.put("pai_enfer_incidencias", pai_enfer_incidencias);
+
+		String paiEnferUrl = this.getCDNURL("pai_enfer", patient.get_id(), values); //AQUÍ ESTÁ EL CAMBIO
+		PatientDTO res = new PatientDTO(patient, city, state, country, relative, null);
+		res.setPai_enfer_url(paiEnferUrl); //Y AQUÍ
+		return res;
+	}
+
+	public PatientDTO savePAISocial(
+			String id,
+			String pai_social_historia,
+			String pai_social_informes,
+			String pai_social_informes_text,
+			String pai_social_valoracion_disca,
+			String pai_social_valoracion_disca_fecha,
+			String pai_social_valoracion_disca_ca,
+			String pai_social_valoracion_disca_grado,
+			String pai_social_3_persona,
+			String pai_social_ayudas_tecnicas,
+			String pai_social_ayudas_tecnicas_text,
+			String pai_social_movilidad,
+			String pai_social_ley_dependencai,
+			String pai_social_grado_y_nivel,
+			String pai_social_cuidador,
+			String pai_social_relacion_cuidador,
+			String pai_social_indicadores,
+			String pai_social_apoyos,
+			String pai_social_vive,
+			String pai_social_domicilio_obstaculos,
+			String pai_social_domicilio_ayudas_tecnicas,
+			String pai_social_domicilio_confort,
+			String pai_social_domicilio_actual_quiere,
+			String pai_social_domicilio_actual_otro,
+			String pai_social_domicilio_actula_residencia,
+			String pai_social_apoyo_tipo1,
+			String pai_social_apoyo_tipo2,
+			String pai_social_apoyo_tipo3,
+			String pai_social_apoyo_tipo4,
+			String pai_social_apoyo_titularidad1,
+			String pai_social_apoyo_titularidad2,
+			String pai_social_apoyo_titularidad3,
+			String pai_social_apoyo_titularidad4,
+			String pai_social_apoyo_coste1,
+			String pai_social_apoyo_coste2,
+			String pai_social_apoyo_coste3,
+			String pai_social_apoyo_coste4,
+			String pai_social_apoyo_aportacion1,
+			String pai_social_apoyo_aportacion2,
+			String pai_social_apoyo_aportacion3,
+			String pai_social_apoyo_aportacion4,
+			String pai_social_apoyo_dom_prestacion1,
+			String pai_social_apoyo_dom_prestacion2,
+			String pai_social_apoyo_dom_prestacion3,
+			String pai_social_apoyo_dom_prestacion4,
+			String pai_social_apoyo_dom_intensidad1,
+			String pai_social_apoyo_dom_intensidad2,
+			String pai_social_apoyo_dom_intensidad3,
+			String pai_social_apoyo_dom_intensidad4,
+			String pai_social_apoyo_dom_coste1,
+			String pai_social_apoyo_dom_coste2,
+			String pai_social_apoyo_dom_coste3,
+			String pai_social_apoyo_dom_coste4,
+			String pai_social_apoyo_dom_aportacion1,
+			String pai_social_apoyo_dom_aportacion2,
+			String pai_social_apoyo_dom_aportacion3,
+			String pai_social_apoyo_dom_aportacion4,
+			String pai_social_apoyo_otras_prestacion1,
+			String pai_social_apoyo_otras_prestacion2,
+			String pai_social_apoyo_otras_prestacion3,
+			String pai_social_apoyo_otras_prestacion4,
+			String pai_social_apoyo_otras_titularidad1,
+			String pai_social_apoyo_otras_titularidad2,
+			String pai_social_apoyo_otras_titularidad3,
+			String pai_social_apoyo_otras_titularidad4,
+			String pai_social_apoyo_otras_intensidad1,
+			String pai_social_apoyo_otras_intensidad2,
+			String pai_social_apoyo_otras_intensidad3,
+			String pai_social_apoyo_otras_intensidad4,
+			String pai_social_ingresos,
+			String pai_social_ingresos_familia,
+			String pai_social_ingresos_cubre,
+			String pai_social_nivel_estudios,
+			String pai_social_relaciones,
+			String pai_social_necesidades,
+			String pai_social_objetivos,
+			String pai_social_valoraciones,
+			String pai_social_actuaciones,
+			String pai_social_incidencias
+	) throws Exception {
+
+		User patient = this.usersRepository.findOne(id);
+		if (patient == null) return null;
+
+		// Actualiza los campos del paciente con los valores proporcionados
+		patient.setPai_social_historia(pai_social_historia);
+		patient.setPai_social_informes(pai_social_informes);
+		patient.setPai_social_informes_text(pai_social_informes_text);
+		patient.setPai_social_valoracion_disca(pai_social_valoracion_disca);
+		patient.setPai_social_valoracion_disca_fecha(pai_social_valoracion_disca_fecha);
+		patient.setPai_social_valoracion_disca_ca(pai_social_valoracion_disca_ca);
+		patient.setPai_social_valoracion_disca_grado(pai_social_valoracion_disca_grado);
+		patient.setPai_social_3_persona(pai_social_3_persona);
+		patient.setPai_social_ayudas_tecnicas(pai_social_ayudas_tecnicas);
+		patient.setPai_social_ayudas_tecnicas_text(pai_social_ayudas_tecnicas_text);
+		patient.setPai_social_movilidad(pai_social_movilidad);
+		patient.setPai_social_ley_dependencai(pai_social_ley_dependencai);
+		patient.setPai_social_grado_y_nivel(pai_social_grado_y_nivel);
+		patient.setPai_social_cuidador(pai_social_cuidador);
+		patient.setPai_social_relacion_cuidador(pai_social_relacion_cuidador);
+		patient.setPai_social_indicadores(pai_social_indicadores);
+		patient.setPai_social_apoyos(pai_social_apoyos);
+		patient.setPai_social_vive(pai_social_vive);
+		patient.setPai_social_domicilio_obstaculos(pai_social_domicilio_obstaculos);
+		patient.setPai_social_domicilio_ayudas_tecnicas(pai_social_domicilio_ayudas_tecnicas);
+		patient.setPai_social_domicilio_confort(pai_social_domicilio_confort);
+		patient.setPai_social_domicilio_actual_quiere(pai_social_domicilio_actual_quiere);
+		patient.setPai_social_domicilio_actual_otro(pai_social_domicilio_actual_otro);
+		patient.setPai_social_domicilio_actula_residencia(pai_social_domicilio_actula_residencia);
+		patient.setPai_social_apoyo_tipo1(pai_social_apoyo_tipo1);
+		patient.setPai_social_apoyo_tipo2(pai_social_apoyo_tipo2);
+		patient.setPai_social_apoyo_tipo3(pai_social_apoyo_tipo3);
+		patient.setPai_social_apoyo_tipo4(pai_social_apoyo_tipo4);
+		patient.setPai_social_apoyo_titularidad1(pai_social_apoyo_titularidad1);
+		patient.setPai_social_apoyo_titularidad2(pai_social_apoyo_titularidad2);
+		patient.setPai_social_apoyo_titularidad3(pai_social_apoyo_titularidad3);
+		patient.setPai_social_apoyo_titularidad4(pai_social_apoyo_titularidad4);
+		patient.setPai_social_apoyo_coste1(pai_social_apoyo_coste1);
+		patient.setPai_social_apoyo_coste2(pai_social_apoyo_coste2);
+		patient.setPai_social_apoyo_coste3(pai_social_apoyo_coste3);
+		patient.setPai_social_apoyo_coste4(pai_social_apoyo_coste4);
+		patient.setPai_social_apoyo_aportacion1(pai_social_apoyo_aportacion1);
+		patient.setPai_social_apoyo_aportacion2(pai_social_apoyo_aportacion2);
+		patient.setPai_social_apoyo_aportacion3(pai_social_apoyo_aportacion3);
+		patient.setPai_social_apoyo_aportacion4(pai_social_apoyo_aportacion4);
+		patient.setPai_social_apoyo_dom_prestacion1(pai_social_apoyo_dom_prestacion1);
+		patient.setPai_social_apoyo_dom_prestacion2(pai_social_apoyo_dom_prestacion2);
+		patient.setPai_social_apoyo_dom_prestacion3(pai_social_apoyo_dom_prestacion3);
+		patient.setPai_social_apoyo_dom_prestacion4(pai_social_apoyo_dom_prestacion4);
+		patient.setPai_social_apoyo_dom_intensidad1(pai_social_apoyo_dom_intensidad1);
+		patient.setPai_social_apoyo_dom_intensidad2(pai_social_apoyo_dom_intensidad2);
+		patient.setPai_social_apoyo_dom_intensidad3(pai_social_apoyo_dom_intensidad3);
+		patient.setPai_social_apoyo_dom_intensidad4(pai_social_apoyo_dom_intensidad4);
+		patient.setPai_social_apoyo_dom_coste1(pai_social_apoyo_dom_coste1);
+		patient.setPai_social_apoyo_dom_coste2(pai_social_apoyo_dom_coste2);
+		patient.setPai_social_apoyo_dom_coste3(pai_social_apoyo_dom_coste3);
+		patient.setPai_social_apoyo_dom_coste4(pai_social_apoyo_dom_coste4);
+		patient.setPai_social_apoyo_dom_aportacion1(pai_social_apoyo_dom_aportacion1);
+		patient.setPai_social_apoyo_dom_aportacion2(pai_social_apoyo_dom_aportacion2);
+		patient.setPai_social_apoyo_dom_aportacion3(pai_social_apoyo_dom_aportacion3);
+		patient.setPai_social_apoyo_dom_aportacion4(pai_social_apoyo_dom_aportacion4);
+		patient.setPai_social_apoyo_otras_prestacion1(pai_social_apoyo_otras_prestacion1);
+		patient.setPai_social_apoyo_otras_prestacion2(pai_social_apoyo_otras_prestacion2);
+		patient.setPai_social_apoyo_otras_prestacion3(pai_social_apoyo_otras_prestacion3);
+		patient.setPai_social_apoyo_otras_prestacion4(pai_social_apoyo_otras_prestacion4);
+		patient.setPai_social_apoyo_otras_titularidad1(pai_social_apoyo_otras_titularidad1);
+		patient.setPai_social_apoyo_otras_titularidad2(pai_social_apoyo_otras_titularidad2);
+		patient.setPai_social_apoyo_otras_titularidad3(pai_social_apoyo_otras_titularidad3);
+		patient.setPai_social_apoyo_otras_titularidad4(pai_social_apoyo_otras_titularidad4);
+		patient.setPai_social_apoyo_otras_intensidad1(pai_social_apoyo_otras_intensidad1);
+		patient.setPai_social_apoyo_otras_intensidad2(pai_social_apoyo_otras_intensidad2);
+		patient.setPai_social_apoyo_otras_intensidad3(pai_social_apoyo_otras_intensidad3);
+		patient.setPai_social_apoyo_otras_intensidad4(pai_social_apoyo_otras_intensidad4);
+		patient.setPai_social_ingresos(pai_social_ingresos);
+		patient.setPai_social_ingresos_familia(pai_social_ingresos_familia);
+		patient.setPai_social_ingresos_cubre(pai_social_ingresos_cubre);
+		patient.setPai_social_nivel_estudios(pai_social_nivel_estudios);
+		patient.setPai_social_relaciones(pai_social_relaciones);
+		patient.setPai_social_necesidades(pai_social_necesidades);
+		patient.setPai_social_objetivos(pai_social_objetivos);
+		patient.setPai_social_valoraciones(pai_social_valoraciones);
+		patient.setPai_social_actuaciones(pai_social_actuaciones);
+		patient.setPai_social_incidencias(pai_social_incidencias);
+
+		patient = this.usersRepository.save(patient);
+
+		City city = this.citiesRepository.findOne(patient.getIdcity());
+		State state = this.statesRepository.findOne(patient.getIdstate());
+		Country country = this.countriesRepository.findOne(patient.getIdcountry());
+		User relative = this.usersRepository.findOne(patient.getIdrelative());
+
+		HashMap<String, String> values = new HashMap<>();
+
+		// Agrega todos los campos de pai_social al HashMap
+		values.put("pai_social_historia", pai_social_historia);
+		values.put("pai_social_informes", pai_social_informes);
+		values.put("pai_social_informes_text", pai_social_informes_text);
+		values.put("pai_social_valoracion_disca", pai_social_valoracion_disca);
+		values.put("pai_social_valoracion_disca_fecha", pai_social_valoracion_disca_fecha);
+		values.put("pai_social_valoracion_disca_ca", pai_social_valoracion_disca_ca);
+		values.put("pai_social_valoracion_disca_grado", pai_social_valoracion_disca_grado);
+		values.put("pai_social_3_persona", pai_social_3_persona);
+		values.put("pai_social_ayudas_tecnicas", pai_social_ayudas_tecnicas);
+		values.put("pai_social_ayudas_tecnicas_text", pai_social_ayudas_tecnicas_text);
+		values.put("pai_social_movilidad", pai_social_movilidad);
+		values.put("pai_social_ley_dependencai", pai_social_ley_dependencai);
+		values.put("pai_social_grado_y_nivel", pai_social_grado_y_nivel);
+		values.put("pai_social_cuidador", pai_social_cuidador);
+		values.put("pai_social_relacion_cuidador", pai_social_relacion_cuidador);
+		values.put("pai_social_indicadores", pai_social_indicadores);
+		values.put("pai_social_apoyos", pai_social_apoyos);
+		values.put("pai_social_vive", pai_social_vive);
+		values.put("pai_social_domicilio_obstaculos", pai_social_domicilio_obstaculos);
+		values.put("pai_social_domicilio_ayudas_tecnicas", pai_social_domicilio_ayudas_tecnicas);
+		values.put("pai_social_domicilio_confort", pai_social_domicilio_confort);
+		values.put("pai_social_domicilio_actual_quiere", pai_social_domicilio_actual_quiere);
+		values.put("pai_social_domicilio_actual_otro", pai_social_domicilio_actual_otro);
+		values.put("pai_social_domicilio_actula_residencia", pai_social_domicilio_actula_residencia);
+
+		String apoyo = "";
+		if(pai_social_apoyo_tipo1!=null && !pai_social_apoyo_tipo1.trim().equals(""))
+		{
+			apoyo += "<li><b>TIPO DE CENTRO Y PLAZA: </b> " + pai_social_apoyo_tipo1;
+			apoyo += " / <b>TITULARIDAD: </b> " + pai_social_apoyo_titularidad1;
+			apoyo += " / <b>COSTE MENSUAL: </b> " + pai_social_apoyo_coste1;
+			apoyo += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + pai_social_apoyo_aportacion1 + "</li>";
+		}
+		if(pai_social_apoyo_tipo2!=null && !pai_social_apoyo_tipo2.trim().equals(""))
+		{
+			apoyo += "<li><b>TIPO DE CENTRO Y PLAZA: </b> " + pai_social_apoyo_tipo2;
+			apoyo += " / <b>TITULARIDAD: </b> " + pai_social_apoyo_titularidad2;
+			apoyo += " / <b>COSTE MENSUAL: </b> " + pai_social_apoyo_coste2;
+			apoyo += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + pai_social_apoyo_aportacion2 + "</li>";
+		}
+		if(pai_social_apoyo_tipo3!=null && !pai_social_apoyo_tipo3.trim().equals(""))
+		{
+			apoyo += "<li><b>TIPO DE CENTRO Y PLAZA: </b> " + pai_social_apoyo_tipo3;
+			apoyo += " / <b>TITULARIDAD: </b> " + pai_social_apoyo_titularidad3;
+			apoyo += " / <b>COSTE MENSUAL: </b> " + pai_social_apoyo_coste3;
+			apoyo += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + pai_social_apoyo_aportacion3 + "</li>";
+		}
+		if(pai_social_apoyo_tipo4!=null && !pai_social_apoyo_tipo4.trim().equals(""))
+		{
+			apoyo += "<li><b>TIPO DE CENTRO Y PLAZA: </b> " + pai_social_apoyo_tipo4;
+			apoyo += " / <b>TITULARIDAD: </b> " + pai_social_apoyo_titularidad4;
+			apoyo += " / <b>COSTE MENSUAL: </b> " + pai_social_apoyo_coste4;
+			apoyo += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + pai_social_apoyo_aportacion4 + "</li>";
+		}
+		values.put("apoyo", apoyo);
+
+
+		String apoyo_dom = "";
+		if(pai_social_apoyo_dom_prestacion1!=null && !pai_social_apoyo_dom_prestacion1.trim().equals(""))
+		{
+			apoyo_dom += "<li><b>PRESTACIÓN: </b> " + pai_social_apoyo_dom_prestacion1;
+			apoyo_dom += " / <b>INTENSIDAD (horas/semana): </b> " + pai_social_apoyo_dom_intensidad1;
+			apoyo_dom += " / <b>COSTE MENSUAL: </b> " + pai_social_apoyo_dom_coste1;
+			apoyo_dom += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + pai_social_apoyo_dom_aportacion1 + "</li>";
+		}
+		if(pai_social_apoyo_dom_prestacion2!=null && !pai_social_apoyo_dom_prestacion2.trim().equals(""))
+		{
+			apoyo_dom += "<li><b>PRESTACIÓN: </b> " + pai_social_apoyo_dom_prestacion2;
+			apoyo_dom += " / <b>INTENSIDAD (horas/semana): </b> " + pai_social_apoyo_dom_intensidad2;
+			apoyo_dom += " / <b>COSTE MENSUAL: </b> " + pai_social_apoyo_dom_coste2;
+			apoyo_dom += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + pai_social_apoyo_dom_aportacion2 + "</li>";
+		}
+		if(pai_social_apoyo_dom_prestacion3!=null && !pai_social_apoyo_dom_prestacion3.trim().equals(""))
+		{
+			apoyo_dom += "<li><b>PRESTACIÓN: </b> " + pai_social_apoyo_dom_prestacion3;
+			apoyo_dom += " / <b>INTENSIDAD (horas/semana): </b> " + pai_social_apoyo_dom_intensidad3;
+			apoyo_dom += " / <b>COSTE MENSUAL: </b> " + pai_social_apoyo_dom_coste3;
+			apoyo_dom += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + pai_social_apoyo_dom_aportacion3 + "</li>";
+		}
+		if(pai_social_apoyo_dom_prestacion4!=null && !pai_social_apoyo_dom_prestacion4.trim().equals(""))
+		{
+			apoyo_dom += "<li><b>PRESTACIÓN: </b> " + pai_social_apoyo_dom_prestacion4;
+			apoyo_dom += " / <b>INTENSIDAD (horas/semana): </b> " + pai_social_apoyo_dom_intensidad4;
+			apoyo_dom += " / <b>COSTE MENSUAL: </b> " + pai_social_apoyo_dom_coste4;
+			apoyo_dom += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + pai_social_apoyo_dom_aportacion4 + "</li>";
+		}
+		values.put("apoyo_dom", apoyo_dom);
+
+
+
+
+		String apoyo_otras = "";
+		if(pai_social_apoyo_otras_prestacion1!=null && !pai_social_apoyo_otras_prestacion1.trim().equals(""))
+		{
+			apoyo_otras += "<li><b>PRESTACIÓN: </b> " + pai_social_apoyo_otras_prestacion1;
+			apoyo_otras += " / <b>TITULARIDAD: </b> " + pai_social_apoyo_otras_titularidad1;
+			apoyo_otras += " / <b>INTENSIDAD: </b> " + pai_social_apoyo_otras_intensidad1;
+		}
+		if(pai_social_apoyo_otras_prestacion2!=null && !pai_social_apoyo_otras_prestacion2.trim().equals(""))
+		{
+			apoyo_otras += "<li><b>PRESTACIÓN: </b> " + pai_social_apoyo_otras_prestacion2;
+			apoyo_otras += " / <b>TITULARIDAD: </b> " + pai_social_apoyo_otras_titularidad2;
+			apoyo_otras += " / <b>INTENSIDAD: </b> " + pai_social_apoyo_otras_intensidad2;
+		}
+		if(pai_social_apoyo_otras_prestacion3!=null && !pai_social_apoyo_otras_prestacion3.trim().equals(""))
+		{
+			apoyo_otras += "<li><b>PRESTACIÓN: </b> " + pai_social_apoyo_otras_prestacion3;
+			apoyo_otras += " / <b>TITULARIDAD: </b> " + pai_social_apoyo_otras_titularidad3;
+			apoyo_otras += " / <b>INTENSIDAD: </b> " + pai_social_apoyo_otras_intensidad3;
+		}
+		if(pai_social_apoyo_otras_prestacion4!=null && !pai_social_apoyo_otras_prestacion4.trim().equals(""))
+		{
+			apoyo_otras += "<li><b>PRESTACIÓN: </b> " + pai_social_apoyo_otras_prestacion4;
+			apoyo_otras += " / <b>TITULARIDAD: </b> " + pai_social_apoyo_otras_titularidad4;
+			apoyo_otras += " / <b>INTENSIDAD: </b> " + pai_social_apoyo_otras_intensidad4;
+		}
+
+		values.put("apoyo_otras", apoyo_otras);
+
+
+		values.put("pai_social_ingresos", pai_social_ingresos);
+		values.put("pai_social_ingresos_familia", pai_social_ingresos_familia);
+		values.put("pai_social_ingresos_cubre", pai_social_ingresos_cubre);
+		values.put("pai_social_nivel_estudios", pai_social_nivel_estudios);
+		values.put("pai_social_relaciones", pai_social_relaciones);
+		values.put("pai_social_necesidades", pai_social_necesidades);
+		values.put("pai_social_objetivos", pai_social_objetivos);
+		values.put("pai_social_valoraciones", pai_social_valoraciones);
+		values.put("pai_social_actuaciones", pai_social_actuaciones);
+		values.put("pai_social_incidencias", pai_social_incidencias);
+
+		String paiSocialUrl = this.getCDNURL("pai_social", patient.get_id(), values); // AQUÍ ESTÁ EL CAMBIO
+		PatientDTO res = new PatientDTO(patient, city, state, country, relative, null);
+		res.setPai_social_url(paiSocialUrl); // Y AQUÍ
+		return res;
+	}
+
+
+	public PatientDTO savePaiPortada(
+			String id,
+			String pai_portada_fecha,
+			String pai_portada_representante_guardador,
+			String pai_portada_cuidador_nombre,
+			String pai_portada_cuidador_edad,
+			String pai_portada_cuidador_dni,
+			String pai_portada_cuidador_domicilio,
+			String pai_portada_cuidador_estado_civil,
+			String pai_portada_cuidador_profesion,
+			String pai_portada_cuidador_relacion,
+			String pai_portada_cuidador_convive_otros,
+			String pai_portada_nss,
+			String pai_portada_seguro_medico,
+			String pai_portada_datos_medicos_enfermedades,
+			String pai_portada_datos_medicos_grado_minusvalida,
+			String pai_portada_datos_medicos_grado_dependencia,
+			String pai_portada_profesional_1,
+			String pai_portada_categoria_1,
+			String pai_portada_profesional_2,
+			String pai_portada_categoria_2,
+			String pai_portada_profesional_3,
+			String pai_portada_categoria_3,
+			String pai_portada_profesional_4,
+			String pai_portada_categoria_4,
+			String pai_portada_profesional_5,
+			String pai_portada_categoria_5
+	) throws Exception {
+
+		User patient = this.usersRepository.findOne(id);
+		if (patient == null) return null;
+
+		// Actualiza los campos del paciente con los valores proporcionados
+		patient.setPai_portada_fecha(pai_portada_fecha);
+		patient.setPai_portada_representante_guardador(pai_portada_representante_guardador);
+		patient.setPai_portada_cuidador_nombre(pai_portada_cuidador_nombre);
+		patient.setPai_portada_cuidador_edad(pai_portada_cuidador_edad);
+		patient.setPai_portada_cuidador_dni(pai_portada_cuidador_dni);
+		patient.setPai_portada_cuidador_domicilio(pai_portada_cuidador_domicilio);
+		patient.setPai_portada_cuidador_estado_civil(pai_portada_cuidador_estado_civil);
+		patient.setPai_portada_cuidador_profesion(pai_portada_cuidador_profesion);
+		patient.setPai_portada_cuidador_relacion(pai_portada_cuidador_relacion);
+		patient.setPai_portada_cuidador_convive_otros(pai_portada_cuidador_convive_otros);
+		patient.setPai_portada_nss(pai_portada_nss);
+		patient.setPai_portada_seguro_medico(pai_portada_seguro_medico);
+		patient.setPai_portada_datos_medicos_enfermedades(pai_portada_datos_medicos_enfermedades);
+		patient.setPai_portada_datos_medicos_grado_minusvalida(pai_portada_datos_medicos_grado_minusvalida);
+		patient.setPai_portada_datos_medicos_grado_dependencia(pai_portada_datos_medicos_grado_dependencia);
+		patient.setPai_portada_profesional_1(pai_portada_profesional_1);
+		patient.setPai_portada_categoria_1(pai_portada_categoria_1);
+		patient.setPai_portada_profesional_2(pai_portada_profesional_2);
+		patient.setPai_portada_categoria_2(pai_portada_categoria_2);
+		patient.setPai_portada_profesional_3(pai_portada_profesional_3);
+		patient.setPai_portada_categoria_3(pai_portada_categoria_3);
+		patient.setPai_portada_profesional_4(pai_portada_profesional_4);
+		patient.setPai_portada_categoria_4(pai_portada_categoria_4);
+		patient.setPai_portada_profesional_5(pai_portada_profesional_5);
+		patient.setPai_portada_categoria_5(pai_portada_categoria_5);
+
+		patient = this.usersRepository.save(patient);
+
+		City city = this.citiesRepository.findOne(patient.getIdcity());
+		State state = this.statesRepository.findOne(patient.getIdstate());
+		Country country = this.countriesRepository.findOne(patient.getIdcountry());
+		User relative = this.usersRepository.findOne(patient.getIdrelative());
+
+		HashMap<String, String> values = new HashMap<>();
+		// Aquí puedes formatear la fecha según tus necesidades
+		if (patient.getFs_fecha_inscripcion() != null) {
+			values.put("FS_FECHA_INSCRIPCION", patient.getFs_fecha_inscripcion().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		}
+		values.put("NAME", patient.getName());
+		values.put("SURNAME1", patient.getSurname1());
+		values.put("SURNAME2", patient.getSurname2());
+		values.put("FS_NUM_EXPEDIENTE", patient.getFs_num_expediente());
+
+		values.put("BIRTHDATE", patient.getBirthdate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		values.put("AGE", Period.between(patient.getBirthdate(), LocalDate.now()).getYears()+"");
+		values.put("DOCUMENTID", patient.getDocumentid());
+		values.put("NATIONALITY", patient.getNationality());
+		values.put("FS_NUM_SS", patient.getFs_num_ss());
+		values.put("FS_ESTADO_CIVIL", patient.getFs_estado_civil());
+		values.put("RELATIVEFULLNAME", relative!=null?relative.getFullname() + " (" + patient.getRelativerelation() + ")":"");
+		values.put("POSTALADDRESS", patient.getPostaladdress());
+		values.put("POSTALCODE", patient.getPostalcode());
+		values.put("CITYNAME", city!=null?city.getName():"");
+		values.put("STATENAME", state!=null?state.getName():"");
+		values.put("PHONE", patient.getPhone());
+
+		if(patient.getFs_incapacitacion_judicial()!=null && patient.getFs_incapacitacion_judicial()==true)
+			values.put("fs_incapacitacion_judicial", "SÍ");
+		else if(patient.getFs_incapacitacion_judicial()!=null && patient.getFs_incapacitacion_judicial()==false)
+			values.put("fs_incapacitacion_judicial", "NO");
+		else
+			values.put("fs_incapacitacion_judicial", "");
+
+
+		// Agrega todos los campos de pai_portada al HashMap
+		values.put("pai_portada_fecha", pai_portada_fecha);
+		values.put("pai_portada_representante_guardador", pai_portada_representante_guardador);
+		values.put("pai_portada_cuidador_nombre", pai_portada_cuidador_nombre);
+		values.put("pai_portada_cuidador_edad", pai_portada_cuidador_edad);
+		values.put("pai_portada_cuidador_dni", pai_portada_cuidador_dni);
+		values.put("pai_portada_cuidador_domicilio", pai_portada_cuidador_domicilio);
+		values.put("pai_portada_cuidador_estado_civil", pai_portada_cuidador_estado_civil);
+		values.put("pai_portada_cuidador_profesion", pai_portada_cuidador_profesion);
+		values.put("pai_portada_cuidador_relacion", pai_portada_cuidador_relacion);
+		values.put("pai_portada_cuidador_convive_otros", pai_portada_cuidador_convive_otros);
+		values.put("pai_portada_nss", pai_portada_nss);
+		values.put("pai_portada_seguro_medico", pai_portada_seguro_medico);
+		values.put("pai_portada_datos_medicos_enfermedades", pai_portada_datos_medicos_enfermedades);
+		values.put("pai_portada_datos_medicos_grado_minusvalida", pai_portada_datos_medicos_grado_minusvalida);
+		values.put("pai_portada_datos_medicos_grado_dependencia", pai_portada_datos_medicos_grado_dependencia);
+
+		String pai_profesional_1 = "";
+		if(pai_portada_profesional_1!=null && !pai_portada_profesional_1.trim().equals(""))
+		{
+			pai_profesional_1 += "<li><b>Nombre y apellidos:</b>" + pai_portada_profesional_1 + "</li>";
+			pai_profesional_1 += "<li><b>Categoría profesional:</b>" + pai_portada_categoria_1 + "</li>";
+			pai_profesional_1 += "<li><b>Firma:</b>"  + "</li>";
+		}
+		values.put("pai_profesional_1", pai_profesional_1);
+
+		String pai_profesional_2 = "";
+		if (pai_portada_profesional_2 != null && !pai_portada_profesional_2.trim().equals("")) {
+			pai_profesional_2 += "<li><b>Nombre y apellidos:</b>" + pai_portada_profesional_2 + "</li>";
+			pai_profesional_2 += "<li><b>Categoría profesional:</b>" + pai_portada_categoria_2 + "</li>";
+			pai_profesional_2 += "<li><b>Firma:</b>"  + "</li>";
+		}
+		values.put("pai_profesional_2", pai_profesional_2);
+
+		String pai_profesional_3 = "";
+		if (pai_portada_profesional_3 != null && !pai_portada_profesional_3.trim().equals("")) {
+			pai_profesional_3 += "<li><b>Nombre y apellidos:</b>" + pai_portada_profesional_3 + "</li>";
+			pai_profesional_3 += "<li><b>Categoría profesional:</b>" + pai_portada_categoria_3 + "</li>";
+			pai_profesional_3 += "<li><b>Firma:</b>"  + "</li>";
+		}
+		values.put("pai_profesional_3", pai_profesional_3);
+
+		String pai_profesional_4 = "";
+		if (pai_portada_profesional_4 != null && !pai_portada_profesional_4.trim().equals("")) {
+			pai_profesional_4 += "<li><b>Nombre y apellidos:</b>" + pai_portada_profesional_4 + "</li>";
+			pai_profesional_4 += "<li><b>Categoría profesional:</b>" + pai_portada_categoria_4 + "</li>";
+			pai_profesional_4 += "<li><b>Firma:</b>"  + "</li>";
+		}
+		values.put("pai_profesional_4", pai_profesional_4);
+
+		String pai_profesional_5 = "";
+		if (pai_portada_profesional_5 != null && !pai_portada_profesional_5.trim().equals("")) {
+			pai_profesional_5 += "<li><b>Nombre y apellidos:</b>" + pai_portada_profesional_5 + "</li>";
+			pai_profesional_5 += "<li><b>Categoría profesional:</b>" + pai_portada_categoria_5 + "</li>";
+			pai_profesional_5 += "<li><b>Firma:</b>"  + "</li>";
+		}
+		values.put("pai_profesional_5", pai_profesional_5);
+
+
+		//PAI SOCIAL
+
+		values.put("pai_social_historia", patient.getPai_social_historia());
+		values.put("pai_social_informes", patient.getPai_social_informes());
+		values.put("pai_social_informes_text", patient.getPai_social_informes_text());
+		values.put("pai_social_valoracion_disca", patient.getPai_social_valoracion_disca());
+		values.put("pai_social_valoracion_disca_fecha", patient.getPai_social_valoracion_disca_fecha());
+		values.put("pai_social_valoracion_disca_ca", patient.getPai_social_valoracion_disca_ca());
+		values.put("pai_social_valoracion_disca_grado", patient.getPai_social_valoracion_disca_grado());
+		values.put("pai_social_3_persona", patient.getPai_social_3_persona());
+		values.put("pai_social_ayudas_tecnicas", patient.getPai_social_ayudas_tecnicas());
+		values.put("pai_social_ayudas_tecnicas_text", patient.getPai_social_ayudas_tecnicas_text());
+		values.put("pai_social_movilidad", patient.getPai_social_movilidad());
+		values.put("pai_social_ley_dependencai", patient.getPai_social_ley_dependencai());
+		values.put("pai_social_grado_y_nivel", patient.getPai_social_grado_y_nivel());
+		values.put("pai_social_cuidador", patient.getPai_social_cuidador());
+		values.put("pai_social_relacion_cuidador", patient.getPai_social_relacion_cuidador());
+		values.put("pai_social_indicadores", patient.getPai_social_indicadores());
+		values.put("pai_social_apoyos", patient.getPai_social_apoyos());
+		values.put("pai_social_vive", patient.getPai_social_vive());
+		values.put("pai_social_domicilio_obstaculos", patient.getPai_social_domicilio_obstaculos());
+		values.put("pai_social_domicilio_ayudas_tecnicas", patient.getPai_social_domicilio_ayudas_tecnicas());
+		values.put("pai_social_domicilio_confort", patient.getPai_social_domicilio_confort());
+		values.put("pai_social_domicilio_actual_quiere", patient.getPai_social_domicilio_actual_quiere());
+		values.put("pai_social_domicilio_actual_otro", patient.getPai_social_domicilio_actual_otro());
+		values.put("pai_social_domicilio_actula_residencia", patient.getPai_social_domicilio_actula_residencia());
+
+		String apoyo = "";
+		if (patient.getPai_social_apoyo_tipo1() != null && !patient.getPai_social_apoyo_tipo1().trim().equals("")) {
+			apoyo += "<li><b>TIPO DE CENTRO Y PLAZA: </b> " + patient.getPai_social_apoyo_tipo1();
+			apoyo += " / <b>TITULARIDAD: </b> " + patient.getPai_social_apoyo_titularidad1();
+			apoyo += " / <b>COSTE MENSUAL: </b> " + patient.getPai_social_apoyo_coste1();
+			apoyo += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + patient.getPai_social_apoyo_aportacion1() + "</li>";
+		}
+		if (patient.getPai_social_apoyo_tipo2() != null && !patient.getPai_social_apoyo_tipo2().trim().equals("")) {
+			apoyo += "<li><b>TIPO DE CENTRO Y PLAZA: </b> " + patient.getPai_social_apoyo_tipo2();
+			apoyo += " / <b>TITULARIDAD: </b> " + patient.getPai_social_apoyo_titularidad2();
+			apoyo += " / <b>COSTE MENSUAL: </b> " + patient.getPai_social_apoyo_coste2();
+			apoyo += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + patient.getPai_social_apoyo_aportacion2() + "</li>";
+		}
+		if (patient.getPai_social_apoyo_tipo3() != null && !patient.getPai_social_apoyo_tipo3().trim().equals("")) {
+			apoyo += "<li><b>TIPO DE CENTRO Y PLAZA: </b> " + patient.getPai_social_apoyo_tipo3();
+			apoyo += " / <b>TITULARIDAD: </b> " + patient.getPai_social_apoyo_titularidad3();
+			apoyo += " / <b>COSTE MENSUAL: </b> " + patient.getPai_social_apoyo_coste3();
+			apoyo += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + patient.getPai_social_apoyo_aportacion3() + "</li>";
+		}
+		if (patient.getPai_social_apoyo_tipo4() != null && !patient.getPai_social_apoyo_tipo4().trim().equals("")) {
+			apoyo += "<li><b>TIPO DE CENTRO Y PLAZA: </b> " + patient.getPai_social_apoyo_tipo4();
+			apoyo += " / <b>TITULARIDAD: </b> " + patient.getPai_social_apoyo_titularidad4();
+			apoyo += " / <b>COSTE MENSUAL: </b> " + patient.getPai_social_apoyo_coste4();
+			apoyo += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + patient.getPai_social_apoyo_aportacion4() + "</li>";
+		}
+		values.put("apoyo", apoyo);
+
+		String apoyo_dom = "";
+		if (patient.getPai_social_apoyo_dom_prestacion1() != null && !patient.getPai_social_apoyo_dom_prestacion1().trim().equals("")) {
+			apoyo_dom += "<li><b>PRESTACIÓN: </b> " + patient.getPai_social_apoyo_dom_prestacion1();
+			apoyo_dom += " / <b>INTENSIDAD (horas/semana): </b> " + patient.getPai_social_apoyo_dom_intensidad1();
+			apoyo_dom += " / <b>COSTE MENSUAL: </b> " + patient.getPai_social_apoyo_dom_coste1();
+			apoyo_dom += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + patient.getPai_social_apoyo_dom_aportacion1() + "</li>";
+		}
+		if (patient.getPai_social_apoyo_dom_prestacion2() != null && !patient.getPai_social_apoyo_dom_prestacion2().trim().equals("")) {
+			apoyo_dom += "<li><b>PRESTACIÓN: </b> " + patient.getPai_social_apoyo_dom_prestacion2();
+			apoyo_dom += " / <b>INTENSIDAD (horas/semana): </b> " + patient.getPai_social_apoyo_dom_intensidad2();
+			apoyo_dom += " / <b>COSTE MENSUAL: </b> " + patient.getPai_social_apoyo_dom_coste2();
+			apoyo_dom += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + patient.getPai_social_apoyo_dom_aportacion2() + "</li>";
+		}
+		if (patient.getPai_social_apoyo_dom_prestacion3() != null && !patient.getPai_social_apoyo_dom_prestacion3().trim().equals("")) {
+			apoyo_dom += "<li><b>PRESTACIÓN: </b> " + patient.getPai_social_apoyo_dom_prestacion3();
+			apoyo_dom += " / <b>INTENSIDAD (horas/semana): </b> " + patient.getPai_social_apoyo_dom_intensidad3();
+			apoyo_dom += " / <b>COSTE MENSUAL: </b> " + patient.getPai_social_apoyo_dom_coste3();
+			apoyo_dom += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + patient.getPai_social_apoyo_dom_aportacion3() + "</li>";
+		}
+		if (patient.getPai_social_apoyo_dom_prestacion4() != null && !patient.getPai_social_apoyo_dom_prestacion4().trim().equals("")) {
+			apoyo_dom += "<li><b>PRESTACIÓN: </b> " + patient.getPai_social_apoyo_dom_prestacion4();
+			apoyo_dom += " / <b>INTENSIDAD (horas/semana): </b> " + patient.getPai_social_apoyo_dom_intensidad4();
+			apoyo_dom += " / <b>COSTE MENSUAL: </b> " + patient.getPai_social_apoyo_dom_coste4();
+			apoyo_dom += " / <b>APORTACIÓN DEL USUARIO/A: </b> " + patient.getPai_social_apoyo_dom_aportacion4() + "</li>";
+		}
+		values.put("apoyo_dom", apoyo_dom);
+
+		String apoyo_otras = "";
+		if (patient.getPai_social_apoyo_otras_prestacion1() != null && !patient.getPai_social_apoyo_otras_prestacion1().trim().equals("")) {
+			apoyo_otras += "<li><b>PRESTACIÓN: </b> " + patient.getPai_social_apoyo_otras_prestacion1();
+			apoyo_otras += " / <b>TITULARIDAD: </b> " + patient.getPai_social_apoyo_otras_titularidad1();
+			apoyo_otras += " / <b>INTENSIDAD: </b> " + patient.getPai_social_apoyo_otras_intensidad1();
+		}
+		if (patient.getPai_social_apoyo_otras_prestacion2() != null && !patient.getPai_social_apoyo_otras_prestacion2().trim().equals("")) {
+			apoyo_otras += "<li><b>PRESTACIÓN: </b> " + patient.getPai_social_apoyo_otras_prestacion2();
+			apoyo_otras += " / <b>TITULARIDAD: </b> " + patient.getPai_social_apoyo_otras_titularidad2();
+			apoyo_otras += " / <b>INTENSIDAD: </b> " + patient.getPai_social_apoyo_otras_intensidad2();
+		}
+		if (patient.getPai_social_apoyo_otras_prestacion3() != null && !patient.getPai_social_apoyo_otras_prestacion3().trim().equals("")) {
+			apoyo_otras += "<li><b>PRESTACIÓN: </b> " + patient.getPai_social_apoyo_otras_prestacion3();
+			apoyo_otras += " / <b>TITULARIDAD: </b> " + patient.getPai_social_apoyo_otras_titularidad3();
+			apoyo_otras += " / <b>INTENSIDAD: </b> " + patient.getPai_social_apoyo_otras_intensidad3();
+		}
+		if (patient.getPai_social_apoyo_otras_prestacion4() != null && !patient.getPai_social_apoyo_otras_prestacion4().trim().equals("")) {
+			apoyo_otras += "<li><b>PRESTACIÓN: </b> " + patient.getPai_social_apoyo_otras_prestacion4();
+			apoyo_otras += " / <b>TITULARIDAD: </b> " + patient.getPai_social_apoyo_otras_titularidad4();
+			apoyo_otras += " / <b>INTENSIDAD: </b> " + patient.getPai_social_apoyo_otras_intensidad4();
+		}
+		values.put("apoyo_otras", apoyo_otras);
+
+		values.put("pai_social_ingresos", patient.getPai_social_ingresos());
+		values.put("pai_social_ingresos_familia", patient.getPai_social_ingresos_familia());
+		values.put("pai_social_ingresos_cubre", patient.getPai_social_ingresos_cubre());
+		values.put("pai_social_nivel_estudios", patient.getPai_social_nivel_estudios());
+		values.put("pai_social_relaciones", patient.getPai_social_relaciones());
+		values.put("pai_social_necesidades", patient.getPai_social_necesidades());
+		values.put("pai_social_objetivos", patient.getPai_social_objetivos());
+		values.put("pai_social_valoraciones", patient.getPai_social_valoraciones());
+		values.put("pai_social_actuaciones", patient.getPai_social_actuaciones());
+		values.put("pai_social_incidencias", patient.getPai_social_incidencias());
+
+
+		//PAI PSICO
+
+		values.put("pai_psico_acude", patient.getPai_psico_acude());
+		values.put("pai_psico_sintomas", patient.getPai_psico_sintomas());
+		values.put("pai_psico_diagnostico", patient.getPai_psico_diagnostico());
+		values.put("pai_psico_quien_diagnostica", patient.getPai_psico_quien_diagnostica());
+		values.put("pai_psico_forma_evalucion", patient.getPai_psico_forma_evalucion());
+		values.put("pai_psico_sintomatologia_actual", patient.getPai_psico_sintomatologia_actual());
+		values.put("pai_psico_antecedentes", patient.getPai_psico_antecedentes());
+		values.put("pai_psico_breve_historial", patient.getPai_psico_breve_historial());
+		values.put("pai_psico_orientacion", patient.getPai_psico_orientacion());
+		values.put("pai_psico_lenguaje", patient.getPai_psico_lenguaje());
+		values.put("pai_psico_memoria", patient.getPai_psico_memoria());
+		values.put("pai_psico_atencion", patient.getPai_psico_atencion());
+		values.put("pai_psico_praxi", patient.getPai_psico_praxi());
+		values.put("pai_psico_pensamiento_abstracto", patient.getPai_psico_pensamiento_abstracto());
+		values.put("pai_psico_percepcion", patient.getPai_psico_percepcion());
+		values.put("pai_psico_funcion_ejecutiva", patient.getPai_psico_funcion_ejecutiva());
+		values.put("pai_psico_escala_folstein", patient.getPai_psico_escala_folstein());
+		values.put("pai_psico_evaluacion_conductual", patient.getPai_psico_evaluacion_conductual());
+		values.put("pai_psico_plan_act_valoracion_s1", patient.getPai_psico_plan_act_valoracion_s1());
+		values.put("pai_psico_plan_act_valoracion_s2", patient.getPai_psico_plan_act_valoracion_s2());
+		values.put("pai_psico_plan_act_instrumentos_s1", patient.getPai_psico_plan_act_instrumentos_s1());
+		values.put("pai_psico_plan_act_instrumentos_s2", patient.getPai_psico_plan_act_instrumentos_s2());
+		values.put("pai_psico_plan_act_objetivos_s1", patient.getPai_psico_plan_act_objetivos_s1());
+		values.put("pai_psico_plan_act_objetivos_s2", patient.getPai_psico_plan_act_objetivos_s2());
+		values.put("pai_psico_plan_act_actividades_s1", patient.getPai_psico_plan_act_actividades_s1());
+		values.put("pai_psico_plan_act_actividades_s2", patient.getPai_psico_plan_act_actividades_s2());
+		values.put("pai_psico_plan_act_incidencias_s1", patient.getPai_psico_plan_act_incidencias_s1());
+		values.put("pai_psico_plan_act_incidencias_s2", patient.getPai_psico_plan_act_incidencias_s2());
+		values.put("pai_psico_valoraciones", patient.getPai_psico_valoraciones());
+		values.put("pai_psico_actuaciones", patient.getPai_psico_actuaciones());
+		values.put("pai_psico_incidencias", patient.getPai_psico_incidencias());
+
+		//PAI ENFER
+
+// Agrega todos los campos de pai_enfer al HashMap
+		values.put("pai_enfer_diagnostico", patient.getPai_enfer_diagnostico());
+		values.put("pai_enfer_problemas_audio", patient.getPai_enfer_problemas_audio());
+		values.put("pai_enfer_problemas_audio_text", patient.getPai_enfer_problemas_audio_text());
+		values.put("pai_enfer_uso_audifono", patient.getPai_enfer_uso_audifono());
+		values.put("pai_enfer_problemas_vision", patient.getPai_enfer_problemas_vision());
+		values.put("pai_enfer_problemas_vision_text", patient.getPai_enfer_problemas_vision_text());
+		values.put("pai_enfer_uso_gafas", patient.getPai_enfer_uso_gafas());
+		values.put("pai_enfer_tension", patient.getPai_enfer_tension());
+		values.put("pai_enfer_uso_medicacion", patient.getPai_enfer_uso_medicacion());
+		values.put("pai_enfer_diabetes", patient.getPai_enfer_diabetes());
+		values.put("pai_enfer_diabetes_text", patient.getPai_enfer_diabetes_text());
+		values.put("pai_enfer_alergias", patient.getPai_enfer_alergias());
+		values.put("pai_enfer_otras_enfermedades", patient.getPai_enfer_otras_enfermedades());
+
+		String med = "";
+		if (patient.getPai_enfer_tratamiento_medicamento_1() != null && !patient.getPai_enfer_tratamiento_medicamento_1().trim().equals("")) {
+			med += "<li><b>MEDICAMENTO: </b> " + patient.getPai_enfer_tratamiento_medicamento_1();
+			med += " / <b>DOSIS: </b> " + patient.getPai_enfer_tratamiento_dosis_1();
+			med += " / <b>FECHA INICIO: </b> " + patient.getPai_enfer_tratamiento_fecha_1();
+			med += " / <b>LA TOMA PARA: </b> " + patient.getPai_enfer_tratamiento_para_1() + "</li>";
+		}
+		if (patient.getPai_enfer_tratamiento_medicamento_2() != null && !patient.getPai_enfer_tratamiento_medicamento_2().trim().equals("")) {
+			med += "<li><b>MEDICAMENTO: </b> " + patient.getPai_enfer_tratamiento_medicamento_2();
+			med += " / <b>DOSIS: </b> " + patient.getPai_enfer_tratamiento_dosis_2();
+			med += " / <b>FECHA INICIO: </b> " + patient.getPai_enfer_tratamiento_fecha_2();
+			med += " / <b>LA TOMA PARA: </b> " + patient.getPai_enfer_tratamiento_para_2() + "</li>";
+		}
+		if (patient.getPai_enfer_tratamiento_medicamento_3() != null && !patient.getPai_enfer_tratamiento_medicamento_3().trim().equals("")) {
+			med += "<li><b>MEDICAMENTO: </b> " + patient.getPai_enfer_tratamiento_medicamento_3();
+			med += " / <b>DOSIS: </b> " + patient.getPai_enfer_tratamiento_dosis_3();
+			med += " / <b>FECHA INICIO: </b> " + patient.getPai_enfer_tratamiento_fecha_3();
+			med += " / <b>LA TOMA PARA: </b> " + patient.getPai_enfer_tratamiento_para_3() + "</li>";
+		}
+		if (patient.getPai_enfer_tratamiento_medicamento_4() != null && !patient.getPai_enfer_tratamiento_medicamento_4().trim().equals("")) {
+			med += "<li><b>MEDICAMENTO: </b> " + patient.getPai_enfer_tratamiento_medicamento_4();
+			med += " / <b>DOSIS: </b> " + patient.getPai_enfer_tratamiento_dosis_4();
+			med += " / <b>FECHA INICIO: </b> " + patient.getPai_enfer_tratamiento_fecha_4();
+			med += " / <b>LA TOMA PARA: </b> " + patient.getPai_enfer_tratamiento_para_4() + "</li>";
+		}
+		values.put("med", med);
+
+		values.put("pai_enfer_tratamiento_medicamento_2", patient.getPai_enfer_tratamiento_medicamento_2());
+		values.put("pai_enfer_tratamiento_medicamento_3", patient.getPai_enfer_tratamiento_medicamento_3());
+		values.put("pai_enfer_tratamiento_medicamento_4", patient.getPai_enfer_tratamiento_medicamento_4());
+		values.put("pai_enfer_tratamiento_dosis_1", patient.getPai_enfer_tratamiento_dosis_1());
+		values.put("pai_enfer_tratamiento_dosis_2", patient.getPai_enfer_tratamiento_dosis_2());
+		values.put("pai_enfer_tratamiento_dosis_3", patient.getPai_enfer_tratamiento_dosis_3());
+		values.put("pai_enfer_tratamiento_dosis_4", patient.getPai_enfer_tratamiento_dosis_4());
+		values.put("pai_enfer_tratamiento_fecha_1", patient.getPai_enfer_tratamiento_fecha_1());
+		values.put("pai_enfer_tratamiento_fecha_2", patient.getPai_enfer_tratamiento_fecha_2());
+		values.put("pai_enfer_tratamiento_fecha_3", patient.getPai_enfer_tratamiento_fecha_3());
+		values.put("pai_enfer_tratamiento_fecha_4", patient.getPai_enfer_tratamiento_fecha_4());
+		values.put("pai_enfer_tratamiento_para_1", patient.getPai_enfer_tratamiento_para_1());
+		values.put("pai_enfer_tratamiento_para_2", patient.getPai_enfer_tratamiento_para_2());
+		values.put("pai_enfer_tratamiento_para_3", patient.getPai_enfer_tratamiento_para_3());
+		values.put("pai_enfer_tratamiento_para_4", patient.getPai_enfer_tratamiento_para_4());
+
+		values.put("pai_enfer_medicacion_centro", patient.getPai_enfer_medicacion_centro());
+		values.put("pai_enfer_medicacion_centro_text", patient.getPai_enfer_medicacion_centro_text());
+		values.put("pai_enfer_medicacion_puntual", patient.getPai_enfer_medicacion_puntual());
+		values.put("pai_enfer_wc_esfinteres", patient.getPai_enfer_wc_esfinteres());
+		values.put("pai_enfer_wc_retencion", patient.getPai_enfer_wc_retencion());
+		values.put("pai_enfer_wc_estrenimiento", patient.getPai_enfer_wc_estrenimiento());
+		values.put("pai_enfer_wc_acompanam", patient.getPai_enfer_wc_acompanam());
+		values.put("pai_enfer_alim_alergias", patient.getPai_enfer_alim_alergias());
+		values.put("pai_enfer_alim_alergias_text", patient.getPai_enfer_alim_alergias_text());
+		values.put("pai_enfer_alim_dieta", patient.getPai_enfer_alim_dieta());
+		values.put("pai_enfer_alim_dieta_text", patient.getPai_enfer_alim_dieta_text());
+		values.put("pai_enfer_alim_problemas_deglucion", patient.getPai_enfer_alim_problemas_deglucion());
+		values.put("pai_enfer_alim_espesantes", patient.getPai_enfer_alim_espesantes());
+		values.put("pai_enfer_alim_ayuda", patient.getPai_enfer_alim_ayuda());
+		values.put("pai_enfer_alim_observaciones", patient.getPai_enfer_alim_observaciones());
+		values.put("pai_enfer_valoraciones", patient.getPai_enfer_valoraciones());
+		values.put("pai_enfer_actuaciones", patient.getPai_enfer_actuaciones());
+		values.put("pai_enfer_incidencias", patient.getPai_enfer_incidencias());
+
+		//PAI TOCUPA
+
+		values.put("RELATIVEFULLNAME", relative != null ? relative.getFullname() + " / " + patient.getRelativerelation() : "");
+
+		values.put("pai_tocupa_nivel_independencia", patient.getPai_tocupa_nivel_independencia());
+		values.put("pai_tocupa_plan_motriz", patient.getPai_tocupa_plan_motriz());
+		values.put("pai_tocupa_alimentacion", patient.getPai_tocupa_alimentacion());
+		values.put("pai_tocupa_wc", patient.getPai_tocupa_wc());
+		values.put("pai_tocupa_aseo", patient.getPai_tocupa_aseo());
+		values.put("pai_tocupa_deambular", patient.getPai_tocupa_deambular());
+		values.put("pai_tocupa_transferencias", patient.getPai_tocupa_transferencias());
+		values.put("pai_tocupa_vestido", patient.getPai_tocupa_vestido());
+		values.put("pai_tocupa_bano", patient.getPai_tocupa_bano());
+		values.put("pai_tocupa_escaolones", patient.getPai_tocupa_escaolones());
+		values.put("pai_tocupa_esfinteres", patient.getPai_tocupa_esfinteres());
+		values.put("pai_tocupa_dinero", patient.getPai_tocupa_dinero());
+		values.put("pai_tocupa_compras", patient.getPai_tocupa_compras());
+		values.put("pai_tocupa_telefono", patient.getPai_tocupa_telefono());
+		values.put("pai_tocupa_casa", patient.getPai_tocupa_casa());
+		values.put("pai_tocupa_calle", patient.getPai_tocupa_calle());
+		values.put("pai_tocupa_medicacion", patient.getPai_tocupa_medicacion());
+		values.put("pai_tocupa_indice_barthel", patient.getPai_tocupa_indice_barthel());
+		values.put("pai_tocupa_escala_actividad", patient.getPai_tocupa_escala_actividad());
+		values.put("pai_tocupa_disfruta_tiempo", patient.getPai_tocupa_disfruta_tiempo());
+		values.put("pai_tocupa_espacios_ocio", patient.getPai_tocupa_espacios_ocio());
+		values.put("pai_tocupa_disfruta_ocio", patient.getPai_tocupa_disfruta_ocio());
+		values.put("pai_tocupa_relacion_otros", patient.getPai_tocupa_relacion_otros());
+		values.put("pai_tocupa_propios_objetivos", patient.getPai_tocupa_propios_objetivos());
+		values.put("pai_tocupa_participa_actividades", patient.getPai_tocupa_participa_actividades());
+		values.put("pai_tocupa_actividades_iniciativa_propia", patient.getPai_tocupa_actividades_iniciativa_propia());
+		values.put("pai_tocupa_valoraciones", patient.getPai_tocupa_valoraciones());
+		values.put("pai_tocupa_actuaciones", patient.getPai_tocupa_actuaciones());
+		values.put("pai_tocupa_incidencias", patient.getPai_tocupa_incidencias());
+
+
+		//PAI FISIO
+
+		values.put("pai_fisio_prob_salud", patient.getPai_fisio_prob_salud());
+		values.put("pai_fisio_dolres", patient.getPai_fisio_dolres());
+		values.put("pai_fisio_duerme", patient.getPai_fisio_duerme());
+		values.put("pai_fisio_nec_aliment", patient.getPai_fisio_nec_aliment());
+		values.put("pai_fisio_hab_saludables", patient.getPai_fisio_hab_saludables());
+		values.put("pai_fisio_atencion_preven", patient.getPai_fisio_atencion_preven());
+		values.put("pai_fisio_acceso_atencion", patient.getPai_fisio_acceso_atencion());
+		values.put("pai_fisio_medicacion_requerida", patient.getPai_fisio_medicacion_requerida());
+		values.put("pai_fisio_alergias", patient.getPai_fisio_alergias());
+		values.put("pai_fisio_upp", patient.getPai_fisio_upp());
+		values.put("pai_fisio_autonomo", patient.getPai_fisio_autonomo());
+		values.put("pai_fisio_ayudas_tecnicas", patient.getPai_fisio_ayudas_tecnicas());
+		values.put("pai_fisio_movilidad_mmss", patient.getPai_fisio_movilidad_mmss());
+		values.put("pai_fisio_movilidad_mmii", patient.getPai_fisio_movilidad_mmii());
+		values.put("pai_fisio_movilidad_cuello", patient.getPai_fisio_movilidad_cuello());
+		values.put("pai_fisio_movilida_tronco", patient.getPai_fisio_movilida_tronco());
+		values.put("pai_fisio_equilibrio", patient.getPai_fisio_equilibrio());
+		values.put("pai_fisio_bipedestacion", patient.getPai_fisio_bipedestacion());
+		values.put("pai_fisio_marcha", patient.getPai_fisio_marcha());
+		values.put("pai_fisio_riesgo_caidas", patient.getPai_fisio_riesgo_caidas());
+		values.put("pai_fisio_deformidades", patient.getPai_fisio_deformidades());
+		values.put("pai_fisio_disfruta_ocio", patient.getPai_fisio_disfruta_ocio());
+		values.put("pai_fisio_espacios_ocio", patient.getPai_fisio_espacios_ocio());
+		values.put("pai_fisio_relaciones_entorno", patient.getPai_fisio_relaciones_entorno());
+		values.put("pai_fisio_objetivos", patient.getPai_fisio_objetivos());
+		values.put("pai_fisio_tratamiento", patient.getPai_fisio_tratamiento());
+		values.put("pai_fisio_valoraciones", patient.getPai_fisio_valoraciones());
+		values.put("pai_fisio_actuaciones", patient.getPai_fisio_actuaciones());
+		values.put("pai_fisio_incidencias", patient.getPai_fisio_incidencias());
+
+
+
+		String paiPortadaUrl = this.getCDNURL("pai_portada", patient.get_id(), values); //AQUÍ ESTÁ EL CAMBIO
+		PatientDTO res = new PatientDTO(patient, city, state, country, relative, null);
+		res.setPai_portada_url(paiPortadaUrl); //Y AQUÍ
+
+
+		return res;
+	}
+
+
+
+
+
+
+	@Override
+	public PatientDTO generatePAIResumen(
+			String id
+
+	) throws Exception {
+
+		User patient = this.usersRepository.findOne(id);
+		if (patient == null) return null;
+
+		HashMap<String, String> values = new HashMap<String, String>();
+
+		values.put("NAME", patient.getName());
+		values.put("SURNAME1", patient.getSurname1());
+		values.put("SURNAME2", patient.getSurname2());
+
+		values.put("pai_social_valoraciones", patient.getPai_social_valoraciones());
+		values.put("pai_social_actuaciones", patient.getPai_social_actuaciones());
+		values.put("pai_social_incidencias", patient.getPai_social_incidencias());
+
+		values.put("pai_enfer_valoraciones", patient.getPai_enfer_valoraciones());
+		values.put("pai_enfer_actuaciones", patient.getPai_enfer_actuaciones());
+		values.put("pai_enfer_incidencias", patient.getPai_enfer_incidencias());
+
+		values.put("pai_psico_valoraciones", patient.getPai_psico_valoraciones());
+		values.put("pai_psico_actuaciones", patient.getPai_psico_actuaciones());
+		values.put("pai_psico_incidencias", patient.getPai_psico_incidencias());
+
+		values.put("pai_tocupa_valoraciones", patient.getPai_tocupa_valoraciones());
+		values.put("pai_tocupa_actuaciones", patient.getPai_tocupa_actuaciones());
+		values.put("pai_tocupa_incidencias", patient.getPai_tocupa_incidencias());
+
+		values.put("pai_fisio_valoraciones", patient.getPai_fisio_valoraciones());
+		values.put("pai_fisio_actuaciones", patient.getPai_fisio_actuaciones());
+		values.put("pai_fisio_incidencias", patient.getPai_fisio_incidencias());
+
+		String url = this.getCDNURL("pai_resumen", patient.get_id(), values);
+		PatientDTO res = new PatientDTO(patient, null, null, null, null, null);
+		res.setPai_portada_url(url); //se reutiliza pq da igual
+		return res;
+	}
 
 }

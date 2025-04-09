@@ -556,6 +556,209 @@ export interface PatientDTO {
     pai_psico_incidencias: string;  // CUADRO RESUMEN
     pai_psico_url: string;
 
+
+    //PAI TOCUPA
+    pai_tocupa_nivel_independencia: string;
+    pai_tocupa_plan_motriz: string;
+    pai_tocupa_alimentacion: string;
+    pai_tocupa_wc: string;
+    pai_tocupa_aseo: string;
+    pai_tocupa_deambular: string;
+    pai_tocupa_transferencias: string;
+    pai_tocupa_vestido: string;
+    pai_tocupa_bano: string;
+    pai_tocupa_escaolones: string;
+    pai_tocupa_esfinteres: string;
+    pai_tocupa_dinero: string;
+    pai_tocupa_compras: string;
+    pai_tocupa_telefono: string;
+    pai_tocupa_casa: string;
+    pai_tocupa_calle: string;
+    pai_tocupa_medicacion: string;
+    pai_tocupa_indice_barthel: string;
+    pai_tocupa_escala_actividad: string;
+    pai_tocupa_disfruta_tiempo: string;
+    pai_tocupa_espacios_ocio: string;
+    pai_tocupa_disfruta_ocio: string;
+    pai_tocupa_relacion_otros: string;
+    pai_tocupa_propios_objetivos: string;
+    pai_tocupa_participa_actividades: string;
+    pai_tocupa_actividades_iniciativa_propia: string;
+    pai_tocupa_valoraciones : string;
+    pai_tocupa_actuaciones : string;
+    pai_tocupa_incidencias : string;
+    pai_tocupa_url: string;
+
+    //PAI ENFER
+    pai_enfer_diagnostico: string;
+    pai_enfer_problemas_audio: string;
+    pai_enfer_problemas_audio_text: string;
+    pai_enfer_uso_audifono: string;
+    pai_enfer_problemas_vision: string;
+    pai_enfer_problemas_vision_text: string;
+    pai_enfer_uso_gafas: string;
+    pai_enfer_tension: string;
+    pai_enfer_uso_medicacion: string;
+    pai_enfer_diabetes: string;
+    pai_enfer_diabetes_text: string;
+    pai_enfer_alergias: string;
+    pai_enfer_otras_enfermedades: string;
+    
+    pai_enfer_tratamiento_medicamento_1: string;
+    pai_enfer_tratamiento_medicamento_2: string;
+    pai_enfer_tratamiento_medicamento_3: string;
+    pai_enfer_tratamiento_medicamento_4: string;
+  
+    pai_enfer_tratamiento_dosis_1: string;
+    pai_enfer_tratamiento_dosis_2: string;
+    pai_enfer_tratamiento_dosis_3: string;
+    pai_enfer_tratamiento_dosis_4: string;
+  
+    pai_enfer_tratamiento_fecha_1: string;
+    pai_enfer_tratamiento_fecha_2: string;
+    pai_enfer_tratamiento_fecha_3: string;
+    pai_enfer_tratamiento_fecha_4: string;
+  
+    pai_enfer_tratamiento_para_1: string;
+    pai_enfer_tratamiento_para_2: string;
+    pai_enfer_tratamiento_para_3: string;
+    pai_enfer_tratamiento_para_4: string;
+  
+    pai_enfer_medicacion_centro: string;
+    pai_enfer_medicacion_centro_text: string;
+    pai_enfer_medicacion_puntual: string;
+  
+    pai_enfer_wc_esfinteres: string;
+    pai_enfer_wc_retencion: string;
+    pai_enfer_wc_estrenimiento: string;
+    pai_enfer_wc_acompanam: string;
+  
+    pai_enfer_alim_alergias: string;
+    pai_enfer_alim_alergias_text: string;
+    pai_enfer_alim_dieta: string;
+    pai_enfer_alim_dieta_text: string;
+    pai_enfer_alim_problemas_deglucion: string;
+    pai_enfer_alim_espesantes: string;
+    pai_enfer_alim_ayuda: string;
+    pai_enfer_alim_observaciones: string;
+  
+    pai_enfer_valoraciones: string;
+    pai_enfer_actuaciones: string;
+    pai_enfer_incidencias: string;
+  
+    pai_enfer_url: string;
+
+
+    //PAI SOCIAL
+
+    pai_social_historia: string;
+  pai_social_informes: string;
+  pai_social_informes_text: string;
+  pai_social_valoracion_disca: string;
+  pai_social_valoracion_disca_fecha: string;
+  pai_social_valoracion_disca_ca: string;
+  pai_social_valoracion_disca_grado: string;
+  pai_social_3_persona: string;
+  pai_social_ayudas_tecnicas: string;
+  pai_social_ayudas_tecnicas_text: string;
+  pai_social_movilidad: string;
+  pai_social_ley_dependencai: string;
+  pai_social_grado_y_nivel: string;
+  pai_social_cuidador: string;
+  pai_social_relacion_cuidador: string;
+  pai_social_indicadores: string;
+  pai_social_apoyos: string;
+  pai_social_vive: string;
+  pai_social_domicilio_obstaculos: string;
+  pai_social_domicilio_ayudas_tecnicas: string;
+  pai_social_domicilio_confort: string;
+  pai_social_domicilio_actual_quiere: string;
+  pai_social_domicilio_actual_otro: string;
+  pai_social_domicilio_actula_residencia: string;
+  pai_social_apoyo_tipo1: string;
+  pai_social_apoyo_tipo2: string;
+  pai_social_apoyo_tipo3: string;
+  pai_social_apoyo_tipo4: string;
+  pai_social_apoyo_titularidad1: string;
+  pai_social_apoyo_titularidad2: string;
+  pai_social_apoyo_titularidad3: string;
+  pai_social_apoyo_titularidad4: string;
+  pai_social_apoyo_coste1: string;
+  pai_social_apoyo_coste2: string;
+  pai_social_apoyo_coste3: string;
+  pai_social_apoyo_coste4: string;
+  pai_social_apoyo_aportacion1: string;
+  pai_social_apoyo_aportacion2: string;
+  pai_social_apoyo_aportacion3: string;
+  pai_social_apoyo_aportacion4: string;
+  pai_social_apoyo_dom_prestacion1: string;
+  pai_social_apoyo_dom_prestacion2: string;
+  pai_social_apoyo_dom_prestacion3: string;
+  pai_social_apoyo_dom_prestacion4: string;
+  pai_social_apoyo_dom_intensidad1: string;
+  pai_social_apoyo_dom_intensidad2: string;
+  pai_social_apoyo_dom_intensidad3: string;
+  pai_social_apoyo_dom_intensidad4: string;
+  pai_social_apoyo_dom_coste1: string;
+  pai_social_apoyo_dom_coste2: string;
+  pai_social_apoyo_dom_coste3: string;
+  pai_social_apoyo_dom_coste4: string;
+  pai_social_apoyo_dom_aportacion1: string;
+  pai_social_apoyo_dom_aportacion2: string;
+  pai_social_apoyo_dom_aportacion3: string;
+  pai_social_apoyo_dom_aportacion4: string;
+  pai_social_apoyo_otras_prestacion1: string;
+  pai_social_apoyo_otras_prestacion2: string;
+  pai_social_apoyo_otras_prestacion3: string;
+  pai_social_apoyo_otras_prestacion4: string;
+  pai_social_apoyo_otras_titularidad1: string;
+  pai_social_apoyo_otras_titularidad2: string;
+  pai_social_apoyo_otras_titularidad3: string;
+  pai_social_apoyo_otras_titularidad4: string;
+  pai_social_apoyo_otras_intensidad1: string;
+  pai_social_apoyo_otras_intensidad2: string;
+  pai_social_apoyo_otras_intensidad3: string;
+  pai_social_apoyo_otras_intensidad4: string;
+  pai_social_ingresos: string;
+  pai_social_ingresos_familia: string;
+  pai_social_ingresos_cubre: string;
+  pai_social_nivel_estudios: string;
+  pai_social_relaciones: string;
+  pai_social_necesidades: string;
+  pai_social_objetivos: string;
+  pai_social_valoraciones: string;
+  pai_social_actuaciones: string;
+  pai_social_incidencias: string;
+  pai_social_url: string;
+
+
+  pai_portada_fecha: string;
+  pai_portada_representante_guardador: string;
+  pai_portada_cuidador_nombre: string;
+  pai_portada_cuidador_edad: string;
+  pai_portada_cuidador_dni: string;
+  pai_portada_cuidador_domicilio: string;
+  pai_portada_cuidador_estado_civil: string;
+  pai_portada_cuidador_profesion: string;
+  pai_portada_cuidador_relacion: string;
+  pai_portada_cuidador_convive_otros: string;
+  pai_portada_nss: string;
+  pai_portada_seguro_medico: string;
+  pai_portada_datos_medicos_enfermedades: string;
+  pai_portada_datos_medicos_grado_minusvalida: string;
+  pai_portada_datos_medicos_grado_dependencia: string;
+  pai_portada_profesional_1: string;
+  pai_portada_categoria_1: string;
+  pai_portada_profesional_2: string;
+  pai_portada_categoria_2: string;
+  pai_portada_profesional_3: string;
+  pai_portada_categoria_3: string;
+  pai_portada_profesional_4: string;
+  pai_portada_categoria_4: string;
+  pai_portada_profesional_5: string;
+  pai_portada_categoria_5: string;
+  pai_portada_url: string;
+  
 }
 
 

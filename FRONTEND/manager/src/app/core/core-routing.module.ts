@@ -40,6 +40,10 @@ import { canViewDocsPsicoGuard } from './guards/can-view-docs-psico.guard';
 import { canViewSocialWorkerGuard } from './guards/can-view-social-worker.guard';
 import { canAccessAtencionesGuard } from './guards/can-access-atenciones.guard';
 import { canViewFisioWorkerGuard } from './guards/can-view-fisio-worker.guard';
+import { canViewTocupaGuard } from './guards/can-view-tocupa.guard';
+import { canViewEnferGuard } from './guards/can-view-enfer.guard';
+import { canViewTsocialGuard } from './guards/can-view-tsocial.guard';
+import { canViewPaiGuard } from './guards/can-view-pai.guard';
 
 
 const routes: Routes = [
@@ -169,7 +173,33 @@ const routes: Routes = [
       component: BodyLayoutComponent,
       canActivate : [canViewDocsPsicoGuard],
       loadChildren: () => import('../modules/pai-psico/pai-psico.module').then(m => m.PaiPsicoModule) 
+    }
+    ,
+    {
+      path : 'pai-tocupa',
+      component: BodyLayoutComponent,
+      canActivate : [canViewTocupaGuard],
+      loadChildren: () => import('../modules/pai-tocupa/pai-tocupa.module').then(m => m.PaiTocupaModule) 
     },
+    {
+      path : 'pai-enfer',
+      component: BodyLayoutComponent,
+      canActivate : [canViewEnferGuard],
+      loadChildren: () => import('../modules/pai-enfer/pai-enfer.module').then(m => m.PaiEnferModule) 
+    },
+    {
+      path : 'pai-social',
+      component: BodyLayoutComponent,
+      canActivate : [canViewTsocialGuard],
+      loadChildren: () => import('../modules/pai-social/pai-social.module').then(m => m.PaiSocialModule) 
+    },
+    {
+      path : 'pai',
+      component: BodyLayoutComponent,
+      canActivate : [canViewPaiGuard],
+      loadChildren: () => import('../modules/pai/pai.module').then(m => m.PaiModule) 
+    }
+    ,
     {
       path : 'users', 
       component: BodyLayoutComponent,

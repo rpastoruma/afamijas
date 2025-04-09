@@ -905,6 +905,436 @@ public class PatientsController extends AbstractBaseController
 		}
 	}
 
+	@RequestMapping(method = RequestMethod.POST, value = "savePAITocupa", produces = "application/json")
+	public ResponseEntity<?> savePAITocupa(
+			@RequestParam(value = "id", required = true) String id,
+
+			@RequestParam(value = "pai_tocupa_nivel_independencia", required = false) String paiTocupaNivelIndependencia,
+			@RequestParam(value = "pai_tocupa_plan_motriz", required = false) String paiTocupaPlanMotriz,
+			@RequestParam(value = "pai_tocupa_alimentacion", required = false) String paiTocupaAlimentacion,
+			@RequestParam(value = "pai_tocupa_wc", required = false) String paiTocupaWc,
+			@RequestParam(value = "pai_tocupa_aseo", required = false) String paiTocupaAseo,
+			@RequestParam(value = "pai_tocupa_deambular", required = false) String paiTocupaDeambular,
+			@RequestParam(value = "pai_tocupa_transferencias", required = false) String paiTocupaTransferencias,
+			@RequestParam(value = "pai_tocupa_vestido", required = false) String paiTocupaVestido,
+			@RequestParam(value = "pai_tocupa_bano", required = false) String paiTocupaBano,
+			@RequestParam(value = "pai_tocupa_escaolones", required = false) String paiTocupaEscalones,
+			@RequestParam(value = "pai_tocupa_esfinteres", required = false) String paiTocupaEsfinteres,
+			@RequestParam(value = "pai_tocupa_dinero", required = false) String paiTocupaDinero,
+			@RequestParam(value = "pai_tocupa_compras", required = false) String paiTocupaCompras,
+			@RequestParam(value = "pai_tocupa_telefono", required = false) String paiTocupaTelefono,
+			@RequestParam(value = "pai_tocupa_casa", required = false) String paiTocupaCasa,
+			@RequestParam(value = "pai_tocupa_calle", required = false) String paiTocupaCalle,
+			@RequestParam(value = "pai_tocupa_medicacion", required = false) String paiTocupaMedicacion,
+			@RequestParam(value = "pai_tocupa_indice_barthel", required = false) String paiTocupaIndiceBarthel,
+			@RequestParam(value = "pai_tocupa_escala_actividad", required = false) String paiTocupaEscalaActividad,
+			@RequestParam(value = "pai_tocupa_disfruta_tiempo", required = false) String paiTocupaDisfrutaTiempo,
+			@RequestParam(value = "pai_tocupa_espacios_ocio", required = false) String paiTocupaEspaciosOcio,
+			@RequestParam(value = "pai_tocupa_disfruta_ocio", required = false) String paiTocupaDisfrutaOcio,
+			@RequestParam(value = "pai_tocupa_relacion_otros", required = false) String paiTocupaRelacionOtros,
+			@RequestParam(value = "pai_tocupa_propios_objetivos", required = false) String paiTocupaPropiosObjetivos,
+			@RequestParam(value = "pai_tocupa_participa_actividades", required = false) String paiTocupaParticipaActividades,
+			@RequestParam(value = "pai_tocupa_actividades_iniciativa_propia", required = false) String paiTocupaActividadesIniciativaPropia,
+			@RequestParam(value = "pai_tocupa_valoraciones", required = false) String pai_tocupa_valoraciones,
+			@RequestParam(value = "pai_tocupa_actuaciones", required = false) String pai_tocupa_actuaciones,
+			@RequestParam(value = "pai_tocupa_incidencias", required = false) String pai_tocupa_incidencias,
+			HttpServletRequest request) {
+		try {
+			if (!this.isADMIN() && !this.isMANAGER()) {
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			}
+
+			return new ResponseEntity<>(this.patientsService.savePAITocupa(
+					id, paiTocupaNivelIndependencia, paiTocupaPlanMotriz, paiTocupaAlimentacion, paiTocupaWc,
+					paiTocupaAseo, paiTocupaDeambular, paiTocupaTransferencias, paiTocupaVestido, paiTocupaBano,
+					paiTocupaEscalones, paiTocupaEsfinteres, paiTocupaDinero, paiTocupaCompras, paiTocupaTelefono,
+					paiTocupaCasa, paiTocupaCalle, paiTocupaMedicacion, paiTocupaIndiceBarthel, paiTocupaEscalaActividad,
+					paiTocupaDisfrutaTiempo, paiTocupaEspaciosOcio, paiTocupaDisfrutaOcio, paiTocupaRelacionOtros,
+					paiTocupaPropiosObjetivos, paiTocupaParticipaActividades, paiTocupaActividadesIniciativaPropia, pai_tocupa_valoraciones,pai_tocupa_actuaciones ,pai_tocupa_incidencias),
+					HttpStatus.OK);
+		} catch (Exception e) {
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method = RequestMethod.POST, value = "savePAIEnfer", produces = "application/json")
+	public ResponseEntity<?> savePAIEnfer(
+			@RequestParam(value = "id", required = true) String id,
+			@RequestParam(value = "pai_enfer_diagnostico", required = false) String pai_enfer_diagnostico,
+			@RequestParam(value = "pai_enfer_problemas_audio", required = false) String pai_enfer_problemas_audio,
+			@RequestParam(value = "pai_enfer_problemas_audio_text", required = false) String pai_enfer_problemas_audio_text,
+			@RequestParam(value = "pai_enfer_uso_audifono", required = false) String pai_enfer_uso_audifono,
+
+			@RequestParam(value = "pai_enfer_problemas_vision", required = false) String pai_enfer_problemas_vision,
+			@RequestParam(value = "pai_enfer_problemas_vision_text", required = false) String pai_enfer_problemas_vision_text,
+			@RequestParam(value = "pai_enfer_uso_gafas", required = false) String pai_enfer_uso_gafas,
+			@RequestParam(value = "pai_enfer_tension", required = false) String pai_enfer_tension,
+			@RequestParam(value = "pai_enfer_uso_medicacion", required = false) String pai_enfer_uso_medicacion,
+			@RequestParam(value = "pai_enfer_diabetes", required = false) String pai_enfer_diabetes,
+			@RequestParam(value = "pai_enfer_diabetes_text", required = false) String pai_enfer_diabetes_text,
+			@RequestParam(value = "pai_enfer_alergias", required = false) String pai_enfer_alergias,
+			@RequestParam(value = "pai_enfer_otras_enfermedades", required = false) String pai_enfer_otras_enfermedades,
+			@RequestParam(value = "pai_enfer_tratamiento_medicamento_1", required = false) String pai_enfer_tratamiento_medicamento_1,
+			@RequestParam(value = "pai_enfer_tratamiento_medicamento_2", required = false) String pai_enfer_tratamiento_medicamento_2,
+			@RequestParam(value = "pai_enfer_tratamiento_medicamento_3", required = false) String pai_enfer_tratamiento_medicamento_3,
+			@RequestParam(value = "pai_enfer_tratamiento_medicamento_4", required = false) String pai_enfer_tratamiento_medicamento_4,
+			@RequestParam(value = "pai_enfer_tratamiento_dosis_1", required = false) String pai_enfer_tratamiento_dosis_1,
+			@RequestParam(value = "pai_enfer_tratamiento_dosis_2", required = false) String pai_enfer_tratamiento_dosis_2,
+			@RequestParam(value = "pai_enfer_tratamiento_dosis_3", required = false) String pai_enfer_tratamiento_dosis_3,
+			@RequestParam(value = "pai_enfer_tratamiento_dosis_4", required = false) String pai_enfer_tratamiento_dosis_4,
+			@RequestParam(value = "pai_enfer_tratamiento_fecha_1", required = false) String pai_enfer_tratamiento_fecha_1,
+			@RequestParam(value = "pai_enfer_tratamiento_fecha_2", required = false) String pai_enfer_tratamiento_fecha_2,
+			@RequestParam(value = "pai_enfer_tratamiento_fecha_3", required = false) String pai_enfer_tratamiento_fecha_3,
+			@RequestParam(value = "pai_enfer_tratamiento_fecha_4", required = false) String pai_enfer_tratamiento_fecha_4,
+			@RequestParam(value = "pai_enfer_tratamiento_para_1", required = false) String pai_enfer_tratamiento_para_1,
+			@RequestParam(value = "pai_enfer_tratamiento_para_2", required = false) String pai_enfer_tratamiento_para_2,
+			@RequestParam(value = "pai_enfer_tratamiento_para_3", required = false) String pai_enfer_tratamiento_para_3,
+			@RequestParam(value = "pai_enfer_tratamiento_para_4", required = false) String pai_enfer_tratamiento_para_4,
+			@RequestParam(value = "pai_enfer_medicacion_centro", required = false) String pai_enfer_medicacion_centro,
+			@RequestParam(value = "pai_enfer_medicacion_centro_text", required = false) String pai_enfer_medicacion_centro_text,
+			@RequestParam(value = "pai_enfer_medicacion_puntual", required = false) String pai_enfer_medicacion_puntual,
+			@RequestParam(value = "pai_enfer_wc_esfinteres", required = false) String pai_enfer_wc_esfinteres,
+			@RequestParam(value = "pai_enfer_wc_retencion", required = false) String pai_enfer_wc_retencion,
+			@RequestParam(value = "pai_enfer_wc_estrenimiento", required = false) String pai_enfer_wc_estrenimiento,
+			@RequestParam(value = "pai_enfer_wc_acompanam", required = false) String pai_enfer_wc_acompanam,
+			@RequestParam(value = "pai_enfer_alim_alergias", required = false) String pai_enfer_alim_alergias,
+			@RequestParam(value = "pai_enfer_alim_alergias_text", required = false) String pai_enfer_alim_alergias_text,
+			@RequestParam(value = "pai_enfer_alim_dieta", required = false) String pai_enfer_alim_dieta,
+			@RequestParam(value = "pai_enfer_alim_dieta_text", required = false) String pai_enfer_alim_dieta_text,
+			@RequestParam(value = "pai_enfer_alim_problemas_deglucion", required = false) String pai_enfer_alim_problemas_deglucion,
+			@RequestParam(value = "pai_enfer_alim_espesantes", required = false) String pai_enfer_alim_espesantes,
+			@RequestParam(value = "pai_enfer_alim_ayuda", required = false) String pai_enfer_alim_ayuda,
+			@RequestParam(value = "pai_enfer_alim_observaciones", required = false) String pai_enfer_alim_observaciones,
+			@RequestParam(value = "pai_enfer_valoraciones", required = false) String pai_enfer_valoraciones,
+			@RequestParam(value = "pai_enfer_actuaciones", required = false) String pai_enfer_actuaciones,
+			@RequestParam(value = "pai_enfer_incidencias", required = false) String pai_enfer_incidencias,
+			HttpServletRequest request) {
+		try {
+			if (!this.isADMIN() && !this.isMANAGER()) {
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			}
+
+			return new ResponseEntity<>(this.patientsService.savePAIEnfer(
+					id,
+					pai_enfer_diagnostico,
+					pai_enfer_problemas_audio,
+					pai_enfer_problemas_audio_text,
+					pai_enfer_uso_audifono,
+					pai_enfer_problemas_vision,
+					pai_enfer_problemas_vision_text,
+					pai_enfer_uso_gafas,
+					pai_enfer_tension,
+					pai_enfer_uso_medicacion,
+					pai_enfer_diabetes,
+					pai_enfer_diabetes_text,
+					pai_enfer_alergias,
+					pai_enfer_otras_enfermedades,
+					pai_enfer_tratamiento_medicamento_1,
+					pai_enfer_tratamiento_medicamento_2,
+					pai_enfer_tratamiento_medicamento_3,
+					pai_enfer_tratamiento_medicamento_4,
+					pai_enfer_tratamiento_dosis_1,
+					pai_enfer_tratamiento_dosis_2,
+					pai_enfer_tratamiento_dosis_3,
+					pai_enfer_tratamiento_dosis_4,
+					pai_enfer_tratamiento_fecha_1,
+					pai_enfer_tratamiento_fecha_2,
+					pai_enfer_tratamiento_fecha_3,
+					pai_enfer_tratamiento_fecha_4,
+					pai_enfer_tratamiento_para_1,
+					pai_enfer_tratamiento_para_2,
+					pai_enfer_tratamiento_para_3,
+					pai_enfer_tratamiento_para_4,
+					pai_enfer_medicacion_centro,
+					pai_enfer_medicacion_centro_text,
+					pai_enfer_medicacion_puntual,
+					pai_enfer_wc_esfinteres,
+					pai_enfer_wc_retencion,
+					pai_enfer_wc_estrenimiento,
+					pai_enfer_wc_acompanam,
+					pai_enfer_alim_alergias,
+					pai_enfer_alim_alergias_text,
+					pai_enfer_alim_dieta,
+					pai_enfer_alim_dieta_text,
+					pai_enfer_alim_problemas_deglucion,
+					pai_enfer_alim_espesantes,
+					pai_enfer_alim_ayuda,
+					pai_enfer_alim_observaciones,
+					pai_enfer_valoraciones,
+					pai_enfer_actuaciones,
+					pai_enfer_incidencias),
+					HttpStatus.OK);
+		} catch (Exception e) {
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "savePAISocial", produces = "application/json")
+	public ResponseEntity<?> savePAISocial(
+			@RequestParam(value = "id", required = true) String id,
+			@RequestParam(value = "pai_social_historia", required = false) String pai_social_historia,
+			@RequestParam(value = "pai_social_informes", required = false) String pai_social_informes,
+			@RequestParam(value = "pai_social_informes_text", required = false) String pai_social_informes_text,
+			@RequestParam(value = "pai_social_valoracion_disca", required = false) String pai_social_valoracion_disca,
+			@RequestParam(value = "pai_social_valoracion_disca_fecha", required = false) String pai_social_valoracion_disca_fecha,
+			@RequestParam(value = "pai_social_valoracion_disca_ca", required = false) String pai_social_valoracion_disca_ca,
+			@RequestParam(value = "pai_social_valoracion_disca_grado", required = false) String pai_social_valoracion_disca_grado,
+			@RequestParam(value = "pai_social_3_persona", required = false) String pai_social_3_persona,
+			@RequestParam(value = "pai_social_ayudas_tecnicas", required = false) String pai_social_ayudas_tecnicas,
+			@RequestParam(value = "pai_social_ayudas_tecnicas_text", required = false) String pai_social_ayudas_tecnicas_text,
+			@RequestParam(value = "pai_social_movilidad", required = false) String pai_social_movilidad,
+			@RequestParam(value = "pai_social_ley_dependencai", required = false) String pai_social_ley_dependencai,
+			@RequestParam(value = "pai_social_grado_y_nivel", required = false) String pai_social_grado_y_nivel,
+			@RequestParam(value = "pai_social_cuidador", required = false) String pai_social_cuidador,
+			@RequestParam(value = "pai_social_relacion_cuidador", required = false) String pai_social_relacion_cuidador,
+			@RequestParam(value = "pai_social_indicadores", required = false) String pai_social_indicadores,
+			@RequestParam(value = "pai_social_apoyos", required = false) String pai_social_apoyos,
+			@RequestParam(value = "pai_social_vive", required = false) String pai_social_vive,
+			@RequestParam(value = "pai_social_domicilio_obstaculos", required = false) String pai_social_domicilio_obstaculos,
+			@RequestParam(value = "pai_social_domicilio_ayudas_tecnicas", required = false) String pai_social_domicilio_ayudas_tecnicas,
+			@RequestParam(value = "pai_social_domicilio_confort", required = false) String pai_social_domicilio_confort,
+			@RequestParam(value = "pai_social_domicilio_actual_quiere", required = false) String pai_social_domicilio_actual_quiere,
+			@RequestParam(value = "pai_social_domicilio_actual_otro", required = false) String pai_social_domicilio_actual_otro,
+			@RequestParam(value = "pai_social_domicilio_actula_residencia", required = false) String pai_social_domicilio_actula_residencia,
+			@RequestParam(value = "pai_social_apoyo_tipo1", required = false) String pai_social_apoyo_tipo1,
+			@RequestParam(value = "pai_social_apoyo_tipo2", required = false) String pai_social_apoyo_tipo2,
+			@RequestParam(value = "pai_social_apoyo_tipo3", required = false) String pai_social_apoyo_tipo3,
+			@RequestParam(value = "pai_social_apoyo_tipo4", required = false) String pai_social_apoyo_tipo4,
+			@RequestParam(value = "pai_social_apoyo_titularidad1", required = false) String pai_social_apoyo_titularidad1,
+			@RequestParam(value = "pai_social_apoyo_titularidad2", required = false) String pai_social_apoyo_titularidad2,
+			@RequestParam(value = "pai_social_apoyo_titularidad3", required = false) String pai_social_apoyo_titularidad3,
+			@RequestParam(value = "pai_social_apoyo_titularidad4", required = false) String pai_social_apoyo_titularidad4,
+			@RequestParam(value = "pai_social_apoyo_coste1", required = false) String pai_social_apoyo_coste1,
+			@RequestParam(value = "pai_social_apoyo_coste2", required = false) String pai_social_apoyo_coste2,
+			@RequestParam(value = "pai_social_apoyo_coste3", required = false) String pai_social_apoyo_coste3,
+			@RequestParam(value = "pai_social_apoyo_coste4", required = false) String pai_social_apoyo_coste4,
+			@RequestParam(value = "pai_social_apoyo_aportacion1", required = false) String pai_social_apoyo_aportacion1,
+			@RequestParam(value = "pai_social_apoyo_aportacion2", required = false) String pai_social_apoyo_aportacion2,
+			@RequestParam(value = "pai_social_apoyo_aportacion3", required = false) String pai_social_apoyo_aportacion3,
+			@RequestParam(value = "pai_social_apoyo_aportacion4", required = false) String pai_social_apoyo_aportacion4,
+			@RequestParam(value = "pai_social_apoyo_dom_prestacion1", required = false) String pai_social_apoyo_dom_prestacion1,
+			@RequestParam(value = "pai_social_apoyo_dom_prestacion2", required = false) String pai_social_apoyo_dom_prestacion2,
+			@RequestParam(value = "pai_social_apoyo_dom_prestacion3", required = false) String pai_social_apoyo_dom_prestacion3,
+			@RequestParam(value = "pai_social_apoyo_dom_prestacion4", required = false) String pai_social_apoyo_dom_prestacion4,
+			@RequestParam(value = "pai_social_apoyo_dom_intensidad1", required = false) String pai_social_apoyo_dom_intensidad1,
+			@RequestParam(value = "pai_social_apoyo_dom_intensidad2", required = false) String pai_social_apoyo_dom_intensidad2,
+			@RequestParam(value = "pai_social_apoyo_dom_intensidad3", required = false) String pai_social_apoyo_dom_intensidad3,
+			@RequestParam(value = "pai_social_apoyo_dom_intensidad4", required = false) String pai_social_apoyo_dom_intensidad4,
+			@RequestParam(value = "pai_social_apoyo_dom_coste1", required = false) String pai_social_apoyo_dom_coste1,
+			@RequestParam(value = "pai_social_apoyo_dom_coste2", required = false) String pai_social_apoyo_dom_coste2,
+			@RequestParam(value = "pai_social_apoyo_dom_coste3", required = false) String pai_social_apoyo_dom_coste3,
+			@RequestParam(value = "pai_social_apoyo_dom_coste4", required = false) String pai_social_apoyo_dom_coste4,
+			@RequestParam(value = "pai_social_apoyo_dom_aportacion1", required = false) String pai_social_apoyo_dom_aportacion1,
+			@RequestParam(value = "pai_social_apoyo_dom_aportacion2", required = false) String pai_social_apoyo_dom_aportacion2,
+			@RequestParam(value = "pai_social_apoyo_dom_aportacion3", required = false) String pai_social_apoyo_dom_aportacion3,
+			@RequestParam(value = "pai_social_apoyo_dom_aportacion4", required = false) String pai_social_apoyo_dom_aportacion4,
+			@RequestParam(value = "pai_social_apoyo_otras_prestacion1", required = false) String pai_social_apoyo_otras_prestacion1,
+			@RequestParam(value = "pai_social_apoyo_otras_prestacion2", required = false) String pai_social_apoyo_otras_prestacion2,
+			@RequestParam(value = "pai_social_apoyo_otras_prestacion3", required = false) String pai_social_apoyo_otras_prestacion3,
+			@RequestParam(value = "pai_social_apoyo_otras_prestacion4", required = false) String pai_social_apoyo_otras_prestacion4,
+			@RequestParam(value = "pai_social_apoyo_otras_titularidad1", required = false) String pai_social_apoyo_otras_titularidad1,
+			@RequestParam(value = "pai_social_apoyo_otras_titularidad2", required = false) String pai_social_apoyo_otras_titularidad2,
+			@RequestParam(value = "pai_social_apoyo_otras_titularidad3", required = false) String pai_social_apoyo_otras_titularidad3,
+			@RequestParam(value = "pai_social_apoyo_otras_titularidad4", required = false) String pai_social_apoyo_otras_titularidad4,
+			@RequestParam(value = "pai_social_apoyo_otras_intensidad1", required = false) String pai_social_apoyo_otras_intensidad1,
+			@RequestParam(value = "pai_social_apoyo_otras_intensidad2", required = false) String pai_social_apoyo_otras_intensidad2,
+			@RequestParam(value = "pai_social_apoyo_otras_intensidad3", required = false) String pai_social_apoyo_otras_intensidad3,
+			@RequestParam(value = "pai_social_apoyo_otras_intensidad4", required = false) String pai_social_apoyo_otras_intensidad4,
+			@RequestParam(value = "pai_social_ingresos", required = false) String pai_social_ingresos,
+			@RequestParam(value = "pai_social_ingresos_familia", required = false) String pai_social_ingresos_familia,
+			@RequestParam(value = "pai_social_ingresos_cubre", required = false) String pai_social_ingresos_cubre,
+			@RequestParam(value = "pai_social_nivel_estudios", required = false) String pai_social_nivel_estudios,
+			@RequestParam(value = "pai_social_relaciones", required = false) String pai_social_relaciones,
+			@RequestParam(value = "pai_social_necesidades", required = false) String pai_social_necesidades,
+			@RequestParam(value = "pai_social_objetivos", required = false) String pai_social_objetivos,
+			@RequestParam(value = "pai_social_valoraciones", required = false) String pai_social_valoraciones,
+			@RequestParam(value = "pai_social_actuaciones", required = false) String pai_social_actuaciones,
+			@RequestParam(value = "pai_social_incidencias", required = false) String pai_social_incidencias,
+			HttpServletRequest request) {
+		try {
+			if (!this.isADMIN() && !this.isMANAGER()) {
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			}
+
+			return new ResponseEntity<>(this.patientsService.savePAISocial(
+					id,
+					pai_social_historia,
+					pai_social_informes,
+					pai_social_informes_text,
+					pai_social_valoracion_disca,
+					pai_social_valoracion_disca_fecha,
+					pai_social_valoracion_disca_ca,
+					pai_social_valoracion_disca_grado,
+					pai_social_3_persona,
+					pai_social_ayudas_tecnicas,
+					pai_social_ayudas_tecnicas_text,
+					pai_social_movilidad,
+					pai_social_ley_dependencai,
+					pai_social_grado_y_nivel,
+					pai_social_cuidador,
+					pai_social_relacion_cuidador,
+					pai_social_indicadores,
+					pai_social_apoyos,
+					pai_social_vive,
+					pai_social_domicilio_obstaculos,
+					pai_social_domicilio_ayudas_tecnicas,
+					pai_social_domicilio_confort,
+					pai_social_domicilio_actual_quiere,
+					pai_social_domicilio_actual_otro,
+					pai_social_domicilio_actula_residencia,
+					pai_social_apoyo_tipo1,
+					pai_social_apoyo_tipo2,
+					pai_social_apoyo_tipo3,
+					pai_social_apoyo_tipo4,
+					pai_social_apoyo_titularidad1,
+					pai_social_apoyo_titularidad2,
+					pai_social_apoyo_titularidad3,
+					pai_social_apoyo_titularidad4,
+					pai_social_apoyo_coste1,
+					pai_social_apoyo_coste2,
+					pai_social_apoyo_coste3,
+					pai_social_apoyo_coste4,
+					pai_social_apoyo_aportacion1,
+					pai_social_apoyo_aportacion2,
+					pai_social_apoyo_aportacion3,
+					pai_social_apoyo_aportacion4,
+					pai_social_apoyo_dom_prestacion1,
+					pai_social_apoyo_dom_prestacion2,
+					pai_social_apoyo_dom_prestacion3,
+					pai_social_apoyo_dom_prestacion4,
+					pai_social_apoyo_dom_intensidad1,
+					pai_social_apoyo_dom_intensidad2,
+					pai_social_apoyo_dom_intensidad3,
+					pai_social_apoyo_dom_intensidad4,
+					pai_social_apoyo_dom_coste1,
+					pai_social_apoyo_dom_coste2,
+					pai_social_apoyo_dom_coste3,
+					pai_social_apoyo_dom_coste4,
+					pai_social_apoyo_dom_aportacion1,
+					pai_social_apoyo_dom_aportacion2,
+					pai_social_apoyo_dom_aportacion3,
+					pai_social_apoyo_dom_aportacion4,
+					pai_social_apoyo_otras_prestacion1,
+					pai_social_apoyo_otras_prestacion2,
+					pai_social_apoyo_otras_prestacion3,
+					pai_social_apoyo_otras_prestacion4,
+					pai_social_apoyo_otras_titularidad1,
+					pai_social_apoyo_otras_titularidad2,
+					pai_social_apoyo_otras_titularidad3,
+					pai_social_apoyo_otras_titularidad4,
+					pai_social_apoyo_otras_intensidad1,
+					pai_social_apoyo_otras_intensidad2,
+					pai_social_apoyo_otras_intensidad3,
+					pai_social_apoyo_otras_intensidad4,
+					pai_social_ingresos,
+					pai_social_ingresos_familia,
+					pai_social_ingresos_cubre,
+					pai_social_nivel_estudios,
+					pai_social_relaciones,
+					pai_social_necesidades,
+					pai_social_objetivos,
+					pai_social_valoraciones,
+					pai_social_actuaciones,
+					pai_social_incidencias),
+					HttpStatus.OK);
+		} catch (Exception e) {
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+	@RequestMapping(method = RequestMethod.POST, value = "savePaiPortada", produces = "application/json")
+	public ResponseEntity<?> savePaiPortada(
+			@RequestParam(value = "id", required = true) String id,
+			@RequestParam(value = "pai_portada_fecha", required = false) String pai_portada_fecha,
+			@RequestParam(value = "pai_portada_representante_guardador", required = false) String pai_portada_representante_guardador,
+			@RequestParam(value = "pai_portada_cuidador_nombre", required = false) String pai_portada_cuidador_nombre,
+			@RequestParam(value = "pai_portada_cuidador_edad", required = false) String pai_portada_cuidador_edad,
+			@RequestParam(value = "pai_portada_cuidador_dni", required = false) String pai_portada_cuidador_dni,
+			@RequestParam(value = "pai_portada_cuidador_domicilio", required = false) String pai_portada_cuidador_domicilio,
+			@RequestParam(value = "pai_portada_cuidador_estado_civil", required = false) String pai_portada_cuidador_estado_civil,
+			@RequestParam(value = "pai_portada_cuidador_profesion", required = false) String pai_portada_cuidador_profesion,
+			@RequestParam(value = "pai_portada_cuidador_relacion", required = false) String pai_portada_cuidador_relacion,
+			@RequestParam(value = "pai_portada_cuidador_convive_otros", required = false) String pai_portada_cuidador_convive_otros,
+			@RequestParam(value = "pai_portada_nss", required = false) String pai_portada_nss,
+			@RequestParam(value = "pai_portada_seguro_medico", required = false) String pai_portada_seguro_medico,
+			@RequestParam(value = "pai_portada_datos_medicos_enfermedades", required = false) String pai_portada_datos_medicos_enfermedades,
+			@RequestParam(value = "pai_portada_datos_medicos_grado_minusvalida", required = false) String pai_portada_datos_medicos_grado_minusvalida,
+			@RequestParam(value = "pai_portada_datos_medicos_grado_dependencia", required = false) String pai_portada_datos_medicos_grado_dependencia,
+			@RequestParam(value = "pai_portada_profesional_1", required = false) String pai_portada_profesional_1,
+			@RequestParam(value = "pai_portada_categoria_1", required = false) String pai_portada_categoria_1,
+			@RequestParam(value = "pai_portada_profesional_2", required = false) String pai_portada_profesional_2,
+			@RequestParam(value = "pai_portada_categoria_2", required = false) String pai_portada_categoria_2,
+			@RequestParam(value = "pai_portada_profesional_3", required = false) String pai_portada_profesional_3,
+			@RequestParam(value = "pai_portada_categoria_3", required = false) String pai_portada_categoria_3,
+			@RequestParam(value = "pai_portada_profesional_4", required = false) String pai_portada_profesional_4,
+			@RequestParam(value = "pai_portada_categoria_4", required = false) String pai_portada_categoria_4,
+			@RequestParam(value = "pai_portada_profesional_5", required = false) String pai_portada_profesional_5,
+			@RequestParam(value = "pai_portada_categoria_5", required = false) String pai_portada_categoria_5,
+			HttpServletRequest request) {
+		try {
+			if (!this.isADMIN() && !this.isMANAGER()) {
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			}
+
+			return new ResponseEntity<>(this.patientsService.savePaiPortada(
+					id,
+					pai_portada_fecha,
+					pai_portada_representante_guardador,
+					pai_portada_cuidador_nombre,
+					pai_portada_cuidador_edad,
+					pai_portada_cuidador_dni,
+					pai_portada_cuidador_domicilio,
+					pai_portada_cuidador_estado_civil,
+					pai_portada_cuidador_profesion,
+					pai_portada_cuidador_relacion,
+					pai_portada_cuidador_convive_otros,
+					pai_portada_nss,
+					pai_portada_seguro_medico,
+					pai_portada_datos_medicos_enfermedades,
+					pai_portada_datos_medicos_grado_minusvalida,
+					pai_portada_datos_medicos_grado_dependencia,
+					pai_portada_profesional_1,
+					pai_portada_categoria_1,
+					pai_portada_profesional_2,
+					pai_portada_categoria_2,
+					pai_portada_profesional_3,
+					pai_portada_categoria_3,
+					pai_portada_profesional_4,
+					pai_portada_categoria_4,
+					pai_portada_profesional_5,
+					pai_portada_categoria_5),
+					HttpStatus.OK);
+		} catch (Exception e) {
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+	@RequestMapping(method = RequestMethod.POST, value = "generatePAIResumen", produces = "application/json")
+	public ResponseEntity<?> generatePAIResumen(
+			@RequestParam(value = "id", required = true) String id,
+
+			HttpServletRequest request) {
+		try {
+			if (!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			return new ResponseEntity<>(this.patientsService.generatePAIResumen(id), HttpStatus.OK);
+		} catch (Exception e) {
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 
 }
 

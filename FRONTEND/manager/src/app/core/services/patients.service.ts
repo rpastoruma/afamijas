@@ -450,11 +450,226 @@ export class PatientsService {
     if (thePatient.pai_psico_valoraciones) form.append('pai_psico_valoraciones', thePatient.pai_psico_valoraciones);
     if (thePatient.pai_psico_actuaciones) form.append('pai_psico_actuaciones', thePatient.pai_psico_actuaciones);
     if (thePatient.pai_psico_incidencias) form.append('pai_psico_incidencias', thePatient.pai_psico_incidencias);
-    if (thePatient.pai_psico_url) form.append('pai_psico_url', thePatient.pai_psico_url);
   
     return this.http.post<any>(ENV.url.patients + '/savePAIPsico', form);
   }
   
+
+  savePAITocupa(thePatient: PatientDTO) {
+    const form = new FormData();
+    if (thePatient.id && thePatient.id !== '') form.append('id', thePatient.id);
+  
+    if (thePatient.pai_tocupa_nivel_independencia) form.append('pai_tocupa_nivel_independencia', thePatient.pai_tocupa_nivel_independencia);
+    if (thePatient.pai_tocupa_plan_motriz) form.append('pai_tocupa_plan_motriz', thePatient.pai_tocupa_plan_motriz);
+    if (thePatient.pai_tocupa_alimentacion) form.append('pai_tocupa_alimentacion', thePatient.pai_tocupa_alimentacion);
+    if (thePatient.pai_tocupa_wc) form.append('pai_tocupa_wc', thePatient.pai_tocupa_wc);
+    if (thePatient.pai_tocupa_aseo) form.append('pai_tocupa_aseo', thePatient.pai_tocupa_aseo);
+    if (thePatient.pai_tocupa_deambular) form.append('pai_tocupa_deambular', thePatient.pai_tocupa_deambular);
+    if (thePatient.pai_tocupa_transferencias) form.append('pai_tocupa_transferencias', thePatient.pai_tocupa_transferencias);
+    if (thePatient.pai_tocupa_vestido) form.append('pai_tocupa_vestido', thePatient.pai_tocupa_vestido);
+    if (thePatient.pai_tocupa_bano) form.append('pai_tocupa_bano', thePatient.pai_tocupa_bano);
+    if (thePatient.pai_tocupa_escaolones) form.append('pai_tocupa_escaolones', thePatient.pai_tocupa_escaolones);
+    if (thePatient.pai_tocupa_esfinteres) form.append('pai_tocupa_esfinteres', thePatient.pai_tocupa_esfinteres);
+    if (thePatient.pai_tocupa_dinero) form.append('pai_tocupa_dinero', thePatient.pai_tocupa_dinero);
+    if (thePatient.pai_tocupa_compras) form.append('pai_tocupa_compras', thePatient.pai_tocupa_compras);
+    if (thePatient.pai_tocupa_telefono) form.append('pai_tocupa_telefono', thePatient.pai_tocupa_telefono);
+    if (thePatient.pai_tocupa_casa) form.append('pai_tocupa_casa', thePatient.pai_tocupa_casa);
+    if (thePatient.pai_tocupa_calle) form.append('pai_tocupa_calle', thePatient.pai_tocupa_calle);
+    if (thePatient.pai_tocupa_medicacion) form.append('pai_tocupa_medicacion', thePatient.pai_tocupa_medicacion);
+    if (thePatient.pai_tocupa_indice_barthel) form.append('pai_tocupa_indice_barthel', thePatient.pai_tocupa_indice_barthel);
+    if (thePatient.pai_tocupa_escala_actividad) form.append('pai_tocupa_escala_actividad', thePatient.pai_tocupa_escala_actividad);
+    if (thePatient.pai_tocupa_disfruta_tiempo) form.append('pai_tocupa_disfruta_tiempo', thePatient.pai_tocupa_disfruta_tiempo);
+    if (thePatient.pai_tocupa_espacios_ocio) form.append('pai_tocupa_espacios_ocio', thePatient.pai_tocupa_espacios_ocio);
+    if (thePatient.pai_tocupa_disfruta_ocio) form.append('pai_tocupa_disfruta_ocio', thePatient.pai_tocupa_disfruta_ocio);
+    if (thePatient.pai_tocupa_relacion_otros) form.append('pai_tocupa_relacion_otros', thePatient.pai_tocupa_relacion_otros);
+    if (thePatient.pai_tocupa_propios_objetivos) form.append('pai_tocupa_propios_objetivos', thePatient.pai_tocupa_propios_objetivos);
+    if (thePatient.pai_tocupa_participa_actividades) form.append('pai_tocupa_participa_actividades', thePatient.pai_tocupa_participa_actividades);
+    if (thePatient.pai_tocupa_actividades_iniciativa_propia) form.append('pai_tocupa_actividades_iniciativa_propia', thePatient.pai_tocupa_actividades_iniciativa_propia);
+    if (thePatient.pai_tocupa_valoraciones) form.append('pai_tocupa_valoraciones', thePatient.pai_tocupa_valoraciones);
+    if (thePatient.pai_tocupa_actuaciones) form.append('pai_tocupa_actuaciones', thePatient.pai_tocupa_actuaciones);
+    if (thePatient.pai_tocupa_incidencias) form.append('pai_tocupa_incidencias', thePatient.pai_tocupa_incidencias);
+
+  
+    return this.http.post<any>(ENV.url.patients + '/savePAITocupa', form);
+  }
+  
+
+  savePAIEnfer(thePatient: PatientDTO) {
+    const form = new FormData();
+    if (thePatient.id && thePatient.id !== '') form.append('id', thePatient.id);   
+
+  
+    if (thePatient.pai_enfer_diagnostico) form.append('pai_enfer_diagnostico', thePatient.pai_enfer_diagnostico);
+    if (thePatient.pai_enfer_problemas_audio) form.append('pai_enfer_problemas_audio', thePatient.pai_enfer_problemas_audio);
+    if (thePatient.pai_enfer_problemas_audio_text) form.append('pai_enfer_problemas_audio_text', thePatient.pai_enfer_problemas_audio_text);
+    if (thePatient.pai_enfer_uso_audifono) form.append('pai_enfer_uso_audifono', thePatient.pai_enfer_uso_audifono);
+    if (thePatient.pai_enfer_problemas_vision) form.append('pai_enfer_problemas_vision', thePatient.pai_enfer_problemas_vision);
+    if (thePatient.pai_enfer_problemas_vision_text) form.append('pai_enfer_problemas_vision_text', thePatient.pai_enfer_problemas_vision_text);
+    if (thePatient.pai_enfer_uso_gafas) form.append('pai_enfer_uso_gafas', thePatient.pai_enfer_uso_gafas);
+    if (thePatient.pai_enfer_tension) form.append('pai_enfer_tension', thePatient.pai_enfer_tension);
+    if (thePatient.pai_enfer_uso_medicacion) form.append('pai_enfer_uso_medicacion', thePatient.pai_enfer_uso_medicacion);
+    if (thePatient.pai_enfer_diabetes) form.append('pai_enfer_diabetes', thePatient.pai_enfer_diabetes);
+    if (thePatient.pai_enfer_diabetes_text) form.append('pai_enfer_diabetes_text', thePatient.pai_enfer_diabetes_text);
+    if (thePatient.pai_enfer_alergias) form.append('pai_enfer_alergias', thePatient.pai_enfer_alergias);
+    if (thePatient.pai_enfer_otras_enfermedades) form.append('pai_enfer_otras_enfermedades', thePatient.pai_enfer_otras_enfermedades);
+  
+    for (let i = 1; i <= 4; i++) {
+      if (thePatient[`pai_enfer_tratamiento_medicamento_${i}`]) form.append(`pai_enfer_tratamiento_medicamento_${i}`, thePatient[`pai_enfer_tratamiento_medicamento_${i}`]);
+      if (thePatient[`pai_enfer_tratamiento_dosis_${i}`]) form.append(`pai_enfer_tratamiento_dosis_${i}`, thePatient[`pai_enfer_tratamiento_dosis_${i}`]);
+      if (thePatient[`pai_enfer_tratamiento_fecha_${i}`]) form.append(`pai_enfer_tratamiento_fecha_${i}`, thePatient[`pai_enfer_tratamiento_fecha_${i}`]);
+      if (thePatient[`pai_enfer_tratamiento_para_${i}`]) form.append(`pai_enfer_tratamiento_para_${i}`, thePatient[`pai_enfer_tratamiento_para_${i}`]);
+    }
+  
+    if (thePatient.pai_enfer_medicacion_centro) form.append('pai_enfer_medicacion_centro', thePatient.pai_enfer_medicacion_centro);
+    if (thePatient.pai_enfer_medicacion_centro_text) form.append('pai_enfer_medicacion_centro_text', thePatient.pai_enfer_medicacion_centro_text);
+    if (thePatient.pai_enfer_medicacion_puntual) form.append('pai_enfer_medicacion_puntual', thePatient.pai_enfer_medicacion_puntual);
+  
+    if (thePatient.pai_enfer_wc_esfinteres) form.append('pai_enfer_wc_esfinteres', thePatient.pai_enfer_wc_esfinteres);
+    if (thePatient.pai_enfer_wc_retencion) form.append('pai_enfer_wc_retencion', thePatient.pai_enfer_wc_retencion);
+    if (thePatient.pai_enfer_wc_estrenimiento) form.append('pai_enfer_wc_estrenimiento', thePatient.pai_enfer_wc_estrenimiento);
+    if (thePatient.pai_enfer_wc_acompanam) form.append('pai_enfer_wc_acompanam', thePatient.pai_enfer_wc_acompanam);
+  
+    if (thePatient.pai_enfer_alim_alergias) form.append('pai_enfer_alim_alergias', thePatient.pai_enfer_alim_alergias);
+    if (thePatient.pai_enfer_alim_alergias_text) form.append('pai_enfer_alim_alergias_text', thePatient.pai_enfer_alim_alergias_text);
+    if (thePatient.pai_enfer_alim_dieta) form.append('pai_enfer_alim_dieta', thePatient.pai_enfer_alim_dieta);
+    if (thePatient.pai_enfer_alim_dieta_text) form.append('pai_enfer_alim_dieta_text', thePatient.pai_enfer_alim_dieta_text);
+    if (thePatient.pai_enfer_alim_problemas_deglucion) form.append('pai_enfer_alim_problemas_deglucion', thePatient.pai_enfer_alim_problemas_deglucion);
+    if (thePatient.pai_enfer_alim_espesantes) form.append('pai_enfer_alim_espesantes', thePatient.pai_enfer_alim_espesantes);
+    if (thePatient.pai_enfer_alim_ayuda) form.append('pai_enfer_alim_ayuda', thePatient.pai_enfer_alim_ayuda);
+    if (thePatient.pai_enfer_alim_observaciones) form.append('pai_enfer_alim_observaciones', thePatient.pai_enfer_alim_observaciones);
+  
+    if (thePatient.pai_enfer_valoraciones) form.append('pai_enfer_valoraciones', thePatient.pai_enfer_valoraciones);
+    if (thePatient.pai_enfer_actuaciones) form.append('pai_enfer_actuaciones', thePatient.pai_enfer_actuaciones);
+    if (thePatient.pai_enfer_incidencias) form.append('pai_enfer_incidencias', thePatient.pai_enfer_incidencias);
+  
+    return this.http.post<any>(ENV.url.patients + '/savePAIEnfer', form);
+  }
+  
+
+  savePAISocial(thePatient: PatientDTO) {
+    const form = new FormData();
+    if (thePatient.id && thePatient.id !== '') form.append('id', thePatient.id);   
+
+    if (thePatient.pai_social_historia) form.append('pai_social_historia', thePatient.pai_social_historia);
+    if (thePatient.pai_social_informes) form.append('pai_social_informes', thePatient.pai_social_informes);
+    if (thePatient.pai_social_informes_text) form.append('pai_social_informes_text', thePatient.pai_social_informes_text);
+    if (thePatient.pai_social_valoracion_disca) form.append('pai_social_valoracion_disca', thePatient.pai_social_valoracion_disca);
+    if (thePatient.pai_social_valoracion_disca_fecha) form.append('pai_social_valoracion_disca_fecha', thePatient.pai_social_valoracion_disca_fecha);
+    if (thePatient.pai_social_valoracion_disca_ca) form.append('pai_social_valoracion_disca_ca', thePatient.pai_social_valoracion_disca_ca);
+    if (thePatient.pai_social_valoracion_disca_grado) form.append('pai_social_valoracion_disca_grado', thePatient.pai_social_valoracion_disca_grado);
+    if (thePatient.pai_social_3_persona) form.append('pai_social_3_persona', thePatient.pai_social_3_persona);
+    if (thePatient.pai_social_ayudas_tecnicas) form.append('pai_social_ayudas_tecnicas', thePatient.pai_social_ayudas_tecnicas);
+    if (thePatient.pai_social_ayudas_tecnicas_text) form.append('pai_social_ayudas_tecnicas_text', thePatient.pai_social_ayudas_tecnicas_text);
+    if (thePatient.pai_social_movilidad) form.append('pai_social_movilidad', thePatient.pai_social_movilidad);
+    if (thePatient.pai_social_ley_dependencai) form.append('pai_social_ley_dependencai', thePatient.pai_social_ley_dependencai);
+    if (thePatient.pai_social_grado_y_nivel) form.append('pai_social_grado_y_nivel', thePatient.pai_social_grado_y_nivel);
+    if (thePatient.pai_social_cuidador) form.append('pai_social_cuidador', thePatient.pai_social_cuidador);
+    if (thePatient.pai_social_relacion_cuidador) form.append('pai_social_relacion_cuidador', thePatient.pai_social_relacion_cuidador);
+    if (thePatient.pai_social_indicadores) form.append('pai_social_indicadores', thePatient.pai_social_indicadores);
+    if (thePatient.pai_social_apoyos) form.append('pai_social_apoyos', thePatient.pai_social_apoyos);
+    if (thePatient.pai_social_vive) form.append('pai_social_vive', thePatient.pai_social_vive);
+    if (thePatient.pai_social_domicilio_obstaculos) form.append('pai_social_domicilio_obstaculos', thePatient.pai_social_domicilio_obstaculos);
+    if (thePatient.pai_social_domicilio_ayudas_tecnicas) form.append('pai_social_domicilio_ayudas_tecnicas', thePatient.pai_social_domicilio_ayudas_tecnicas);
+    if (thePatient.pai_social_domicilio_confort) form.append('pai_social_domicilio_confort', thePatient.pai_social_domicilio_confort);
+    if (thePatient.pai_social_domicilio_actual_quiere) form.append('pai_social_domicilio_actual_quiere', thePatient.pai_social_domicilio_actual_quiere);
+    if (thePatient.pai_social_domicilio_actual_otro) form.append('pai_social_domicilio_actual_otro', thePatient.pai_social_domicilio_actual_otro);
+    if (thePatient.pai_social_domicilio_actula_residencia) form.append('pai_social_domicilio_actula_residencia', thePatient.pai_social_domicilio_actula_residencia);
+    if (thePatient.pai_social_apoyo_tipo1) form.append('pai_social_apoyo_tipo1', thePatient.pai_social_apoyo_tipo1);
+    if (thePatient.pai_social_apoyo_tipo2) form.append('pai_social_apoyo_tipo2', thePatient.pai_social_apoyo_tipo2);
+    if (thePatient.pai_social_apoyo_tipo3) form.append('pai_social_apoyo_tipo3', thePatient.pai_social_apoyo_tipo3);
+    if (thePatient.pai_social_apoyo_tipo4) form.append('pai_social_apoyo_tipo4', thePatient.pai_social_apoyo_tipo4);
+    if (thePatient.pai_social_apoyo_titularidad1) form.append('pai_social_apoyo_titularidad1', thePatient.pai_social_apoyo_titularidad1);
+    if (thePatient.pai_social_apoyo_titularidad2) form.append('pai_social_apoyo_titularidad2', thePatient.pai_social_apoyo_titularidad2);
+    if (thePatient.pai_social_apoyo_titularidad3) form.append('pai_social_apoyo_titularidad3', thePatient.pai_social_apoyo_titularidad3);
+    if (thePatient.pai_social_apoyo_titularidad4) form.append('pai_social_apoyo_titularidad4', thePatient.pai_social_apoyo_titularidad4);
+    if (thePatient.pai_social_apoyo_coste1) form.append('pai_social_apoyo_coste1', thePatient.pai_social_apoyo_coste1);
+    if (thePatient.pai_social_apoyo_coste2) form.append('pai_social_apoyo_coste2', thePatient.pai_social_apoyo_coste2);
+    if (thePatient.pai_social_apoyo_coste3) form.append('pai_social_apoyo_coste3', thePatient.pai_social_apoyo_coste3);
+    if (thePatient.pai_social_apoyo_coste4) form.append('pai_social_apoyo_coste4', thePatient.pai_social_apoyo_coste4);
+    if (thePatient.pai_social_apoyo_aportacion1) form.append('pai_social_apoyo_aportacion1', thePatient.pai_social_apoyo_aportacion1);
+    if (thePatient.pai_social_apoyo_aportacion2) form.append('pai_social_apoyo_aportacion2', thePatient.pai_social_apoyo_aportacion2);
+    if (thePatient.pai_social_apoyo_aportacion3) form.append('pai_social_apoyo_aportacion3', thePatient.pai_social_apoyo_aportacion3);
+    if (thePatient.pai_social_apoyo_aportacion4) form.append('pai_social_apoyo_aportacion4', thePatient.pai_social_apoyo_aportacion4);
+    if (thePatient.pai_social_apoyo_dom_prestacion1) form.append('pai_social_apoyo_dom_prestacion1', thePatient.pai_social_apoyo_dom_prestacion1);
+    if (thePatient.pai_social_apoyo_dom_prestacion2) form.append('pai_social_apoyo_dom_prestacion2', thePatient.pai_social_apoyo_dom_prestacion2);
+    if (thePatient.pai_social_apoyo_dom_prestacion3) form.append('pai_social_apoyo_dom_prestacion3', thePatient.pai_social_apoyo_dom_prestacion3);
+    if (thePatient.pai_social_apoyo_dom_prestacion4) form.append('pai_social_apoyo_dom_prestacion4', thePatient.pai_social_apoyo_dom_prestacion4);
+    if (thePatient.pai_social_apoyo_dom_intensidad1) form.append('pai_social_apoyo_dom_intensidad1', thePatient.pai_social_apoyo_dom_intensidad1);
+    if (thePatient.pai_social_apoyo_dom_intensidad2) form.append('pai_social_apoyo_dom_intensidad2', thePatient.pai_social_apoyo_dom_intensidad2);
+    if (thePatient.pai_social_apoyo_dom_intensidad3) form.append('pai_social_apoyo_dom_intensidad3', thePatient.pai_social_apoyo_dom_intensidad3);
+    if (thePatient.pai_social_apoyo_dom_intensidad4) form.append('pai_social_apoyo_dom_intensidad4', thePatient.pai_social_apoyo_dom_intensidad4);
+    if (thePatient.pai_social_apoyo_dom_coste1) form.append('pai_social_apoyo_dom_coste1', thePatient.pai_social_apoyo_dom_coste1);
+    if (thePatient.pai_social_apoyo_dom_coste2) form.append('pai_social_apoyo_dom_coste2', thePatient.pai_social_apoyo_dom_coste2);
+    if (thePatient.pai_social_apoyo_dom_coste3) form.append('pai_social_apoyo_dom_coste3', thePatient.pai_social_apoyo_dom_coste3);
+    if (thePatient.pai_social_apoyo_dom_coste4) form.append('pai_social_apoyo_dom_coste4', thePatient.pai_social_apoyo_dom_coste4);
+    if (thePatient.pai_social_apoyo_dom_aportacion1) form.append('pai_social_apoyo_dom_aportacion1', thePatient.pai_social_apoyo_dom_aportacion1);
+    if (thePatient.pai_social_apoyo_dom_aportacion2) form.append('pai_social_apoyo_dom_aportacion2', thePatient.pai_social_apoyo_dom_aportacion2);
+    if (thePatient.pai_social_apoyo_dom_aportacion3) form.append('pai_social_apoyo_dom_aportacion3', thePatient.pai_social_apoyo_dom_aportacion3);
+    if (thePatient.pai_social_apoyo_dom_aportacion4) form.append('pai_social_apoyo_dom_aportacion4', thePatient.pai_social_apoyo_dom_aportacion4);
+    if (thePatient.pai_social_apoyo_otras_prestacion1) form.append('pai_social_apoyo_otras_prestacion1', thePatient.pai_social_apoyo_otras_prestacion1);
+    if (thePatient.pai_social_apoyo_otras_prestacion2) form.append('pai_social_apoyo_otras_prestacion2', thePatient.pai_social_apoyo_otras_prestacion2);
+    if (thePatient.pai_social_apoyo_otras_prestacion3) form.append('pai_social_apoyo_otras_prestacion3', thePatient.pai_social_apoyo_otras_prestacion3);
+    if (thePatient.pai_social_apoyo_otras_prestacion4) form.append('pai_social_apoyo_otras_prestacion4', thePatient.pai_social_apoyo_otras_prestacion4);
+    if (thePatient.pai_social_apoyo_otras_titularidad1) form.append('pai_social_apoyo_otras_titularidad1', thePatient.pai_social_apoyo_otras_titularidad1);
+    if (thePatient.pai_social_apoyo_otras_titularidad2) form.append('pai_social_apoyo_otras_titularidad2', thePatient.pai_social_apoyo_otras_titularidad2);
+    if (thePatient.pai_social_apoyo_otras_titularidad3) form.append('pai_social_apoyo_otras_titularidad3', thePatient.pai_social_apoyo_otras_titularidad3);
+    if (thePatient.pai_social_apoyo_otras_titularidad4) form.append('pai_social_apoyo_otras_titularidad4', thePatient.pai_social_apoyo_otras_titularidad4);
+    if (thePatient.pai_social_apoyo_otras_intensidad1) form.append('pai_social_apoyo_otras_intensidad1', thePatient.pai_social_apoyo_otras_intensidad1);
+    if (thePatient.pai_social_apoyo_otras_intensidad2) form.append('pai_social_apoyo_otras_intensidad2', thePatient.pai_social_apoyo_otras_intensidad2);
+    if (thePatient.pai_social_apoyo_otras_intensidad3) form.append('pai_social_apoyo_otras_intensidad3', thePatient.pai_social_apoyo_otras_intensidad3);
+    if (thePatient.pai_social_apoyo_otras_intensidad4) form.append('pai_social_apoyo_otras_intensidad4', thePatient.pai_social_apoyo_otras_intensidad4);
+
+
+    if (thePatient.pai_social_ingresos) form.append('pai_social_ingresos', thePatient.pai_social_ingresos);
+    if (thePatient.pai_social_ingresos_familia) form.append('pai_social_ingresos_familia', thePatient.pai_social_ingresos_familia);
+    if (thePatient.pai_social_ingresos_cubre) form.append('pai_social_ingresos_cubre', thePatient.pai_social_ingresos_cubre);
+    if (thePatient.pai_social_nivel_estudios) form.append('pai_social_nivel_estudios', thePatient.pai_social_nivel_estudios);
+    if (thePatient.pai_social_relaciones) form.append('pai_social_relaciones', thePatient.pai_social_relaciones);
+    if (thePatient.pai_social_necesidades) form.append('pai_social_necesidades', thePatient.pai_social_necesidades);
+    if (thePatient.pai_social_objetivos) form.append('pai_social_objetivos', thePatient.pai_social_objetivos);
+    if (thePatient.pai_social_valoraciones) form.append('pai_social_valoraciones', thePatient.pai_social_valoraciones);
+    if (thePatient.pai_social_actuaciones) form.append('pai_social_actuaciones', thePatient.pai_social_actuaciones);
+    if (thePatient.pai_social_incidencias) form.append('pai_social_incidencias', thePatient.pai_social_incidencias);
+
+    return this.http.post<any>(ENV.url.patients + '/savePAISocial', form);
+  }
+
+
+  savePAIPortada(thePatient: PatientDTO) {
+    const form = new FormData();
+  
+    if (thePatient.id) form.append('id', thePatient.id);
+  
+    if (thePatient.pai_portada_fecha) form.append('pai_portada_fecha', thePatient.pai_portada_fecha);
+    if (thePatient.pai_portada_representante_guardador) form.append('pai_portada_representante_guardador', thePatient.pai_portada_representante_guardador);
+    if (thePatient.pai_portada_cuidador_nombre) form.append('pai_portada_cuidador_nombre', thePatient.pai_portada_cuidador_nombre);
+    if (thePatient.pai_portada_cuidador_edad) form.append('pai_portada_cuidador_edad', thePatient.pai_portada_cuidador_edad);
+    if (thePatient.pai_portada_cuidador_dni) form.append('pai_portada_cuidador_dni', thePatient.pai_portada_cuidador_dni);
+    if (thePatient.pai_portada_cuidador_domicilio) form.append('pai_portada_cuidador_domicilio', thePatient.pai_portada_cuidador_domicilio);
+    if (thePatient.pai_portada_cuidador_estado_civil) form.append('pai_portada_cuidador_estado_civil', thePatient.pai_portada_cuidador_estado_civil);
+    if (thePatient.pai_portada_cuidador_profesion) form.append('pai_portada_cuidador_profesion', thePatient.pai_portada_cuidador_profesion);
+    if (thePatient.pai_portada_cuidador_relacion) form.append('pai_portada_cuidador_relacion', thePatient.pai_portada_cuidador_relacion);
+    if (thePatient.pai_portada_cuidador_convive_otros) form.append('pai_portada_cuidador_convive_otros', thePatient.pai_portada_cuidador_convive_otros);
+    if (thePatient.pai_portada_nss) form.append('pai_portada_nss', thePatient.pai_portada_nss);
+    if (thePatient.pai_portada_seguro_medico) form.append('pai_portada_seguro_medico', thePatient.pai_portada_seguro_medico);
+    if (thePatient.pai_portada_datos_medicos_enfermedades) form.append('pai_portada_datos_medicos_enfermedades', thePatient.pai_portada_datos_medicos_enfermedades);
+    if (thePatient.pai_portada_datos_medicos_grado_minusvalida) form.append('pai_portada_datos_medicos_grado_minusvalida', thePatient.pai_portada_datos_medicos_grado_minusvalida);
+    if (thePatient.pai_portada_datos_medicos_grado_dependencia) form.append('pai_portada_datos_medicos_grado_dependencia', thePatient.pai_portada_datos_medicos_grado_dependencia);
+    if (thePatient.pai_portada_profesional_1) form.append('pai_portada_profesional_1', thePatient.pai_portada_profesional_1);
+    if (thePatient.pai_portada_categoria_1) form.append('pai_portada_categoria_1', thePatient.pai_portada_categoria_1);
+    if (thePatient.pai_portada_profesional_2) form.append('pai_portada_profesional_2', thePatient.pai_portada_profesional_2);
+    if (thePatient.pai_portada_categoria_2) form.append('pai_portada_categoria_2', thePatient.pai_portada_categoria_2);
+    if (thePatient.pai_portada_profesional_3) form.append('pai_portada_profesional_3', thePatient.pai_portada_profesional_3);
+    if (thePatient.pai_portada_categoria_3) form.append('pai_portada_categoria_3', thePatient.pai_portada_categoria_3);
+    if (thePatient.pai_portada_profesional_4) form.append('pai_portada_profesional_4', thePatient.pai_portada_profesional_4);
+    if (thePatient.pai_portada_categoria_4) form.append('pai_portada_categoria_4', thePatient.pai_portada_categoria_4);
+    if (thePatient.pai_portada_profesional_5) form.append('pai_portada_profesional_5', thePatient.pai_portada_profesional_5);
+    if (thePatient.pai_portada_categoria_5) form.append('pai_portada_categoria_5', thePatient.pai_portada_categoria_5);
+  
+    return this.http.post<any>(ENV.url.patients + '/savePaiPortada', form);
+  }
+  
+
   unregisterPatient(id: string, unregister_reason: string, unregister_document_url: string, is_document_signed: boolean) 
   {
     const form = new FormData();
@@ -486,6 +701,14 @@ export class PatientsService {
   }
 
 
+  generatePAIResumen(thePatient: PatientDTO) {
+    const form = new FormData();
+    if (thePatient.id && thePatient.id !== '') {
+      form.append('id', thePatient.id);
+    }
+  
+    return this.http.post<any>(ENV.url.patients + '/generatePAIResumen', form);
+  }
   
   
   formatDate1(thedate : Date)

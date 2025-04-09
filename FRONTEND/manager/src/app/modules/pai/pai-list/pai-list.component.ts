@@ -1,4 +1,3 @@
-
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { NbDialogService, NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import {  parseDataExport, ActionDTO, CountryDTO, StateDTO, CityDTO, PatientDTO, MemberDTO } from 'src/app/shared/models/models';
@@ -27,13 +26,16 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import htmlToPdfmake from 'html-to-pdfmake';
 
 @Component({
-  selector: 'app-pai-psico-list',
-  templateUrl: './pai-psico-list.component.html',
-  styleUrls: ['./pai-psico-list.component.scss']
+  selector: 'app-pai-list',
+  templateUrl: './pai-list.component.html',
+  styleUrls: ['./pai-list.component.scss']
 })
-export class PaiPsicoListComponent implements OnInit{
+export class PaiListComponent implements OnInit{
 
-  
+  hayreport : boolean = false;
+  @ViewChild('idhtml') pdfTable!: ElementRef;
+
+
 
   @ViewChild('modalContent1', { static: true }) modalContent1: TemplateRef<any>;
 
@@ -71,8 +73,6 @@ export class PaiPsicoListComponent implements OnInit{
    
   allRelatives : RelativeDTO[];
 
-    hayreport2 : boolean = false;
-    @ViewChild('idhtml2') pdfTable2!: ElementRef;
     
 
   thePatient : PatientDTO = {
@@ -649,7 +649,7 @@ export class PaiPsicoListComponent implements OnInit{
 
   ngOnInit(): void {
     this.getPatients(0);
-    this.actions = [   {action: 'show', text: 'Ver/modificar datos del PAI'}  ];
+    this.actions = [   {action: 'show', text: 'Ver/modificar datos del PAI'}, {action: 'book', text: 'Ver cuadro resumen del PAI'}  ];
   }
 
   getPatients(page? : number)
@@ -736,13 +736,21 @@ export class PaiPsicoListComponent implements OnInit{
         const selected = this.patientsObjects.find(item => item.id === event[1]);
         this.thePatient = selected;
   
-        this.openPAIPsico();
+        this.openPAI();
     } 
+    else if(event && event[0] === 'book') 
+      {
+          const selected = this.patientsObjects.find(item => item.id === event[1]);
+          this.thePatient = selected;
+    
+          this.generatePAIResumen();
+      } 
+  
   }
 
 
 
-  openPAIPsico()
+  openPAI()
   {
 
 
@@ -753,21 +761,21 @@ export class PaiPsicoListComponent implements OnInit{
 
 
   
-  savePAIPsico()
+  savePAIPortada()
   {
     
-    this.patientsService.savePAIPsico(this.thePatient).subscribe(
+    this.patientsService.savePAIPortada(this.thePatient).subscribe(
       res => {
         this.isProcessing = false;
         this.thePatient = res;
         this.thePatient.pai_psico_fecha_diagnostico = this.localDateTime2Date(res.pai_psico_fecha_diagnostico);
 
-        this.openDocumentRegisterHTML(this.thePatient.pai_psico_url, 'PAI-PSICOLOGIA-' + this.thePatient.documentid)
+        this.openDocumentRegisterHTML(this.thePatient.pai_portada_url, 'PAI-COMPLETO-' + this.thePatient.documentid)
       },
       error => {
         this.isProcessing = false;
-        console.error("savePAIPsico():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido grabar el PAI de PSICOLOGIA.",
+        console.error("savePAIPortada():"+JSON.stringify(error));
+        this.toastService.show("No se ha podido grabar el PAI.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
@@ -786,9 +794,6 @@ export class PaiPsicoListComponent implements OnInit{
     document.getElementById('step3').style.display = 'none';
     document.getElementById('step4').style.display = 'none';
     document.getElementById('step5').style.display = 'none';
-    document.getElementById('step6').style.display = 'none';
-    document.getElementById('step7').style.display = 'none';
-    document.getElementById('step8').style.display = 'none';
 
     document.getElementById(step).style.display = 'block';
   }
@@ -979,4 +984,124 @@ getPatientById()
 }
 
   
+
+
+
+generatePAIResumen()
+{
+
+  this.patientsService.generatePAIResumen(this.thePatient).subscribe(
+    res => {
+      this.isProcessing = false;
+      this.thePatient = res;
+
+this.hayreport = true;
+this.http.get(this.thePatient.pai_portada_url , {responseType: 'text'}).pipe(
+  catchError(error => {
+    this.hayreport = false;
+    return of('ERROR.');
+  })
+)
+.subscribe({
+  next: response => {
+    this.pdfTable.nativeElement.innerHTML = response;
+  },
+  error: error => {
+    this.hayreport = false;
+    console.error('Error en la suscripción:', error);
+  }
+});
+
+
+    },
+    error => {
+      this.isProcessing = false;
+      console.error("generatePAIResumen():"+JSON.stringify(error));
+      this.toastService.show("No se ha podido grabar el resumen del PAI.",
+        "¡Ups!", 
+        { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+       );
+    }
+  );
+
+
+}
+
+
+
+
+
+imprimirCuadroResumen()
+{
+ const pdfTable = this.pdfTable.nativeElement;
+
+    const htmlSections = pdfTable.innerHTML.split('<!--#PAGEBREAK#-->');
+
+    let pdfMakeContent = [];
+    htmlSections.forEach((section, index) => 
+      {
+        const cleanedSection = section.replace(/-->/g, '<!-- -->');
+
+        const sectionContent = htmlToPdfmake(cleanedSection);
+
+        // Agrega estilos de texto y tabla a cada sección
+        sectionContent.forEach((content: any) => {
+          if (content.table) {
+            // Ajusta el estilo de la tabla, como tamaño de fuente
+            content.style = 'tableStyle';
+          }
+        });
+
+          pdfMakeContent = pdfMakeContent.concat(sectionContent);
+
+          if (index < htmlSections.length - 1) {
+            pdfMakeContent.push({ text: '', pageBreak: 'after' });
+          }
+        });
+
+        const documentDefinition = {
+          content: pdfMakeContent,
+          pageOrientation: 'landscape', 
+          styles: {
+            tableStyle: {
+              fontSize: 10,
+              margin: [0, 5, 0, 5]
+            }
+          },
+          defaultStyle: {
+            fontSize: 11
+          }
+        };
+        
+
+
+      pdfMake.createPdf(documentDefinition).download(this.thePatient.documentid + "-cuadro-resumen-PAI" + ".pdf");
+  }
+
+
+  copiarHtml() {
+    const range = document.createRange();
+    const selection = window.getSelection();
+
+    // Seleccionar el contenido del elemento
+    range.selectNodeContents(this.pdfTable.nativeElement);
+    selection?.removeAllRanges(); // Limpiar cualquier selección existente
+    selection?.addRange(range);
+
+    // Usar la API de portapapeles para copiar con formato
+    try {
+      const success = document.execCommand('copy');
+      if (success) {
+        console.log('Contenido copiado con formato.');
+      } else {
+        console.error('Error al copiar el contenido.');
+      }
+    } catch (err) {
+      console.error('Error al intentar copiar:', err);
+    }
+
+    // Limpiar la selección después de copiar
+    selection?.removeAllRanges();
+  }
+
 }

@@ -1,0 +1,851 @@
+<nb-card>
+    <nb-card-header>
+        <div class="row float-start" >
+            <h4>PAI Trab. Social
+
+            </h4>
+        </div>
+        <!--button [disabled]="theIdpatient==''" [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openPAIFisio(true)">Completar PAI</button-->
+        
+    </nb-card-header>
+    <nb-card-body>
+
+            <div style="margin-bottom: 10px;">
+                Para el usuario:
+                <ng-select (change)="getPatients(0)" [multiple]="false" [(ngModel)]="theIdpatient" name="idpatient" [clearable]="false" notFoundText="No se encuentran usuarios">
+                    <ng-option value="">TODOS</ng-option>
+                    <ng-option *ngFor="let u of allPatients" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}} - ({{u.membernumber}})</ng-option>
+                </ng-select>
+            </div>
+
+        <hr/>
+ 
+        <app-custom-table
+            [actions]="actions"
+            [keys]="['Nombre', 'DNI', 'Familiar/Cuidador principal', 'Tipo de servicio']"
+            [values]="patients"
+            [align]="['left', 'left', 'left', 'left']"
+            [filters]="[false, false, false, false]"
+            [sort]="[false, false, false, false]"
+            [widthToCollapse]="750"
+            [withPagination]="true"
+            [totalPages]="totalPages"
+            [page]="page"
+            [size]="size"
+            [loadingE]="loadingExcel"
+            [loading]="loadingPDF"
+            [hasExport]="true"
+            (actionSelected)="action($event)"
+            (changePage)="setPage($event)"
+            (filterEvent)="filter(0)"
+            [isProcessing]="isProcessing"
+            (exportData)="getExportData($event)"
+            [showSearchButton]="true"
+
+        >
+
+        </app-custom-table>
+    </nb-card-body>
+
+</nb-card>
+
+
+
+<ng-template #modalContent1 let-close="close">
+    <div class="modal-header"> 
+        <h6>PAI</h6>
+        <p>{{thePatient.documentid}} - {{thePatient.name}} {{thePatient.surname1}} {{thePatient.surname2}}</p>
+        <p>Nº expediente: {{thePatient.fs_num_expediente}}</p>
+        <nb-icon (click)="closeModal();close();" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+
+<div id="step1">
+    <b>SOBRE HISTORIA SOCIAL</b>
+    <div style="margin-top:10px">
+        ¿Se le realiza Historia social?:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_historia" name="thePatient-pai_social_historia" [clearable]="false" [searchable]="false">
+            <ng-option value="NO">NO</ng-option>
+            <ng-option value="SÍ">SÍ</ng-option>
+        </ng-select>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        ¿Aporta informes sociales anteriores?:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_informes" name="thePatient-pai_social_informes" [clearable]="false" [searchable]="false">
+            <ng-option value="NO">NO</ng-option>
+            <ng-option value="SÍ">SÍ</ng-option>
+        </ng-select>
+
+        <div *ngIf="thePatient.pai_social_informes=='SÍ'">
+            Especificar:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_informes_text" >
+            </textarea>
+        </div>
+    </div>
+
+    <div style="margin-top:30px; width: 100%; text-align: right;">
+        <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+            SIGUIENTE &gt;&gt;
+        </button>
+    </div>
+</div>
+
+
+
+        
+
+
+
+<div style="display: none;" id="step2">
+    
+    <b>VALORACIÓN DE LA DISCAPACIDAD:</b><br/>
+    <div style="margin-bottom: 10px;">
+        Valoración de la discapacidad:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_valoracion_disca" name="thePatient-pai_social_valoracion_disca" [clearable]="false" [searchable]="false">
+            <ng-option value="NO">NO</ng-option>
+            <ng-option value="SÍ">SÍ</ng-option>
+        </ng-select>
+    </div>
+
+    <div style="margin-bottom: 10px;" *ngIf="thePatient.pai_social_valoracion_disca=='SÍ'">
+        Fecha de valoración:
+        <input type="date" class="form-control" [(ngModel)]="thePatient.pai_social_valoracion_disca_fecha">
+    </div>
+
+    <div style="margin-bottom: 10px;" *ngIf="thePatient.pai_social_valoracion_disca=='SÍ'">
+        Comunidad Autónoma:
+        <textarea class="form-control" [(ngModel)]="thePatient.pai_social_valoracion_disca_ca" >
+        </textarea>
+    </div>
+
+    <div style="margin-bottom: 10px;" *ngIf="thePatient.pai_social_valoracion_disca=='SÍ'">
+        Grado reconocido:
+        <textarea class="form-control" [(ngModel)]="thePatient.pai_social_valoracion_disca_grado" >
+        </textarea>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        ¿Necesita ayuda de tercera persona? (Según valoración escalas):
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_3_persona" name="thePatient-pai_social_3_persona" [clearable]="false" [searchable]="false">
+            <ng-option value="NO">NO</ng-option>
+            <ng-option value="SÍ">SÍ</ng-option>
+        </ng-select>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        ¿Necesita ayudas técnicas?:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_ayudas_tecnicas" name="thePatient-pai_social_ayudas_tecnicas" [clearable]="false" [searchable]="false">
+             <ng-option value="NO">NO</ng-option>
+            <ng-option value="SÍ">SÍ</ng-option>
+        </ng-select>
+         <div *ngIf="thePatient.pai_social_ayudas_tecnicas=='SÍ'">
+            Especificar:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_ayudas_tecnicas_text" >
+            </textarea>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        Movilidad/Transporte:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_movilidad" name="thePatient-pai_social_movilidad" [clearable]="false" [searchable]="false">
+            <ng-option value="INDEPENDIENTE">INDEPENDIENTE</ng-option>
+            <ng-option value="CON SUPERVISIÓN">CON SUPERVISIÓN</ng-option>
+            <ng-option value="DEPENDIENTE">DEPENDIENTE</ng-option>
+       </ng-select>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        ¿Se encuentar valorado/a por la ley de dependencia?:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_ley_dependencai" name="thePatient-pai_social_ley_dependencai" [clearable]="false" [searchable]="false">
+            <ng-option value="NO">NO</ng-option>
+            <ng-option value="SÍ">SÍ</ng-option>
+            <ng-option value="EN TRÁMITE">EN TRÁMITE</ng-option>
+        </ng-select>
+    </div>
+
+    <div style="margin-bottom: 10px;" *ngIf="thePatient.pai_social_ley_dependencai=='SÍ'">
+        Grado y nivel de dependencia:
+        <textarea class="form-control" [(ngModel)]="thePatient.pai_social_grado_y_nivel" >
+        </textarea>
+    </div>
+    
+
+    <div style="margin-top:30px; width: 100%; text-align: right;">
+        <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step1');">
+            &lt;&lt; ANTERIOR
+        </button>
+        &nbsp;&nbsp;
+        <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
+            SIGUIENTE &gt;&gt;
+        </button>
+    </div>
+
+</div>
+
+        
+<div style="display: none;" id="step3">
+
+    <b>ÁMBITO SOCIOFAMILIAR:</b><br/>
+
+    <div style="margin-bottom: 10px;">
+        ¿Quién hace de cuidador/a principal?: 
+        <textarea class="form-control" [(ngModel)]="thePatient.pai_social_cuidador" >
+        </textarea>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        ¿Tiene la persona usuaria una relación de dependencia con su cuidador/a principal? :
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_relacion_cuidador" name="thePatient-pai_social_relacion_cuidador" [clearable]="false" [searchable]="false">
+            <ng-option value="Si, y demanda en todo momento la atención de esa única persona, aunque puede estar con más personas y relacionarse">Si, y demanda en todo momento la atención de esa única persona, aunque puede estar con más personas y relacionarse</ng-option>
+            <ng-option value="Tiene relación de dependencia con varios miembros de la familia">Tiene relación de dependencia con varios miembros de la familia </ng-option>
+            <ng-option value="No, se adapta a estar con otras personas y no por ello demanda la presencia de la persona cuidadora principal">No, se adapta a estar con otras personas y no por ello demanda la presencia de la persona cuidadora principal</ng-option>
+        </ng-select>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        Indicadores de posible falta de atención por parte de la familia o de la persona cuidadora principal. (A detectar si se observa alguno de los siguientes casos):
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_indicadores" name="thePatient-pai_social_indicadores" [clearable]="false" [searchable]="false">
+            <ng-option value="No existen">No existen</ng-option>
+            <ng-option value="Falta de cuidados básicos: Aspecto desaseado, ropa sucia o con mal olor, ropa no adecuada para la estación del año">Falta de cuidados básicos: Aspecto desaseado, ropa sucia o con mal olor, ropa no adecuada para la estación del año</ng-option>
+            <ng-option value="En la entrevista, la familia no le permite hablar y dar su opinión o hablan de la persona como si no estuviera delante">En la entrevista, la familia no le permite hablar y dar su opinión o hablan de la persona como si no estuviera delante</ng-option>
+            <ng-option value="La persona es dependiente con ayuda de terceros y pasa muchas horas al día solo en su domicilio">La persona es dependiente con ayuda de terceros y pasa muchas horas al día solo en su domicilio</ng-option>
+            <ng-option value="La familia habla delante de la persona usuaria de los problemas que ocasiona, haciéndole sentir mal">La familia habla delante de la persona usuaria de los problemas que ocasiona, haciéndole sentir mal</ng-option>
+            <ng-option value="La persona usuaria se encuentra encamada sin necesidad de estarlo">La persona usuaria se encuentra encamada sin necesidad de estarlo</ng-option>
+            <ng-option value="La persona usuaria no recibe las movilizaciones adecuadas para su situación de inmovilidad">La persona usuaria no recibe las movilizaciones adecuadas para su situación de inmovilidad</ng-option>
+        </ng-select>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        Apoyos con los que cuenta la familia:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_apoyos" name="thePatient-pai_social_apoyos" [clearable]="false" [searchable]="false">
+            <ng-option value="Ninguno (Sólo cuidadora profesional)">Ninguno (Sólo cuidadora profesional)</ng-option>
+            <ng-option value="Familia extensa">Familia extensa</ng-option>
+            <ng-option value="Amistades/vecindario">Amistades/vecindario</ng-option>
+            <ng-option value="Acude a otra entidad o centro">Acude a otra entidad o centro</ng-option>
+        </ng-select>
+    </div>
+
+
+
+    <div style="margin-top:30px; width: 100%; text-align: right;">
+        <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+            &lt;&lt; ANTERIOR
+        </button>
+        &nbsp;&nbsp;
+        <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step4');">
+            SIGUIENTE &gt;&gt;
+        </button>
+    </div>
+
+</div>
+
+        
+
+        
+     
+<div style="display: none;" id="step4">
+
+    <b>CARACTERÍSTICAS DEL DOMICILIO:</b><br/>
+
+    <div style="margin-bottom: 10px;">
+        La persona usuaria:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_vive" name="thePatient-pai_social_vive" [clearable]="false" [searchable]="false">
+            <ng-option value="Vive solo/a">Vive solo/a</ng-option>
+            <ng-option value="Vive con su pareja">Vive con su pareja</ng-option>
+            <ng-option value="Vive con alguno de sus hijos/as">Vive con alguno de sus hijos/as</ng-option>
+            <ng-option value="Vive con un/a cuidador/a">Vive con un/a cuidador/a</ng-option>
+            <ng-option value="Otras opciones">Otras opciones</ng-option>
+        </ng-select>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        El domicilio se encuentra sin obstáculos para la correcta movilidad de la persona usuaria:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_domicilio_obstaculos" name="thePatient-pai_social_domicilio_obstaculos" [clearable]="false" [searchable]="false">
+            <ng-option value="NO">NO</ng-option>
+            <ng-option value="SÍ">SÍ</ng-option>
+        </ng-select>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        La persona usuaria dispone en su domicilio de ayudas técnicas para favorecer su autonomía en el aseo, el desplazamiento o la comunicación:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_domicilio_ayudas_tecnicas" name="thePatient-pai_social_domicilio_ayudas_tecnicas" [clearable]="false" [searchable]="false">
+            <ng-option value="NO">NO</ng-option>
+            <ng-option value="SÍ">SÍ</ng-option>
+        </ng-select>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        La persona usuaria se encuentra confortable y adaptada a su domicilio:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_domicilio_confort" name="thePatient-pai_social_domicilio_confort" [clearable]="false" [searchable]="false">
+            <ng-option value="NO">NO</ng-option>
+            <ng-option value="SÍ">SÍ</ng-option>
+        </ng-select>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        La persona usuaria desea vivir en su domicilio actual:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_domicilio_actual_quiere" name="thePatient-pai_social_domicilio_actual_quiere" [clearable]="false" [searchable]="false">
+            <ng-option value="Recibiendo solo la atención de su familia">Recibiendo solo la atención de su familia</ng-option>
+            <ng-option value="Recibiendo solo atención de cuidadores profesionales">Recibiendo solo atención de cuidadores profesionales</ng-option>
+            <ng-option value="Si, Acudiendo a centro de día">Si, Acudiendo a centro de día</ng-option>
+            <ng-option value="Otras opciones: No sabe /No responde">Otras opciones: No sabe /No responde</ng-option>
+        </ng-select>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        La persona usuaria desea vivir en otro domicilio:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_domicilio_actual_otro" name="thePatient-pai_social_domicilio_actual_otro" [clearable]="false" [searchable]="false">
+            <ng-option value="NO SABE /NO RESPONDE">NO SABE /NO RESPONDE</ng-option>
+            <ng-option value="Recibiendo solo la atención de su familia">Recibiendo solo la atención de su familia</ng-option>
+            <ng-option value="Recibiendo solo atención de cuidadores profesionales">Recibiendo solo atención de cuidadores profesionales</ng-option>
+            <ng-option value="Acudiendo a centro de día">Acudiendo a centro de día</ng-option>
+            <ng-option value="Otras opciones">Otras opciones</ng-option>
+        </ng-select>
+    </div>
+
+     <div style="margin-bottom: 10px;">
+        La persona desea vivir en un centro Residencial:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_domicilio_actula_residencia" name="thePatient-pai_social_domicilio_actula_residencia" [clearable]="false" [searchable]="false">
+            <ng-option value="NO">NO</ng-option>
+            <ng-option value="SÍ">SÍ</ng-option>
+            <ng-option value="NO SABE NO RESPONDE">NO SABE NO RESPONDE</ng-option>
+        </ng-select>
+    </div>
+
+
+    <div style="margin-top:30px; width: 100%; text-align: right;">
+        <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
+            &lt;&lt; ANTERIOR
+        </button>
+        &nbsp;&nbsp;
+        <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step5');">
+            SIGUIENTE &gt;&gt;
+        </button>
+    </div>
+
+</div>
+
+
+
+
+
+
+        
+<div style="display: none;" id="step5">
+
+
+            
+    <b>PRESTACIONES SOCIALES QUE RECIBE Y CARACTERÍSTICAS:</b><br/>
+    <br/>
+    <b>APOYO EN CENTRO ESPECIALIZADO (UED):</b><br/>
+    <br/>
+    <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+        <div style="width: 24%;">
+            <small>TIPO CENTRO Y PLAZA:</small>
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_tipo1" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            TITULARIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_titularidad1" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            COSTE MENSUAL:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_coste1" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            APORTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_aportacion1" >
+            </textarea>
+        </div>                                                
+    </div>
+    
+    
+
+    <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+        <div style="width: 24%;">
+            <small>TIPO CENTRO Y PLAZA:</small>
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_tipo2" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            TITULARIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_titularidad2" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            COSTE MENSUAL:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_coste2" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            APORTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_aportacion2" >
+            </textarea>
+        </div>                                                
+    </div>
+    
+    
+
+    <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+        <div style="width: 24%;">
+            <small>TIPO CENTRO Y PLAZA:</small>
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_tipo3" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            TITULARIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_titularidad3" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            COSTE MENSUAL:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_coste3" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            APORTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_aportacion3" >
+            </textarea>
+        </div>                                                
+    </div>
+    
+    
+
+    <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+        <div style="width: 24%;">
+            <small>TIPO CENTRO Y PLAZA:</small>
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_tipo4" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            TITULARIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_titularidad4" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            COSTE MENSUAL:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_coste4" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            APORTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_aportacion4" >
+            </textarea>
+        </div>                                                
+    </div>
+    
+    
+
+        <div style="margin-top:30px; width: 100%; text-align: right;"> 
+            <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step4');">
+                &lt;&lt; ANTERIOR
+            </button>
+            &nbsp;&nbsp;
+            <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step6');">
+                SIGUIENTE &gt;&gt;
+            </button>
+        </div>
+
+</div>
+
+
+
+
+
+
+
+
+        
+<div style="display: none;" id="step6">
+
+
+            
+    <b>PRESTACIONES SOCIALES QUE RECIBE Y CARACTERÍSTICAS:</b><br/>
+    <br/>
+    <b>APOYO EN DOMICILIO:</b><br/>
+    <br/>
+    <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+        <div style="width: 24%;">
+            PRESTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_prestacion1" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            INTENSIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_intensidad1" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            COSTE MENSUAL:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_coste1" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            APORTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_aportacion1" >
+            </textarea>
+        </div>                                                
+    </div>
+    
+    
+    <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+        <div style="width: 24%;">
+            PRESTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_prestacion2" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            INTENSIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_intensidad2" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            COSTE MENSUAL:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_coste2" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            APORTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_aportacion2" >
+            </textarea>
+        </div>                                                
+    </div>
+    
+    <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+        <div style="width: 24%;">
+            PRESTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_prestacion3" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            INTENSIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_intensidad3" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            COSTE MENSUAL:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_coste3" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            APORTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_aportacion3" >
+            </textarea>
+        </div>                                                
+    </div>
+    
+    <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+        <div style="width: 24%;">
+            PRESTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_prestacion4" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            INTENSIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_intensidad4" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            COSTE MENSUAL:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_coste4" >
+            </textarea>
+        </div>
+        <div style="width: 24%;">
+            APORTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_dom_aportacion4" >
+            </textarea>
+        </div>                                                
+    </div>
+    
+    
+
+        <div style="margin-top:30px; width: 100%; text-align: right;"> 
+            <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step5');">
+                &lt;&lt; ANTERIOR
+            </button>
+            &nbsp;&nbsp;
+            <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step7');">
+                SIGUIENTE &gt;&gt;
+            </button>
+        </div>
+
+</div>
+
+
+
+
+
+
+
+
+        
+<div style="display: none;" id="step7">
+
+
+            
+    <b>PRESTACIONES SOCIALES QUE RECIBE Y CARACTERÍSTICAS:</b><br/>
+    <br/>
+    <b>OTRAS PRESTACIONES QUE RECIBE:</b><br/>
+    <br/>
+    <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+        <div style="width: 33%;">
+            PRESTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_otras_prestacion1" >
+            </textarea>
+        </div>
+        <div style="width: 33%;">
+            TITULARIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_otras_titularidad1" >
+            </textarea>
+        </div>
+        <div style="width: 33%;">
+            INTENSIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_otras_intensidad1" >
+            </textarea>
+        </div>
+    </div>
+    
+    <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+        <div style="width: 33%;">
+            PRESTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_otras_prestacion2" >
+            </textarea>
+        </div>
+        <div style="width: 33%;">
+            TITULARIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_otras_titularidad2" >
+            </textarea>
+        </div>
+        <div style="width: 33%;">
+            INTENSIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_otras_intensidad2" >
+            </textarea>
+        </div>
+    </div>
+    
+    <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+        <div style="width: 33%;">
+            PRESTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_otras_prestacion3" >
+            </textarea>
+        </div>
+        <div style="width: 33%;">
+            TITULARIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_otras_titularidad3" >
+            </textarea>
+        </div>
+        <div style="width: 33%;">
+            INTENSIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_otras_intensidad3" >
+            </textarea>
+        </div>
+    </div>
+    
+    <div style="margin-bottom: 10px; display:flex; justify-content: space-between;">
+        <div style="width: 33%;">
+            PRESTACIÓN:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_otras_prestacion4" >
+            </textarea>
+        </div>
+        <div style="width: 33%;">
+            TITULARIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_otras_titularidad4" >
+            </textarea>
+        </div>
+        <div style="width: 33%;">
+            INTENSIDAD:
+            <textarea class="form-control" [(ngModel)]="thePatient.pai_social_apoyo_otras_intensidad4" >
+            </textarea>
+        </div>
+    </div>
+    
+    
+    
+    
+
+        <div style="margin-top:30px; width: 100%; text-align: right;"> 
+            <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step6');">
+                &lt;&lt; ANTERIOR
+            </button>
+            &nbsp;&nbsp;
+            <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step8');">
+                SIGUIENTE &gt;&gt;
+            </button>
+        </div>
+
+</div>
+
+
+
+                
+<div style="display: none;" id="step8">
+
+    <b>SITUACIÓN ECONÓMICA:</b><br/>
+
+    <div style="margin-bottom: 10px;">
+        ¿Qué ingresos tiene la persona usuaria?:
+        <textarea class="form-control" [(ngModel)]="thePatient.pai_social_ingresos" >
+        </textarea>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        ¿Qué otros ingresos hay en la unidad familiar?:
+        <textarea class="form-control" [(ngModel)]="thePatient.pai_social_ingresos_familia" >
+        </textarea>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        ¿Cubre sus ingresos sus gastos y necesidades básicas? :
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_ingresos_cubre" name="thePatient-pai_social_ingresos_cubre" [clearable]="false" [searchable]="false">
+            <ng-option value="NO">NO</ng-option>
+            <ng-option value="SÍ">SÍ</ng-option>
+        </ng-select>
+    </div>
+
+
+    <div style="margin-top:30px; width: 100%; text-align: right;">
+        <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step7');">
+            &lt;&lt; ANTERIOR
+        </button>
+        &nbsp;&nbsp;
+        <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step9');">
+            SIGUIENTE &gt;&gt;
+        </button>
+    </div>
+
+</div>
+
+
+<div style="display: none;" id="step9">
+
+    <b>ASPECTOS CULTURALES Y DE SOCIABILIDAD:</b><br/>
+
+    <div style="margin-bottom: 10px;">
+        Nivel de estudios del usuario/a:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_nivel_estudios" name="thePatient-pai_social_nivel_estudios" [clearable]="false" [searchable]="false">
+            <ng-option value="Sin estudios, no sabe leer ni escribir">Sin estudios, no sabe leer ni escribir</ng-option>
+            <ng-option value="Sabe leer y escribir, aunque ya no lo hace">Sabe leer y escribir, aunque ya no lo hace</ng-option>
+            <ng-option value="Estudios primarios">Estudios primarios</ng-option>
+            <ng-option value="Estudios secundarios o superiores">Estudios secundarios o superiores</ng-option>
+        </ng-select>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        Relaciones sociales del usuario:
+        <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_social_relaciones" name="thePatient-pai_social_relaciones" [clearable]="false" [searchable]="false">
+            <ng-option value="Sólo con su cuidador/a principal">Sólo con su cuidador/a principal</ng-option>
+            <ng-option value="Con su familia más cercana">Con su familia más cercana</ng-option>
+            <ng-option value="Con amigos/as o iguales">Con amigos/as o iguales</ng-option>
+            <ng-option value="Con diferentes grupos o colectivos">Con diferentes grupos o colectivos</ng-option>
+        </ng-select>
+    </div>
+
+    <div style="margin-top:30px; width: 100%; text-align: right;">
+        <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step8');">
+            &lt;&lt; ANTERIOR
+        </button>
+        &nbsp;&nbsp;
+        <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step10');">
+            SIGUIENTE &gt;&gt;
+        </button>
+    </div>
+
+</div>
+
+
+
+<div style="display: none;" id="step10">
+
+    <div style="margin-bottom: 10px;">
+        NECESIDADES DETECTADAS:
+        <textarea class="form-control" [(ngModel)]="thePatient.pai_social_necesidades" >
+        </textarea>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        OBJETIVOS PROPUESTOS DESDE EL ÁREA SOCIAL:
+        <textarea class="form-control" [(ngModel)]="thePatient.pai_social_objetivos" >
+        </textarea>
+    </div>
+
+    <div style="margin-top:30px; width: 100%; text-align: right;">
+        <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step9');">
+            &lt;&lt; ANTERIOR
+        </button>
+        &nbsp;&nbsp;
+        <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step11');">
+            SIGUIENTE &gt;&gt;
+        </button>
+    </div>
+
+</div>
+
+
+        <div style="display: none;" id="step11">
+
+
+            
+            <b>Resumen:</b><br/>
+
+            Valoración necesidades:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_social_valoraciones" >
+                 </textarea>
+            </div>
+
+            Actuaciones/actividades:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_social_actuaciones" >
+                 </textarea>
+            </div>
+
+            Incidencias:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_social_incidencias" >
+                 </textarea>
+            </div>
+    
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step10');">
+                    &lt;&lt; ANTERIOR
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        
+
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+
+    <div class="modal-footer">
+        <button [disabled]="isProcessing" 
+        nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="savePAISocial();">
+            GUARDAR Y GENERAR PAI
+        </button>
+    </div>
+
+
+</ng-template>
+  
+
+
+

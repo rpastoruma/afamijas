@@ -1,0 +1,382 @@
+<nb-card>
+    <nb-card-header>
+        <div class="row float-start" >
+            <h4>PAI</h4>
+        </div>
+        <!--button [disabled]="theIdpatient==''" [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openPAIFisio(true)">Completar PAI</button-->
+        
+    </nb-card-header>
+    <nb-card-body>
+
+            <div style="margin-bottom: 10px;">
+                Para el usuario:
+                <ng-select (change)="getPatients(0)" [multiple]="false" [(ngModel)]="theIdpatient" name="idpatient" [clearable]="false" notFoundText="No se encuentran usuarios">
+                    <ng-option value="">TODOS</ng-option>
+                    <ng-option *ngFor="let u of allPatients" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}} - ({{u.membernumber}})</ng-option>
+                </ng-select>
+            </div>
+
+        <hr/>
+ 
+        <app-custom-table
+            [actions]="actions"
+            [keys]="['Nombre', 'DNI', 'Familiar/Cuidador principal', 'Tipo de servicio']"
+            [values]="patients"
+            [align]="['left', 'left', 'left', 'left']"
+            [filters]="[false, false, false, false]"
+            [sort]="[false, false, false, false]"
+            [widthToCollapse]="750"
+            [withPagination]="true"
+            [totalPages]="totalPages"
+            [page]="page"
+            [size]="size"
+            [loadingE]="loadingExcel"
+            [loading]="loadingPDF"
+            [hasExport]="true"
+            (actionSelected)="action($event)"
+            (changePage)="setPage($event)"
+            (filterEvent)="filter(0)"
+            [isProcessing]="isProcessing"
+            (exportData)="getExportData($event)"
+            [showSearchButton]="true"
+
+        >
+
+        </app-custom-table>
+    </nb-card-body>
+
+</nb-card>
+
+
+
+<ng-template #modalContent1 let-close="close">
+    <div class="modal-header"> 
+        <h6>PAI</h6>
+        <p>{{thePatient.documentid}} - {{thePatient.name}} {{thePatient.surname1}} {{thePatient.surname2}}</p>
+        <p>Nº expediente: {{thePatient.fs_num_expediente}}</p>
+        <nb-icon (click)="closeModal();close();" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+
+
+
+            <div id="step1">
+
+                <b>DATOS GENERALES DEL PAI</b>
+
+                <div style="margin-top: 10px;">
+                    Fecha de elaboración del PAI:
+                    <input type="date" class="form-control" [(ngModel)]="thePatient.pai_portada_fecha" name="thePatient-pai_portada_fecha">
+                </div>
+                
+                <div style="margin-top: 10px;">
+                    Representante o guardador legal:
+                    <textarea class="form-control" [(ngModel)]="thePatient.pai_portada_representante_guardador" name="thePatient-pai_portada_representante_guardador">
+                    </textarea>
+                </div>
+                
+                <div style="margin-bottom: 10px;">
+                    ¿Incapacitado legalmente?
+                    <ng-select 
+                        [items]="[
+                            { label: 'SÍ', value: true },
+                            { label: 'NO', value: false }
+                        ]"
+                        bindLabel="label"
+                        bindValue="value"
+                        [(ngModel)]="thePatient.fs_incapacitacion_judicial"
+                        name="thePatient-fs_incapacitacion_judicial"
+                        [clearable]="false"
+                        [searchable]="false">
+                    </ng-select>
+                </div>
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+            
+        </div>
+        
+        
+        <div style="display: none;" id="step2">
+
+
+            
+            <b>DATOS DEL CUIDADOR/A:</b><br/>
+
+           
+            <div style="margin-top: 10px;">
+                Nombre del cuidador:
+                <input type="text" class="form-control" [(ngModel)]="thePatient.pai_portada_cuidador_nombre" name="thePatient-pai_portada_cuidador_nombre">
+            </div>
+            
+            <div style="margin-top: 10px;">
+                Edad del cuidador:
+                <input type="number" class="form-control" [(ngModel)]="thePatient.pai_portada_cuidador_edad" name="thePatient-pai_portada_cuidador_edad">
+            </div>
+            
+            <div style="margin-top: 10px;">
+                DNI del cuidador:
+                <input type="text" class="form-control" [(ngModel)]="thePatient.pai_portada_cuidador_dni" name="thePatient-pai_portada_cuidador_dni">
+            </div>
+            
+            <div style="margin-top: 10px;">
+                Domicilio del cuidador:
+                <textarea class="form-control" [(ngModel)]="thePatient.pai_portada_cuidador_domicilio" name="thePatient-pai_portada_cuidador_domicilio">
+                </textarea>
+            </div>
+            
+            <div style="margin-top: 10px;">
+                Estado civil del cuidador:
+                <input type="text" class="form-control" [(ngModel)]="thePatient.pai_portada_cuidador_estado_civil" name="thePatient-pai_portada_cuidador_estado_civil">
+            </div>
+            
+            <div style="margin-top: 10px;">
+                Profesión del cuidador:
+                <input type="text" class="form-control" [(ngModel)]="thePatient.pai_portada_cuidador_profesion" name="thePatient-pai_portada_cuidador_profesion">
+            </div>
+            
+            <div style="margin-top: 10px;">
+                Relación con el usuario:
+                <input type="text" class="form-control" [(ngModel)]="thePatient.pai_portada_cuidador_relacion" name="thePatient-pai_portada_cuidador_relacion">
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                ¿Convive el usuario con otros cuidadores?
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_portada_cuidador_convive_otros" name="thePatient-pai_portada_cuidador_convive_otros" [clearable]="false" [searchable]="false">
+                    <ng-option value="NO">NO</ng-option>
+                    <ng-option value="SÍ">SÍ</ng-option>
+                </ng-select>
+            </div>
+
+            
+    
+    
+                <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                    <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step1');">
+                        &lt;&lt; ANTERIOR
+                    </button>
+                    &nbsp;&nbsp;
+                    <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
+                        SIGUIENTE &gt;&gt;
+                    </button>
+                </div>
+
+        </div>
+
+
+        
+        
+        <div style="display: none;" id="step3">
+
+
+            <b>DATOS SOCIO SANITARIOS:</b><br/>
+
+            <div style="margin-top: 10px;">
+                Nº Tarjeta sanitaria:
+                <input type="text" class="form-control" [(ngModel)]="thePatient.pai_portada_nss" name="thePatient-pai_portada_nss">
+            </div>
+            
+            <div style="margin-top: 10px;">
+                Seguro médico privado:
+                <input type="text" class="form-control" [(ngModel)]="thePatient.pai_portada_seguro_medico" name="thePatient-pai_portada_seguro_medico">
+            </div>
+            
+                                   
+    
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step4');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+        </div>
+
+
+        
+        
+        <div style="display: none;" id="step4">
+
+
+            <b>DATOS MÉDICOS IMPORTANTES:</b><br/>
+
+            <div style="margin-top: 10px;">
+                SE ENCUENTRA DIAGNOSTICADA DE LAS SIGUIENTES ENFERMEDADES RELEVANTES SEGÚN INFORMES MÉDICOS CONSULTADOS:
+                <textarea class="form-control" [(ngModel)]="thePatient.pai_portada_datos_medicos_enfermedades" name="thePatient-pai_portada_datos_medicos_enfermedades">
+                </textarea>
+            </div>
+            
+            <div style="margin-top: 10px;">
+                Reconocido Grado Minusvalía:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_portada_datos_medicos_grado_minusvalida" name="thePatient-pai_portada_datos_medicos_grado_minusvalida" [clearable]="false" [searchable]="false">
+                    <ng-option value="NO">NO</ng-option>
+                    <ng-option value="SÍ">SÍ</ng-option>
+                </ng-select>
+            </div>
+            
+            <div style="margin-top: 10px;">
+                Reconocido Grado Dependencia:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_portada_datos_medicos_grado_dependencia" name="thePatient-pai_portada_datos_medicos_grado_dependencia" [clearable]="false" [searchable]="false">
+                    <ng-option value="NO">NO</ng-option>
+                    <ng-option value="SÍ">SÍ</ng-option>
+                </ng-select>
+            </div>
+            
+                                   
+    
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step3');">
+                    &lt;&lt; ANTERIOR
+                </button>
+                &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step5');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+            </div>
+
+        </div>
+
+
+        
+     
+
+                
+        <div style="display: none;" id="step5">
+
+
+            
+            <b>PROFESIONALES QUE INTERVIENEN EN LA ELABORACIÓN DEL PAI:</b><br/>
+
+            <div style="margin-top: 10px;">
+                Nombre y Apellidos Profesional 1:
+                <input class="form-control" [(ngModel)]="thePatient.pai_portada_profesional_1" name="thePatient-pai_portada_profesional_1" />
+            </div>
+            <div style="margin-top: 10px;">
+                Categoría:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_portada_categoria_1" name="thePatient-pai_portada_categoria_1" [clearable]="false" [searchable]="false">
+                    <ng-option value="PSICÓLOGA/O">PSICÓLOGA/O</ng-option>
+                    <ng-option value="TERAPEUTA OCUPACIONAL">TERAPEUTA OCUPACIONAL</ng-option>
+                    <ng-option value="FISIOTERAPEUTA">FISIOTERAPEUTA</ng-option>
+                    <ng-option value="TRABAJADOR/A SOCIAL">TRABAJADOR/A SOCIAL</ng-option>
+                    <ng-option value="ENFEMERA/O">ENFEMERA/O</ng-option>
+                </ng-select>
+            </div>
+            
+            <div style="margin-top: 10px;">
+                Nombre y Apellidos Profesional 2:
+                <input class="form-control" [(ngModel)]="thePatient.pai_portada_profesional_2" name="thePatient-pai_portada_profesional_2" />
+            </div>
+            <div style="margin-top: 10px;">
+                Categoría:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_portada_categoria_2" name="thePatient-pai_portada_categoria_2" [clearable]="false" [searchable]="false">
+                    <ng-option value="PSICÓLOGA/O">PSICÓLOGA/O</ng-option>
+                    <ng-option value="TERAPEUTA OCUPACIONAL">TERAPEUTA OCUPACIONAL</ng-option>
+                    <ng-option value="FISIOTERAPEUTA">FISIOTERAPEUTA</ng-option>
+                    <ng-option value="TRABAJADOR/A SOCIAL">TRABAJADOR/A SOCIAL</ng-option>
+                    <ng-option value="ENFEMERA/O">ENFEMERA/O</ng-option>
+                </ng-select>
+            </div>
+            
+            <div style="margin-top: 10px;">
+                Nombre y Apellidos Profesional 3:
+                <input class="form-control" [(ngModel)]="thePatient.pai_portada_profesional_3" name="thePatient-pai_portada_profesional_3" />
+            </div>
+            <div style="margin-top: 10px;">
+                Categoría:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_portada_categoria_3" name="thePatient-pai_portada_categoria_3" [clearable]="false" [searchable]="false">
+                    <ng-option value="PSICÓLOGA/O">PSICÓLOGA/O</ng-option>
+                    <ng-option value="TERAPEUTA OCUPACIONAL">TERAPEUTA OCUPACIONAL</ng-option>
+                    <ng-option value="FISIOTERAPEUTA">FISIOTERAPEUTA</ng-option>
+                    <ng-option value="TRABAJADOR/A SOCIAL">TRABAJADOR/A SOCIAL</ng-option>
+                    <ng-option value="ENFEMERA/O">ENFEMERA/O</ng-option>
+                </ng-select>
+            </div>
+            
+            <div style="margin-top: 10px;">
+                Nombre y Apellidos Profesional 4:
+                <input class="form-control" [(ngModel)]="thePatient.pai_portada_profesional_4" name="thePatient-pai_portada_profesional_4" />
+            </div>
+            <div style="margin-top: 10px;">
+                Categoría:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_portada_categoria_4" name="thePatient-pai_portada_categoria_4" [clearable]="false" [searchable]="false">
+                    <ng-option value="PSICÓLOGA/O">PSICÓLOGA/O</ng-option>
+                    <ng-option value="TERAPEUTA OCUPACIONAL">TERAPEUTA OCUPACIONAL</ng-option>
+                    <ng-option value="FISIOTERAPEUTA">FISIOTERAPEUTA</ng-option>
+                    <ng-option value="TRABAJADOR/A SOCIAL">TRABAJADOR/A SOCIAL</ng-option>
+                    <ng-option value="ENFEMERA/O">ENFEMERA/O</ng-option>
+                </ng-select>
+            </div>
+            
+            <div style="margin-top: 10px;">
+                Nombre y Apellidos Profesional 5:
+                <input class="form-control" [(ngModel)]="thePatient.pai_portada_profesional_5" name="thePatient-pai_portada_profesional_5" />
+            </div>
+            <div style="margin-top: 10px;">
+                Categoría:
+                <ng-select [multiple]="false" [(ngModel)]="thePatient.pai_portada_categoria_5" name="thePatient-pai_portada_categoria_5" [clearable]="false" [searchable]="false">
+                    <ng-option value="PSICÓLOGA/O">PSICÓLOGA/O</ng-option>
+                    <ng-option value="TERAPEUTA OCUPACIONAL">TERAPEUTA OCUPACIONAL</ng-option>
+                    <ng-option value="FISIOTERAPEUTA">FISIOTERAPEUTA</ng-option>
+                    <ng-option value="TRABAJADOR/A SOCIAL">TRABAJADOR/A SOCIAL</ng-option>
+                    <ng-option value="ENFEMERA/O">ENFEMERA/O</ng-option>
+                </ng-select>
+            </div>
+            
+    
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step4');">
+                    &lt;&lt; ANTERIOR
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        
+
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+
+    <div class="modal-footer">
+        <button [disabled]="isProcessing" 
+        nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="savePAIPortada();">
+            GUARDAR Y GENERAR PAI
+        </button>
+    </div>
+
+
+</ng-template>
+  
+
+
+
+<nb-card *ngIf="hayreport">
+    <nb-card-body>
+        <div sytle="width:100%" #idhtml></div>
+        <nb-card-footer>
+            <button style="margin-right: 10px;" nbButton class="float-end" status="primary" (click)="copiarHtml()">Copiar al portapapeles</button>
+            <button style="margin-right: 10px; margin-top:20px" nbButton class="float-end" status="primary" (click)="imprimirCuadroResumen()">Descargar Cuadro Resumen</button>
+        </nb-card-footer>
+    </nb-card-body>
+    
+</nb-card>

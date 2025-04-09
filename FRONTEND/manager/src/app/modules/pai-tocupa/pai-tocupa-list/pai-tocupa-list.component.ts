@@ -1,4 +1,3 @@
-
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { NbDialogService, NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import {  parseDataExport, ActionDTO, CountryDTO, StateDTO, CityDTO, PatientDTO, MemberDTO } from 'src/app/shared/models/models';
@@ -27,11 +26,11 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import htmlToPdfmake from 'html-to-pdfmake';
 
 @Component({
-  selector: 'app-pai-psico-list',
-  templateUrl: './pai-psico-list.component.html',
-  styleUrls: ['./pai-psico-list.component.scss']
+  selector: 'app-pai-tocupa-list',
+  templateUrl: './pai-tocupa-list.component.html',
+  styleUrls: ['./pai-tocupa-list.component.scss']
 })
-export class PaiPsicoListComponent implements OnInit{
+export class PaiTocupaListComponent implements OnInit{
 
   
 
@@ -736,13 +735,13 @@ export class PaiPsicoListComponent implements OnInit{
         const selected = this.patientsObjects.find(item => item.id === event[1]);
         this.thePatient = selected;
   
-        this.openPAIPsico();
+        this.openPAITocupa();
     } 
   }
 
 
 
-  openPAIPsico()
+  openPAITocupa()
   {
 
 
@@ -753,21 +752,21 @@ export class PaiPsicoListComponent implements OnInit{
 
 
   
-  savePAIPsico()
+  savePAITocupa()
   {
     
-    this.patientsService.savePAIPsico(this.thePatient).subscribe(
+    this.patientsService.savePAITocupa(this.thePatient).subscribe(
       res => {
         this.isProcessing = false;
         this.thePatient = res;
         this.thePatient.pai_psico_fecha_diagnostico = this.localDateTime2Date(res.pai_psico_fecha_diagnostico);
 
-        this.openDocumentRegisterHTML(this.thePatient.pai_psico_url, 'PAI-PSICOLOGIA-' + this.thePatient.documentid)
+        this.openDocumentRegisterHTML(this.thePatient.pai_tocupa_url, 'PAI-TERAPIA-OCUPACIONAL-' + this.thePatient.documentid)
       },
       error => {
         this.isProcessing = false;
-        console.error("savePAIPsico():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido grabar el PAI de PSICOLOGIA.",
+        console.error("savePAITocupa():"+JSON.stringify(error));
+        this.toastService.show("No se ha podido grabar el PAI de TERAPIA OCUPACIONAL.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
@@ -788,7 +787,6 @@ export class PaiPsicoListComponent implements OnInit{
     document.getElementById('step5').style.display = 'none';
     document.getElementById('step6').style.display = 'none';
     document.getElementById('step7').style.display = 'none';
-    document.getElementById('step8').style.display = 'none';
 
     document.getElementById(step).style.display = 'block';
   }

@@ -714,6 +714,341 @@ public class User
 
 
 
+	//PAI TOCUPA
+
+	private String pai_tocupa_nivel_independencia;
+
+	private String pai_tocupa_plan_motriz;
+
+	private String pai_tocupa_alimentacion;
+
+	private String pai_tocupa_wc;
+
+	private String pai_tocupa_aseo;
+
+	private String pai_tocupa_deambular;
+
+	private String pai_tocupa_transferencias;
+
+	private String pai_tocupa_vestido;
+
+	private String pai_tocupa_bano;
+
+	private String pai_tocupa_escaolones;
+
+	private String pai_tocupa_esfinteres;
+
+	private String pai_tocupa_dinero;
+
+	private String pai_tocupa_compras;
+
+	private String pai_tocupa_telefono;
+
+	private String pai_tocupa_casa;
+
+	private String pai_tocupa_calle;
+
+	private String pai_tocupa_medicacion;
+
+	private String pai_tocupa_indice_barthel;
+
+	private String pai_tocupa_escala_actividad;
+
+	private String pai_tocupa_disfruta_tiempo;
+
+	private String pai_tocupa_espacios_ocio;
+
+	private String pai_tocupa_disfruta_ocio;
+
+	private String pai_tocupa_relacion_otros;
+
+	private String pai_tocupa_propios_objetivos;
+
+	private String pai_tocupa_participa_actividades;
+
+	private String pai_tocupa_actividades_iniciativa_propia;
+
+
+	private String pai_tocupa_valoraciones; //CUADRO RESUMEN
+
+	private String pai_tocupa_actuaciones; //CUADRO RESUMEN
+
+	private String pai_tocupa_incidencias;  //CUADRO RESUMEN
+
+
+
+	//PAI ENFER
+
+
+	private String pai_enfer_diagnostico;
+
+	private String pai_enfer_problemas_audio;
+
+	private String pai_enfer_problemas_audio_text;
+
+	private String pai_enfer_uso_audifono;
+
+	private String pai_enfer_problemas_vision;
+
+	private String pai_enfer_problemas_vision_text;
+
+	private String pai_enfer_uso_gafas;
+
+	private String pai_enfer_tension;
+
+	private String pai_enfer_uso_medicacion;
+
+	private String pai_enfer_diabetes;
+
+	private String pai_enfer_diabetes_text;
+
+	private String pai_enfer_alergias;
+
+	private String pai_enfer_otras_enfermedades;
+
+	private String pai_enfer_tratamiento_medicamento_1;
+	private String pai_enfer_tratamiento_medicamento_2;
+	private String pai_enfer_tratamiento_medicamento_3;
+	private String pai_enfer_tratamiento_medicamento_4;
+
+	private String pai_enfer_tratamiento_dosis_1;
+	private String pai_enfer_tratamiento_dosis_2;
+	private String pai_enfer_tratamiento_dosis_3;
+	private String pai_enfer_tratamiento_dosis_4;
+
+	private String pai_enfer_tratamiento_fecha_1;
+	private String pai_enfer_tratamiento_fecha_2;
+	private String pai_enfer_tratamiento_fecha_3;
+	private String pai_enfer_tratamiento_fecha_4;
+
+	private String pai_enfer_tratamiento_para_1;
+	private String pai_enfer_tratamiento_para_2;
+	private String pai_enfer_tratamiento_para_3;
+	private String pai_enfer_tratamiento_para_4;
+
+
+	private String pai_enfer_medicacion_centro;
+
+	private String pai_enfer_medicacion_centro_text;
+
+
+	private String pai_enfer_medicacion_puntual;
+
+	private String pai_enfer_wc_esfinteres;
+
+	private String pai_enfer_wc_retencion;
+
+	private String pai_enfer_wc_estrenimiento;
+
+	private String pai_enfer_wc_acompanam;
+
+
+	private String pai_enfer_alim_alergias;
+
+	private String pai_enfer_alim_alergias_text;
+
+	private String pai_enfer_alim_dieta;
+
+	private String pai_enfer_alim_dieta_text;
+
+	private String pai_enfer_alim_problemas_deglucion;
+
+	private String pai_enfer_alim_espesantes;
+
+	private String pai_enfer_alim_ayuda;
+
+	private String pai_enfer_alim_observaciones;
+
+	private String pai_enfer_valoraciones; //CUADRO RESUMEN
+
+	private String pai_enfer_actuaciones; //CUADRO RESUMEN
+
+	private String pai_enfer_incidencias;  //CUADRO RESUMEN
+
+
+
+
+
+	//PAI SOCIAL
+
+	private String pai_social_historia;
+
+	private String pai_social_informes;
+
+	private String pai_social_informes_text;
+
+	private String pai_social_valoracion_disca;
+
+	private String pai_social_valoracion_disca_fecha;
+
+	private String pai_social_valoracion_disca_ca;
+
+	private String pai_social_valoracion_disca_grado;
+
+	private String pai_social_3_persona;
+
+	private String pai_social_ayudas_tecnicas;
+
+	private String pai_social_ayudas_tecnicas_text;
+
+	private String pai_social_movilidad;
+
+	private String pai_social_ley_dependencai;
+
+	private String pai_social_grado_y_nivel;
+
+	private String pai_social_cuidador;
+
+	private String pai_social_relacion_cuidador;
+
+	private String pai_social_indicadores;
+
+	private String pai_social_apoyos;
+
+	private String pai_social_vive;
+
+	private String pai_social_domicilio_obstaculos;
+
+	private String pai_social_domicilio_ayudas_tecnicas;
+
+	private String pai_social_domicilio_confort;
+
+	private String pai_social_domicilio_actual_quiere;
+
+	private String pai_social_domicilio_actual_otro;
+
+	private String pai_social_domicilio_actula_residencia;
+
+	private String pai_social_apoyo_tipo1;
+	private String pai_social_apoyo_tipo2;
+	private String pai_social_apoyo_tipo3;
+	private String pai_social_apoyo_tipo4;
+
+	private String pai_social_apoyo_titularidad1;
+	private String pai_social_apoyo_titularidad2;
+	private String pai_social_apoyo_titularidad3;
+	private String pai_social_apoyo_titularidad4;
+
+	private String pai_social_apoyo_coste1;
+	private String pai_social_apoyo_coste2;
+	private String pai_social_apoyo_coste3;
+	private String pai_social_apoyo_coste4;
+
+	private String pai_social_apoyo_aportacion1;
+	private String pai_social_apoyo_aportacion2;
+	private String pai_social_apoyo_aportacion3;
+	private String pai_social_apoyo_aportacion4;
+
+
+	private String pai_social_apoyo_dom_prestacion1;
+	private String pai_social_apoyo_dom_prestacion2;
+	private String pai_social_apoyo_dom_prestacion3;
+	private String pai_social_apoyo_dom_prestacion4;
+
+	private String pai_social_apoyo_dom_intensidad1;
+	private String pai_social_apoyo_dom_intensidad2;
+	private String pai_social_apoyo_dom_intensidad3;
+	private String pai_social_apoyo_dom_intensidad4;
+
+	private String pai_social_apoyo_dom_coste1;
+	private String pai_social_apoyo_dom_coste2;
+	private String pai_social_apoyo_dom_coste3;
+	private String pai_social_apoyo_dom_coste4;
+
+	private String pai_social_apoyo_dom_aportacion1;
+	private String pai_social_apoyo_dom_aportacion2;
+	private String pai_social_apoyo_dom_aportacion3;
+	private String pai_social_apoyo_dom_aportacion4;
+
+	private String pai_social_apoyo_otras_prestacion1;
+	private String pai_social_apoyo_otras_prestacion2;
+	private String pai_social_apoyo_otras_prestacion3;
+	private String pai_social_apoyo_otras_prestacion4;
+
+	private String pai_social_apoyo_otras_titularidad1;
+	private String pai_social_apoyo_otras_titularidad2;
+	private String pai_social_apoyo_otras_titularidad3;
+	private String pai_social_apoyo_otras_titularidad4;
+
+	private String pai_social_apoyo_otras_intensidad1;
+	private String pai_social_apoyo_otras_intensidad2;
+	private String pai_social_apoyo_otras_intensidad3;
+	private String pai_social_apoyo_otras_intensidad4;
+
+
+	private String pai_social_ingresos;
+
+	private String pai_social_ingresos_familia;
+
+	private String pai_social_ingresos_cubre;
+
+	private String pai_social_nivel_estudios;
+
+	private String pai_social_relaciones;
+
+	private String pai_social_necesidades;
+
+	private String pai_social_objetivos;
+
+
+	private String pai_social_valoraciones; //CUADRO RESUMEN
+
+	private String pai_social_actuaciones; //CUADRO RESUMEN
+
+	private String pai_social_incidencias;  //CUADRO RESUMEN
+
+
+	//PAI PORTADA
+	private String pai_portada_fecha;
+
+	private String pai_portada_representante_guardador;
+
+	private String pai_portada_cuidador_nombre;
+
+	private String pai_portada_cuidador_edad;
+
+	private String pai_portada_cuidador_dni;
+
+	private String pai_portada_cuidador_domicilio;
+
+	private String pai_portada_cuidador_estado_civil;
+
+	private String pai_portada_cuidador_profesion;
+
+	private String pai_portada_cuidador_relacion;
+
+	private String pai_portada_cuidador_convive_otros;
+
+	private String pai_portada_nss;
+
+	private String pai_portada_seguro_medico;
+
+	private String pai_portada_datos_medicos_enfermedades;
+
+	private String pai_portada_datos_medicos_grado_minusvalida;
+
+	private String pai_portada_datos_medicos_grado_dependencia;
+
+	private String pai_portada_profesional_1;
+
+	private String pai_portada_categoria_1;
+
+	private String pai_portada_profesional_2;
+
+	private String pai_portada_categoria_2;
+
+	private String pai_portada_profesional_3;
+
+	private String pai_portada_categoria_3;
+
+	private String pai_portada_profesional_4;
+
+	private String pai_portada_categoria_4;
+
+	private String pai_portada_profesional_5;
+
+	private String pai_portada_categoria_5;
+
 
 
 
@@ -3685,6 +4020,1438 @@ public class User
 
 	public void setPai_psico_incidencias(String pai_psico_incidencias) {
 		this.pai_psico_incidencias = pai_psico_incidencias;
+	}
+
+	public String getPai_tocupa_nivel_independencia() {
+		return pai_tocupa_nivel_independencia;
+	}
+
+	public void setPai_tocupa_nivel_independencia(String pai_tocupa_nivel_independencia) {
+		this.pai_tocupa_nivel_independencia = pai_tocupa_nivel_independencia;
+	}
+
+	public String getPai_tocupa_plan_motriz() {
+		return pai_tocupa_plan_motriz;
+	}
+
+	public void setPai_tocupa_plan_motriz(String pai_tocupa_plan_motriz) {
+		this.pai_tocupa_plan_motriz = pai_tocupa_plan_motriz;
+	}
+
+	public String getPai_tocupa_alimentacion() {
+		return pai_tocupa_alimentacion;
+	}
+
+	public void setPai_tocupa_alimentacion(String pai_tocupa_alimentacion) {
+		this.pai_tocupa_alimentacion = pai_tocupa_alimentacion;
+	}
+
+	public String getPai_tocupa_wc() {
+		return pai_tocupa_wc;
+	}
+
+	public void setPai_tocupa_wc(String pai_tocupa_wc) {
+		this.pai_tocupa_wc = pai_tocupa_wc;
+	}
+
+	public String getPai_tocupa_aseo() {
+		return pai_tocupa_aseo;
+	}
+
+	public void setPai_tocupa_aseo(String pai_tocupa_aseo) {
+		this.pai_tocupa_aseo = pai_tocupa_aseo;
+	}
+
+	public String getPai_tocupa_deambular() {
+		return pai_tocupa_deambular;
+	}
+
+	public void setPai_tocupa_deambular(String pai_tocupa_deambular) {
+		this.pai_tocupa_deambular = pai_tocupa_deambular;
+	}
+
+	public String getPai_tocupa_transferencias() {
+		return pai_tocupa_transferencias;
+	}
+
+	public void setPai_tocupa_transferencias(String pai_tocupa_transferencias) {
+		this.pai_tocupa_transferencias = pai_tocupa_transferencias;
+	}
+
+	public String getPai_tocupa_vestido() {
+		return pai_tocupa_vestido;
+	}
+
+	public void setPai_tocupa_vestido(String pai_tocupa_vestido) {
+		this.pai_tocupa_vestido = pai_tocupa_vestido;
+	}
+
+	public String getPai_tocupa_bano() {
+		return pai_tocupa_bano;
+	}
+
+	public void setPai_tocupa_bano(String pai_tocupa_bano) {
+		this.pai_tocupa_bano = pai_tocupa_bano;
+	}
+
+	public String getPai_tocupa_escaolones() {
+		return pai_tocupa_escaolones;
+	}
+
+	public void setPai_tocupa_escaolones(String pai_tocupa_escaolones) {
+		this.pai_tocupa_escaolones = pai_tocupa_escaolones;
+	}
+
+	public String getPai_tocupa_esfinteres() {
+		return pai_tocupa_esfinteres;
+	}
+
+	public void setPai_tocupa_esfinteres(String pai_tocupa_esfinteres) {
+		this.pai_tocupa_esfinteres = pai_tocupa_esfinteres;
+	}
+
+	public String getPai_tocupa_dinero() {
+		return pai_tocupa_dinero;
+	}
+
+	public void setPai_tocupa_dinero(String pai_tocupa_dinero) {
+		this.pai_tocupa_dinero = pai_tocupa_dinero;
+	}
+
+	public String getPai_tocupa_compras() {
+		return pai_tocupa_compras;
+	}
+
+	public void setPai_tocupa_compras(String pai_tocupa_compras) {
+		this.pai_tocupa_compras = pai_tocupa_compras;
+	}
+
+	public String getPai_tocupa_telefono() {
+		return pai_tocupa_telefono;
+	}
+
+	public void setPai_tocupa_telefono(String pai_tocupa_telefono) {
+		this.pai_tocupa_telefono = pai_tocupa_telefono;
+	}
+
+	public String getPai_tocupa_casa() {
+		return pai_tocupa_casa;
+	}
+
+	public void setPai_tocupa_casa(String pai_tocupa_casa) {
+		this.pai_tocupa_casa = pai_tocupa_casa;
+	}
+
+	public String getPai_tocupa_calle() {
+		return pai_tocupa_calle;
+	}
+
+	public void setPai_tocupa_calle(String pai_tocupa_calle) {
+		this.pai_tocupa_calle = pai_tocupa_calle;
+	}
+
+	public String getPai_tocupa_medicacion() {
+		return pai_tocupa_medicacion;
+	}
+
+	public void setPai_tocupa_medicacion(String pai_tocupa_medicacion) {
+		this.pai_tocupa_medicacion = pai_tocupa_medicacion;
+	}
+
+	public String getPai_tocupa_indice_barthel() {
+		return pai_tocupa_indice_barthel;
+	}
+
+	public void setPai_tocupa_indice_barthel(String pai_tocupa_indice_barthel) {
+		this.pai_tocupa_indice_barthel = pai_tocupa_indice_barthel;
+	}
+
+	public String getPai_tocupa_escala_actividad() {
+		return pai_tocupa_escala_actividad;
+	}
+
+	public void setPai_tocupa_escala_actividad(String pai_tocupa_escala_actividad) {
+		this.pai_tocupa_escala_actividad = pai_tocupa_escala_actividad;
+	}
+
+	public String getPai_tocupa_disfruta_tiempo() {
+		return pai_tocupa_disfruta_tiempo;
+	}
+
+	public void setPai_tocupa_disfruta_tiempo(String pai_tocupa_disfruta_tiempo) {
+		this.pai_tocupa_disfruta_tiempo = pai_tocupa_disfruta_tiempo;
+	}
+
+	public String getPai_tocupa_espacios_ocio() {
+		return pai_tocupa_espacios_ocio;
+	}
+
+	public void setPai_tocupa_espacios_ocio(String pai_tocupa_espacios_ocio) {
+		this.pai_tocupa_espacios_ocio = pai_tocupa_espacios_ocio;
+	}
+
+	public String getPai_tocupa_disfruta_ocio() {
+		return pai_tocupa_disfruta_ocio;
+	}
+
+	public void setPai_tocupa_disfruta_ocio(String pai_tocupa_disfruta_ocio) {
+		this.pai_tocupa_disfruta_ocio = pai_tocupa_disfruta_ocio;
+	}
+
+	public String getPai_tocupa_relacion_otros() {
+		return pai_tocupa_relacion_otros;
+	}
+
+	public void setPai_tocupa_relacion_otros(String pai_tocupa_relacion_otros) {
+		this.pai_tocupa_relacion_otros = pai_tocupa_relacion_otros;
+	}
+
+	public String getPai_tocupa_propios_objetivos() {
+		return pai_tocupa_propios_objetivos;
+	}
+
+	public void setPai_tocupa_propios_objetivos(String pai_tocupa_propios_objetivos) {
+		this.pai_tocupa_propios_objetivos = pai_tocupa_propios_objetivos;
+	}
+
+	public String getPai_tocupa_participa_actividades() {
+		return pai_tocupa_participa_actividades;
+	}
+
+	public void setPai_tocupa_participa_actividades(String pai_tocupa_participa_actividades) {
+		this.pai_tocupa_participa_actividades = pai_tocupa_participa_actividades;
+	}
+
+	public String getPai_tocupa_actividades_iniciativa_propia() {
+		return pai_tocupa_actividades_iniciativa_propia;
+	}
+
+	public void setPai_tocupa_actividades_iniciativa_propia(String pai_tocupa_actividades_iniciativa_propia) {
+		this.pai_tocupa_actividades_iniciativa_propia = pai_tocupa_actividades_iniciativa_propia;
+	}
+
+	public String getPai_tocupa_valoraciones() {
+		return pai_tocupa_valoraciones;
+	}
+
+	public void setPai_tocupa_valoraciones(String pai_tocupa_valoraciones) {
+		this.pai_tocupa_valoraciones = pai_tocupa_valoraciones;
+	}
+
+	public String getPai_tocupa_actuaciones() {
+		return pai_tocupa_actuaciones;
+	}
+
+	public void setPai_tocupa_actuaciones(String pai_tocupa_actuaciones) {
+		this.pai_tocupa_actuaciones = pai_tocupa_actuaciones;
+	}
+
+	public String getPai_tocupa_incidencias() {
+		return pai_tocupa_incidencias;
+	}
+
+	public void setPai_tocupa_incidencias(String pai_tocupa_incidencias) {
+		this.pai_tocupa_incidencias = pai_tocupa_incidencias;
+	}
+
+	public String getPai_enfer_diagnostico() {
+		return pai_enfer_diagnostico;
+	}
+
+	public void setPai_enfer_diagnostico(String pai_enfer_diagnostico) {
+		this.pai_enfer_diagnostico = pai_enfer_diagnostico;
+	}
+
+	public String getPai_enfer_problemas_audio() {
+		return pai_enfer_problemas_audio;
+	}
+
+	public void setPai_enfer_problemas_audio(String pai_enfer_problemas_audio) {
+		this.pai_enfer_problemas_audio = pai_enfer_problemas_audio;
+	}
+
+	public String getPai_enfer_problemas_audio_text() {
+		return pai_enfer_problemas_audio_text;
+	}
+
+	public void setPai_enfer_problemas_audio_text(String pai_enfer_problemas_audio_text) {
+		this.pai_enfer_problemas_audio_text = pai_enfer_problemas_audio_text;
+	}
+
+	public String getPai_enfer_problemas_vision() {
+		return pai_enfer_problemas_vision;
+	}
+
+	public void setPai_enfer_problemas_vision(String pai_enfer_problemas_vision) {
+		this.pai_enfer_problemas_vision = pai_enfer_problemas_vision;
+	}
+
+	public String getPai_enfer_problemas_vision_text() {
+		return pai_enfer_problemas_vision_text;
+	}
+
+	public void setPai_enfer_problemas_vision_text(String pai_enfer_problemas_vision_text) {
+		this.pai_enfer_problemas_vision_text = pai_enfer_problemas_vision_text;
+	}
+
+	public String getPai_enfer_uso_gafas() {
+		return pai_enfer_uso_gafas;
+	}
+
+	public void setPai_enfer_uso_gafas(String pai_enfer_uso_gafas) {
+		this.pai_enfer_uso_gafas = pai_enfer_uso_gafas;
+	}
+
+	public String getPai_enfer_tension() {
+		return pai_enfer_tension;
+	}
+
+	public void setPai_enfer_tension(String pai_enfer_tension) {
+		this.pai_enfer_tension = pai_enfer_tension;
+	}
+
+	public String getPai_enfer_uso_medicacion() {
+		return pai_enfer_uso_medicacion;
+	}
+
+	public void setPai_enfer_uso_medicacion(String pai_enfer_uso_medicacion) {
+		this.pai_enfer_uso_medicacion = pai_enfer_uso_medicacion;
+	}
+
+	public String getPai_enfer_diabetes() {
+		return pai_enfer_diabetes;
+	}
+
+	public void setPai_enfer_diabetes(String pai_enfer_diabetes) {
+		this.pai_enfer_diabetes = pai_enfer_diabetes;
+	}
+
+	public String getPai_enfer_diabetes_text() {
+		return pai_enfer_diabetes_text;
+	}
+
+	public void setPai_enfer_diabetes_text(String pai_enfer_diabetes_text) {
+		this.pai_enfer_diabetes_text = pai_enfer_diabetes_text;
+	}
+
+	public String getPai_enfer_alergias() {
+		return pai_enfer_alergias;
+	}
+
+	public void setPai_enfer_alergias(String pai_enfer_alergias) {
+		this.pai_enfer_alergias = pai_enfer_alergias;
+	}
+
+	public String getPai_enfer_otras_enfermedades() {
+		return pai_enfer_otras_enfermedades;
+	}
+
+	public void setPai_enfer_otras_enfermedades(String pai_enfer_otras_enfermedades) {
+		this.pai_enfer_otras_enfermedades = pai_enfer_otras_enfermedades;
+	}
+
+	public String getPai_enfer_tratamiento_medicamento_1() {
+		return pai_enfer_tratamiento_medicamento_1;
+	}
+
+	public void setPai_enfer_tratamiento_medicamento_1(String pai_enfer_tratamiento_medicamento_1) {
+		this.pai_enfer_tratamiento_medicamento_1 = pai_enfer_tratamiento_medicamento_1;
+	}
+
+	public String getPai_enfer_tratamiento_medicamento_2() {
+		return pai_enfer_tratamiento_medicamento_2;
+	}
+
+	public void setPai_enfer_tratamiento_medicamento_2(String pai_enfer_tratamiento_medicamento_2) {
+		this.pai_enfer_tratamiento_medicamento_2 = pai_enfer_tratamiento_medicamento_2;
+	}
+
+	public String getPai_enfer_tratamiento_medicamento_3() {
+		return pai_enfer_tratamiento_medicamento_3;
+	}
+
+	public void setPai_enfer_tratamiento_medicamento_3(String pai_enfer_tratamiento_medicamento_3) {
+		this.pai_enfer_tratamiento_medicamento_3 = pai_enfer_tratamiento_medicamento_3;
+	}
+
+	public String getPai_enfer_tratamiento_medicamento_4() {
+		return pai_enfer_tratamiento_medicamento_4;
+	}
+
+	public void setPai_enfer_tratamiento_medicamento_4(String pai_enfer_tratamiento_medicamento_4) {
+		this.pai_enfer_tratamiento_medicamento_4 = pai_enfer_tratamiento_medicamento_4;
+	}
+
+	public String getPai_enfer_tratamiento_dosis_1() {
+		return pai_enfer_tratamiento_dosis_1;
+	}
+
+	public void setPai_enfer_tratamiento_dosis_1(String pai_enfer_tratamiento_dosis_1) {
+		this.pai_enfer_tratamiento_dosis_1 = pai_enfer_tratamiento_dosis_1;
+	}
+
+	public String getPai_enfer_tratamiento_dosis_2() {
+		return pai_enfer_tratamiento_dosis_2;
+	}
+
+	public void setPai_enfer_tratamiento_dosis_2(String pai_enfer_tratamiento_dosis_2) {
+		this.pai_enfer_tratamiento_dosis_2 = pai_enfer_tratamiento_dosis_2;
+	}
+
+	public String getPai_enfer_tratamiento_dosis_3() {
+		return pai_enfer_tratamiento_dosis_3;
+	}
+
+	public void setPai_enfer_tratamiento_dosis_3(String pai_enfer_tratamiento_dosis_3) {
+		this.pai_enfer_tratamiento_dosis_3 = pai_enfer_tratamiento_dosis_3;
+	}
+
+	public String getPai_enfer_tratamiento_dosis_4() {
+		return pai_enfer_tratamiento_dosis_4;
+	}
+
+	public void setPai_enfer_tratamiento_dosis_4(String pai_enfer_tratamiento_dosis_4) {
+		this.pai_enfer_tratamiento_dosis_4 = pai_enfer_tratamiento_dosis_4;
+	}
+
+	public String getPai_enfer_tratamiento_fecha_1() {
+		return pai_enfer_tratamiento_fecha_1;
+	}
+
+	public void setPai_enfer_tratamiento_fecha_1(String pai_enfer_tratamiento_fecha_1) {
+		this.pai_enfer_tratamiento_fecha_1 = pai_enfer_tratamiento_fecha_1;
+	}
+
+	public String getPai_enfer_tratamiento_fecha_2() {
+		return pai_enfer_tratamiento_fecha_2;
+	}
+
+	public void setPai_enfer_tratamiento_fecha_2(String pai_enfer_tratamiento_fecha_2) {
+		this.pai_enfer_tratamiento_fecha_2 = pai_enfer_tratamiento_fecha_2;
+	}
+
+	public String getPai_enfer_tratamiento_fecha_3() {
+		return pai_enfer_tratamiento_fecha_3;
+	}
+
+	public void setPai_enfer_tratamiento_fecha_3(String pai_enfer_tratamiento_fecha_3) {
+		this.pai_enfer_tratamiento_fecha_3 = pai_enfer_tratamiento_fecha_3;
+	}
+
+	public String getPai_enfer_tratamiento_fecha_4() {
+		return pai_enfer_tratamiento_fecha_4;
+	}
+
+	public void setPai_enfer_tratamiento_fecha_4(String pai_enfer_tratamiento_fecha_4) {
+		this.pai_enfer_tratamiento_fecha_4 = pai_enfer_tratamiento_fecha_4;
+	}
+
+	public String getPai_enfer_tratamiento_para_1() {
+		return pai_enfer_tratamiento_para_1;
+	}
+
+	public void setPai_enfer_tratamiento_para_1(String pai_enfer_tratamiento_para_1) {
+		this.pai_enfer_tratamiento_para_1 = pai_enfer_tratamiento_para_1;
+	}
+
+	public String getPai_enfer_tratamiento_para_2() {
+		return pai_enfer_tratamiento_para_2;
+	}
+
+	public void setPai_enfer_tratamiento_para_2(String pai_enfer_tratamiento_para_2) {
+		this.pai_enfer_tratamiento_para_2 = pai_enfer_tratamiento_para_2;
+	}
+
+	public String getPai_enfer_tratamiento_para_3() {
+		return pai_enfer_tratamiento_para_3;
+	}
+
+	public void setPai_enfer_tratamiento_para_3(String pai_enfer_tratamiento_para_3) {
+		this.pai_enfer_tratamiento_para_3 = pai_enfer_tratamiento_para_3;
+	}
+
+	public String getPai_enfer_tratamiento_para_4() {
+		return pai_enfer_tratamiento_para_4;
+	}
+
+	public void setPai_enfer_tratamiento_para_4(String pai_enfer_tratamiento_para_4) {
+		this.pai_enfer_tratamiento_para_4 = pai_enfer_tratamiento_para_4;
+	}
+
+	public String getPai_enfer_medicacion_centro() {
+		return pai_enfer_medicacion_centro;
+	}
+
+	public void setPai_enfer_medicacion_centro(String pai_enfer_medicacion_centro) {
+		this.pai_enfer_medicacion_centro = pai_enfer_medicacion_centro;
+	}
+
+	public String getPai_enfer_medicacion_centro_text() {
+		return pai_enfer_medicacion_centro_text;
+	}
+
+	public void setPai_enfer_medicacion_centro_text(String pai_enfer_medicacion_centro_text) {
+		this.pai_enfer_medicacion_centro_text = pai_enfer_medicacion_centro_text;
+	}
+
+	public String getPai_enfer_medicacion_puntual() {
+		return pai_enfer_medicacion_puntual;
+	}
+
+	public void setPai_enfer_medicacion_puntual(String pai_enfer_medicacion_puntual) {
+		this.pai_enfer_medicacion_puntual = pai_enfer_medicacion_puntual;
+	}
+
+	public String getPai_enfer_wc_esfinteres() {
+		return pai_enfer_wc_esfinteres;
+	}
+
+	public void setPai_enfer_wc_esfinteres(String pai_enfer_wc_esfinteres) {
+		this.pai_enfer_wc_esfinteres = pai_enfer_wc_esfinteres;
+	}
+
+	public String getPai_enfer_wc_retencion() {
+		return pai_enfer_wc_retencion;
+	}
+
+	public void setPai_enfer_wc_retencion(String pai_enfer_wc_retencion) {
+		this.pai_enfer_wc_retencion = pai_enfer_wc_retencion;
+	}
+
+	public String getPai_enfer_wc_estrenimiento() {
+		return pai_enfer_wc_estrenimiento;
+	}
+
+	public void setPai_enfer_wc_estrenimiento(String pai_enfer_wc_estrenimiento) {
+		this.pai_enfer_wc_estrenimiento = pai_enfer_wc_estrenimiento;
+	}
+
+	public String getPai_enfer_wc_acompanam() {
+		return pai_enfer_wc_acompanam;
+	}
+
+	public void setPai_enfer_wc_acompanam(String pai_enfer_wc_acompanam) {
+		this.pai_enfer_wc_acompanam = pai_enfer_wc_acompanam;
+	}
+
+	public String getPai_enfer_alim_alergias() {
+		return pai_enfer_alim_alergias;
+	}
+
+	public void setPai_enfer_alim_alergias(String pai_enfer_alim_alergias) {
+		this.pai_enfer_alim_alergias = pai_enfer_alim_alergias;
+	}
+
+	public String getPai_enfer_alim_alergias_text() {
+		return pai_enfer_alim_alergias_text;
+	}
+
+	public void setPai_enfer_alim_alergias_text(String pai_enfer_alim_alergias_text) {
+		this.pai_enfer_alim_alergias_text = pai_enfer_alim_alergias_text;
+	}
+
+	public String getPai_enfer_alim_dieta() {
+		return pai_enfer_alim_dieta;
+	}
+
+	public void setPai_enfer_alim_dieta(String pai_enfer_alim_dieta) {
+		this.pai_enfer_alim_dieta = pai_enfer_alim_dieta;
+	}
+
+	public String getPai_enfer_alim_dieta_text() {
+		return pai_enfer_alim_dieta_text;
+	}
+
+	public void setPai_enfer_alim_dieta_text(String pai_enfer_alim_dieta_text) {
+		this.pai_enfer_alim_dieta_text = pai_enfer_alim_dieta_text;
+	}
+
+	public String getPai_enfer_alim_problemas_deglucion() {
+		return pai_enfer_alim_problemas_deglucion;
+	}
+
+	public void setPai_enfer_alim_problemas_deglucion(String pai_enfer_alim_problemas_deglucion) {
+		this.pai_enfer_alim_problemas_deglucion = pai_enfer_alim_problemas_deglucion;
+	}
+
+	public String getPai_enfer_alim_espesantes() {
+		return pai_enfer_alim_espesantes;
+	}
+
+	public void setPai_enfer_alim_espesantes(String pai_enfer_alim_espesantes) {
+		this.pai_enfer_alim_espesantes = pai_enfer_alim_espesantes;
+	}
+
+	public String getPai_enfer_alim_ayuda() {
+		return pai_enfer_alim_ayuda;
+	}
+
+	public void setPai_enfer_alim_ayuda(String pai_enfer_alim_ayuda) {
+		this.pai_enfer_alim_ayuda = pai_enfer_alim_ayuda;
+	}
+
+	public String getPai_enfer_alim_observaciones() {
+		return pai_enfer_alim_observaciones;
+	}
+
+	public void setPai_enfer_alim_observaciones(String pai_enfer_alim_observaciones) {
+		this.pai_enfer_alim_observaciones = pai_enfer_alim_observaciones;
+	}
+
+	public String getPai_enfer_valoraciones() {
+		return pai_enfer_valoraciones;
+	}
+
+	public void setPai_enfer_valoraciones(String pai_enfer_valoraciones) {
+		this.pai_enfer_valoraciones = pai_enfer_valoraciones;
+	}
+
+	public String getPai_enfer_actuaciones() {
+		return pai_enfer_actuaciones;
+	}
+
+	public void setPai_enfer_actuaciones(String pai_enfer_actuaciones) {
+		this.pai_enfer_actuaciones = pai_enfer_actuaciones;
+	}
+
+	public String getPai_enfer_incidencias() {
+		return pai_enfer_incidencias;
+	}
+
+	public void setPai_enfer_incidencias(String pai_enfer_incidencias) {
+		this.pai_enfer_incidencias = pai_enfer_incidencias;
+	}
+
+	public String getPai_enfer_uso_audifono() {
+		return pai_enfer_uso_audifono;
+	}
+
+	public void setPai_enfer_uso_audifono(String pai_enfer_uso_audifono) {
+		this.pai_enfer_uso_audifono = pai_enfer_uso_audifono;
+	}
+
+	public String getPai_social_historia() {
+		return pai_social_historia;
+	}
+
+	public void setPai_social_historia(String pai_social_historia) {
+		this.pai_social_historia = pai_social_historia;
+	}
+
+	public String getPai_social_informes() {
+		return pai_social_informes;
+	}
+
+	public void setPai_social_informes(String pai_social_informes) {
+		this.pai_social_informes = pai_social_informes;
+	}
+
+	public String getPai_social_informes_text() {
+		return pai_social_informes_text;
+	}
+
+	public void setPai_social_informes_text(String pai_social_informes_text) {
+		this.pai_social_informes_text = pai_social_informes_text;
+	}
+
+	public String getPai_social_valoracion_disca() {
+		return pai_social_valoracion_disca;
+	}
+
+	public void setPai_social_valoracion_disca(String pai_social_valoracion_disca) {
+		this.pai_social_valoracion_disca = pai_social_valoracion_disca;
+	}
+
+	public String getPai_social_valoracion_disca_fecha() {
+		return pai_social_valoracion_disca_fecha;
+	}
+
+	public void setPai_social_valoracion_disca_fecha(String pai_social_valoracion_disca_fecha) {
+		this.pai_social_valoracion_disca_fecha = pai_social_valoracion_disca_fecha;
+	}
+
+	public String getPai_social_valoracion_disca_ca() {
+		return pai_social_valoracion_disca_ca;
+	}
+
+	public void setPai_social_valoracion_disca_ca(String pai_social_valoracion_disca_ca) {
+		this.pai_social_valoracion_disca_ca = pai_social_valoracion_disca_ca;
+	}
+
+	public String getPai_social_valoracion_disca_grado() {
+		return pai_social_valoracion_disca_grado;
+	}
+
+	public void setPai_social_valoracion_disca_grado(String pai_social_valoracion_disca_grado) {
+		this.pai_social_valoracion_disca_grado = pai_social_valoracion_disca_grado;
+	}
+
+	public String getPai_social_3_persona() {
+		return pai_social_3_persona;
+	}
+
+	public void setPai_social_3_persona(String pai_social_3_persona) {
+		this.pai_social_3_persona = pai_social_3_persona;
+	}
+
+	public String getPai_social_ayudas_tecnicas() {
+		return pai_social_ayudas_tecnicas;
+	}
+
+	public void setPai_social_ayudas_tecnicas(String pai_social_ayudas_tecnicas) {
+		this.pai_social_ayudas_tecnicas = pai_social_ayudas_tecnicas;
+	}
+
+	public String getPai_social_ayudas_tecnicas_text() {
+		return pai_social_ayudas_tecnicas_text;
+	}
+
+	public void setPai_social_ayudas_tecnicas_text(String pai_social_ayudas_tecnicas_text) {
+		this.pai_social_ayudas_tecnicas_text = pai_social_ayudas_tecnicas_text;
+	}
+
+	public String getPai_social_movilidad() {
+		return pai_social_movilidad;
+	}
+
+	public void setPai_social_movilidad(String pai_social_movilidad) {
+		this.pai_social_movilidad = pai_social_movilidad;
+	}
+
+	public String getPai_social_ley_dependencai() {
+		return pai_social_ley_dependencai;
+	}
+
+	public void setPai_social_ley_dependencai(String pai_social_ley_dependencai) {
+		this.pai_social_ley_dependencai = pai_social_ley_dependencai;
+	}
+
+	public String getPai_social_grado_y_nivel() {
+		return pai_social_grado_y_nivel;
+	}
+
+	public void setPai_social_grado_y_nivel(String pai_social_grado_y_nivel) {
+		this.pai_social_grado_y_nivel = pai_social_grado_y_nivel;
+	}
+
+	public String getPai_social_cuidador() {
+		return pai_social_cuidador;
+	}
+
+	public void setPai_social_cuidador(String pai_social_cuidador) {
+		this.pai_social_cuidador = pai_social_cuidador;
+	}
+
+	public String getPai_social_relacion_cuidador() {
+		return pai_social_relacion_cuidador;
+	}
+
+	public void setPai_social_relacion_cuidador(String pai_social_relacion_cuidador) {
+		this.pai_social_relacion_cuidador = pai_social_relacion_cuidador;
+	}
+
+	public String getPai_social_indicadores() {
+		return pai_social_indicadores;
+	}
+
+	public void setPai_social_indicadores(String pai_social_indicadores) {
+		this.pai_social_indicadores = pai_social_indicadores;
+	}
+
+	public String getPai_social_apoyos() {
+		return pai_social_apoyos;
+	}
+
+	public void setPai_social_apoyos(String pai_social_apoyos) {
+		this.pai_social_apoyos = pai_social_apoyos;
+	}
+
+	public String getPai_social_vive() {
+		return pai_social_vive;
+	}
+
+	public void setPai_social_vive(String pai_social_vive) {
+		this.pai_social_vive = pai_social_vive;
+	}
+
+	public String getPai_social_domicilio_obstaculos() {
+		return pai_social_domicilio_obstaculos;
+	}
+
+	public void setPai_social_domicilio_obstaculos(String pai_social_domicilio_obstaculos) {
+		this.pai_social_domicilio_obstaculos = pai_social_domicilio_obstaculos;
+	}
+
+	public String getPai_social_domicilio_ayudas_tecnicas() {
+		return pai_social_domicilio_ayudas_tecnicas;
+	}
+
+	public void setPai_social_domicilio_ayudas_tecnicas(String pai_social_domicilio_ayudas_tecnicas) {
+		this.pai_social_domicilio_ayudas_tecnicas = pai_social_domicilio_ayudas_tecnicas;
+	}
+
+	public String getPai_social_domicilio_confort() {
+		return pai_social_domicilio_confort;
+	}
+
+	public void setPai_social_domicilio_confort(String pai_social_domicilio_confort) {
+		this.pai_social_domicilio_confort = pai_social_domicilio_confort;
+	}
+
+	public String getPai_social_domicilio_actual_quiere() {
+		return pai_social_domicilio_actual_quiere;
+	}
+
+	public void setPai_social_domicilio_actual_quiere(String pai_social_domicilio_actual_quiere) {
+		this.pai_social_domicilio_actual_quiere = pai_social_domicilio_actual_quiere;
+	}
+
+	public String getPai_social_domicilio_actual_otro() {
+		return pai_social_domicilio_actual_otro;
+	}
+
+	public void setPai_social_domicilio_actual_otro(String pai_social_domicilio_actual_otro) {
+		this.pai_social_domicilio_actual_otro = pai_social_domicilio_actual_otro;
+	}
+
+	public String getPai_social_domicilio_actula_residencia() {
+		return pai_social_domicilio_actula_residencia;
+	}
+
+	public void setPai_social_domicilio_actula_residencia(String pai_social_domicilio_actula_residencia) {
+		this.pai_social_domicilio_actula_residencia = pai_social_domicilio_actula_residencia;
+	}
+
+	public String getPai_social_apoyo_tipo1() {
+		return pai_social_apoyo_tipo1;
+	}
+
+	public void setPai_social_apoyo_tipo1(String pai_social_apoyo_tipo1) {
+		this.pai_social_apoyo_tipo1 = pai_social_apoyo_tipo1;
+	}
+
+	public String getPai_social_apoyo_tipo2() {
+		return pai_social_apoyo_tipo2;
+	}
+
+	public void setPai_social_apoyo_tipo2(String pai_social_apoyo_tipo2) {
+		this.pai_social_apoyo_tipo2 = pai_social_apoyo_tipo2;
+	}
+
+	public String getPai_social_apoyo_tipo3() {
+		return pai_social_apoyo_tipo3;
+	}
+
+	public void setPai_social_apoyo_tipo3(String pai_social_apoyo_tipo3) {
+		this.pai_social_apoyo_tipo3 = pai_social_apoyo_tipo3;
+	}
+
+	public String getPai_social_apoyo_tipo4() {
+		return pai_social_apoyo_tipo4;
+	}
+
+	public void setPai_social_apoyo_tipo4(String pai_social_apoyo_tipo4) {
+		this.pai_social_apoyo_tipo4 = pai_social_apoyo_tipo4;
+	}
+
+	public String getPai_social_apoyo_titularidad1() {
+		return pai_social_apoyo_titularidad1;
+	}
+
+	public void setPai_social_apoyo_titularidad1(String pai_social_apoyo_titularidad1) {
+		this.pai_social_apoyo_titularidad1 = pai_social_apoyo_titularidad1;
+	}
+
+	public String getPai_social_apoyo_titularidad2() {
+		return pai_social_apoyo_titularidad2;
+	}
+
+	public void setPai_social_apoyo_titularidad2(String pai_social_apoyo_titularidad2) {
+		this.pai_social_apoyo_titularidad2 = pai_social_apoyo_titularidad2;
+	}
+
+	public String getPai_social_apoyo_titularidad3() {
+		return pai_social_apoyo_titularidad3;
+	}
+
+	public void setPai_social_apoyo_titularidad3(String pai_social_apoyo_titularidad3) {
+		this.pai_social_apoyo_titularidad3 = pai_social_apoyo_titularidad3;
+	}
+
+	public String getPai_social_apoyo_titularidad4() {
+		return pai_social_apoyo_titularidad4;
+	}
+
+	public void setPai_social_apoyo_titularidad4(String pai_social_apoyo_titularidad4) {
+		this.pai_social_apoyo_titularidad4 = pai_social_apoyo_titularidad4;
+	}
+
+	public String getPai_social_apoyo_coste1() {
+		return pai_social_apoyo_coste1;
+	}
+
+	public void setPai_social_apoyo_coste1(String pai_social_apoyo_coste1) {
+		this.pai_social_apoyo_coste1 = pai_social_apoyo_coste1;
+	}
+
+	public String getPai_social_apoyo_coste2() {
+		return pai_social_apoyo_coste2;
+	}
+
+	public void setPai_social_apoyo_coste2(String pai_social_apoyo_coste2) {
+		this.pai_social_apoyo_coste2 = pai_social_apoyo_coste2;
+	}
+
+	public String getPai_social_apoyo_coste3() {
+		return pai_social_apoyo_coste3;
+	}
+
+	public void setPai_social_apoyo_coste3(String pai_social_apoyo_coste3) {
+		this.pai_social_apoyo_coste3 = pai_social_apoyo_coste3;
+	}
+
+	public String getPai_social_apoyo_coste4() {
+		return pai_social_apoyo_coste4;
+	}
+
+	public void setPai_social_apoyo_coste4(String pai_social_apoyo_coste4) {
+		this.pai_social_apoyo_coste4 = pai_social_apoyo_coste4;
+	}
+
+	public String getPai_social_apoyo_aportacion1() {
+		return pai_social_apoyo_aportacion1;
+	}
+
+	public void setPai_social_apoyo_aportacion1(String pai_social_apoyo_aportacion1) {
+		this.pai_social_apoyo_aportacion1 = pai_social_apoyo_aportacion1;
+	}
+
+	public String getPai_social_apoyo_aportacion2() {
+		return pai_social_apoyo_aportacion2;
+	}
+
+	public void setPai_social_apoyo_aportacion2(String pai_social_apoyo_aportacion2) {
+		this.pai_social_apoyo_aportacion2 = pai_social_apoyo_aportacion2;
+	}
+
+	public String getPai_social_apoyo_aportacion3() {
+		return pai_social_apoyo_aportacion3;
+	}
+
+	public void setPai_social_apoyo_aportacion3(String pai_social_apoyo_aportacion3) {
+		this.pai_social_apoyo_aportacion3 = pai_social_apoyo_aportacion3;
+	}
+
+	public String getPai_social_apoyo_aportacion4() {
+		return pai_social_apoyo_aportacion4;
+	}
+
+	public void setPai_social_apoyo_aportacion4(String pai_social_apoyo_aportacion4) {
+		this.pai_social_apoyo_aportacion4 = pai_social_apoyo_aportacion4;
+	}
+
+	public String getPai_social_apoyo_dom_prestacion1() {
+		return pai_social_apoyo_dom_prestacion1;
+	}
+
+	public void setPai_social_apoyo_dom_prestacion1(String pai_social_apoyo_dom_prestacion1) {
+		this.pai_social_apoyo_dom_prestacion1 = pai_social_apoyo_dom_prestacion1;
+	}
+
+	public String getPai_social_apoyo_dom_prestacion2() {
+		return pai_social_apoyo_dom_prestacion2;
+	}
+
+	public void setPai_social_apoyo_dom_prestacion2(String pai_social_apoyo_dom_prestacion2) {
+		this.pai_social_apoyo_dom_prestacion2 = pai_social_apoyo_dom_prestacion2;
+	}
+
+	public String getPai_social_apoyo_dom_prestacion3() {
+		return pai_social_apoyo_dom_prestacion3;
+	}
+
+	public void setPai_social_apoyo_dom_prestacion3(String pai_social_apoyo_dom_prestacion3) {
+		this.pai_social_apoyo_dom_prestacion3 = pai_social_apoyo_dom_prestacion3;
+	}
+
+	public String getPai_social_apoyo_dom_prestacion4() {
+		return pai_social_apoyo_dom_prestacion4;
+	}
+
+	public void setPai_social_apoyo_dom_prestacion4(String pai_social_apoyo_dom_prestacion4) {
+		this.pai_social_apoyo_dom_prestacion4 = pai_social_apoyo_dom_prestacion4;
+	}
+
+	public String getPai_social_apoyo_dom_intensidad1() {
+		return pai_social_apoyo_dom_intensidad1;
+	}
+
+	public void setPai_social_apoyo_dom_intensidad1(String pai_social_apoyo_dom_intensidad1) {
+		this.pai_social_apoyo_dom_intensidad1 = pai_social_apoyo_dom_intensidad1;
+	}
+
+	public String getPai_social_apoyo_dom_intensidad2() {
+		return pai_social_apoyo_dom_intensidad2;
+	}
+
+	public void setPai_social_apoyo_dom_intensidad2(String pai_social_apoyo_dom_intensidad2) {
+		this.pai_social_apoyo_dom_intensidad2 = pai_social_apoyo_dom_intensidad2;
+	}
+
+	public String getPai_social_apoyo_dom_intensidad3() {
+		return pai_social_apoyo_dom_intensidad3;
+	}
+
+	public void setPai_social_apoyo_dom_intensidad3(String pai_social_apoyo_dom_intensidad3) {
+		this.pai_social_apoyo_dom_intensidad3 = pai_social_apoyo_dom_intensidad3;
+	}
+
+	public String getPai_social_apoyo_dom_intensidad4() {
+		return pai_social_apoyo_dom_intensidad4;
+	}
+
+	public void setPai_social_apoyo_dom_intensidad4(String pai_social_apoyo_dom_intensidad4) {
+		this.pai_social_apoyo_dom_intensidad4 = pai_social_apoyo_dom_intensidad4;
+	}
+
+	public String getPai_social_apoyo_dom_coste1() {
+		return pai_social_apoyo_dom_coste1;
+	}
+
+	public void setPai_social_apoyo_dom_coste1(String pai_social_apoyo_dom_coste1) {
+		this.pai_social_apoyo_dom_coste1 = pai_social_apoyo_dom_coste1;
+	}
+
+	public String getPai_social_apoyo_dom_coste2() {
+		return pai_social_apoyo_dom_coste2;
+	}
+
+	public void setPai_social_apoyo_dom_coste2(String pai_social_apoyo_dom_coste2) {
+		this.pai_social_apoyo_dom_coste2 = pai_social_apoyo_dom_coste2;
+	}
+
+	public String getPai_social_apoyo_dom_coste3() {
+		return pai_social_apoyo_dom_coste3;
+	}
+
+	public void setPai_social_apoyo_dom_coste3(String pai_social_apoyo_dom_coste3) {
+		this.pai_social_apoyo_dom_coste3 = pai_social_apoyo_dom_coste3;
+	}
+
+	public String getPai_social_apoyo_dom_coste4() {
+		return pai_social_apoyo_dom_coste4;
+	}
+
+	public void setPai_social_apoyo_dom_coste4(String pai_social_apoyo_dom_coste4) {
+		this.pai_social_apoyo_dom_coste4 = pai_social_apoyo_dom_coste4;
+	}
+
+	public String getPai_social_apoyo_dom_aportacion1() {
+		return pai_social_apoyo_dom_aportacion1;
+	}
+
+	public void setPai_social_apoyo_dom_aportacion1(String pai_social_apoyo_dom_aportacion1) {
+		this.pai_social_apoyo_dom_aportacion1 = pai_social_apoyo_dom_aportacion1;
+	}
+
+	public String getPai_social_apoyo_dom_aportacion2() {
+		return pai_social_apoyo_dom_aportacion2;
+	}
+
+	public void setPai_social_apoyo_dom_aportacion2(String pai_social_apoyo_dom_aportacion2) {
+		this.pai_social_apoyo_dom_aportacion2 = pai_social_apoyo_dom_aportacion2;
+	}
+
+	public String getPai_social_apoyo_dom_aportacion3() {
+		return pai_social_apoyo_dom_aportacion3;
+	}
+
+	public void setPai_social_apoyo_dom_aportacion3(String pai_social_apoyo_dom_aportacion3) {
+		this.pai_social_apoyo_dom_aportacion3 = pai_social_apoyo_dom_aportacion3;
+	}
+
+	public String getPai_social_apoyo_dom_aportacion4() {
+		return pai_social_apoyo_dom_aportacion4;
+	}
+
+	public void setPai_social_apoyo_dom_aportacion4(String pai_social_apoyo_dom_aportacion4) {
+		this.pai_social_apoyo_dom_aportacion4 = pai_social_apoyo_dom_aportacion4;
+	}
+
+	public String getPai_social_apoyo_otras_prestacion1() {
+		return pai_social_apoyo_otras_prestacion1;
+	}
+
+	public void setPai_social_apoyo_otras_prestacion1(String pai_social_apoyo_otras_prestacion1) {
+		this.pai_social_apoyo_otras_prestacion1 = pai_social_apoyo_otras_prestacion1;
+	}
+
+	public String getPai_social_apoyo_otras_prestacion2() {
+		return pai_social_apoyo_otras_prestacion2;
+	}
+
+	public void setPai_social_apoyo_otras_prestacion2(String pai_social_apoyo_otras_prestacion2) {
+		this.pai_social_apoyo_otras_prestacion2 = pai_social_apoyo_otras_prestacion2;
+	}
+
+	public String getPai_social_apoyo_otras_prestacion3() {
+		return pai_social_apoyo_otras_prestacion3;
+	}
+
+	public void setPai_social_apoyo_otras_prestacion3(String pai_social_apoyo_otras_prestacion3) {
+		this.pai_social_apoyo_otras_prestacion3 = pai_social_apoyo_otras_prestacion3;
+	}
+
+	public String getPai_social_apoyo_otras_prestacion4() {
+		return pai_social_apoyo_otras_prestacion4;
+	}
+
+	public void setPai_social_apoyo_otras_prestacion4(String pai_social_apoyo_otras_prestacion4) {
+		this.pai_social_apoyo_otras_prestacion4 = pai_social_apoyo_otras_prestacion4;
+	}
+
+	public String getPai_social_apoyo_otras_titularidad1() {
+		return pai_social_apoyo_otras_titularidad1;
+	}
+
+	public void setPai_social_apoyo_otras_titularidad1(String pai_social_apoyo_otras_titularidad1) {
+		this.pai_social_apoyo_otras_titularidad1 = pai_social_apoyo_otras_titularidad1;
+	}
+
+	public String getPai_social_apoyo_otras_titularidad2() {
+		return pai_social_apoyo_otras_titularidad2;
+	}
+
+	public void setPai_social_apoyo_otras_titularidad2(String pai_social_apoyo_otras_titularidad2) {
+		this.pai_social_apoyo_otras_titularidad2 = pai_social_apoyo_otras_titularidad2;
+	}
+
+	public String getPai_social_apoyo_otras_titularidad3() {
+		return pai_social_apoyo_otras_titularidad3;
+	}
+
+	public void setPai_social_apoyo_otras_titularidad3(String pai_social_apoyo_otras_titularidad3) {
+		this.pai_social_apoyo_otras_titularidad3 = pai_social_apoyo_otras_titularidad3;
+	}
+
+	public String getPai_social_apoyo_otras_titularidad4() {
+		return pai_social_apoyo_otras_titularidad4;
+	}
+
+	public void setPai_social_apoyo_otras_titularidad4(String pai_social_apoyo_otras_titularidad4) {
+		this.pai_social_apoyo_otras_titularidad4 = pai_social_apoyo_otras_titularidad4;
+	}
+
+	public String getPai_social_apoyo_otras_intensidad1() {
+		return pai_social_apoyo_otras_intensidad1;
+	}
+
+	public void setPai_social_apoyo_otras_intensidad1(String pai_social_apoyo_otras_intensidad1) {
+		this.pai_social_apoyo_otras_intensidad1 = pai_social_apoyo_otras_intensidad1;
+	}
+
+	public String getPai_social_apoyo_otras_intensidad2() {
+		return pai_social_apoyo_otras_intensidad2;
+	}
+
+	public void setPai_social_apoyo_otras_intensidad2(String pai_social_apoyo_otras_intensidad2) {
+		this.pai_social_apoyo_otras_intensidad2 = pai_social_apoyo_otras_intensidad2;
+	}
+
+	public String getPai_social_apoyo_otras_intensidad3() {
+		return pai_social_apoyo_otras_intensidad3;
+	}
+
+	public void setPai_social_apoyo_otras_intensidad3(String pai_social_apoyo_otras_intensidad3) {
+		this.pai_social_apoyo_otras_intensidad3 = pai_social_apoyo_otras_intensidad3;
+	}
+
+	public String getPai_social_apoyo_otras_intensidad4() {
+		return pai_social_apoyo_otras_intensidad4;
+	}
+
+	public void setPai_social_apoyo_otras_intensidad4(String pai_social_apoyo_otras_intensidad4) {
+		this.pai_social_apoyo_otras_intensidad4 = pai_social_apoyo_otras_intensidad4;
+	}
+
+	public String getPai_social_ingresos() {
+		return pai_social_ingresos;
+	}
+
+	public void setPai_social_ingresos(String pai_social_ingresos) {
+		this.pai_social_ingresos = pai_social_ingresos;
+	}
+
+	public String getPai_social_ingresos_familia() {
+		return pai_social_ingresos_familia;
+	}
+
+	public void setPai_social_ingresos_familia(String pai_social_ingresos_familia) {
+		this.pai_social_ingresos_familia = pai_social_ingresos_familia;
+	}
+
+	public String getPai_social_ingresos_cubre() {
+		return pai_social_ingresos_cubre;
+	}
+
+	public void setPai_social_ingresos_cubre(String pai_social_ingresos_cubre) {
+		this.pai_social_ingresos_cubre = pai_social_ingresos_cubre;
+	}
+
+	public String getPai_social_nivel_estudios() {
+		return pai_social_nivel_estudios;
+	}
+
+	public void setPai_social_nivel_estudios(String pai_social_nivel_estudios) {
+		this.pai_social_nivel_estudios = pai_social_nivel_estudios;
+	}
+
+	public String getPai_social_relaciones() {
+		return pai_social_relaciones;
+	}
+
+	public void setPai_social_relaciones(String pai_social_relaciones) {
+		this.pai_social_relaciones = pai_social_relaciones;
+	}
+
+	public String getPai_social_necesidades() {
+		return pai_social_necesidades;
+	}
+
+	public void setPai_social_necesidades(String pai_social_necesidades) {
+		this.pai_social_necesidades = pai_social_necesidades;
+	}
+
+	public String getPai_social_objetivos() {
+		return pai_social_objetivos;
+	}
+
+	public void setPai_social_objetivos(String pai_social_objetivos) {
+		this.pai_social_objetivos = pai_social_objetivos;
+	}
+
+	public String getPai_social_valoraciones() {
+		return pai_social_valoraciones;
+	}
+
+	public void setPai_social_valoraciones(String pai_social_valoraciones) {
+		this.pai_social_valoraciones = pai_social_valoraciones;
+	}
+
+	public String getPai_social_actuaciones() {
+		return pai_social_actuaciones;
+	}
+
+	public void setPai_social_actuaciones(String pai_social_actuaciones) {
+		this.pai_social_actuaciones = pai_social_actuaciones;
+	}
+
+	public String getPai_social_incidencias() {
+		return pai_social_incidencias;
+	}
+
+	public void setPai_social_incidencias(String pai_social_incidencias) {
+		this.pai_social_incidencias = pai_social_incidencias;
+	}
+
+	public String getPai_portada_fecha() {
+		return pai_portada_fecha;
+	}
+
+	public void setPai_portada_fecha(String pai_portada_fecha) {
+		this.pai_portada_fecha = pai_portada_fecha;
+	}
+
+	public String getPai_portada_representante_guardador() {
+		return pai_portada_representante_guardador;
+	}
+
+	public void setPai_portada_representante_guardador(String pai_portada_representante_guardador) {
+		this.pai_portada_representante_guardador = pai_portada_representante_guardador;
+	}
+
+	public String getPai_portada_cuidador_nombre() {
+		return pai_portada_cuidador_nombre;
+	}
+
+	public void setPai_portada_cuidador_nombre(String pai_portada_cuidador_nombre) {
+		this.pai_portada_cuidador_nombre = pai_portada_cuidador_nombre;
+	}
+
+	public String getPai_portada_cuidador_edad() {
+		return pai_portada_cuidador_edad;
+	}
+
+	public void setPai_portada_cuidador_edad(String pai_portada_cuidador_edad) {
+		this.pai_portada_cuidador_edad = pai_portada_cuidador_edad;
+	}
+
+	public String getPai_portada_cuidador_dni() {
+		return pai_portada_cuidador_dni;
+	}
+
+	public void setPai_portada_cuidador_dni(String pai_portada_cuidador_dni) {
+		this.pai_portada_cuidador_dni = pai_portada_cuidador_dni;
+	}
+
+	public String getPai_portada_cuidador_domicilio() {
+		return pai_portada_cuidador_domicilio;
+	}
+
+	public void setPai_portada_cuidador_domicilio(String pai_portada_cuidador_domicilio) {
+		this.pai_portada_cuidador_domicilio = pai_portada_cuidador_domicilio;
+	}
+
+	public String getPai_portada_cuidador_estado_civil() {
+		return pai_portada_cuidador_estado_civil;
+	}
+
+	public void setPai_portada_cuidador_estado_civil(String pai_portada_cuidador_estado_civil) {
+		this.pai_portada_cuidador_estado_civil = pai_portada_cuidador_estado_civil;
+	}
+
+	public String getPai_portada_cuidador_profesion() {
+		return pai_portada_cuidador_profesion;
+	}
+
+	public void setPai_portada_cuidador_profesion(String pai_portada_cuidador_profesion) {
+		this.pai_portada_cuidador_profesion = pai_portada_cuidador_profesion;
+	}
+
+	public String getPai_portada_cuidador_relacion() {
+		return pai_portada_cuidador_relacion;
+	}
+
+	public void setPai_portada_cuidador_relacion(String pai_portada_cuidador_relacion) {
+		this.pai_portada_cuidador_relacion = pai_portada_cuidador_relacion;
+	}
+
+	public String getPai_portada_cuidador_convive_otros() {
+		return pai_portada_cuidador_convive_otros;
+	}
+
+	public void setPai_portada_cuidador_convive_otros(String pai_portada_cuidador_convive_otros) {
+		this.pai_portada_cuidador_convive_otros = pai_portada_cuidador_convive_otros;
+	}
+
+	public String getPai_portada_nss() {
+		return pai_portada_nss;
+	}
+
+	public void setPai_portada_nss(String pai_portada_nss) {
+		this.pai_portada_nss = pai_portada_nss;
+	}
+
+	public String getPai_portada_seguro_medico() {
+		return pai_portada_seguro_medico;
+	}
+
+	public void setPai_portada_seguro_medico(String pai_portada_seguro_medico) {
+		this.pai_portada_seguro_medico = pai_portada_seguro_medico;
+	}
+
+	public String getPai_portada_datos_medicos_enfermedades() {
+		return pai_portada_datos_medicos_enfermedades;
+	}
+
+	public void setPai_portada_datos_medicos_enfermedades(String pai_portada_datos_medicos_enfermedades) {
+		this.pai_portada_datos_medicos_enfermedades = pai_portada_datos_medicos_enfermedades;
+	}
+
+	public String getPai_portada_datos_medicos_grado_minusvalida() {
+		return pai_portada_datos_medicos_grado_minusvalida;
+	}
+
+	public void setPai_portada_datos_medicos_grado_minusvalida(String pai_portada_datos_medicos_grado_minusvalida) {
+		this.pai_portada_datos_medicos_grado_minusvalida = pai_portada_datos_medicos_grado_minusvalida;
+	}
+
+	public String getPai_portada_datos_medicos_grado_dependencia() {
+		return pai_portada_datos_medicos_grado_dependencia;
+	}
+
+	public void setPai_portada_datos_medicos_grado_dependencia(String pai_portada_datos_medicos_grado_dependencia) {
+		this.pai_portada_datos_medicos_grado_dependencia = pai_portada_datos_medicos_grado_dependencia;
+	}
+
+	public String getPai_portada_profesional_1() {
+		return pai_portada_profesional_1;
+	}
+
+	public void setPai_portada_profesional_1(String pai_portada_profesional_1) {
+		this.pai_portada_profesional_1 = pai_portada_profesional_1;
+	}
+
+	public String getPai_portada_categoria_1() {
+		return pai_portada_categoria_1;
+	}
+
+	public void setPai_portada_categoria_1(String pai_portada_categoria_1) {
+		this.pai_portada_categoria_1 = pai_portada_categoria_1;
+	}
+
+	public String getPai_portada_profesional_2() {
+		return pai_portada_profesional_2;
+	}
+
+	public void setPai_portada_profesional_2(String pai_portada_profesional_2) {
+		this.pai_portada_profesional_2 = pai_portada_profesional_2;
+	}
+
+	public String getPai_portada_categoria_2() {
+		return pai_portada_categoria_2;
+	}
+
+	public void setPai_portada_categoria_2(String pai_portada_categoria_2) {
+		this.pai_portada_categoria_2 = pai_portada_categoria_2;
+	}
+
+	public String getPai_portada_profesional_3() {
+		return pai_portada_profesional_3;
+	}
+
+	public void setPai_portada_profesional_3(String pai_portada_profesional_3) {
+		this.pai_portada_profesional_3 = pai_portada_profesional_3;
+	}
+
+	public String getPai_portada_categoria_3() {
+		return pai_portada_categoria_3;
+	}
+
+	public void setPai_portada_categoria_3(String pai_portada_categoria_3) {
+		this.pai_portada_categoria_3 = pai_portada_categoria_3;
+	}
+
+	public String getPai_portada_profesional_4() {
+		return pai_portada_profesional_4;
+	}
+
+	public void setPai_portada_profesional_4(String pai_portada_profesional_4) {
+		this.pai_portada_profesional_4 = pai_portada_profesional_4;
+	}
+
+	public String getPai_portada_categoria_4() {
+		return pai_portada_categoria_4;
+	}
+
+	public void setPai_portada_categoria_4(String pai_portada_categoria_4) {
+		this.pai_portada_categoria_4 = pai_portada_categoria_4;
+	}
+
+	public String getPai_portada_profesional_5() {
+		return pai_portada_profesional_5;
+	}
+
+	public void setPai_portada_profesional_5(String pai_portada_profesional_5) {
+		this.pai_portada_profesional_5 = pai_portada_profesional_5;
+	}
+
+	public String getPai_portada_categoria_5() {
+		return pai_portada_categoria_5;
+	}
+
+	public void setPai_portada_categoria_5(String pai_portada_categoria_5) {
+		this.pai_portada_categoria_5 = pai_portada_categoria_5;
 	}
 
 	@Override

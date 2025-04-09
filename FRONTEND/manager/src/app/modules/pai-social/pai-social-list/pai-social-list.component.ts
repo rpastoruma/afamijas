@@ -27,11 +27,11 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import htmlToPdfmake from 'html-to-pdfmake';
 
 @Component({
-  selector: 'app-pai-psico-list',
-  templateUrl: './pai-psico-list.component.html',
-  styleUrls: ['./pai-psico-list.component.scss']
+  selector: 'app-pai-social-list',
+  templateUrl: './pai-social-list.component.html',
+  styleUrls: ['./pai-social-list.component.scss']
 })
-export class PaiPsicoListComponent implements OnInit{
+export class PaiSocialListComponent implements OnInit{
 
   
 
@@ -736,13 +736,13 @@ export class PaiPsicoListComponent implements OnInit{
         const selected = this.patientsObjects.find(item => item.id === event[1]);
         this.thePatient = selected;
   
-        this.openPAIPsico();
+        this.openPAIEnfer();
     } 
   }
 
 
 
-  openPAIPsico()
+  openPAIEnfer()
   {
 
 
@@ -753,21 +753,21 @@ export class PaiPsicoListComponent implements OnInit{
 
 
   
-  savePAIPsico()
+  savePAISocial()
   {
     
-    this.patientsService.savePAIPsico(this.thePatient).subscribe(
+    this.patientsService.savePAISocial(this.thePatient).subscribe(
       res => {
         this.isProcessing = false;
         this.thePatient = res;
         this.thePatient.pai_psico_fecha_diagnostico = this.localDateTime2Date(res.pai_psico_fecha_diagnostico);
 
-        this.openDocumentRegisterHTML(this.thePatient.pai_psico_url, 'PAI-PSICOLOGIA-' + this.thePatient.documentid)
+        this.openDocumentRegisterHTML(this.thePatient.pai_social_url, 'PAI-SOCIAL-' + this.thePatient.documentid)
       },
       error => {
         this.isProcessing = false;
-        console.error("savePAIPsico():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido grabar el PAI de PSICOLOGIA.",
+        console.error("savePAISocial():"+JSON.stringify(error));
+        this.toastService.show("No se ha podido grabar el PAI SOCIAL.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
@@ -789,6 +789,9 @@ export class PaiPsicoListComponent implements OnInit{
     document.getElementById('step6').style.display = 'none';
     document.getElementById('step7').style.display = 'none';
     document.getElementById('step8').style.display = 'none';
+    document.getElementById('step9').style.display = 'none';
+    document.getElementById('step10').style.display = 'none';
+    document.getElementById('step11').style.display = 'none';
 
     document.getElementById(step).style.display = 'block';
   }

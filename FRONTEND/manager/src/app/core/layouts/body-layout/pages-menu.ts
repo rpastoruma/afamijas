@@ -242,13 +242,20 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
       link: '/social-worker-docs',
       data: 'menu.social-worker',
       expanded: false,
+    },
+    {
+      title: 'PAI Trab. Social',
+      icon: { icon: 'fa-file-circle-check', pack: 'fas' },
+      link: '/pai-social',
+      data: 'menu.pai-social',
+      expanded: false,
     }
   ];  
 
 
    
 
-  //MENÜ TRABSOCIAL
+  //MENÜ FISIO
   export const MENU_FISIO: NbMenuItem[] = [
     {
       title: 'PAI Fisioterapia',
@@ -260,7 +267,42 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
   ];  
 
   
+     
+
+  //MENÜ TOCUPA
+  export const MENU_TOCUPA: NbMenuItem[] = [
+    {
+      title: 'PAI Terapia Ocupacional',
+      icon: { icon: 'fa-file-circle-check', pack: 'fas' },
+      link: '/pai-tocupa',
+      data: 'menu.pai-tocupa',
+      expanded: false,
+    }
+  ];  
+
   
+  //MENÜ ENFER
+  export const MENU_ENFER: NbMenuItem[] = [
+    {
+      title: 'PAI Enfermería',
+      icon: { icon: 'fa-file-circle-check', pack: 'fas' },
+      link: '/pai-enfer',
+      data: 'menu.pai-enfer',
+      expanded: false,
+    }
+  ];  
+
+  
+    //MENÜ COMPLETO
+    export const MENU_PAI: NbMenuItem[] = [
+      {
+        title: 'PAI',
+        icon: { icon: 'fa-file-circle-check', pack: 'fas' },
+        link: '/pai',
+        data: 'menu.pai',
+        expanded: false,
+      }
+    ];  
 
   //MENÜ ATENCIONES
   export const MENU_ATENCIONES: NbMenuItem[] = [
