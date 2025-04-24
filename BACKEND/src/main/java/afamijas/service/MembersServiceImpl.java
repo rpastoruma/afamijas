@@ -13,6 +13,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -42,9 +43,11 @@ public class MembersServiceImpl implements MembersService
 
 	final NotificationsService notificationsService;
 
+	final AddressBookRepository addressBookRepository;
+
 
 	@Autowired
-	public MembersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, CountriesRepository countriesRepository, MediaService mediaService, NotificationsService notificationsService)
+	public MembersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, CountriesRepository countriesRepository, MediaService mediaService, NotificationsService notificationsService, AddressBookRepository addressBookRepository)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -53,7 +56,8 @@ public class MembersServiceImpl implements MembersService
 		this.countriesRepository = countriesRepository;
 		this.mediaService = mediaService;
 		this.notificationsService = notificationsService;
-	}
+        this.addressBookRepository = addressBookRepository;
+    }
 
 	//TODO: REVISAR SI LA PAGINACIÓN ESTÁ BIEN HECHA YA QUE NO ESTÁ COMO EN LAS OTRAS
 	@Override
@@ -79,11 +83,11 @@ public class MembersServiceImpl implements MembersService
 		if(debug_queries) System.out.println("findMyNotifications: " + query.getQueryObject().toJson());
 		List<MemberDTO> list = this.mongoTemplate.find(query, User.class).stream().map(x -> new MemberDTO(x, null, null, null)).toList();
 
-
+		Query finalQuery = query;
 		return PageableExecutionUtils.getPage(
 				list,
 				pageable,
-				() -> this.mongoTemplate.count(Query.of(query).limit(-1).skip(-1), User.class));
+				() -> this.mongoTemplate.count(Query.of(finalQuery).limit(-1).skip(-1), User.class));
 	}
 
 	@Override
@@ -150,7 +154,32 @@ public class MembersServiceImpl implements MembersService
 		member.setBank_account_holder_dni(bank_account_holder_dni);
 		member.setBank_account_iban(bank_account_iban);
 
-		return new MemberDTO(this.usersRepository.save(member), this.citiesRepository.findOne(idcity), this.statesRepository.findOne(idstate), this.countriesRepository.findOne(idcountry));
+		member = this.usersRepository.save(member);
+
+		//ACTUALIZAMOS AGENDA
+		try
+		{
+			List<AddressBook> addressBooks = this.addressBookRepository.findByIduser(member.get_id());
+			if(addressBooks!=null && addressBooks.size()>0)
+				for(AddressBook addressBook:addressBooks)
+				{
+					addressBook.setFullname(member.getFullname());
+					addressBook.setPhone(member.getPhone());
+					addressBook.setEmail(member.getEmail());
+					this.addressBookRepository.save(addressBook);
+				}
+			else
+			{
+				AddressBook addressBook = new AddressBook(member);
+				this.addressBookRepository.save(addressBook);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return new MemberDTO(member, this.citiesRepository.findOne(idcity), this.statesRepository.findOne(idstate), this.countriesRepository.findOne(idcountry));
 	}
 
 	private Integer getLastMemberNumber()

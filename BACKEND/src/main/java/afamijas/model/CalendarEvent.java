@@ -36,6 +36,8 @@ public class CalendarEvent
 
 	private LocalDateTime modified;
 
+	private String url;
+
 
 	public CalendarEvent() { this.created = this.modified = LocalDateTime.now();  }
 
@@ -136,6 +138,14 @@ public class CalendarEvent
 
 	public void setPublishdate(LocalDateTime publishdate) {
 		this.publishdate = publishdate;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	@Override

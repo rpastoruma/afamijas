@@ -41,6 +41,16 @@ public class User
 
 	private String documenttype;
 
+	private String nss; //trabajador
+
+	private String categoria_profesional; //trabajador
+
+	private String tipo_contrato; //trabajador
+
+	private String jornada_laboral; //trabajador
+
+	private String horario; //trabajador
+
 	private String phone;
 
 	private String postaladdress;
@@ -5452,6 +5462,46 @@ public class User
 
 	public void setPai_portada_categoria_5(String pai_portada_categoria_5) {
 		this.pai_portada_categoria_5 = pai_portada_categoria_5;
+	}
+
+	public String getNss() {
+		return nss;
+	}
+
+	public void setNss(String nss) {
+		this.nss = nss;
+	}
+
+	public String getCategoria_profesional() {
+		return categoria_profesional;
+	}
+
+	public void setCategoria_profesional(String categoria_profesional) {
+		this.categoria_profesional = categoria_profesional;
+	}
+
+	public String getTipo_contrato() {
+		return tipo_contrato;
+	}
+
+	public void setTipo_contrato(String tipo_contrato) {
+		this.tipo_contrato = tipo_contrato;
+	}
+
+	public String getJornada_laboral() {
+		return jornada_laboral;
+	}
+
+	public void setJornada_laboral(String jornada_laboral) {
+		this.jornada_laboral = jornada_laboral;
+	}
+
+	public String getHorario() {
+		return horario;
+	}
+
+	public void setHorario(String horario) {
+		this.horario = horario;
 	}
 
 	@Override

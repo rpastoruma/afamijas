@@ -64,6 +64,7 @@ export class WorkerDocumentsListComponent implements OnInit {
   exportData: any[];
 
   actions : ActionDTO[] = [];
+  createEvent: boolean = false;
 
   constructor(
     public toastService: NbToastrService,
@@ -191,6 +192,11 @@ export class WorkerDocumentsListComponent implements OnInit {
 
   canModify() : boolean
   {
+    return this.authService.isWorker();
+  }
+
+  canAdmin() : boolean
+  {
     return this.authService.isManager() || this.authService.isAdmin();
   }
 
@@ -245,7 +251,7 @@ export class WorkerDocumentsListComponent implements OnInit {
     }
    
 
-    this.docsService.saveDoc(this.theDoc).subscribe(
+    this.docsService.saveDoc(this.theDoc, this.createEvent).subscribe(
       res => {
         this.isProcessing = false;
         this.toastService.show("Documento grabado correctamente.",

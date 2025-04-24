@@ -1,0 +1,168 @@
+<nb-card>
+    <nb-card-header>
+        <div class="row float-start" >
+            <h4>Nóminas de trabajadores</h4>
+        </div>
+        <button [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openAddNominaModal()">REGISTRAR NÓMINA</button>
+    </nb-card-header>
+    <nb-card-body>
+
+
+
+        Para el trabajador:
+        <ng-select (change)="getNominas(0)" [multiple]="false" [(ngModel)]="idworker" name="idworker" [clearable]="false" notFoundText="No se encuentran trabajadores">
+            <ng-option value="">TODOS</ng-option>
+            <ng-option *ngFor="let u of allWorkers" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}} - ({{u.documentid}})</ng-option>
+        </ng-select>
+
+        <br/>
+
+        <div [hidden]="!canModify()" id="filtersOnlyCanModify">
+        <div style="margin-bottom: 15px !important">
+            Consultar nóminas desde el día:
+            <input 
+            class="form-control"
+            type="text"
+            mwlFlatpickr
+            [(ngModel)]="dayfrom"
+            [altInput]="true"
+            [convertModelValue]="true"
+            [enableTime]="false"
+            dateFormat="YY-m-d"
+            altFormat="d/m/Y"
+            (ngModelChange)="getNominas(0);"
+            [disable]="[disabledDay]"
+            
+            />
+            </div>
+            
+
+        
+        <div style="margin-bottom: 15px !important">
+            Consultar nóminas hasta el día:
+            <input 
+            class="form-control"
+            type="text"
+            mwlFlatpickr
+            [(ngModel)]="dayto"
+            [altInput]="true"
+            [convertModelValue]="true"
+            [enableTime]="false"
+            dateFormat="YY-m-d"
+            altFormat="d/m/Y"
+            (ngModelChange)="getNominas(0);"
+            [disable]="[disabledDay]"
+            value = ""
+            />
+            </div>
+    
+
+
+            <hr/>
+        </div>
+
+
+        <app-custom-table
+            [actions]="actions"
+            [keys]="['Trabajador:', 'Fecha:' ]"
+            [values]="nominas"
+            [align]="['left', 'left']"
+            [filters]="[false, false, false, false, false, false]"
+            [sort]="[false, false, false, false, false, false]"
+            [widthToCollapse]="750"
+            [withPagination]="true"
+            [totalPages]="totalPages"
+            [page]="page"
+            [size]="size"
+            [loadingE]="loadingExcel"
+            [loading]="loadingPDF"
+            [hasExport]="canModify()"
+            (actionSelected)="action($event)"
+            (changePage)="setPage($event)"
+            (filterEvent)="filter(0)"
+            [isProcessing]="isProcessing"
+            (exportData)="getExportData($event)"
+            [showSearchButton]="true"
+
+        >
+
+        </app-custom-table>
+    </nb-card-body>
+
+
+    
+    <nb-card-footer>
+        <button [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openAddNominaModal()">REGISTRAR NÓMINA</button>
+    </nb-card-footer>
+</nb-card>
+
+
+
+
+<ng-template #modalContent let-close="close">
+    <div class="modal-header">
+        <h6 *ngIf="theNomina.id==''">Registrar nueva nómina</h6>        
+        <h6 *ngIf="theNomina.id!=''">Modificar nómina</h6>
+        <nb-icon (click)="close()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+
+            
+        Para el trabajador:
+        <ng-select  [multiple]="false" [(ngModel)]="theNomina.idworker" name="theNomina-idworker" [clearable]="false" notFoundText="No se encuentran trabajadores">
+            <ng-option *ngFor="let u of allWorkers" [value]="u.id">{{u.name}} {{u.surname1}} {{u.surname2}} - ({{u.documentid}})</ng-option>
+        </ng-select>
+
+        <br/>
+
+            <div *ngIf="theNomina.url==''" matTooltip="Seleccionar imagen" class="file-upload">
+                <button mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione documento de nómina a subir</button>
+                <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileSelected($event)" #fileUpload>
+                &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+            </div>       
+            <div *ngIf="theNomina.url!=''" matTooltip="Seleccionar imagen" class="file-upload">
+                <a class="form-control" target="_blank" href="{{theNomina.url}}"><i class="fa-solid fa-paperclip"></i> Abrir nómina</a>
+                <br/>
+            </div>       
+
+
+
+
+            Fecha de la nómina: <input
+            class="form-control"
+            type="text"
+            mwlFlatpickr
+            [(ngModel)]="theNomina.duedate"
+            [altInput]="true"
+            [convertModelValue]="true"
+            [enableTime]="false"
+            dateFormat="YY-m-d"
+            altFormat="d/m/Y"
+            placeholder="Indique la fecha a la que corresponde la nómina"
+            />
+            <br/>
+
+
+
+                
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button nbButton status="warning" type="button" class="btn btn-outline-secondary" (click)="close();">
+            CERRAR
+        </button>
+        &nbsp;
+        <button  *ngIf="theNomina.id==''" [disabled]="isProcessing || !theNomina.url.startsWith('https:') ||  !theNomina.duedate || theNomina.idworker=='' "  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveNomina();">
+            REGISTRAR NÓMINA
+        </button>        
+        <button  *ngIf="theNomina.id!=''" [disabled]="isProcessing || !theNomina.url.startsWith('https:') || !theNomina.duedate || theNomina.idworker==''  "  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveNomina();">
+            MODIFICAR NÓMINA
+        </button>
+    </div>
+</ng-template>
+  
+
+

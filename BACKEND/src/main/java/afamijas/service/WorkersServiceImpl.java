@@ -3,7 +3,12 @@ package afamijas.service;
 import afamijas.dao.*;
 import afamijas.model.*;
 import afamijas.model.dto.*;
+import afamijas.queuemail.model.dto.SendingResultDTO;
+import afamijas.queuemail.services.QueuemailHardyService;
+import afamijas.utils.PasswordPolicy;
+import afamijas.utils.SendMail;
 import afamijas.utils.StringUtils;
+import afamijas.utils.Template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
@@ -11,6 +16,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +38,11 @@ public class WorkersServiceImpl implements WorkersService
 
 	@Value("${media.path}")
 	String mediapath;
+
+
+	@Value("${queuemail.use}")
+	private String use_queuemail;
+
 
 	final MongoTemplate mongoTemplate;
 
@@ -77,9 +88,23 @@ public class WorkersServiceImpl implements WorkersService
 	final CountriesRepository countriesRepository;
 	final AtencionesRepository atencionesRepository;
 
+	final NominasRepository nominasRepository;
+
+
+
+	final UsersService usersService;
+	final SendMail sendMail;
+	final QueuemailHardyService queuemailHardyService;
+	final ConfigurationService configurationService;
+	final Template template;
+	final ErrorsService errorsService;
+
+
+	final AddressBookRepository addressBookRepository;
+
 
 	@Autowired
-	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, DocsRepository docsRepository, ReceiptsRepository receiptsRepository, InvoicesRepository invoicesRepository, MediaService mediaService, NotificationsService notificationsService, DocsPsicoRepository docsPsicoRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, CountriesRepository countriesRepository, AtencionesRepository atencionesRepository)
+	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, DocsRepository docsRepository, ReceiptsRepository receiptsRepository, InvoicesRepository invoicesRepository, MediaService mediaService, NotificationsService notificationsService, DocsPsicoRepository docsPsicoRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, CountriesRepository countriesRepository, AtencionesRepository atencionesRepository, NominasRepository nominasRepository, UsersService usersService, SendMail sendMail, QueuemailHardyService queuemailHardyService, ConfigurationService configurationService, Template template, ErrorsService errorsService, AddressBookRepository addressBookRepository)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -104,7 +129,15 @@ public class WorkersServiceImpl implements WorkersService
 		this.statesRepository = statesRepository;
 		this.countriesRepository = countriesRepository;
 		this.atencionesRepository = atencionesRepository;
-	}
+        this.nominasRepository = nominasRepository;
+        this.usersService = usersService;
+		this.sendMail = sendMail;
+		this.queuemailHardyService = queuemailHardyService;
+		this.configurationService = configurationService;
+		this.template = template;
+		this.errorsService = errorsService;
+        this.addressBookRepository = addressBookRepository;
+    }
 
 	//TODO: REVISAR SI LA PAGINACIÓN ESTÁ BIEN HECHA YA QUE NO ESTÁ COMO EN LAS OTRAS
 	@Override
@@ -232,7 +265,7 @@ public class WorkersServiceImpl implements WorkersService
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void saveCalendarEvent(String idworker, String idcalendarevent, LocalDateTime start, LocalDateTime end, Boolean allDay, String title, Boolean dayoff, String description, List<String> roles, List<String> idsusers, LocalDateTime publishdate)
+	public void saveCalendarEvent(String idworker, String idcalendarevent, LocalDateTime start, LocalDateTime end, Boolean allDay, String title, Boolean dayoff, String description, List<String> roles, List<String> idsusers, LocalDateTime publishdate, String url)
 	{
 		CalendarEvent calendarEvent = null;
 
@@ -263,6 +296,7 @@ public class WorkersServiceImpl implements WorkersService
 		calendarEvent.setRoles(roles);
 		calendarEvent.setIdsusers(idsusers);
 		calendarEvent.setPublishdate(publishdate);
+		calendarEvent.setUrl(url);
 
 		this.calendarEventsRepository.save(calendarEvent);
 
@@ -285,8 +319,8 @@ public class WorkersServiceImpl implements WorkersService
 			criteria.orOperator(Criteria.where("roles").in(roles),
 					Criteria.where("idsusers").in(Arrays.asList(idworker)),
 					new Criteria().andOperator(
-							new Criteria().orOperator(Criteria.where("roles").is(null), Criteria.where("roles").size(0)),
-							new Criteria().orOperator(Criteria.where("idsusers").is(null), Criteria.where("idsusers").size(0))
+							new Criteria().orOperator(Criteria.where("roles").exists(false), Criteria.where("roles").size(0)),
+							new Criteria().orOperator(Criteria.where("idsusers").exists(false), Criteria.where("idsusers").size(0))
 					)
 
 			).and("publishdate").lte(LocalDateTime.now());
@@ -1021,6 +1055,7 @@ public class WorkersServiceImpl implements WorkersService
 
 		if(user.getRoles().contains("ADMIN") || user.getRoles().contains("MANAGER"))
 		{
+
 			if(text!=null && !text.trim().equals(""))
 			{
 				Criteria criteria1 = new Criteria().orOperator(
@@ -1044,24 +1079,40 @@ public class WorkersServiceImpl implements WorkersService
 		}
 		else
 		{
-			query.addCriteria(Criteria.where("dayfrom").lte(LocalDate.now()));
-			query.addCriteria(Criteria.where("dayto").gte(LocalDate.now()));
-			Criteria criteria4 = new Criteria().orOperator(
+			List<Criteria> andCriteria = new ArrayList<>();
+
+			if (text != null && !text.trim().equals("")) {
+				Criteria textCriteria = new Criteria().orOperator(
+						Criteria.where("title").regex(".*" + text + ".*", "i"),
+						Criteria.where("description").regex(".*" + text + ".*", "i")
+				);
+				andCriteria.add(textCriteria);
+			}
+
+			andCriteria.add(Criteria.where("dayfrom").lte(LocalDate.now()));
+			andCriteria.add(Criteria.where("dayto").gte(LocalDate.now()));
+
+			Criteria rolesCriteria = new Criteria().orOperator(
 					Criteria.where("roles").in(user.getRoles()),
 					Criteria.where("roles").size(0),
-					Criteria.where("roles").is(null)
+					Criteria.where("roles").exists(false),
+					Criteria.where("idworker").is(user.get_id())
 			);
-			query.addCriteria(criteria4);
+			andCriteria.add(rolesCriteria);
+
+			Criteria finalCriteria = new Criteria().andOperator(andCriteria.toArray(new Criteria[0]));
+			query.addCriteria(finalCriteria);
 		}
 
 
 		if(!(text!=null && !text.trim().equals("")) && availablefrom==null && availableto==null && !(!user.getRoles().contains("ADMIN") && !user.getRoles().contains("MANAGER")))
 			query.addCriteria(new Criteria());
 
+		try { if(debug_queries) System.out.println("getDocs: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
 		long total = this.mongoTemplate.count(query, Doc.class);
 
 		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
-		try { if(debug_queries) System.out.println("getDocs: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
 
 		//EN LOS USUARIOS WORKER INCLUIMOS TAMBIÉN LOS QUE PUDIERAN ESTAR BORRADOS POR ESO FINDONE NO FILTRA POR STATUS
 		List<DocDTO> list = this.mongoTemplate.find(query, Doc.class).stream().map(x -> new DocDTO(x, this.usersRepository.findOne(x.getIdworker()))).toList();
@@ -1073,9 +1124,15 @@ public class WorkersServiceImpl implements WorkersService
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void saveDoc(String id, String idworker, String title, String description, String url, LocalDate dayfrom, LocalDate dayto, List<String> roles)
+	public void saveDoc(String id, String idworker, String title, String description, String url, LocalDate dayfrom, LocalDate dayto, List<String> roles, boolean isAdmin, boolean createEvent) throws Exception
 	{
-		if(dayfrom==null) dayfrom = LocalDate.now();
+		if(dayfrom==null)
+		{
+			if(dayto==null)
+				dayfrom = LocalDate.now();
+			else
+				dayfrom = dayto;
+		}
 		if(dayto==null) dayto = LocalDate.of(2100, 1, 1);
 		if(roles!=null && roles.size()==0) roles = null;
 
@@ -1093,6 +1150,8 @@ public class WorkersServiceImpl implements WorkersService
 		{
 			doc = this.docsRepository.findOne(id);
 			if(doc==null) return;
+
+			if(!isAdmin && !doc.getIdworker().equals(idworker)) throw new Exception("NO");
 		}
 		else
 		{
@@ -1100,26 +1159,60 @@ public class WorkersServiceImpl implements WorkersService
 			doc.setUrl(url);
 		}
 
+		if(isAdmin)
+		{
+			doc.setIdworker(idworker);
+			doc.setTitle(title);
+			doc.setDescription(description);
+			doc.setDayfrom(dayfrom);
+			doc.setDayto(dayto);
+			doc.setRoles(roles);
 
-		doc.setIdworker(idworker);
-		doc.setTitle(title);
-		doc.setDescription(description);
-		doc.setDayfrom(dayfrom);
-		doc.setDayto(dayto);
-		doc.setRoles(roles);
+			doc = this.docsRepository.save(doc);
 
-		doc = this.docsRepository.save(doc);
+			this.notificationsService.create(null, roles, doc.getTitle(), "NORMAL", doc.getDescription(), url);
+		}
+		else
+		{
+			doc.setIdworker(idworker);
+			doc.setTitle(title);
+			doc.setDescription(description);
 
-		this.notificationsService.create(null, roles, doc.getTitle(), "NORMAL", doc.getDescription(), url);
+			doc.setDayfrom(dayfrom);
+			doc.setDayto(dayto);
+
+			roles = new ArrayList<>();
+			roles.add("ADMIN");
+			roles.add("MANAGER");
+			doc.setRoles(roles);
+
+			doc = this.docsRepository.save(doc);
+
+			this.notificationsService.create(null, roles, doc.getTitle(), "NORMAL", doc.getDescription(), url);
+		}
+
+		if(isAdmin && createEvent)
+			this.saveCalendarEvent(idworker, null, doc.getDayfrom().atStartOfDay(), doc.getDayto().equals(LocalDate.of(2100, 1, 1))?null:doc.getDayto().atTime(23, 59, 59), false, doc.getTitle(), false, doc.getDescription() , doc.getRoles(), null, doc.getDayfrom().atStartOfDay(), doc.getUrl());
 
 	}
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void deleteDoc(String id)
+	public void deleteAdminDoc(String id)
 	{
 		Doc doc = this.docsRepository.findOne(id);
 		if(doc!=null) this.docsRepository.delete(doc);
+	}
+
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void deleteWorkerDoc(String id, String idworker) throws Exception
+	{
+		Doc doc = this.docsRepository.findOne(id);
+		if(doc!=null && doc.getIdworker().equals(idworker)) this.docsRepository.delete(doc);
+		else throw new Exception("NO");
 	}
 
 
@@ -1453,5 +1546,267 @@ public class WorkersServiceImpl implements WorkersService
 		Atencion atencion = this.atencionesRepository.findOne(id);
 		if(atencion!=null) this.atencionesRepository.delete(atencion);
 	}
+
+
+
+	//TODO: REVISAR SI LA PAGINACIÓN ESTÁ BIEN HECHA YA QUE NO ESTÁ COMO EN LAS OTRAS
+	@Override
+	public Page<WorkerDTO> getWorkers(String role, String name_surnames, String documentid, String status, Integer page, Integer size, String order, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+
+		Query query = null;
+		if(role!=null)
+			query = new Query().with(pageable).addCriteria(Criteria.where("roles").in(role)).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, order));
+		else
+			query = new Query().with(pageable).addCriteria(Criteria.where("roles").in(Roles.WORKER_ROLES)).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, order));
+
+		if(name_surnames!=null)
+		{
+			Criteria names_or_criteria = new Criteria();
+			names_or_criteria.orOperator(Criteria.where("name").regex(".*"+name_surnames+".*", "i"),
+					Criteria.where("surname1").regex(".*"+name_surnames+".*", "i"),
+					Criteria.where("surname2").regex(".*"+name_surnames+".*", "i"));
+
+			query.addCriteria(names_or_criteria);
+		}
+		if(documentid!=null) query.addCriteria(Criteria.where("documentid").is(documentid));
+		if(status!=null) query.addCriteria(Criteria.where("status").is(status));
+
+
+		if(debug_queries) System.out.println("getWokers: " + query.getQueryObject().toJson());
+		List<WorkerDTO> list = this.mongoTemplate.find(query, User.class).stream().map(x -> new WorkerDTO(x, null, null, null, this.calendarEventsRepository.findByIdsusersContainingOrderByStartDesc(x.get_id()))).toList();
+
+
+		Query finalQuery = query;
+		return PageableExecutionUtils.getPage(
+				list,
+				pageable,
+				() -> this.mongoTemplate.count(Query.of(finalQuery).limit(-1).skip(-1), User.class));
+	}
+
+
+
+	@Override
+	public WorkerDTO saveWorker(String id, List<String> roles, String name, String surname1, String surname2, String email, String password, String phone, String documentid, String documenttype,
+								String postaladdress, Integer idcity, Integer idstate, Integer idcountry, String postalcode,
+								String nss, String categoria_profesional, String tipo_contrato, String jornada_laboral, String horario)
+	{
+		boolean sendnewpass = id==null;
+
+		User worker = null;
+		if(id!=null)
+		{
+			worker = this.usersRepository.findOne(id);
+			if(worker==null) return null;
+		}
+		else
+			worker = new User();
+
+		worker.setRoles(roles);
+		worker.setStatus("A");
+
+		worker.setName(name);
+		worker.setSurname1(surname1);
+		worker.setSurname2(surname2);
+		worker.setEmail(email);
+		worker.setPhone(phone);
+		worker.setDocumentid(documentid);
+		worker.setDocumenttype(documenttype);
+		worker.setUsername(email);
+
+		if(password!=null && !password.trim().equals(""))
+		{
+			sendnewpass = false;
+			worker.setPassword(new BCryptPasswordEncoder().encode(password));
+		}
+
+		worker.setIdcity(idcity);
+		worker.setIdstate(idstate);
+		worker.setIdcountry(idcountry);
+		worker.setPostaladdress(postaladdress);
+		worker.setPostalcode(postalcode);
+
+		worker.setNss(nss);
+		worker.setCategoria_profesional(categoria_profesional);
+		worker.setTipo_contrato(tipo_contrato);
+		worker.setJornada_laboral(jornada_laboral);
+		worker.setHorario(horario);
+
+		worker = this.usersRepository.save(worker);
+
+		if(sendnewpass) try { this.sendNewPassword(worker); } catch (Exception e) {}
+
+		//ACTUALIZAMOS AGENDA
+		try
+		{
+			List<AddressBook> addressBooks = this.addressBookRepository.findByIduser(worker.get_id());
+			if(addressBooks!=null && addressBooks.size()>0)
+				for(AddressBook addressBook:addressBooks)
+				{
+					addressBook.setFullname(worker.getFullname());
+					addressBook.setPhone(worker.getPhone());
+					addressBook.setEmail(worker.getEmail());
+					this.addressBookRepository.save(addressBook);
+				}
+			else
+			{
+				AddressBook addressBook = new AddressBook(worker);
+				this.addressBookRepository.save(addressBook);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+
+		return new WorkerDTO(worker, this.citiesRepository.findOne(idcity), this.statesRepository.findOne(idstate), this.countriesRepository.findOne(idcountry), this.calendarEventsRepository.findByIdsusersContainingOrderByStartDesc(worker.get_id()));
+	}
+
+	@Override
+	public void unregisterWorker (String id)
+	{
+		User member = this.usersRepository.findOne(id);
+		if(member!=null)
+		{
+			if(member.getStatus().equals("D"))
+			{
+				this.usersRepository.delete(member);
+			}
+			else
+			{
+				member.setStatus("D");
+				this.usersRepository.save(member);
+			}
+		}
+
+	}
+
+
+
+	private void sendNewPassword(User user) throws Exception
+	{
+		//String fromemail = this.configurationService.value("fromemail");
+		String fromemail = "info@afamijas.org";
+
+		String newpassword = PasswordPolicy.generate();
+		user.setPassword(new BCryptPasswordEncoder().encode(newpassword));
+		user.setToken(UUID.randomUUID().toString()); //renovamos token
+		user = this.usersService.save(user);
+
+		HashMap<String, String> values = new HashMap<String, String>();
+		values.put("newpassword", newpassword);
+		values.put("username", user.getUsername());
+		String body = template.parse("mail_sendnewpassword.html", values);
+
+		String newpasswordsubject = "Sus nuevos datos de acceso";
+
+		if(use_queuemail==null) use_queuemail = this.configurationService.value("queuemail.use");
+		if(use_queuemail.equals("true"))
+		{
+			//ENVIAMOS POR QUEUEMAIL CON SERVICIO REBUSTO QUE IMPLEMENTA COLA LOCAL DE EMAILS FALLIDOS
+			SendingResultDTO sendingResultDTO = this.queuemailHardyService.sendEmail(null, fromemail, "AFA Mijas",  user.getEmail(), user.getEmail(), null, null, fromemail,
+					newpasswordsubject, "UTF-8", body, "UTF-8", "text/html",
+					null, null, null,
+					true, false,
+					true, null);
+
+			if(sendingResultDTO==null || (sendingResultDTO.getLocalqueued()!=null && sendingResultDTO.getLocalqueued()==false) )
+			{
+				this.errorsService.sendWarning("Email local-queuing failed", sendingResultDTO==null?"NULL":sendingResultDTO.getError());
+				this.sendMail.send(fromemail, user.getEmail(), "AFA Mijas", user.getEmail(), null, null, fromemail, newpasswordsubject, "UTF-8", body, "UTF-8", null, "html");
+			}
+		}
+		else
+		{
+			this.sendMail.send(fromemail, user.getEmail(), "AFA Mijas", user.getEmail(), null, null, fromemail, newpasswordsubject, "UTF-8", body, "UTF-8", null, "html");
+		}
+
+	}
+
+
+
+	// SOLO PARA ADMIN y MANAGER
+	public Page<NominaDTO> getNominas(User user, String idworker, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		if(idworker!=null)
+			query.addCriteria(Criteria.where("idworker").is(idworker));
+
+		if(dayfrom!=null && dayto!=null)
+			query.addCriteria(new Criteria().andOperator(new Criteria().where("duedate").gte(dayfrom), new Criteria().where("duedate").lte(dayto)));
+		else if(dayfrom!=null && dayto==null)
+			query.addCriteria(Criteria.where("duedate").gte(dayfrom));
+		else if(dayto!=null && dayfrom==null)
+			query.addCriteria(Criteria.where("duedate").lte(dayto));
+
+		query.addCriteria(Criteria.where("status").is("A"));
+
+		long total = this.mongoTemplate.count(query, Nomina.class);
+
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { if(debug_queries) System.out.println("getNominas: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		//EN LOS USUARIOS WORKER INCLUIMOS TAMBIÉN LOS QUE PUDIERAN ESTAR BORRADOS POR ESO FINDONE NO FILTRA POR STATUS
+		List<NominaDTO> list = this.mongoTemplate.find(query, Nomina.class).stream().map(x -> new NominaDTO(x, this.usersRepository.findOne(x.getIdworker()))).toList();
+
+		return new PageImpl<>(list, pageable, total);
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void saveNomina(String id, String idworker, String url, LocalDate duedate)
+	{
+		Nomina nomina;
+		String oldurl = null;
+		if(id!=null)
+		{
+			nomina = this.nominasRepository.findOne(id);
+			if(nomina==null) return;
+			oldurl = nomina.getUrl();
+		}
+		else
+		{
+			nomina = new Nomina();
+			nomina.setUrl(url);
+			nomina.setIdworker(idworker);
+		}
+
+		nomina.setDuedate(duedate);
+		nomina.setStatus("A");
+
+		nomina = this.nominasRepository.save(nomina);
+
+		//this.notificationsService.create(idmember, null, status.equals("PAID")?"Recibo pagado":"Recibo pendiente", "NORMAL", duedate.format(DateTimeFormatter.ofPattern("yyyy-MM-d")) + ": " + total + " euros.", receipt.getUrl());
+	}
+
+
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void deleteNomina(String id)
+	{
+		Nomina nomina = this.nominasRepository.findOne(id);
+		if(nomina!=null) this.nominasRepository.delete(nomina);
+	}
+
+
+
+
+	@Override
+	public List<WorkerDTO> getAllWorkers()
+	{
+		Query query = new Query().with(Sort.by(Sort.Direction.ASC, "name"));
+		Criteria criteria = new Criteria().where("roles").in(Roles.WORKER_ROLES).and("status").is("A");
+		query.addCriteria(criteria);
+		try { if(debug_queries) System.out.println("getAllWorkers: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		return this.mongoTemplate.find(query, User.class).stream().map(x -> new WorkerDTO(x, null, null, null, null)).toList();
+	}
+
+
 
 }

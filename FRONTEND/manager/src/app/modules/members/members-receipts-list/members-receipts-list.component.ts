@@ -356,7 +356,7 @@ async onFileSelected(event) {
 
   if (file) 
   {
-    const upload$ = this.mediaService.uploadFile("recepit", file).pipe(finalize(() => this.reset())
+    const upload$ = this.mediaService.uploadFile("receipt", file).pipe(finalize(() => this.reset())
   )
   ;
 

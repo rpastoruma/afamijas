@@ -1111,6 +1111,9 @@ cancelUpload() {
 
   validDocumentId(documentId: string, documentType: string)
   {
+    if(documentId == null || documentId.length == 0) return false;
+    if(documentType == null || documentType.length == 0) return false;
+ 
     documentId = documentId.toUpperCase();
     this.thePatient.documentid = documentId;
 

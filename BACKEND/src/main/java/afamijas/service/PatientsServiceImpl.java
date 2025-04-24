@@ -1,9 +1,6 @@
 package afamijas.service;
 
-import afamijas.dao.CitiesRepository;
-import afamijas.dao.CountriesRepository;
-import afamijas.dao.StatesRepository;
-import afamijas.dao.UsersRepository;
+import afamijas.dao.*;
 import afamijas.model.*;
 import afamijas.model.dto.PatientDTO;
 import afamijas.queuemail.model.dto.SendingResultDTO;
@@ -63,8 +60,11 @@ public class PatientsServiceImpl implements PatientsService
 	final Template template;
 
 
+	final AddressBookRepository addressBookRepository;
+
+
 	@Autowired
-	public PatientsServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, CountriesRepository countriesRepository, MediaService mediaService, NotificationsService notificationsService, Template template)
+	public PatientsServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, CountriesRepository countriesRepository, MediaService mediaService, NotificationsService notificationsService, Template template, AddressBookRepository addressBookRepository)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -74,7 +74,8 @@ public class PatientsServiceImpl implements PatientsService
 		this.mediaService = mediaService;
 		this.notificationsService = notificationsService;
 		this.template = template;
-	}
+        this.addressBookRepository = addressBookRepository;
+    }
 
 	//TODO: REVISAR SI LA PAGINACIÓN ESTÁ BIEN HECHA YA QUE NO ESTÁ COMO EN LAS OTRAS
 	@Override
@@ -425,7 +426,33 @@ public class PatientsServiceImpl implements PatientsService
 
 		}
 
-		return new PatientDTO(this.usersRepository.save(patient), this.citiesRepository.findOne(idcity), this.statesRepository.findOne(idstate), this.countriesRepository.findOne(idcountry), this.usersRepository.findOne(patient.getIdrelative()), null);
+		patient = this.usersRepository.save(patient);
+
+		//ACTUALIZAMOS AGENDA
+		try
+		{
+			List<AddressBook> addressBooks = this.addressBookRepository.findByIduser(patient.get_id());
+			if(addressBooks!=null && addressBooks.size()>0)
+				for(AddressBook addressBook:addressBooks)
+				{
+					addressBook.setFullname(patient.getFullname());
+					addressBook.setPhone(patient.getPhone());
+					addressBook.setEmail(patient.getEmail());
+					this.addressBookRepository.save(addressBook);
+				}
+			else
+			{
+				AddressBook addressBook = new AddressBook(patient);
+				this.addressBookRepository.save(addressBook);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+
+		return new PatientDTO(patient, this.citiesRepository.findOne(idcity), this.statesRepository.findOne(idstate), this.countriesRepository.findOne(idcountry), this.usersRepository.findOne(patient.getIdrelative()), null);
 	}
 
 

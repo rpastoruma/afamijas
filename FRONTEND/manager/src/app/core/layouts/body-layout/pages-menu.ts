@@ -183,6 +183,16 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
     }
   ];  
 
+  //MENÚ STAFF
+  export const MENU_STAFF: NbMenuItem[] = [
+    {
+      title: 'Trabajadores',
+      icon: { icon: 'fa-user-check', pack: 'fas' },
+      link: '/staff',
+      data: 'menu.staff',
+      expanded: false,
+    }
+  ];  
 
   
   
@@ -314,3 +324,18 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
       expanded: false,
     }
   ];  
+
+
+      
+  //MENÚ AGENDA
+  export const MENU_AGENDA: NbMenuItem[] = [
+    {
+      title: 'Agenda',
+      icon: { icon: 'fa-address-book', pack: 'fas' },
+      link: '/agenda',
+      data: 'menu.agenda',
+      expanded: false,
+    }
+  ];  
+  
+    

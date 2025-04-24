@@ -44,6 +44,7 @@ import { canViewTocupaGuard } from './guards/can-view-tocupa.guard';
 import { canViewEnferGuard } from './guards/can-view-enfer.guard';
 import { canViewTsocialGuard } from './guards/can-view-tsocial.guard';
 import { canViewPaiGuard } from './guards/can-view-pai.guard';
+import { canViewStaffGuard } from './guards/can-view-staff.guard';
 
 
 const routes: Routes = [
@@ -211,6 +212,18 @@ const routes: Routes = [
       component: BodyLayoutComponent,
       canActivate : [canAccessMembersGuard],
       loadChildren: () => import('../modules/members/members.module').then(m => m.MembersModule) 
+    },
+    {
+      path : 'agenda', 
+      component: BodyLayoutComponent,
+      canActivate : [canAccessMembersGuard],
+      loadChildren: () => import('../modules/agenda/agenda.module').then(m => m.AgendaModule) 
+    },
+    {
+      path : 'staff', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewStaffGuard],
+      loadChildren: () => import('../modules/staff/staff.module').then(m => m.StaffModule) 
     },
     {
       path : 'invoices', 

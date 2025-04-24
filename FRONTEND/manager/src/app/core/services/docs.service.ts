@@ -22,7 +22,7 @@ export class DocsService {
   }
  
 
-  saveDoc(theDoc : DocDTO) 
+  saveDoc(theDoc : DocDTO, createEvent : boolean) 
   {
     const form = new FormData();
 
@@ -33,6 +33,7 @@ export class DocsService {
     if(theDoc.dayfrom)  form.append('dayfrom', this.formatDate2(theDoc.dayfrom));
     if(theDoc.dayto)  form.append('dayto', this.formatDate2(theDoc.dayto));
     if(theDoc.roles && theDoc.roles.length>0)  form.append('roles', theDoc.roles.toString());
+    if(createEvent==true) form.append('createEvent', 'true');
  
     return this.http.post<any>(ENV.url.workers + '/saveDoc', form);
   }

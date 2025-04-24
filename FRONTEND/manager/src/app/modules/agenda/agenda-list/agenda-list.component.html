@@ -1,0 +1,116 @@
+<nb-card>
+    <nb-card-header>
+      <div class="row float-start">
+        <h4>Agenda telefónica</h4>
+      </div>
+      <button [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openAddAddressBookModal()">NUEVO CONTACTO</button>
+    </nb-card-header>
+  
+    <nb-card-body>
+
+        <div class="form-group mb-3">
+            <label for="typeSelector">Tipo:</label>
+            <select id="typeSelector" class="form-control" [(ngModel)]="type" (change)="filter(0)">
+              <option value="">TODOS</option>
+              <option value="RELATIVE">Familiares</option>
+              <option value="USER">Usuarios</option>
+              <option value="VOLUNTEER">Voluntarios</option>
+              <option value="WORKER">Trabajadores</option>
+              <option value="MEMBER">Socios</option>
+              <option value="OTHER">Otros</option>
+            </select>
+          </div>
+
+          
+      <div class="mb-3">
+        Nombre o apellidos:
+        <input class="form-control" [(ngModel)]="fullname" (ngModelChange)="getAddressBook(0)" placeholder="Filtra por nombre o apellidos" />
+      </div>
+  
+      <div class="mb-3">
+        Teléfono:
+        <input class="form-control" [(ngModel)]="phone" (ngModelChange)="getAddressBook(0)" placeholder="Filtra por teléfono" />
+      </div>
+  
+      <div class="mb-3">
+        Email:
+        <input class="form-control" [(ngModel)]="email" (ngModelChange)="getAddressBook(0)" placeholder="Filtra por email" />
+      </div>
+  
+      <app-custom-table
+        [actions]="actions"
+        [keys]="['Nombre:', 'Teléfono:', 'Email:', 'Observaciones:']"
+        [values]="contacts"
+        [align]="['left', 'left', 'left', 'left']"
+        [filters]="[false, false, false, false]"
+        [sort]="[false, false, false, false]"
+        [widthToCollapse]="750"
+        [withPagination]="true"
+        [totalPages]="totalPages"
+        [page]="page"
+        [size]="size"
+        [loadingE]="loadingExcel"
+        [loading]="loadingPDF"
+        [hasExport]="true"
+        (actionSelected)="action($event)"
+        (changePage)="setPage($event)"
+        (filterEvent)="getAddressBook(0)"
+        [isProcessing]="isProcessing"
+        (exportData)="getExportData($event)"
+        [showSearchButton]="true"
+      ></app-custom-table>
+
+
+      
+
+
+    </nb-card-body>
+  
+
+
+    <nb-card-footer>
+      <button [hidden]="!canModify()" nbButton class="float-end" status="primary" (click)="openAddAddressBookModal()">NUEVO CONTACTO</button>
+    </nb-card-footer>
+  </nb-card>
+  
+  <ng-template #modalContent let-close="close">
+    <div class="modal-header">
+      <h6 *ngIf="!selectedContact.id">Registrar nuevo contacto</h6>
+      <h6 *ngIf="selectedContact.id">Modificar contacto</h6>
+      <nb-icon (click)="close()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+  
+    <div class="modal-body">
+      <div>
+        Nombre completo:
+        <input class="form-control" [(ngModel)]="selectedContact.fullname" name="fullname" type="text" required />
+  
+        <br />
+        Teléfono:
+        <input class="form-control" [(ngModel)]="selectedContact.phone" name="phone" type="text" />
+  
+        <br />
+        Email:
+        <input class="form-control" [(ngModel)]="selectedContact.email" name="email" type="email" />
+  
+        <br />
+        Observaciones:
+        <textarea class="form-control" [(ngModel)]="selectedContact.observations" name="observations"></textarea>
+      </div>
+    </div>
+  
+    <div class="modal-footer">
+      <button nbButton status="warning" type="button" (click)="close()">CERRAR</button>
+      &nbsp;
+      <button
+        nbButton
+        status="primary"
+        type="button"
+        [disabled]="isProcessing || !selectedContact.fullname"
+        (click)="saveAddressBook(); close();"
+      >
+        {{ selectedContact.id ? 'MODIFICAR' : 'REGISTRAR' }} CONTACTO
+      </button>
+    </div>
+  </ng-template>
+  

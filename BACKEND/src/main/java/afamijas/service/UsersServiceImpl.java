@@ -1,6 +1,8 @@
 package afamijas.service;
 
+import afamijas.dao.AddressBookRepository;
 import afamijas.dao.UsersRepository;
+import afamijas.model.AddressBook;
 import afamijas.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,11 +15,14 @@ public class UsersServiceImpl implements UsersService
 {
     final UsersRepository usersRepository;
 
+	final AddressBookRepository addressBookRepository;
+
 	@Autowired
-	public UsersServiceImpl(UsersRepository usersRepository)
+	public UsersServiceImpl(UsersRepository usersRepository, AddressBookRepository addressBookRepository)
 	{
 		this.usersRepository = usersRepository;
-	}
+        this.addressBookRepository = addressBookRepository;
+    }
 
 	@Override
 	public User findOne(String id)
@@ -61,7 +66,34 @@ public class UsersServiceImpl implements UsersService
 	public User save(User user)
 	{
 		user.setModified(LocalDateTime.now());
-		return this.usersRepository.save(user);
+
+		user = this.usersRepository.save(user);
+
+		//ACTUALIZAMOS AGENDA
+		try
+		{
+			List<AddressBook> addressBooks = this.addressBookRepository.findByIduser(user.get_id());
+			if(addressBooks!=null && addressBooks.size()>0)
+				for(AddressBook addressBook:addressBooks)
+				{
+					addressBook.setFullname(user.getFullname());
+					addressBook.setPhone(user.getPhone());
+					addressBook.setEmail(user.getEmail());
+					this.addressBookRepository.save(addressBook);
+				}
+			else
+			{
+				AddressBook addressBook = new AddressBook(user);
+				this.addressBookRepository.save(addressBook);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+
+		return user;
 	}
 
 	@Override

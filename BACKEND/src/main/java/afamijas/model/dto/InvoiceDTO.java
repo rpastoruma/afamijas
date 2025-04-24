@@ -1,7 +1,6 @@
 package afamijas.model.dto;
 
 import afamijas.model.Invoice;
-import afamijas.model.Receipt;
 import afamijas.model.User;
 
 import java.time.LocalDate;

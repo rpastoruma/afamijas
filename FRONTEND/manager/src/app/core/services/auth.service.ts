@@ -122,6 +122,10 @@ export class AuthService {
     return hasRole(this.getRoles(),  RoleCode.CLEANING);
   }
 
+  isWorker()
+  {
+    return this.isAdmin() || this.isManager() || this.isNursing() || this.isNursingAssitant() || this.isKitchen() || this.isLegionellaLog() || this.isCleaning();
+  }
 
 
 

@@ -8,7 +8,7 @@
     <nb-card-body>
 
         <div [hidden]="!canModify()" id="filtersOnlyCanModify">
-        <div style="margin-bottom: 15px !important">
+        <div  *ngIf="canAdmin()" style="margin-bottom: 15px !important">
             Consultar documentos publicados desde el día:
             <input 
             class="form-control"
@@ -28,7 +28,7 @@
             
 
         
-        <div style="margin-bottom: 15px !important">
+        <div  *ngIf="canAdmin()" style="margin-bottom: 15px !important">
             Consultar documentos publicados hasta el día:
             <input 
             class="form-control"
@@ -120,41 +120,56 @@
             <textarea rows="3" class="form-control" [(ngModel)]="theDoc.description"></textarea>
             <br/>
 
-            Publicado desde (opcional): <input
-            class="form-control"
-            type="text"
-            mwlFlatpickr
-            [(ngModel)]="theDoc.dayfrom"
-            [altInput]="true"
-            [convertModelValue]="true"
-            [enableTime]="false"
-            dateFormat="YY-m-d"
-            altFormat="d/m/Y"
-            placeholder="Indique cuando quiere que el documento se publique"
-            />
-            <br/>
-   
+            <div *ngIf="canAdmin()">
+                Publicado desde (opcional): <input
+                class="form-control"
+                type="text"
+                mwlFlatpickr
+                [(ngModel)]="theDoc.dayfrom"
+                [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder="Indique cuando quiere que el documento se publique"
+                />
+                <br/>
+    
 
-            Publicado hasta (opcional): <input
-            class="form-control"
-            type="text"
-            mwlFlatpickr
-            [(ngModel)]="theDoc.dayto"
-            [altInput]="true"
-            [convertModelValue]="true"
-            [enableTime]="false"
-            dateFormat="YY-m-d"
-            altFormat="d/m/Y"
-            placeholder="Indique hasta cuando quiere que el documento esté publicado"
-            />
-            <br/>
-   
+                Publicado hasta (opcional): <input
+                class="form-control"
+                type="text"
+                mwlFlatpickr
+                [(ngModel)]="theDoc.dayto"
+                [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder="Indique hasta cuando quiere que el documento esté publicado"
+                />
+                <br/>
+    
 
-            Tipos de usuario que pueden ver este documento:
-            <ng-select [multiple]="true" [(ngModel)]="theDoc.roles" name="roles" placeholder="Para todos los tipos de usuario" notFoundText="Tipo de usuario no encontrado" >
-                            <ng-option *ngFor="let role of allRoles"  [value]="role">{{roleName(role)}}</ng-option>
-            </ng-select>
+                Tipos de usuario que pueden ver este documento:
+                <ng-select [multiple]="true" [(ngModel)]="theDoc.roles" name="roles" placeholder="Para todos los tipos de usuario" notFoundText="Tipo de usuario no encontrado" >
+                                <ng-option *ngFor="let role of allRoles"  [value]="role">{{roleName(role)}}</ng-option>
+                </ng-select>
 
+                <br/>
+                <div class="form-check mt-3">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="createEventCheckbox"
+                      [(ngModel)]="createEvent"
+                      name="createEvent"
+                    />
+                    <label class="form-check-label" for="createEventCheckbox">
+                      Crear un evento en el calendario para este documento
+                    </label>
+                  </div>
+            </div>
                 
         </div>
     </div>

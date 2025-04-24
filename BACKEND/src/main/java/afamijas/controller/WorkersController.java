@@ -1,13 +1,12 @@
 package afamijas.controller;
 
 
+import afamijas.model.AddressBook;
 import afamijas.model.CalendarEvent;
+import afamijas.model.dto.AddressBookDTO;
 import afamijas.model.dto.AtencionDTO;
 import afamijas.model.dto.CalendarEventDTO;
-import afamijas.service.ErrorsService;
-import afamijas.service.MediaService;
-import afamijas.service.UsersService;
-import afamijas.service.WorkersService;
+import afamijas.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,14 +39,17 @@ public class WorkersController extends AbstractBaseController
 
 	final MediaService mediaService;
 
+	final AddressBookService addressBookService;
+
 	@Autowired
-	public WorkersController(UsersService usersService, ErrorsService errorsService, WorkersService workersService, MediaService mediaService)
+	public WorkersController(UsersService usersService, ErrorsService errorsService, WorkersService workersService, MediaService mediaService, AddressBookService addressBookService)
 	{
 		super(usersService);
 		this.errorsService = errorsService;
 		this.workersService = workersService;
 		this.mediaService = mediaService;
-	}
+        this.addressBookService = addressBookService;
+    }
 
 	@RequestMapping(method=RequestMethod.GET, value="getActivePatients", produces="application/json")
 	public ResponseEntity<?> getActivePatients(
@@ -171,7 +173,7 @@ public class WorkersController extends AbstractBaseController
 
 			if(idsusers!=null && idsusers.size()>0) roles = null; //SI ES PARA USUARIOS ESPECÍFICOS NO SE PONE ROL
 
-			this.workersService.saveCalendarEvent(this.getId(), idcalendarevent, start, end, allDay, title, dayoff, description, roles, idsusers, publishdate);
+			this.workersService.saveCalendarEvent(this.getId(), idcalendarevent, start, end, allDay, title, dayoff, description, roles, idsusers, publishdate, null);
 			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
@@ -1086,19 +1088,22 @@ public class WorkersController extends AbstractBaseController
 			@RequestParam(value = "dayfrom", required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
 			@RequestParam(value = "dayto", required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
 			@RequestParam(value = "roles", required = false)  List<String> roles,
+			@RequestParam(value = "createEvent", required = false) Boolean createEvent,
 			HttpServletRequest request
 	)
 	{
 		try
 		{
-			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isWORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(createEvent==null) createEvent = false;
 
-			this.workersService.saveDoc(id, this.getId(), title, description, url, dayfrom, dayto, roles);
+			this.workersService.saveDoc(id, this.getId(), title, description, url, dayfrom, dayto, roles, this.isADMIN() || this.isMANAGER(), createEvent);
 			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
-			this.errorsService.sendError(e, this.getParameters(request));
+			if(!e.getMessage().equals("NO"))
+				this.errorsService.sendError(e, this.getParameters(request));
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -1114,14 +1119,19 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(this.isADMIN() || isMANAGER())
+				this.workersService.deleteAdminDoc(id);
+			else if(this.isWORKER())
+				this.workersService.deleteWorkerDoc(id, this.getId());
+			else
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-			this.workersService.deleteDoc(id);
 			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
-			this.errorsService.sendError(e, this.getParameters(request));
+			if(!e.getMessage().equals("NO"))
+				this.errorsService.sendError(e, this.getParameters(request));
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -1490,6 +1500,271 @@ public class WorkersController extends AbstractBaseController
 
 
 
+	@RequestMapping(method=RequestMethod.GET, value="getWorkers", produces="application/json")
+	public ResponseEntity<?> getWorkers(
+			@RequestParam(value = "role", required = false) String role,
+			@RequestParam(value = "name_surnames", required = false) String name_surnames,
+			@RequestParam(value = "documentid", required = false) String documentid,
+			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			if(order==null) order = "name";
+			if(orderasc==null) orderasc = "ASC";
+			return new ResponseEntity<>(this.workersService.getWorkers(role, name_surnames, documentid, status, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="saveWorker", produces="application/json")
+	public ResponseEntity<?> saveWorker(
+			@RequestParam(value = "id", required = false) String id,
+
+			@RequestParam(value = "roles", required = true) List<String> roles,
+			@RequestParam(value = "name", required = true) String name,
+			@RequestParam(value = "surname1", required = true) String surname1,
+			@RequestParam(value = "email", required = true) String email,
+			@RequestParam(value = "documentid", required = true) String documentid,
+			@RequestParam(value = "documenttype", required = true) String documenttype,
+
+			@RequestParam(value = "surname2", required = false) String surname2,
+			@RequestParam(value = "phone", required = false) String phone,
+			@RequestParam(value = "password", required = false) String password,
+
+			@RequestParam(value = "postaladdress", required = false) String postaladdress,
+			@RequestParam(value = "idcity", required = false) Integer idcity,
+			@RequestParam(value = "idstate", required = false) Integer idstate,
+			@RequestParam(value = "idcountry", required = false) Integer idcountry,
+			@RequestParam(value = "postalcode", required = false) String postalcode,
+
+			@RequestParam(value = "nss", required = false) String nss,
+			@RequestParam(value = "categoria_profesional", required = false) String categoria_profesional,
+			@RequestParam(value = "tipo_contrato", required = false) String tipo_contrato,
+			@RequestParam(value = "jornada_laboral", required = false) String jornada_laboral,
+			@RequestParam(value = "horario", required = false) String horario,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			return new ResponseEntity<>(this.workersService.saveWorker(id, roles, name, surname1, surname2, email, password, phone, documentid, documenttype, postaladdress, idcity, idstate, idcountry, postalcode,
+					nss, categoria_profesional, tipo_contrato, jornada_laboral, horario), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="unregisterWorker", produces="application/json")
+	public ResponseEntity<?> unregisterWorker(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			this.workersService.unregisterWorker(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getNominas", produces="application/json")
+	public ResponseEntity<?> getNominas(
+			@RequestParam(value = "idworker", required = false) String idworker,
+			@RequestParam(value = "dayfrom", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			@RequestParam(value = "dayto", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(order==null) order = "created";
+			if(orderasc==null) orderasc = "DESC";
+
+			return new ResponseEntity<>(this.workersService.getNominas(this.getUser(), idworker, dayfrom, dayto, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="saveNomina", produces="application/json")
+	public ResponseEntity<?> saveNomina(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "idworker", required = false) String idworker,
+			@RequestParam(value = "url", required = true) String url,
+			@RequestParam(value = "duedate", required = true)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate duedate,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.saveNomina(id, idworker, url, duedate);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteNomina", produces="application/json")
+	public ResponseEntity<?> deleteNomina(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.deleteNomina(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getAllWorkers", produces="application/json")
+	public ResponseEntity<?> getAllWorkers(
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			//PARA ADMIN Y DIRECTOR
+			if(!this.isMANAGER() && !this.isADMIN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			return new ResponseEntity<>(this.workersService.getAllWorkers(), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method = RequestMethod.GET, value = "getAddressBook", produces = "application/json")
+	public ResponseEntity<?> getAddressBook(
+			@RequestParam(value = "type", required = false) String type,
+			@RequestParam(value = "fullname", required = false) String fullname,
+			@RequestParam(value = "phone", required = false) String phone,
+			@RequestParam(value = "email", required = false) String email,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			HttpServletRequest request
+	)
+	{
+		try {
+			Page<AddressBookDTO> result = this.addressBookService.search(type, fullname, phone, email, page, size);
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} catch (Exception e) {
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+	@RequestMapping(method = RequestMethod.POST, value = "saveAddressBook", produces = "application/json")
+	public ResponseEntity<?> saveAddressBook(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "fullname", required = true) String fullname,
+			@RequestParam(value = "phone", required = false) String phone,
+			@RequestParam(value = "email", required = false) String email,
+			@RequestParam(value = "observations", required = false) String observations,
+			HttpServletRequest request
+	)
+	{
+		try {
+			if (!this.isADMIN() && !this.isMANAGER()) {
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			}
+
+			AddressBook saved = this.addressBookService.saveAddressBook(id, fullname, phone, email, observations);
+			return new ResponseEntity<>(new AddressBookDTO(saved), HttpStatus.OK);
+		} catch (Exception e) {
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+	@RequestMapping(method = RequestMethod.POST, value = "deleteAddressBook", produces = "application/json")
+	public ResponseEntity<?> deleteAddressBook(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try {
+			if (!this.isADMIN() && !this.isMANAGER()) {
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			}
+
+			this.addressBookService.deleteAddressBook(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		} catch (Exception e) {
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 
 }

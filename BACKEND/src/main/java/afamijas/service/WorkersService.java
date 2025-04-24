@@ -32,7 +32,7 @@ public interface WorkersService
 
     void deleteAbsence(String idpatient, String idabsence);
 
-    void saveCalendarEvent(String idworker, String idcalendarevent, LocalDateTime start, LocalDateTime end, Boolean allDay, String title, Boolean dayoff, String description, List<String> roles, List<String> idsusers, LocalDateTime publishdate);
+    void saveCalendarEvent(String idworker, String idcalendarevent, LocalDateTime start, LocalDateTime end, Boolean allDay, String title, Boolean dayoff, String description, List<String> roles, List<String> idsusers, LocalDateTime publishdate, String url);
 
     List<CalendarEventDTO> getCalendarEvents(String idworker, List<String> roles, Boolean admin);
 
@@ -128,10 +128,11 @@ public interface WorkersService
 
     Page<DocDTO> getDocs(User user, String text, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc);
 
-    void saveDoc(String id, String idworker, String title, String description, String url, LocalDate dayfrom, LocalDate dayto, List<String> roles);
+    void saveDoc(String id, String idworker, String title, String description, String url, LocalDate dayfrom, LocalDate dayto, List<String> roles, boolean isAdmin, boolean createEvent)  throws Exception;
 
-    void deleteDoc(String id);
+    void deleteAdminDoc(String id);
 
+    void deleteWorkerDoc(String id, String idworker) throws Exception;
 
 
     Page<ReceiptDTO> getReceipts(User user, String idmember, LocalDate dayfrom, LocalDate dayto, String status, Integer page, Integer size, String orderby, String orderasc);
@@ -153,7 +154,6 @@ public interface WorkersService
 
     void saveInvoice(String id, String idpatient, String url, Double total, LocalDate duedate, String status, LocalDate paiddate);
 
-    @Transactional(propagation= Propagation.REQUIRES_NEW)
     void deleteInvoice(String id);
 
 
@@ -176,6 +176,19 @@ public interface WorkersService
     void deleteAtencion(String id);
 
 
+    Page<WorkerDTO> getWorkers(String role, String name_surnames, String documentid, String status, Integer page, Integer size, String order, String orderasc);
 
+    WorkerDTO saveWorker(String id, List<String> roles, String name, String surname1, String surname2, String email, String password, String phone, String documentid, String documenttype,
+                         String postaladdress, Integer idcity, Integer idstate, Integer idcountry, String postalcode,
+                         String nss, String categoria_profesional, String tipo_contrato, String jornada_laboral, String horario);
 
+    void unregisterWorker(String id);
+
+    Page<NominaDTO>  getNominas(User user, String idworker, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String order, String orderasc);
+
+    void saveNomina(String id, String idworker, String url, LocalDate duedate);
+
+    void deleteNomina(String id);
+
+    List<WorkerDTO> getAllWorkers();
 }

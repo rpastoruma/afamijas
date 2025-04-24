@@ -321,6 +321,9 @@
                                     <ng-option *ngFor="let u of users" [value]="u.id">{{u.fullname}} - ({{u.roles}})</ng-option>
                     </ng-select>
                     <br/>
+
+                    <br/>
+                    <div *ngIf="modalData?.event.url">[<a href="{{modalData?.event.url}}" target="_blank">Documento asociado</a>]</div>
                 </div>
 
                 

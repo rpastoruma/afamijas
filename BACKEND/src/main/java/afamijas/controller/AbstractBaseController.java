@@ -104,6 +104,10 @@ public abstract class AbstractBaseController
         return this.getRoles().contains(Roles.OPERATOR_EXTRA_1);
     }
 
+    protected boolean isWORKER() {
+        return this.isADMIN() || this.isMANAGER() || this.isTRANSPORT() || this.isCLEANING() || this.isNURSING() || this.isNURSING_ASSISTANT() || this.isLEGIONELLA_CONTROL() || this.isKITCHEN() || this.isMONITOR() ||
+                this.isSOCIAL_WORKER() || this.isPSYCHOLOGIST() || this.isPHYSIOTHERAPIST() || this.isOCCUPATIONAL_THERAPIST() || this.isOPERATOR_EXTRA_1();
+    }
 
     protected boolean isPATIENT()
     {

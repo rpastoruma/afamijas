@@ -242,8 +242,8 @@ public class RelativesServiceImpl implements RelativesService
 		criteria.orOperator(Criteria.where("roles").in(Arrays.asList("RELATIVE")),
 							Criteria.where("idsusers").in(Arrays.asList(idrelative)),
 							new Criteria().andOperator(
-									new Criteria().orOperator(Criteria.where("roles").is(null), Criteria.where("roles").size(0)),
-									new Criteria().orOperator(Criteria.where("idsusers").is(null), Criteria.where("idsusers").size(0))
+									new Criteria().orOperator(Criteria.where("roles").exists(false), Criteria.where("roles").size(0)),
+									new Criteria().orOperator(Criteria.where("idsusers").exists(false), Criteria.where("idsusers").size(0))
 							)
 
 				).and("publishdate").lte(LocalDateTime.now());

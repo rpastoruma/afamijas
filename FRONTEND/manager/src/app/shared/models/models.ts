@@ -1,3 +1,5 @@
+import { CalendarEvent } from "angular-calendar";
+
 // Respuesta del login:
 export interface LoginResponse {
     token: string;
@@ -816,6 +818,36 @@ export interface MemberDTO {
     status : string
 }
 
+export interface WorkerDTO {
+    id: string;
+    email: string;
+    password: string;
+    name: string;
+    surname1: string;
+    surname2: string;
+    fullname: string;
+    documentid: string;
+    documenttype: string;
+    phone: string;
+    postaladdress: string;
+    idcity: number;
+    cityname: string;
+    idstate: number;
+    statename: string;
+    idcountry: number;
+    countryname: string;
+    postalcode: string;
+    roles: string[];
+    status: string;
+    nss: string;
+    categoria_profesional: string;
+    tipo_contrato: string;
+    jornada_laboral : string;
+    horario : string;
+    events? : CalendarEvent[];
+  }
+
+  
 export interface RouteDTO {
     idroute : string;
     route_name : string;
@@ -1172,6 +1204,22 @@ export interface ReceiptDTO
 }
 
 
+export interface NominaDTO
+{
+    id : string;
+
+    idworker : string;
+
+    worker_fullname : string;
+
+    url : string;
+
+    duedate : Date;
+
+    status : string;
+}
+
+
 export interface InvoiceDTO
 {
     id : string;
@@ -1344,4 +1392,13 @@ export interface CityDTO {
 
 
 
-
+export interface AddressBookDTO {
+    id: string;
+    type: string;           // relative, user, volunteer, worker, member, other
+    iduser?: string;
+    fullname: string;
+    phone?: string;
+    email?: string;
+    observations?: string;
+  }
+  

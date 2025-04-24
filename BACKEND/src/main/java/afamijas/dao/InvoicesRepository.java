@@ -1,7 +1,6 @@
 package afamijas.dao;
 
 import afamijas.model.Invoice;
-import afamijas.model.Receipt;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;

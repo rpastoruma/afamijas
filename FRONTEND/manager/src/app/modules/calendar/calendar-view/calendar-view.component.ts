@@ -251,7 +251,7 @@ export class CalendarViewComponent implements OnInit {
 
     if(!roles) roles = this.modalData.event.roles;
 
-      this.usersService.getAllUsersByWorker(roles).subscribe(
+      this.usersService.getAllUsersByRoles(roles).subscribe(
         res => {
           this.users = res.map(x => this.wrapUser(x));
           //this.events = this.events.concat(this.test_events);
@@ -304,7 +304,7 @@ export class CalendarViewComponent implements OnInit {
 
   saveCalendarEvent(event : CalendarEvent)
   {
-    if(!event.start) 
+    if(!event.title || event.title.trim() == "")
     { 
       this.toastService.show("Debes indicar un título para el evento.",
       "¡Ups!", 
@@ -312,6 +312,15 @@ export class CalendarViewComponent implements OnInit {
       );
       return; 
     }
+
+    if(!event.start || event.start == null)
+      { 
+        this.toastService.show("Debes indicar una fecha de inicio para el evento.",
+        "¡Ups!", 
+        { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
+        );
+        return; 
+      }
 
     let fstart : string = this.formatDate2(event.start);
     let fend : string = event.end?this.formatDate2(event.end):null;
@@ -474,8 +483,8 @@ export class CalendarViewComponent implements OnInit {
       start: startOfDay(new Date()),
       end: endOfDay(new Date()),
       dayoff : false,
-      description: ''
-
+      description: '',
+      url : undefined
     };
 
     this.handleEvent('Clicked', newevent);
