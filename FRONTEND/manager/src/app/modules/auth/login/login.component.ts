@@ -18,6 +18,13 @@ export class LoginComponent implements OnInit
   elem: any;
   isFullScreen: boolean;
 
+
+  showQR: boolean = false;
+  qrUrl: string = '';
+  showCodeInput: boolean = false;
+  code2FA: string = '';
+
+
   constructor(
     private localStorageService: LocalStorageService,
     private router: Router,
@@ -101,30 +108,104 @@ export class LoginComponent implements OnInit
 
   */
 
-  login() 
-  {
-    //FULL SCREEN
-    //this.openFullscreen();
-    this.authService.login(this.username, this.password).subscribe(
-      _ => 
-      {
-        // login successful
+  login1() {
+    this.messageError = '';
+    this.messageOk = '';
+    this.submitted = true;
+  
+    this.authService.login1(this.username, this.password).subscribe(
+      response => {
         this.messageError = '';
-        this.messageOk = '¡Has conectado con éxito!';
+        this.messageOk = '';
         this.submitted = true;
+  
+        if (!response) {
+          this.messageError = 'Respuesta inesperada del servidor.';
+          return;
+        }
 
-        if(this.authService.isAuthenticated()) this.router.navigate(['/calendar']);
-      }, 
-      error => 
-      {
+        if (response && response.token) {
+          this.authService.saveLogin(response); // Guarda token y usuario en localStorage, etc.
+          if(response.passworChanged && response.passworChanged == true)
+            this.router.navigate(['/calendar']);
+          else
+            this.router.navigate(['/change-pass']);
+          return;
+        }
+  
+        // Si el backend ha devuelto un URL para el QR, lo mostramos
+        if (response.otpAuthUrl) {
+          this.showQRCode(response.otpAuthUrl); // Muestra el QR
+          this.messageOk = 'Escanea el QR con Google Authenticator y luego introduce el código 2FA.';
+          return;
+        }
+  
+        // Si requiere 2FA, solo mostrar el campo para ingresar el código
+        if (response.requires2FA) {
+          this.showCodeInput = true;
+          this.messageOk = response.message || 'Introduce el código de autenticación.';
+          return;
+        }
+  
+        this.messageError = 'No se pudo iniciar sesión. Inténtalo de nuevo.';
+      },
+      error => {
         this.messageOk = '';
         this.submitted = false;
-        if (error.status === 403) 
+        if (error.status === 403) {
           this.messageError = 'Usuario o contraseña no válidos.';
-        else 
+        } else {
           this.messageError = 'No se puede contactar con el servidor. Inténtalo más tarde.';
-      });
+        }
+      }
+    );
   }
+  
+
+  showQRCode(otpAuthUrl: string) {
+    // Usamos qrserver.com para generar el QR con la URL de autenticación de Google Authenticator
+    this.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(otpAuthUrl)}&size=200x200`;
+    this.showQR = true;  // Esto se utiliza en el HTML para mostrar el QR
+  }
+  
+  
+
+  login2() {
+    if (!this.username || !this.code2FA) {
+      this.messageError = 'Debes introducir el código de autenticación.';
+      return;
+    }
+  
+    this.authService.login2(this.username, this.code2FA).subscribe(
+      response => {
+        this.messageError = '';
+        this.messageOk = '¡Autenticación completada con éxito!';
+        this.submitted = true;
+  
+        if (response && response.token) {
+          this.authService.saveLogin(response); // Guarda token y usuario en localStorage, etc.
+          if(response.passworChanged && response.passworChanged == true)
+            this.router.navigate(['/calendar']);
+          else
+            this.router.navigate(['/change-pass']);
+        } else {
+          this.messageError = 'No se pudo completar el inicio de sesión.';
+          this.submitted = false;
+        }
+      },
+      error => {
+        this.messageOk = '';
+        this.submitted = false;
+        if (error.status === 401) {
+          this.messageError = 'Código de autenticación incorrecto.';
+        } else {
+          this.messageError = 'No se puede verificar el código. Inténtalo más tarde.';
+        }
+      }
+    );
+  }
+  
+
 
   getValuesConfig() 
   {

@@ -129,40 +129,44 @@ export class AuthService {
 
 
 
-  login(username: string, password: string): Observable<string | null> 
-  {
-    // this.logout();
-
+  login1(username: string, password: string): Observable<LoginResponse | null> {
     const form = new FormData();
     form.append('username', username);
     form.append('password', password);
-
-    return this.http.post<LoginResponse>(ENV.url.login, form).pipe(map((data: LoginResponse) => 
-    {
-        // login successful if there's a jwt token in the response
-        try 
-        {
-          if (data.token && data.roles) 
-          {
-            // store username and jwt token in local storage to keep user logged in between page refreshes
-            this.localStorageService.setObject('logged', data);
-            // return true to indicate successful login
-            return data.userId;
-          } 
-          else 
-          {
-            // return false to indicate failed login
-            return null
-          }
-        } 
-        catch (error) 
-        {
-          return null;
+  
+    return this.http.post<LoginResponse>(ENV.url.login1, form).pipe(
+      map((data: LoginResponse) => {
+        // Siempre esperamos requires2FA = true, y opcionalmente otpAuthUrl o message
+        if (data.requires2FA) {
+          return data;
         }
-      }), 
-      catchError((error: any) => observableThrowError(error || 'Server error')));
+
+        //si devuelve token (porque se haya autentificado en menos de 1 día)
+        if (data.token) {
+          return data;
+        }
+  
+        // Si no se requiere 2FA ni se devuelve mensaje útil, es una respuesta inesperada
+        return null;
+      }),
+      catchError((error: any) => observableThrowError(error || 'Server error'))
+    );
   }
 
+
+  login2(username: string, code2FA: string): Observable<LoginResponse> {
+    const form = new FormData();
+    form.append('username', username);
+    form.append('code2FA', code2FA);
+  
+    return this.http.post<LoginResponse>(ENV.url.login2, form);
+  }
+  
+  saveLogin(response: LoginResponse): void {
+    this.localStorageService.setObject('logged', response);
+  }
+  
+  
   logout(): void 
   {
     // clear token remove user from local storage to log user out

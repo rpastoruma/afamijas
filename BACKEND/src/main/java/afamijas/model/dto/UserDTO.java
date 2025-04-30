@@ -15,11 +15,14 @@ public class UserDTO
 
     private List<String> roles;
 
+    private Boolean passwordChanged;
+
     public UserDTO(User user)
     {
         this.id = user.get_id();
         this.fullname = ((user.getName() + " " + user.getSurname1()).trim() + " " + user.getSurname2()).trim();
         this.roles = user.getRoles();
+        this.passwordChanged = user.getPassworChanged();
     }
 
     public String getId() {
@@ -44,5 +47,13 @@ public class UserDTO
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public Boolean getPasswordChanged() {
+        return passwordChanged;
+    }
+
+    public void setPasswordChanged(Boolean passwordChanged) {
+        this.passwordChanged = passwordChanged;
     }
 }

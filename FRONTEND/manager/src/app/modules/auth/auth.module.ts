@@ -7,6 +7,7 @@ import { NgxAuthRoutingModule } from './auth-routing.module';
 import { NbAuthModule } from '@nebular/auth';
 import { RequestPasswordComponent } from './request-password/request-password.component';
 import { RecaptchaModule, RecaptchaFormsModule, RECAPTCHA_LANGUAGE } from 'ng-recaptcha';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import { RecaptchaModule, RecaptchaFormsModule, RECAPTCHA_LANGUAGE } from 'ng-re
     // ... here goes our new components
   
     LoginComponent,
-    RequestPasswordComponent
+    RequestPasswordComponent,
+    ChangePasswordComponent
   ],
   providers: [
     {

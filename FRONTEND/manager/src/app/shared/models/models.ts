@@ -2,14 +2,22 @@ import { CalendarEvent } from "angular-calendar";
 
 // Respuesta del login:
 export interface LoginResponse {
-    token: string;
-    roles: string[];
-    userId: string;
-    username: string;
-    documentid: string;
-    fullname : string;
-    photo_url : string;
-}
+    token?: string;
+    roles?: string[];
+    userId?: string;
+    username?: string;
+    documentid?: string;
+    fullname?: string;
+    photo_url?: string;
+    passworChanged? : boolean;
+  
+    requires2FA?: boolean;
+    otpAuthUrl?: string;
+    message?: string;
+
+    
+  }
+  
 
 export interface ActionDTO {
     action : string;
@@ -20,6 +28,7 @@ export interface UserDTO {
     id : string;
     fullname : string;
     roles : string[]
+    passwordChanged : boolean
 }
 
 export interface PatientDTO {

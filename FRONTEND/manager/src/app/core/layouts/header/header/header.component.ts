@@ -27,7 +27,7 @@ export class HeaderComponent implements OnInit {
   }
 
   setUser() {
-    this.items = [{ title: 'Cerrar sesión'}];
+    this.items = [{ title: 'Cambiar contraseña'},{ title: 'Cerrar sesión'}];
     this.user = {
       id: this.authenticationService.getUserId(),
       name: this.cropFullname(this.authenticationService.getFullname()),
@@ -48,9 +48,12 @@ export class HeaderComponent implements OnInit {
           if (title === 'Cerrar sesión') {
             this.logout();
           }
+          else if (title === 'Cambiar contraseña') {
+            this.goToChangePass();
+          }
         }
       );
-  }
+  } 
 
 
   cropFullname(fullname : string)
@@ -75,6 +78,11 @@ export class HeaderComponent implements OnInit {
   goToHome() {
     this.router.navigate(['/login']);
   }
+
+  goToChangePass() {
+    this.router.navigate(['/change-pass']);
+  }
+
 
   logout() {
     this.router.navigate(['/login']);

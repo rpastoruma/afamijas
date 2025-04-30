@@ -1103,6 +1103,15 @@ public class User
 
 	private Boolean email_notifications;
 
+
+
+	private String secret2FA;
+	private Boolean verified2FA;
+	private Boolean passworChanged;
+	private LocalDateTime last2FA;
+
+
+
 	public User()
 	{
 		this.created = this.modified = LocalDateTime.now();
@@ -5502,6 +5511,38 @@ public class User
 
 	public void setHorario(String horario) {
 		this.horario = horario;
+	}
+
+	public String getSecret2FA() {
+		return secret2FA;
+	}
+
+	public void setSecret2FA(String secret2FA) {
+		this.secret2FA = secret2FA;
+	}
+
+	public Boolean getVerified2FA() {
+		return verified2FA;
+	}
+
+	public void setVerified2FA(Boolean verified2FA) {
+		this.verified2FA = verified2FA;
+	}
+
+	public Boolean getPassworChanged() {
+		return passworChanged;
+	}
+
+	public void setPassworChanged(Boolean passworChanged) {
+		this.passworChanged = passworChanged;
+	}
+
+	public LocalDateTime getLast2FA() {
+		return last2FA;
+	}
+
+	public void setLast2FA(LocalDateTime last2FA) {
+		this.last2FA = last2FA;
 	}
 
 	@Override

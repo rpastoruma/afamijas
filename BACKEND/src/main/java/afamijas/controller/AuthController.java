@@ -12,6 +12,9 @@ import afamijas.service.UsersService;
 import afamijas.utils.PasswordPolicy;
 import afamijas.utils.SendMail;
 import afamijas.utils.Template;
+import com.warrenstrange.googleauth.GoogleAuthenticator;
+import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
+import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.TextCodec;
@@ -78,10 +81,156 @@ public class AuthController
     public ResponseEntity<Object> handle() 
 	{
         return new ResponseEntity<Object>(HttpStatus.OK);
-    }	
+    }
 
-	
- 		
+	@PostMapping("/login/step1")
+	public ResponseEntity<JwtAuthenticationResponse> loginStep1(
+			@RequestParam String username,
+			@RequestParam String password
+	) {
+		username = username.trim().toLowerCase();
+		password = password.trim();
+
+		User user = usersService.findByUsername(username);
+		if (user == null || !"A".equals(user.getStatus())) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+
+		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		if (!passwordEncoder.matches(password, user.getPassword())) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+
+		if (user.getSecret2FA() == null || Boolean.FALSE.equals(user.getVerified2FA())) {
+			// Primera vez: generar secreto y devolver QR
+			GoogleAuthenticator gAuth = new GoogleAuthenticator();
+			GoogleAuthenticatorKey key = gAuth.createCredentials();
+			String secret = key.getKey();
+
+			user.setSecret2FA(secret);
+			user.setVerified2FA(false);
+			usersService.save(user);
+
+			String otpAuthUrl = GoogleAuthenticatorQRGenerator.getOtpAuthURL("AFA", username, key);
+
+			System.out.println(otpAuthUrl);
+
+			otpAuthUrl = "otpauth://totp/AFA:"+ username + "?secret=" + key.getKey() + "&issuer=AFA";
+
+			System.out.println(otpAuthUrl);
+
+
+			JwtAuthenticationResponse response = new JwtAuthenticationResponse(
+					true, otpAuthUrl, "Escanea el código QR"
+			);
+
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
+		else if(user.getLast2FA()!=null && user.getLast2FA().isAfter(LocalDateTime.now().minusDays(1)))
+		{
+			// Generar JWT
+			final Instant now = Instant.now();
+			String jwt = Jwts.builder()
+					.setId("" + user.get_id())
+					.setSubject(username)
+					.setAudience(String.join(",", user.getRoles()))
+					.setIssuer("afamijas")
+					.setIssuedAt(Date.from(now))
+					.setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS)))
+					.signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.encode(JwtFilter.SECRET))
+					.compact();
+
+			JwtAuthenticationResponse response = new JwtAuthenticationResponse(
+					jwt,
+					user.getRoles(),
+					user.get_id(),
+					user.getUsername(),
+					user.getDocumentid(),
+					user.getFullname(),
+					user.getPhoto_url(),
+					user.getPassworChanged()==null?false:user.getPassworChanged()
+			);
+
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
+
+		/*
+		if (Boolean.FALSE.equals(user.getVerified2FA()))  //no e ha
+		{
+			// Tiene secret pero aún no ha sido verificado
+			JwtAuthenticationResponse response = new JwtAuthenticationResponse(
+					true, null, "2FA setup pending. Please verify with code."
+			);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}*/
+
+		// 2FA ya activo y verificado → pedir código 2FA
+		JwtAuthenticationResponse response = new JwtAuthenticationResponse(
+				true, null, "Introduce código de autentificación 2FA"
+		);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PostMapping("/login/step2")
+	public ResponseEntity<JwtAuthenticationResponse> loginStep2(
+			@RequestParam String username,
+			@RequestParam String code2FA
+	) {
+		username = username.trim().toLowerCase();
+
+		User user = usersService.findByUsername(username);
+		if (user == null || !"A".equals(user.getStatus())) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+
+		if (user.getSecret2FA() == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // 2FA no está configurado
+		}
+
+		GoogleAuthenticator gAuth = new GoogleAuthenticator();
+		boolean isValid = gAuth.authorize(user.getSecret2FA(), Integer.parseInt(code2FA));
+
+		if (!isValid) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Código incorrecto
+		}
+
+		// Si nunca se había verificado, lo marcamos
+		if (Boolean.FALSE.equals(user.getVerified2FA())) {
+			user.setVerified2FA(true);
+		}
+
+		user.setLast2FA(LocalDateTime.now());
+		user = usersService.save(user);
+
+		// Generar JWT
+		final Instant now = Instant.now();
+		String jwt = Jwts.builder()
+				.setId("" + user.get_id())
+				.setSubject(username)
+				.setAudience(String.join(",", user.getRoles()))
+				.setIssuer("afamijas")
+				.setIssuedAt(Date.from(now))
+				.setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS)))
+				.signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.encode(JwtFilter.SECRET))
+				.compact();
+
+		JwtAuthenticationResponse response = new JwtAuthenticationResponse(
+				jwt,
+				user.getRoles(),
+				user.get_id(),
+				user.getUsername(),
+				user.getDocumentid(),
+				user.getFullname(),
+				user.getPhoto_url(),
+				user.getPassworChanged()==null?false:user.getPassworChanged()
+		);
+
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+
+	/*
+
 	@CrossOrigin
 	@RequestMapping(method=RequestMethod.POST, value="/login", produces="application/json")
 	public ResponseEntity<JwtAuthenticationResponse> login(
@@ -118,7 +267,7 @@ public class AuthController
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
+*/
 
 
 
@@ -310,6 +459,7 @@ public class AuthController
 		String newpassword = PasswordPolicy.generate();
 		user.setPassword(new BCryptPasswordEncoder().encode(newpassword));
 		user.setToken(UUID.randomUUID().toString()); //renovamos token
+		user.setPassworChanged(false);
 		user = this.usersService.save(user);
 
 		HashMap<String, String> values = new HashMap<String, String>();
@@ -341,5 +491,7 @@ public class AuthController
 		}
 
 	}
+
+
 
 }

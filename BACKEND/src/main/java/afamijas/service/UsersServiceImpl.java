@@ -4,11 +4,14 @@ import afamijas.dao.AddressBookRepository;
 import afamijas.dao.UsersRepository;
 import afamijas.model.AddressBook;
 import afamijas.model.User;
+import afamijas.model.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UsersServiceImpl implements UsersService 
@@ -106,6 +109,19 @@ public class UsersServiceImpl implements UsersService
 		user.setModified(LocalDateTime.now());
 		this.usersRepository.save(user);
 	}
+
+
+	@Override
+	public UserDTO changePass(User user, String newpassword)
+	{
+		user.setPassword(new BCryptPasswordEncoder().encode(newpassword));
+		user.setToken(UUID.randomUUID().toString()); //renovamos token
+		user.setPassworChanged(true);
+		return new UserDTO(this.save(user));
+	}
+
+
+
 
 
 }

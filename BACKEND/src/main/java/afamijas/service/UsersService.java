@@ -1,6 +1,7 @@
 package afamijas.service;
 
 import afamijas.model.User;
+import afamijas.model.dto.UserDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -28,4 +29,5 @@ public interface UsersService
 	void delete(String id);
 
 
+    UserDTO changePass(User user, String password);
 }

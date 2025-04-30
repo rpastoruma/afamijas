@@ -71,6 +71,14 @@ export class UsersService {
     return this.http.post<any>(ENV.url.workers + '/modifyMedication', form);
   }
 
+  changePass(newpassword: string, newpassword2: string) {
+    const form = new FormData();
+    form.append('newpassword', newpassword);
+    form.append('newpassword2', newpassword2);
+
+    return this.http.post<any>(ENV.url.users + '/changePass', form);
+  }
+
 
   getFoods(idpatient : string, page :number, size: number) 
   {
