@@ -9,17 +9,89 @@
     <nb-card-body>
 
 
-        <input class="form-control" type="text" [(ngModel)]="name_surnames" name="name_surnames" placeholder="Nombre / apellidos" />
+        <div class="d-flex align-items-center gap-2">
+            <input class="form-control" type="text" [(ngModel)]="name_surnames" name="name_surnames" placeholder="Nombre / apellidos" />
+        
+            <input class="form-control" type="text" [(ngModel)]="documentid" name="documentid" placeholder="DNI / documento de identidad" />
+        
+            <ng-select (change)="getPatients()" [multiple]="false" [(ngModel)]="status" name="status" [clearable]="false" class="flex-grow-1">
+                <ng-option value="A">USUARIOS ACTIVOS</ng-option>
+                <ng-option value="P">USUARIOS PENDIENTES DE COMPLETAR DOCUMENTACIÓN</ng-option>
+                <ng-option value="D">USUARIOS DADOS DE BAJA</ng-option>
+            </ng-select>
+        </div>
+        
 
-        <br/>
-        <input class="form-control" type="text" [(ngModel)]="documentid" name="documentid"  placeholder="DNI / documento de identidad" />
+    
+        <div style="margin-top:20px" class="d-flex align-items-start gap-2 flex-wrap">
 
-        <br/>
-        <ng-select (change)="getPatients()" [multiple]="false" [(ngModel)]="status" name="status" [clearable]="false">
-            <ng-option value="A">USUARIOS ACTIVOS</ng-option>
-            <ng-option value="P">USUARIOS PENDIENTES DE COMPLETAR DOCUMENTACIÓN</ng-option>
-            <ng-option value="D">USUARIOS DADOS DE BAJA</ng-option>
-        </ng-select>
+            <div class="d-flex flex-column flex-grow-1">
+                <label>Género</label>
+                <ng-select (change)="getPatients()" [multiple]="false" [(ngModel)]="gender" name="gender" [clearable]="true">
+                    <ng-option value="">Todos</ng-option>
+                    <ng-option value="Mujer">Mujer</ng-option>
+                    <ng-option value="Hombre">Hombre</ng-option>
+                </ng-select>
+            </div>
+        
+            <div class="d-flex flex-column flex-grow-1">
+                <label>Tipo de servicio</label>
+                <ng-select (change)="getPatients()" [multiple]="false" [(ngModel)]="servicetype" name="servicetype" [clearable]="true">
+                    <ng-option value="">Todos</ng-option>
+                    <ng-option value="CENTRO_DIA_CONCERTADO">Centro de día concertado</ng-option>
+                    <ng-option value="CENTRO_DIA_PRIVADO">Centro de día privado</ng-option>
+                    <ng-option value="TALLER">Taller</ng-option>
+                </ng-select>
+            </div>
+        
+            <div class="d-flex flex-column flex-grow-1">
+                <label>Transporte</label>
+                <ng-select (change)="getPatients()" [multiple]="false" [(ngModel)]="transportservice" name="transportservice" [clearable]="true">
+                    <ng-option value="">Todos</ng-option>
+                    <ng-option value="true">SÍ</ng-option>
+                    <ng-option value="false">NO</ng-option>
+                </ng-select>
+            </div>
+            
+        
+            <div class="d-flex flex-column flex-grow-1">
+                <label>Taller Psico</label>
+                <ng-select (change)="getPatients()" [multiple]="false" [(ngModel)]="tallerpsico" name="tallerpsico" [clearable]="true">
+                    <ng-option value="">Todos</ng-option>
+                    <ng-option value="true">SÍ</ng-option>
+                    <ng-option value="false">NO</ng-option>
+                </ng-select>
+            </div>
+        
+            <div class="d-flex flex-column flex-grow-1">
+                <label>Comedor</label>
+                <ng-select (change)="getPatients()" [multiple]="false" [(ngModel)]="comedorservice" name="comedorservice" [clearable]="true">
+                    <ng-option value="">Todos</ng-option>
+                    <ng-option value="true">SÍ</ng-option>
+                    <ng-option value="false">NO</ng-option>
+                </ng-select>
+            </div>
+        
+            <div class="d-flex flex-column flex-grow-1">
+                <label>Ayuda a domicilio</label>
+                <ng-select (change)="getPatients()" [multiple]="false" [(ngModel)]="ayudadomicilioservice" name="ayudadomicilioservice" [clearable]="true">
+                    <ng-option value="">Todos</ng-option>
+                    <ng-option value="true">SÍ</ng-option>
+                    <ng-option value="false">NO</ng-option>
+                </ng-select>
+            </div>
+        
+            <div class="d-flex flex-column flex-grow-1">
+                <label>Ley de dependencia solicitada</label>
+                <ng-select (change)="getPatients()" [multiple]="false" [(ngModel)]="hs_ley_dependencia_solicitada" name="hs_ley_dependencia_solicitada" [clearable]="true">
+                    <ng-option value="">Todos</ng-option>
+                    <ng-option value="true">SÍ</ng-option>
+                    <ng-option value="false">NO</ng-option>
+                </ng-select>
+            </div>
+        
+        </div>
+        
  
         <hr/>
  

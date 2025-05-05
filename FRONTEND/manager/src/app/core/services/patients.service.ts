@@ -14,14 +14,43 @@ export class PatientsService {
 
   constructor(private http: HttpClient,) { }
 
-  getPatients(page : number, size : number, idpatient : string, name_surnames? : string, documentid? : string, status? : string) {
+  
+  getPatients(
+    page: number,
+    size: number,
+    idpatient?: string,
+    name_surnames?: string,
+    documentid?: string,
+    status?: string,
+    order?: string,
+    orderasc?: string,
+    gender?: string,
+    servicetype?: string,
+    transportservice?: boolean,
+    tallerpsico?: boolean,
+    comedorservice?: boolean,
+    ayudadomicilioservice?: boolean,
+    hs_ley_dependencia_solicitada?: boolean
+  ) {
     let url = ENV.url.patients + `/getPatients?page=${page}&size=${size}`;
-    if(idpatient) url += '&idpatient=' + idpatient;
-    if(name_surnames) url += '&name_surnames=' + name_surnames;
-    if(documentid) url += '&documentid=' + documentid;
-    if(status) url += '&status=' + status;
+  
+    if(idpatient) url += `&idpatient=${encodeURIComponent(idpatient || '')}`;
+    if (name_surnames) url += `&name_surnames=${encodeURIComponent(name_surnames)}`;
+    if (documentid) url += `&documentid=${encodeURIComponent(documentid)}`;
+    if (status) url += `&status=${encodeURIComponent(status)}`;
+    if (order) url += `&order=${encodeURIComponent(order)}`;
+    if (orderasc) url += `&orderasc=${encodeURIComponent(orderasc)}`;
+    if (gender) url += `&gender=${encodeURIComponent(gender)}`;
+    if (servicetype) url += `&servicetype=${encodeURIComponent(servicetype)}`;
+    if (transportservice !== undefined) url += `&transportservice=${transportservice}`;
+    if (tallerpsico !== undefined) url += `&tallerpsico=${tallerpsico}`;
+    if (comedorservice !== undefined) url += `&comedorservice=${comedorservice}`;
+    if (ayudadomicilioservice !== undefined) url += `&ayudadomicilioservice=${ayudadomicilioservice}`;
+    if (hs_ley_dependencia_solicitada !== undefined) url += `&hs_ley_dependencia_solicitada=${hs_ley_dependencia_solicitada}`;
+  
     return this.http.get<any>(url, {});
   }
+  
 
   getAllRelatives() {
     let url = ENV.url.patients + `/getAllRelatives`;

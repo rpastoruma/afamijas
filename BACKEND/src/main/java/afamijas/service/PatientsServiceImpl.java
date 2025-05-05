@@ -79,27 +79,63 @@ public class PatientsServiceImpl implements PatientsService
 
 	//TODO: REVISAR SI LA PAGINACIÓN ESTÁ BIEN HECHA YA QUE NO ESTÁ COMO EN LAS OTRAS
 	@Override
-	public Page<PatientDTO> getPatients(String idpatient, String name_surnames, String documentid, String status, Integer page, Integer size, String order, String orderasc)
+	public Page<PatientDTO> getPatients(String idpatient, String name_surnames, String documentid, String status,
+										String gender, String servicetype, Boolean transportservice, Boolean tallerpsico,
+										Boolean comedorservice, Boolean ayudadomicilioservice, Boolean hs_ley_dependencia_solicitada,
+										Integer page, Integer size, String order, String orderasc)
 	{
 		Pageable pageable = PageRequest.of(page, size);
 
-		Query query = new Query().addCriteria(Criteria.where("roles").in("PATIENT")).with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, order));
+		Query query = new Query()
+				.addCriteria(Criteria.where("roles").in("PATIENT"))
+				.with(pageable)
+				.with(Sort.by(orderasc.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC, order));
 
-		if(idpatient!=null) query.addCriteria(Criteria.where("_id").is(idpatient));
-		if(name_surnames!=null)
-		{
-			Criteria names_or_criteria = new Criteria();
-			names_or_criteria.orOperator(Criteria.where("name").regex(".*"+name_surnames+".*", "i"),
-					Criteria.where("surname1").regex(".*"+name_surnames+".*", "i"),
-					Criteria.where("surname2").regex(".*"+name_surnames+".*", "i"));
+		if (idpatient != null)
+			query.addCriteria(Criteria.where("_id").is(idpatient));
 
-			query.addCriteria(names_or_criteria);
+		if (name_surnames != null) {
+			Criteria namesOrCriteria = new Criteria().orOperator(
+					Criteria.where("name").regex(".*" + name_surnames + ".*", "i"),
+					Criteria.where("surname1").regex(".*" + name_surnames + ".*", "i"),
+					Criteria.where("surname2").regex(".*" + name_surnames + ".*", "i")
+			);
+			query.addCriteria(namesOrCriteria);
 		}
-		if(documentid!=null) query.addCriteria(Criteria.where("documentid").is(documentid));
-		if(status!=null) query.addCriteria(Criteria.where("status").is(status));
 
-		if(debug_queries) System.out.println("getPatients: " + query.getQueryObject().toJson());
-		List<PatientDTO> list = this.mongoTemplate.find(query, User.class).stream().map(x -> new PatientDTO(x, null, null, null, this.usersRepository.findOne(x.getIdrelative()), null)).toList();
+		if (documentid != null)
+			query.addCriteria(Criteria.where("documentid").is(documentid));
+
+		if (status != null)
+			query.addCriteria(Criteria.where("status").is(status));
+
+		if (gender != null)
+			query.addCriteria(Criteria.where("gender").is(gender));
+
+		if (servicetype != null)
+			query.addCriteria(Criteria.where("servicetype").is(servicetype));
+
+		if (transportservice != null)
+			query.addCriteria(Criteria.where("transportservice").is(transportservice));
+
+		if (tallerpsico != null)
+			query.addCriteria(Criteria.where("tallerpsico").is(tallerpsico));
+
+		if (comedorservice != null)
+			query.addCriteria(Criteria.where("comedorservice").is(comedorservice));
+
+		if (ayudadomicilioservice != null)
+			query.addCriteria(Criteria.where("ayudadomicilioservice").is(ayudadomicilioservice));
+
+		if (hs_ley_dependencia_solicitada != null)
+			query.addCriteria(Criteria.where("hs_ley_dependencia_solicitada").is(hs_ley_dependencia_solicitada));
+
+		if (debug_queries)
+			System.out.println("getPatients: " + query.getQueryObject().toJson());
+
+		List<PatientDTO> list = this.mongoTemplate.find(query, User.class).stream()
+				.map(x -> new PatientDTO(x, null, null, null, this.usersRepository.findOne(x.getIdrelative()), null))
+				.toList();
 
 		return PageableExecutionUtils.getPage(
 				list,

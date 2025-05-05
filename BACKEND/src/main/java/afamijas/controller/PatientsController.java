@@ -51,6 +51,16 @@ public class PatientsController extends AbstractBaseController
 			@RequestParam(value = "size", required = true) Integer size,
 			@RequestParam(value = "order", required = false) String order,
 			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+
+			@RequestParam(value = "gender", required = false) String gender,
+			@RequestParam(value = "servicetype", required = false) String servicetype,
+			@RequestParam(value = "transportservice", required = false) Boolean transportservice,
+			@RequestParam(value = "tallerpsico", required = false) Boolean tallerpsico,
+			@RequestParam(value = "comedorservice", required = false) Boolean comedorservice,
+			@RequestParam(value = "ayudadomicilioservice", required = false) Boolean ayudadomicilioservice,
+			@RequestParam(value = "hs_ley_dependencia_solicitada", required = false) Boolean hs_ley_dependencia_solicitada,
+
 			HttpServletRequest request
 	)
 	{
@@ -60,7 +70,7 @@ public class PatientsController extends AbstractBaseController
 
 			if(order==null) order = "name";
 			if(orderasc==null) orderasc = "ASC";
-			return new ResponseEntity<>(this.patientsService.getPatients(idpatient, name_surnames, documentid, status, page, size, order, orderasc), HttpStatus.OK);
+			return new ResponseEntity<>(this.patientsService.getPatients(idpatient, name_surnames, documentid, status, gender, servicetype, transportservice, tallerpsico,comedorservice, ayudadomicilioservice, hs_ley_dependencia_solicitada, page, size, order, orderasc), HttpStatus.OK);
 		}
 		catch(Exception e)
 		{

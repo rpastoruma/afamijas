@@ -48,6 +48,15 @@ export class UsersListComponent  implements OnInit{
   documentid : string;
   status : string = 'A';
 
+  gender : string = '';
+  servicetype : string = '';
+  transportservice : string = '';
+  tallerpsico : string = '';
+  comedorservice : string = '';
+  ayudadomicilioservice : string = '';
+  hs_ley_dependencia_solicitada : string = '';
+
+
   patients: any[]  = []; // amy => formato del listado
   patientsObjects: PatientDTO[]  = [];
 
@@ -638,6 +647,14 @@ export class UsersListComponent  implements OnInit{
     this.actions = [  {action: 'edit', text: 'Modificar datos del usuario'},  {action: 'show', text: 'Ver registro de pago'},    {action: 'delete', text: 'Dar de baja usuario'}  ];
   }
 
+
+  toBoolean(value : string)
+  {
+    if(value == 'true') return true;
+    else if(value == 'false') return false;
+    else return undefined;
+  }
+
   getPatients(page? : number)
   {
     console.log("this.name_surnames=" + this.name_surnames);
@@ -645,7 +662,8 @@ export class UsersListComponent  implements OnInit{
     console.log("this.status=" + this.status);
       this.isProcessing = true;
       if(page) this.page = page;
-      this.patientsService.getPatients(this.page, this.size, null, this.name_surnames, this.documentid, this.status).subscribe(
+      this.patientsService.getPatients(this.page, this.size, null, this.name_surnames, this.documentid, this.status, null, null, this.gender, this.servicetype, 
+        this.toBoolean(this.transportservice), this.toBoolean(this.tallerpsico), this.toBoolean(this.comedorservice), this.toBoolean(this.ayudadomicilioservice), this.toBoolean(this.hs_ley_dependencia_solicitada)).subscribe(
         res => {
           this.isProcessing = false;
           this.patients = res.content.map(item => { return {id: item.id, values: [item.fullname, item.documentid, item.relativefullname, item.servicetype]  }; });
@@ -796,7 +814,8 @@ export class UsersListComponent  implements OnInit{
     if(format === 'excel') this.loadingExcel = true;
     else if(format === 'pdf') this.loadingPDF = true;
 
-    this.patientsService.getPatients(0, 100000000, null, this.name_surnames, this.documentid, this.status).subscribe(
+    this.patientsService.getPatients(0, 100000000, null, this.name_surnames, this.documentid, this.status, null, null, this.gender, this.servicetype, 
+      this.toBoolean(this.transportservice), this.toBoolean(this.tallerpsico), this.toBoolean(this.comedorservice), this.toBoolean(this.ayudadomicilioservice), this.toBoolean(this.hs_ley_dependencia_solicitada)).subscribe(
       res => {
         const header = {};
         const keys = ['Nombre', 'DNI', 'Email', 'Teléfono'];

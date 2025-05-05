@@ -4,6 +4,7 @@ import afamijas.model.dto.MemberDTO;
 import afamijas.model.dto.PatientDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -12,7 +13,10 @@ import java.time.LocalDate;
 public interface PatientsService
 {
 
-    Page<PatientDTO> getPatients(String idpatient, String name_surnames, String documentid, String status, Integer page, Integer size, String order, String orderasc);
+    Page<PatientDTO> getPatients(String idpatient, String name_surnames, String documentid, String status,
+                                 String gender, String servicetype, Boolean transportservice, Boolean tallerpsico,
+                                 Boolean comedorservice, Boolean ayudadomicilioservice, Boolean hs_ley_dependencia_solicitada,
+                                 Integer page, Integer size, String order, String orderasc);
 
     PatientDTO savePatient(String id, String name, String surname1, String surname2, LocalDate birthdate, String gender, String documentid, String documenttype,
                            String idrelative, String relativerelation,

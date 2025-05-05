@@ -121,7 +121,7 @@ export class AgendaListComponent  implements OnInit {
 
 
 
-    this.usersService.getAddressBook(0, 100000000, this.fullname, this.phone, this.email).subscribe(
+    this.usersService.getAddressBook(0, 100000000, this.type, this.fullname, this.phone, this.email).subscribe(
       res => {
         const header = {};
         const keys = ['Nombre completo', 'Teléfono', 'Email', 'Observaciones'];
