@@ -20,6 +20,15 @@ export class RelativeAbsencesService {
   }
  
 
+  getWorkerAbsences(page : number, size: number, idpatient : string, from? : Date, to? : Date) 
+  {
+    let url = ENV.url.workers + `/getWorkerAbsences?page=${page}&size=${size}&idpatient=${idpatient}`;
+    if(from) url += "&from=" + this.formatDate2(from);
+    if(to) url += "&to=" + this.formatDate2(to);
+
+    return this.http.get<any>(url, {});
+  }
+ 
   saveAbsenceByRelative(id : string, idpatient : string, from : Date, to : Date, allday : boolean, transport : string, comment : string) 
   {
     const form = new FormData();
@@ -34,6 +43,20 @@ export class RelativeAbsencesService {
     return this.http.post<any>(ENV.url.relatives + '/saveAbsenceByRelative', form);
   }
 
+  
+  saveWorkerAbsence(id : string, idpatient : string, idroutestop : string, comment : string, when : Date) 
+  {
+    const form = new FormData();
+    if(id && id!='') form.append('id', id);
+    form.append('idpatient', idpatient);
+    form.append('when', this.formatDate1(when));
+    if(idroutestop && idroutestop!='') form.append('idroutestop', idroutestop);
+    if(comment && comment!='') form.append('comment', comment);
+ 
+    return this.http.post<any>(ENV.url.workers + '/saveWorkerAbsence', form);
+  }
+
+
   deleteAbsence(idabsence : string, idpatient : string) 
   {
     const form = new FormData();
@@ -41,6 +64,15 @@ export class RelativeAbsencesService {
     form.append('idpatient', idpatient);
  
     return this.http.post<any>(ENV.url.relatives + '/deleteAbsence', form);
+  }
+
+
+  deleteWorkerAbsence(idabsence : string) 
+  {
+    const form = new FormData();
+    form.append('idabsence', idabsence);
+ 
+    return this.http.post<any>(ENV.url.workers + '/deleteWorkerAbsence', form);
   }
 
 

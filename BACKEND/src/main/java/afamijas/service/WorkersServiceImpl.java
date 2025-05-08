@@ -247,6 +247,12 @@ public class WorkersServiceImpl implements WorkersService
 		User patient = this.usersRepository.findOne(idpatient, "A");
 		if(patient==null || !patient.getRoles().contains("PATIENT")) return null;
 
+		User worker = this.usersRepository.findOne(idworker);
+		if(worker==null) return null;
+
+		RouteStop routeStop = null;
+		if(idroutestop!=null) routeStop = this.routeStopsRepository.findOne(idroutestop);
+
 		WorkerAbsence workerAbsence = new WorkerAbsence();
 		workerAbsence.setIdpatient(idpatient);
 		workerAbsence.setIdworker(idworker);
@@ -256,7 +262,7 @@ public class WorkersServiceImpl implements WorkersService
 
 		//TODO: EMAIL/NOTIFICACIÓN A QUIEN CORRESPONDA ANUNCIANDO AUSENCIA PARA ESTE PACIENTE
 
-		return new WorkerAbsenceDTO(this.workersAbsencesRepository.save(workerAbsence), patient);	}
+		return new WorkerAbsenceDTO(this.workersAbsencesRepository.save(workerAbsence), patient, worker, routeStop);	}
 
 	@Override
 	public void deleteAbsence(String idpatient, String idabsence) {
@@ -1808,5 +1814,70 @@ public class WorkersServiceImpl implements WorkersService
 	}
 
 
+	@Override
+	public Page<WorkerAbsenceDTO> getWorkerAbsences(String idpatient, LocalDateTime from, LocalDateTime to, int page, int size, String orderby, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		Criteria criteria1 = new Criteria().where("idpatient").is(idpatient);
+		if(from!=null) query.addCriteria(Criteria.where("when").gte(from));
+		if(to!=null) query.addCriteria(Criteria.where("when").lte(to));
+
+		//Criteria criteria2 = new Criteria().where("to").gte(LocalDateTime.now());
+
+		//Criteria criteria = new Criteria().andOperator(criteria1, criteria2);
+		query.addCriteria(criteria1);
+
+		long total = this.mongoTemplate.count(query, WorkerAbsence.class);
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
+		try { if(debug_queries) System.out.println("getWorkerAbsences: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+		List<WorkerAbsenceDTO> list = this.mongoTemplate.find(query, WorkerAbsence.class).stream().map(x -> new WorkerAbsenceDTO(x, this.usersRepository.findOne(x.getIdpatient()), this.usersRepository.findOne(x.getIdworker()), this.routeStopsRepository.findOne(x.getIdroutestop())  )).toList();
+
+		return new PageImpl<>(list, pageable, total);
+	}
+
+
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public WorkerAbsenceDTO saveWorkerAbsence(String id, String idpatient, String idworker, String idroutestop, String comment, LocalDateTime when)
+	{
+		if(when==null) return null;
+
+		User patient = this.usersRepository.findOne(idpatient, "A");
+		if(patient==null || !patient.getRoles().contains("PATIENT")) return null;
+
+		User worker = this.usersRepository.findOne(idworker);
+		if(worker==null) return null;
+
+		WorkerAbsence workerAbsence = id!=null?this.workersAbsencesRepository.findOne(id):new WorkerAbsence();
+		if(workerAbsence==null) return null;
+
+		workerAbsence.setIdpatient(idpatient);
+		workerAbsence.setIdworker(idworker);
+		workerAbsence.setIdroutestop(idroutestop);
+		workerAbsence.setComment(comment);
+		workerAbsence.setWhen(when);
+
+		//TODO: EMAIL/NOTIFICACIÓN A QUIEN CORRESPONDA ANUNCIANDO AUSENCIA PARA ESTE PACIENTE
+
+		return new WorkerAbsenceDTO(this.workersAbsencesRepository.save(workerAbsence), patient, worker, routeStopsRepository.findOne(idroutestop));
+	}
+
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void deleteWorkerAbsence(String idabsence)
+	{
+		WorkerAbsence workerAbsence = idabsence!=null?this.workersAbsencesRepository.findOne(idabsence):new WorkerAbsence();
+		if(workerAbsence==null) return;
+
+		this.workersAbsencesRepository.deleteById(idabsence);
+
+		//TODO: EMAIL/NOTIFICACIÓN A QUIEN CORRESPONDA ANUNCIANDO ELIMINACIÓN DE AUSENCIA PARA ESTE PACIENTE
+	}
 
 }

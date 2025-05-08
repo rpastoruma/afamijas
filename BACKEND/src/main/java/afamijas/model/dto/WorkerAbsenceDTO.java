@@ -1,6 +1,7 @@
 package afamijas.model.dto;
 
 import afamijas.model.RelativeAbsence;
+import afamijas.model.RouteStop;
 import afamijas.model.User;
 import afamijas.model.WorkerAbsence;
 
@@ -17,24 +18,29 @@ public class WorkerAbsenceDTO
 
     private String idworker;
 
+    private String worker_fullname;
+
     private String idroutestop;
 
-    private String comment;
+    private String routestop_name;
 
+    private String comment;
 
     private LocalDateTime when;
 
 
-
-    public WorkerAbsenceDTO(WorkerAbsence workerAbsence, User patient)
+    public WorkerAbsenceDTO(WorkerAbsence workerAbsence, User patient, User worker, RouteStop routeStop)
     {
         this.id = workerAbsence.get_id();
+
         this.idpatient = workerAbsence.getIdpatient();
-        if(patient!=null)  this.patient_fullname = ((patient.getName() + " " + patient.getSurname1()).trim() + " " + patient.getSurname2()).trim();
+        if(patient!=null)  this.patient_fullname =  patient.getFullname();
 
         this.idworker = workerAbsence.getIdworker();
+        if(worker!=null)  this.worker_fullname = worker.getFullname();
 
         this.idroutestop = workerAbsence.getIdroutestop();
+        if(routeStop!=null) this.routestop_name = routeStop.getName();
 
         this.comment = workerAbsence.getComment();
 
@@ -95,5 +101,21 @@ public class WorkerAbsenceDTO
 
     public void setWhen(LocalDateTime when) {
         this.when = when;
+    }
+
+    public String getWorker_fullname() {
+        return worker_fullname;
+    }
+
+    public void setWorker_fullname(String worker_fullname) {
+        this.worker_fullname = worker_fullname;
+    }
+
+    public String getRoutestop_name() {
+        return routestop_name;
+    }
+
+    public void setRoutestop_name(String routestop_name) {
+        this.routestop_name = routestop_name;
     }
 }

@@ -289,10 +289,10 @@ public class RelativesServiceImpl implements RelativesService
 		if(from!=null) query.addCriteria(Criteria.where("from").gte(from));
 		if(to!=null) query.addCriteria(Criteria.where("to").lte(to));
 
-		Criteria criteria2 = new Criteria().where("to").gte(LocalDateTime.now());
+		//Criteria criteria2 = new Criteria().where("to").gte(LocalDateTime.now());
 
-		Criteria criteria = new Criteria().andOperator(criteria1, criteria2);
-		query.addCriteria(criteria);
+		//Criteria criteria = new Criteria().andOperator(criteria1, criteria2);
+		query.addCriteria(criteria1);
 
 		long total = this.mongoTemplate.count(query, RelativeAbsence.class);
 		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));

@@ -46,8 +46,8 @@ public class RelativesController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
+			if(!this.isRELATIVE() && !this.isWORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(this.isRELATIVE() && !this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
 			return new ResponseEntity<>(this.relativesService.getRoute(idpatient), HttpStatus.OK);
 		}
 		catch(Exception e)
@@ -101,8 +101,8 @@ public class RelativesController extends AbstractBaseController
 			LocalDateTime from2 = from!=null?from.atTime(0, 0, 0, 0):null;
 			LocalDateTime to2 = to!=null?to.atTime(23, 59, 59, 999999999):null;
 
-			if(!this.isRELATIVE()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-			if(!this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
+			if(!this.isRELATIVE() && !this.isWORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(this.isRELATIVE() && !this.isPatientForRelative(idpatient)) return new ResponseEntity<>(HttpStatus.CONFLICT);
 			return new ResponseEntity<>(this.relativesService.getRelativeAbsences(idpatient, this.getId(), from2 , to2, page, size, "from", "DESC"), HttpStatus.OK);
 		}
 		catch(Exception e)

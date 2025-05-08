@@ -191,4 +191,10 @@ public interface WorkersService
     void deleteNomina(String id);
 
     List<WorkerDTO> getAllWorkers();
+
+    Page<WorkerAbsenceDTO> getWorkerAbsences(String idpatient, LocalDateTime from, LocalDateTime to, int page, int size, String orderby, String orderasc);
+
+    WorkerAbsenceDTO saveWorkerAbsence(String id, String idpatient, String id1, String idroutestop, String comment, LocalDateTime when);
+
+    void deleteWorkerAbsence(String idabsence);
 }

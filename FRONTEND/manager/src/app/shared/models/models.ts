@@ -875,7 +875,7 @@ export interface RouteStopDTO {
     order : number;
     name : string;
     hour : string;
-    postaladdress : RouteStopDTO[];
+    postaladdress : string;
     idcity : string;
     idstate : string;
     postalcode : string;
@@ -905,6 +905,29 @@ export interface RelativeAbsenceDTO
 
     to : Date;
 }
+
+export interface WorkerAbsenceDTO 
+{
+    id: string;
+
+    idpatient: string;
+
+    patient_fullname: string;
+
+    idworker: string;
+
+    worker_fullname: string;
+
+    idroutestop: string;
+
+    routestop_name: string;
+
+    comment: string;
+
+    when: Date;  
+}
+
+
 
 
 

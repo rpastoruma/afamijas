@@ -339,3 +339,18 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
   ];  
   
     
+
+      
+  //MENÚ TRANSPORT
+  export const MENU_TRANSPORT: NbMenuItem[] = [
+    
+  {
+    title: 'Faltas',
+    icon: { icon: 'fa-xmark', pack: 'fas' },
+    link: '/absences-worker',
+    data: 'menu.absences-worker',
+    expanded: false,
+  }
+  ];  
+  
+    

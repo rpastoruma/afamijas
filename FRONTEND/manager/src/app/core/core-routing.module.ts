@@ -92,6 +92,12 @@ const routes: Routes = [
       loadChildren: () => import('../modules/absences/absences.module').then(m => m.AbsencesModule) 
     },    
     {
+      path : 'absences-worker', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewAbsencesGuard],
+      loadChildren: () => import('../modules/absences-worker/absences-worker.module').then(m => m.AbsencesWorkerModule) 
+    },    
+    {
       path : 'menus', 
       component: BodyLayoutComponent,
       canActivate : [canViewMenuGuard],
