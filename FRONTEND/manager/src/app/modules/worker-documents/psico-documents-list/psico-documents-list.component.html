@@ -85,12 +85,12 @@
     <div  class="modal-body">
         <div>
 
-            <div *ngIf="theDoc.url==''" matTooltip="Seleccionar imagen" class="file-upload">
+            <div *ngIf="theDoc.url==''" matTooltip="Seleccionar documento" class="file-upload">
                 <button mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione documento a subir</button>
                 <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileSelected($event)" #fileUpload>
                 &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
             </div>       
-            <div *ngIf="theDoc.url!=''" matTooltip="Seleccionar imagen" class="file-upload">
+            <div *ngIf="theDoc.url!=''" matTooltip="Seleccionar documento" class="file-upload">
                 <a class="form-control" target="_blank" href="{{theDoc.url}}"><i class="fa-solid fa-paperclip"></i> Abrir documento</a>
                 <br/>
             </div>       

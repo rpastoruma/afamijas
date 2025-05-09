@@ -1,0 +1,307 @@
+<nb-card>
+    <nb-card-header>
+        <div class="row float-start" >
+            <h4>Proyectos</h4>
+        </div>
+        <button nbButton class="float-end" status="primary" (click)="openAddProjectModal()">AÑADIR</button>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div id="filtersOnlyCanModify" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+
+            <div>
+                Consultar proyectos con fecha de resolución desde el día:
+                <input 
+                    class="form-control"
+                    type="text"
+                    mwlFlatpickr
+                    [(ngModel)]="dayfrom"
+                    [altInput]="true"
+                    [convertModelValue]="true"
+                    [enableTime]="false"
+                    dateFormat="YY-m-d"
+                    altFormat="d/m/Y"
+                    (ngModelChange)="getProjects(0);"
+                    [disable]="[disabledDay]"
+                />
+            </div>
+        
+            <div>
+                Consultar proyectos con fecha de resolución hasta el día:
+                <input 
+                    class="form-control"
+                    type="text"
+                    mwlFlatpickr
+                    [(ngModel)]="dayto"
+                    [altInput]="true"
+                    [convertModelValue]="true"
+                    [enableTime]="false"
+                    dateFormat="YY-m-d"
+                    altFormat="d/m/Y"
+                    (ngModelChange)="getProjects(0);"
+                    [disable]="[disabledDay]"
+                    value=""
+                />
+            </div>
+        
+            <div>
+                Con el texto:
+                <input class="form-control" [(ngModel)]="theText" name="theText" type="text">
+            </div>
+        
+            <div>
+                Estado de la subvención:
+                <select class="form-control" [(ngModel)]="theSubvencion" name="theSubvencion" (ngModelChange)="getProjects(0);">
+                    <option value="">Todos</option>
+                    <option value="true">Concedida</option>
+                    <option value="false">No concedida</option>
+                </select>
+            </div>
+        
+        </div>
+        
+        <hr/>
+        
+
+        <app-custom-table
+            [actions]="actions"
+            [keys]="['Nombre:', 'Presentación:',  'Resolución:', 'Plazo:', 'Subvención:', 'Solicitado:', 'Concedido:']"
+            [values]="projects"
+            [align]="['left', 'left', 'left', 'left', 'left', 'left', 'left', 'left']"
+            [filters]="[false, false, false, false, false, false, false]"
+            [sort]="[false, false, false, false, false, false, false, false]"
+            [widthToCollapse]="750"
+            [withPagination]="true"
+            [totalPages]="totalPages"
+            [page]="page"
+            [size]="size"
+            [loadingE]="loadingExcel"
+            [loading]="loadingPDF"
+            [hasExport]="true"
+            (actionSelected)="action($event)"
+            (changePage)="setPage($event)"
+            (filterEvent)="filter(0)"
+            [isProcessing]="isProcessing"
+            (exportData)="getExportData($event)"
+            [showSearchButton]="true"
+
+        >
+
+        </app-custom-table>
+    </nb-card-body>
+
+
+    
+    <nb-card-footer>
+        <button  nbButton class="float-end" status="primary" (click)="openAddProjectModal()">AÑADIR</button>
+    </nb-card-footer>
+</nb-card>
+
+
+
+
+<ng-template #modalContent let-close="close">
+    <div class="modal-header">
+        <h6 *ngIf="theProject.id==''">Añadir nuevo proyecto</h6>        
+        <h6 *ngIf="theProject.id!=''">Modificar proyecto</h6>
+        <nb-icon (click)="close()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+
+            <div>
+            Nombre (obligatorio):
+            <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theProject.nombre" name="theProject-nombre" type="text" >
+            </div>
+
+
+            <div style="display: flex; gap: 20px; align-items: center;">
+
+                <div style="flex: 1;">
+                    Fecha presentación:
+                    <input
+                        class="form-control"
+                        type="text"
+                        mwlFlatpickr
+                        [(ngModel)]="theProject.fecha_presentacion"
+                        [altInput]="true"
+                        [convertModelValue]="true"
+                        [enableTime]="false"
+                        dateFormat="YY-m-d"
+                        altFormat="d/m/Y"
+                        placeholder="Indique cuando quiere que el documento se publique"
+                    />
+                </div>
+            
+                <div style="flex: 1;">
+                    Fecha resolución:
+                    <input
+                        class="form-control"
+                        type="text"
+                        mwlFlatpickr
+                        [(ngModel)]="theProject.fecha_resolucion"
+                        [altInput]="true"
+                        [convertModelValue]="true"
+                        [enableTime]="false"
+                        dateFormat="YY-m-d"
+                        altFormat="d/m/Y"
+                        placeholder="Indique hasta cuando quiere que el documento esté publicado"
+                    />
+                </div>
+            
+            </div>
+            
+    
+            
+            <div style="display: flex; gap: 20px; align-items: center;">
+
+                <div style="flex: 1;">
+                    Plazo de ejecución:
+                    <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theProject.plazo_ejecucion" name="theProject-plazo_ejecucion" type="text" >
+                </div>
+            
+                <div style="flex: 1;">
+                        Estado de la subvención:
+                        <select class="form-control" [(ngModel)]="theProject.subvencion_concedida" name="theProject-subvencion_concedida">
+                            <option value="true">Concedida</option>
+                            <option value="false">No concedida</option>
+                        </select>
+                </div>
+            
+            </div>
+            
+
+            
+            <div style="display: flex; gap: 20px; align-items: center;">
+
+                <div style="flex: 1;">
+                    Importe Solicitado:
+                    <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theProject.importe_solicitado" name="theProject-importe_solicitado" type="number" >
+                </div>
+            
+                <div style="flex: 1;">
+                    Importe concedido:
+                    <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theProject.importe_concedido" name="theProject-importe_concedido" type="number" >
+                </div>
+            
+            </div>
+            
+
+
+
+            <div *ngIf="theProject.documentos && theProject.documentos.length>0" style="max-height: 400px; overflow-y: auto;">
+                <hr/>
+
+                {{theProject.documentos.length}} documento(s) asociado(s) al proyecto:
+
+                <app-custom-table
+                [actions]="actions2"
+                [keys]="['Título:', 'Descripción:',  'Fecha:']"
+                [values]="thedocsvalues"
+                [align]="['left', 'left', 'left']"
+                [filters]="[false, false, false]"
+                [sort]="[false, false, false]"
+                [widthToCollapse]="750"
+                [withPagination]="false"
+                [hasExport]="false"
+                (actionSelected)="action2($event)"
+                (filterEvent)="filter2(0)"
+                [isProcessing]="isProcessing"
+                [showSearchButton]="false"
+
+                >
+
+                </app-custom-table>
+            
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button nbButton status="warning" type="button" class="btn btn-outline-secondary" (click)="close();">
+            CERRAR
+        </button>
+        &nbsp;
+        <button *ngIf="theProject.id!=''" [disabled]="isProcessing || theProject.nombre.trim()==''"  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="openAddDocumentModal();">
+            AÑADIR DOCUMENTO AL PROYECTO
+        </button>        
+        &nbsp;
+        <button  *ngIf="theProject.id==''" [disabled]="isProcessing || theProject.nombre.trim()==''"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveProject();">
+            AÑADIR PROYECTO
+        </button>        
+        <button  *ngIf="theProject.id!=''" [disabled]="isProcessing || theProject.nombre.trim()==''"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveProject();">
+            MODIFICAR DATOS DEL PROYECTO
+        </button>
+    </div>
+</ng-template>
+  
+
+
+
+
+<ng-template #modalContent2 let-close="close">
+    <div class="modal-header">
+        <h6 *ngIf="theDoc.id==''">Añadir nuevo documento</h6>        
+        <h6 *ngIf="theDoc.id!=''">Modificar documento</h6>
+        <nb-icon (click)="close()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
+    </div>
+
+    <div  class="modal-body">
+        <div>
+
+            <div *ngIf="theDoc.url==''" matTooltip="Seleccionar documento" class="file-upload">
+                <button mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione documento a subir</button>
+                <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileSelected($event)" #fileUpload>
+                &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+            </div>       
+            <div *ngIf="theDoc.url!=''" matTooltip="Seleccionar documento" class="file-upload">
+                <a class="form-control" target="_blank" href="{{theDoc.url}}"><i class="fa-solid fa-paperclip"></i> Abrir documento</a>
+                <br/>
+            </div>       
+
+
+            Título (obligatorio):
+            <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theDoc.title" name="theDoc-title" type="text" >
+            <br/>
+
+            Descripción (opcional): 
+            <textarea rows="3" class="form-control" [(ngModel)]="theDoc.description"></textarea>
+            <br/>
+
+            <div>
+                Fecha del documento (opcional): <input
+                class="form-control"
+                type="text"
+                mwlFlatpickr
+                [(ngModel)]="theDoc.dayfrom"
+                [altInput]="true"
+                [convertModelValue]="true"
+                [enableTime]="false"
+                dateFormat="YY-m-d"
+                altFormat="d/m/Y"
+                placeholder="Indica fecha efectiva del documento (si no se indica se toma la fecha de subida)"
+                />
+            </div>
+
+                
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button nbButton status="warning" type="button" class="btn btn-outline-secondary" (click)="close();">
+            CERRAR
+        </button>
+        &nbsp;
+        <button  *ngIf="theDoc.id==''" [disabled]="isProcessing || !theDoc.url.startsWith('https:') || theDoc.title.trim()==''"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveDocProject();">
+            AÑADIR DOCUMENTO AL PROYECTO
+        </button>        
+        <button  *ngIf="theDoc.id!=''" [disabled]="isProcessing || !theDoc.url.startsWith('https:') || theDoc.title.trim()==''"  nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveDocProject();">
+            MODIFICAR DOCUMENTO DEL PROYECTO
+        </button>
+    </div>
+</ng-template>
+  
+

@@ -1843,5 +1843,155 @@ public class WorkersController extends AbstractBaseController
 
 
 
+
+
+	@RequestMapping(method=RequestMethod.GET, value="getProjects", produces="application/json")
+	public ResponseEntity<?> getProjects(
+			@RequestParam(value = "text", required = false) String text,
+			@RequestParam(value = "dayfrom", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			@RequestParam(value = "dayto", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
+			@RequestParam(value = "subvencion_concedida", required = false) Boolean subvencion_concedida,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(order==null) order = "created";
+			if(orderasc==null) orderasc = "DESC";
+
+			if(!(this.isADMIN() || isMANAGER())) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			return new ResponseEntity<>(this.workersService.getProjects(text, dayfrom, dayto, subvencion_concedida, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="saveProject", produces="application/json")
+	public ResponseEntity<?> saveProject(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "nombre", required = true) String nombre,
+			@RequestParam(value = "fecha_presentacion", required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fecha_presentacion,
+			@RequestParam(value = "fecha_resolucion", required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fecha_resolucion,
+			@RequestParam(value = "plazo_ejecucion", required = false) String plazo_ejecucion,
+			@RequestParam(value = "subvencion_concedida", required = false) Boolean subvencion_concedida,
+			@RequestParam(value = "importe_solicitado", required = false)  Double importe_solicitado,
+			@RequestParam(value = "importe_concedido", required = false)  Double importe_concedido,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!(this.isADMIN() || isMANAGER())) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			if(subvencion_concedida==null) subvencion_concedida = false;
+
+			this.workersService.saveProject(id, this.getId(), nombre, fecha_presentacion, fecha_resolucion, plazo_ejecucion, subvencion_concedida, importe_solicitado, importe_concedido);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			if(!e.getMessage().equals("NO"))
+				this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteProject", produces="application/json")
+	public ResponseEntity<?> deleteProject(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(this.isADMIN() || isMANAGER())
+				this.workersService.deleteProject(id);
+			else
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			if(!e.getMessage().equals("NO"))
+				this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="saveDocProject", produces="application/json")
+	public ResponseEntity<?> saveDocProject(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "idproject", required = false) String idproject,
+			@RequestParam(value = "url", required = true) String url,
+			@RequestParam(value = "title", required = true) String title,
+			@RequestParam(value = "description", required = false) String description,
+			@RequestParam(value = "dayfrom", required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isWORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			this.workersService.saveDocProject(id, this.getId(), idproject, title, description, url, dayfrom);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			if(!e.getMessage().equals("NO"))
+				this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteDocProject", produces="application/json")
+	public ResponseEntity<?> deleteDocProject(
+			@RequestParam(value = "id", required = true) String id,
+			@RequestParam(value = "idproject", required = true) String idproject,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(this.isADMIN() || isMANAGER())
+				this.workersService.deleteDocProject(id, idproject);
+			else
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			if(!e.getMessage().equals("NO"))
+				this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+
+
+
+
+
 }
 

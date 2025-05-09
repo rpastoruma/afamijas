@@ -1188,6 +1188,19 @@ export interface DocDTO
     created : Date;
 }
 
+export interface ProjectDTO {
+    id: string;
+    idworker: string;
+    worker_fullname: string;
+    nombre: string;
+    fecha_presentacion: Date; 
+    fecha_resolucion: Date;  
+    plazo_ejecucion: string;
+    subvencion_concedida: boolean;
+    importe_solicitado: number;
+    importe_concedido: number;
+    documentos: DocDTO[];
+}
 
 
 export interface DocPsicoDTO
@@ -1434,3 +1447,38 @@ export interface AddressBookDTO {
     observations?: string;
   }
   
+
+  /*
+
+  export interface Pageable {
+    pageNumber: number;
+    pageSize: number;
+    sort: {
+        empty: boolean;
+        sorted: boolean;
+        unsorted: boolean;
+    };
+    offset: number;
+    paged: boolean;
+    unpaged: boolean;
+}
+
+export interface PaginationResult<T> {
+    content: T[];
+    pageable: Pageable;
+    last: boolean;
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    number: number;
+    sort: {
+        empty: boolean;
+        sorted: boolean;
+        unsorted: boolean;
+    };
+    first: boolean;
+    numberOfElements: number;
+    empty: boolean;
+}
+    */
+

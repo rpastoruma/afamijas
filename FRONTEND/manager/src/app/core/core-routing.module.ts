@@ -158,6 +158,12 @@ const routes: Routes = [
       loadChildren: () => import('../modules/worker-documents/worker-documents.module').then(m => m.WorkerDocumentsModule) 
     },
     {
+      path : 'projects', 
+      component: BodyLayoutComponent,
+      canActivate : [canViewDocsGuard],
+      loadChildren: () => import('../modules/projects/projects.module').then(m => m.ProjectsModule) 
+    },
+    {
       path : 'worker-docs-psico', 
       component: BodyLayoutComponent,
       canActivate : [canViewDocsPsicoGuard],

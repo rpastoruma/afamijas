@@ -1,5 +1,6 @@
 package afamijas.service;
 
+import afamijas.model.Doc;
 import afamijas.model.User;
 import afamijas.model.dto.*;
 import org.springframework.data.domain.Page;
@@ -128,7 +129,7 @@ public interface WorkersService
 
     Page<DocDTO> getDocs(User user, String text, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String orderby, String orderasc);
 
-    void saveDoc(String id, String idworker, String title, String description, String url, LocalDate dayfrom, LocalDate dayto, List<String> roles, boolean isAdmin, boolean createEvent)  throws Exception;
+    Doc saveDoc(String id, String idworker, String title, String description, String url, LocalDate dayfrom, LocalDate dayto, List<String> roles, boolean isAdmin, boolean createEvent)  throws Exception;
 
     void deleteAdminDoc(String id);
 
@@ -197,4 +198,14 @@ public interface WorkersService
     WorkerAbsenceDTO saveWorkerAbsence(String id, String idpatient, String id1, String idroutestop, String comment, LocalDateTime when);
 
     void deleteWorkerAbsence(String idabsence);
+
+    Page<ProjectDTO> getProjects(String text, LocalDate dayfrom, LocalDate dayto, Boolean subvencion_concedida, Integer page, Integer size, String order, String orderasc);
+
+    ProjectDTO saveProject(String id, String id1, String nombre, LocalDate fechaPresentacion, LocalDate fechaResolucion, String plazoEjecucion, Boolean subvencionConcedida, Double importeSolicitado, Double importeConcedido);
+
+    void deleteProject(String id);
+
+    DocDTO saveDocProject(String id, String idworker, String idproject, String title, String description, String url, LocalDate dayfrom) throws Exception;
+
+    void deleteDocProject(String id, String idproject);
 }

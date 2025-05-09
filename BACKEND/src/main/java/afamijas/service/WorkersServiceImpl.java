@@ -28,6 +28,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class WorkersServiceImpl implements WorkersService
@@ -102,9 +103,11 @@ public class WorkersServiceImpl implements WorkersService
 
 	final AddressBookRepository addressBookRepository;
 
+	final ProjectsRepository projectsRepository;
+
 
 	@Autowired
-	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, DocsRepository docsRepository, ReceiptsRepository receiptsRepository, InvoicesRepository invoicesRepository, MediaService mediaService, NotificationsService notificationsService, DocsPsicoRepository docsPsicoRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, CountriesRepository countriesRepository, AtencionesRepository atencionesRepository, NominasRepository nominasRepository, UsersService usersService, SendMail sendMail, QueuemailHardyService queuemailHardyService, ConfigurationService configurationService, Template template, ErrorsService errorsService, AddressBookRepository addressBookRepository)
+	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, DocsRepository docsRepository, ReceiptsRepository receiptsRepository, InvoicesRepository invoicesRepository, MediaService mediaService, NotificationsService notificationsService, DocsPsicoRepository docsPsicoRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, CountriesRepository countriesRepository, AtencionesRepository atencionesRepository, NominasRepository nominasRepository, UsersService usersService, SendMail sendMail, QueuemailHardyService queuemailHardyService, ConfigurationService configurationService, Template template, ErrorsService errorsService, AddressBookRepository addressBookRepository, ProjectsRepository projectsRepository)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -137,6 +140,7 @@ public class WorkersServiceImpl implements WorkersService
 		this.template = template;
 		this.errorsService = errorsService;
         this.addressBookRepository = addressBookRepository;
+        this.projectsRepository = projectsRepository;
     }
 
 	//TODO: REVISAR SI LA PAGINACIÓN ESTÁ BIEN HECHA YA QUE NO ESTÁ COMO EN LAS OTRAS
@@ -1130,7 +1134,7 @@ public class WorkersServiceImpl implements WorkersService
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void saveDoc(String id, String idworker, String title, String description, String url, LocalDate dayfrom, LocalDate dayto, List<String> roles, boolean isAdmin, boolean createEvent) throws Exception
+	public Doc saveDoc(String id, String idworker, String title, String description, String url, LocalDate dayfrom, LocalDate dayto, List<String> roles, boolean isAdmin, boolean createEvent) throws Exception
 	{
 		if(dayfrom==null)
 		{
@@ -1155,7 +1159,7 @@ public class WorkersServiceImpl implements WorkersService
 		if(id!=null)
 		{
 			doc = this.docsRepository.findOne(id);
-			if(doc==null) return;
+			if(doc==null) return null;
 
 			if(!isAdmin && !doc.getIdworker().equals(idworker)) throw new Exception("NO");
 		}
@@ -1200,6 +1204,7 @@ public class WorkersServiceImpl implements WorkersService
 		if(isAdmin && createEvent)
 			this.saveCalendarEvent(idworker, null, doc.getDayfrom().atStartOfDay(), doc.getDayto().equals(LocalDate.of(2100, 1, 1))?null:doc.getDayto().atTime(23, 59, 59), false, doc.getTitle(), false, doc.getDescription() , doc.getRoles(), null, doc.getDayfrom().atStartOfDay(), doc.getUrl());
 
+		return doc;
 	}
 
 	@Override
@@ -1879,5 +1884,164 @@ public class WorkersServiceImpl implements WorkersService
 
 		//TODO: EMAIL/NOTIFICACIÓN A QUIEN CORRESPONDA ANUNCIANDO ELIMINACIÓN DE AUSENCIA PARA ESTE PACIENTE
 	}
+
+
+
+
+	@Override
+	public Page<ProjectDTO> getProjects(String text, LocalDate from, LocalDate to, Boolean subvencion_concedida, Integer page, Integer size, String order, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Query query = new Query();
+
+		Criteria criteria = new Criteria().where("status").is("A");
+
+		if (text != null && !text.trim().equals(""))  criteria.and("nombre").regex(".*" + text + ".*", "i");
+
+		if (subvencion_concedida!=null) criteria.and("subvencion_concedida").is(subvencion_concedida);
+
+		Criteria fechaResolucionCriteria = null;
+
+		if (from != null && to != null) {
+			fechaResolucionCriteria = Criteria.where("fecha_resolucion").gte(from).lte(to);
+		} else if (from != null) {
+			fechaResolucionCriteria = Criteria.where("fecha_resolucion").gte(from);
+		} else if (to != null) {
+			fechaResolucionCriteria = Criteria.where("fecha_resolucion").lte(to);
+		}
+
+		if (fechaResolucionCriteria != null) {
+			criteria.andOperator(fechaResolucionCriteria);
+		}
+
+		query.addCriteria(criteria);
+
+		try { if(debug_queries) System.out.println("getProjects: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
+
+		long total = this.mongoTemplate.count(query, Project.class);
+
+		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, order));
+
+		//EN LOS USUARIOS WORKER INCLUIMOS TAMBIÉN LOS QUE PUDIERAN ESTAR BORRADOS POR ESO FINDONE NO FILTRA POR STATUS
+		List<ProjectDTO> list = this.mongoTemplate.find(query, Project.class).stream().map(x -> new ProjectDTO(x, this.usersRepository.findOne(x.getIdworker()))).toList();
+
+		return new PageImpl<>(list, pageable, total);
+	}
+
+
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public ProjectDTO saveProject(String id, String idworker,
+								  String nombre, LocalDate fechaPresentacion, LocalDate fechaResolucion, String plazoEjecucion, Boolean subvencionConcedida, Double importeSolicitado, Double importeConcedido)
+	{
+		User worker = this.usersRepository.findOne(idworker);
+		if(worker==null) return null;
+
+		Project project = id!=null?this.projectsRepository.findOne(id):new Project();
+		if(project==null) return null;
+
+		project.setIdworker(idworker);
+		project.setNombre(nombre);
+		project.setFecha_presentacion(fechaPresentacion);
+		project.setFecha_resolucion(fechaResolucion);
+		project.setPlazo_ejecucion(plazoEjecucion);
+		project.setSubvencion_concedida(subvencionConcedida);
+		project.setImporte_solicitado(importeSolicitado);
+		project.setImporte_concedido(importeConcedido);
+		project.setStatus("A");
+
+		return new ProjectDTO(this.projectsRepository.save(project), worker);
+	}
+
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public void deleteProject(String id)
+	{
+		Project project = id!=null?this.projectsRepository.findOne(id):new Project();
+		if(project==null) return;
+
+		project.setStatus("D");
+
+		this.projectsRepository.save(project);
+	}
+
+
+
+
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRES_NEW)
+	public DocDTO saveDocProject(String id, String idworker, String idproject, String title, String description, String url, LocalDate dayfrom) throws Exception
+	{
+		Doc doc = id!=null?this.docsRepository.findOne(id):new Doc();
+		if(doc==null) return null;
+
+		User worker = this.usersRepository.findOne(idworker);
+		if(worker==null) return null;
+
+		Project project = this.projectsRepository.findOne(idproject);
+		if(project==null) return null;
+
+		if(dayfrom==null) dayfrom = LocalDate.now();
+
+		List roles = Arrays.asList(Roles.MANAGER, Roles.ADMIN);
+
+		doc = this.saveDoc(id, idworker, title, description, url, dayfrom, null, roles, true, false);
+
+		if(doc!=null)
+		{
+			if (project.getDocumentos() == null) {
+				project.setDocumentos(new ArrayList<>());
+			}
+
+			// Reemplazar si ya existe, o añadir si no está
+			List<Doc> documentos = project.getDocumentos();
+			Doc finalDoc = doc;
+			OptionalInt existingIndex = IntStream.range(0, documentos.size())
+					.filter(i -> documentos.get(i).get_id().equals(finalDoc.get_id()))
+					.findFirst();
+
+			if (existingIndex.isPresent()) {
+				documentos.set(existingIndex.getAsInt(), doc);
+			} else {
+				documentos.add(doc);
+			}
+
+			this.projectsRepository.save(project);
+		}
+
+		return new DocDTO(doc, worker);
+	}
+
+
+
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void deleteDocProject(String id, String idproject)
+	{
+		Doc doc = this.docsRepository.findOne(id);
+		if (doc == null) return;
+
+		Project project = this.projectsRepository.findOne(idproject);
+		if (project == null) return;
+
+		// Eliminar el documento del repositorio
+		this.docsRepository.delete(doc);
+
+		// Eliminar el documento de la lista del proyecto
+		if (project.getDocumentos() != null) {
+			project.getDocumentos().removeIf(d -> d.get_id().equals(id));
+		}
+
+		// Guardar los cambios en el proyecto
+		this.projectsRepository.save(project);
+	}
+
+
 
 }

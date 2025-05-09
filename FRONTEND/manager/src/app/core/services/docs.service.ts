@@ -100,4 +100,62 @@ export class DocsService {
   }
 
 
+
+  getProjects(page: number, size: number, dayfrom: Date, dayto: Date, text: string, subvencion_concedida: string) {
+    let url = ENV.url.workers + `/getProjects?page=${page}&size=${size}`;
+    if (dayfrom) url += "&dayfrom=" + this.formatDate2(dayfrom);
+    if (dayto) url += "&dayto=" + this.formatDate2(dayto);
+    if (text) url += "&text=" + text;
+    if (subvencion_concedida !== undefined && subvencion_concedida != '') url += "&subvencion_concedida=" + subvencion_concedida;
+
+  
+    return this.http.get<any>(url);
+  }
+  
+  saveProject(theProject: any) {
+    const form = new FormData();
+    if (theProject.id) form.append('id', theProject.id);
+    form.append('nombre', theProject.nombre);
+    if (theProject.fecha_presentacion) form.append('fecha_presentacion', this.formatDate2(theProject.fecha_presentacion));
+    if (theProject.fecha_resolucion) form.append('fecha_resolucion', this.formatDate2(theProject.fecha_resolucion));
+    if (theProject.plazo_ejecucion) form.append('plazo_ejecucion', theProject.plazo_ejecucion);
+    if (theProject.subvencion_concedida !== undefined) form.append('subvencion_concedida', theProject.subvencion_concedida.toString());
+    if (theProject.importe_solicitado) form.append('importe_solicitado', theProject.importe_solicitado.toString());
+    if (theProject.importe_concedido) form.append('importe_concedido', theProject.importe_concedido.toString());
+  
+    return this.http.post<any>(ENV.url.workers + '/saveProject', form);
+  }
+  
+  deleteProject(id: string) {
+    const form = new FormData();
+    form.append('id', id);
+  
+    return this.http.post<any>(ENV.url.workers + '/deleteProject', form);
+  }
+
+  
+
+saveDocProject(theDoc: any, idproject: string) {
+  const form = new FormData();
+
+  if (theDoc.id) form.append('id', theDoc.id);
+  form.append('idproject', idproject);
+  form.append('url', theDoc.url);
+  form.append('title', theDoc.title);
+  if (theDoc.description) form.append('description', theDoc.description);
+  if (theDoc.dayfrom) form.append('dayfrom', this.formatDate2(theDoc.dayfrom));
+
+  return this.http.post<any>(ENV.url.workers + '/saveDocProject', form);
+}
+
+deleteDocProject(id: string, idproject: string) {
+  const form = new FormData();
+  form.append('id', id);
+  form.append('idproject', idproject);
+
+  return this.http.post<any>(ENV.url.workers + '/deleteDocProject', form);
+}
+
+
+
 }
