@@ -160,6 +160,19 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
 
 
   
+
+    
+  //MENÚ PROYECTOS
+  export const MENU_PROJECTS: NbMenuItem[] = [
+    {
+      title: 'Proyectos',
+      icon: { icon: 'fa-project-diagram', pack: 'fas' },
+      link: '/projects',
+      data: 'menu.projects',
+      expanded: false,
+    }
+  ];  
+
     
   //MENÚ SOCIOS
   export const MENU_MEMBERS: NbMenuItem[] = [
