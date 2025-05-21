@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -67,4 +68,7 @@ public interface UsersRepository extends MongoRepository<User, String>
 			"{ $project: { _id: 0, fs_num_expediente: 1 } }"  // Proyectamos solo el campo fs_num_expediente
 	})
 	String findHighestFsNumExpediente();
+
+	List<User> findByPassworChangedFalseAndPasswordGeneratedBefore(LocalDateTime dateTime);
+
 }

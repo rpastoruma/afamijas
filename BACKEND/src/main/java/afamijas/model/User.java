@@ -1108,6 +1108,7 @@ public class User
 	private String secret2FA;
 	private Boolean verified2FA;
 	private Boolean passworChanged;
+	private LocalDateTime passwordGenerated;
 	private LocalDateTime last2FA;
 
 
@@ -5545,6 +5546,14 @@ public class User
 		this.last2FA = last2FA;
 	}
 
+	public LocalDateTime getPasswordGenerated() {
+		return passwordGenerated;
+	}
+
+	public void setPasswordGenerated(LocalDateTime passwordGenerated) {
+		this.passwordGenerated = passwordGenerated;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -5559,4 +5568,7 @@ public class User
 	public int hashCode() {
 		return _id.hashCode();
 	}
+
+
+
 }

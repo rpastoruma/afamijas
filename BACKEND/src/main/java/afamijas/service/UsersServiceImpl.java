@@ -5,7 +5,9 @@ import afamijas.dao.UsersRepository;
 import afamijas.model.AddressBook;
 import afamijas.model.User;
 import afamijas.model.dto.UserDTO;
+import afamijas.utils.PasswordPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -121,6 +123,25 @@ public class UsersServiceImpl implements UsersService
 	}
 
 
+	private List<User> getUsersWithExpiredGeneratedPasswords() {
+		LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
+		return usersRepository.findByPassworChangedFalseAndPasswordGeneratedBefore(oneDayAgo);
+	}
+
+
+	@Scheduled(fixedRate = 1000 * 60 * 60) //cada hora
+	public void invalidNotChangedPasswords() {
+		List<User> users = getUsersWithExpiredGeneratedPasswords(); // usando el nuevo método
+
+		for (User user : users) {
+			String newpassword = PasswordPolicy.generate();
+			user.setPassword(new BCryptPasswordEncoder().encode(newpassword));
+			user.setToken(UUID.randomUUID().toString());
+			//user.setPassworChanged(false);
+			//user.setPasswordGenerated(LocalDateTime.now()); // actualiza fecha si es necesario
+			this.save(user);
+		}
+	}
 
 
 
