@@ -95,4 +95,41 @@ export class MembersService {
 
 
 
+  getRelatives(page: number, size: number, name_surnames?: string, documentid?: string, status?: string, order?: string, orderasc?: string) {
+    let url = ENV.url.members + `/getRelatives?page=${page}&size=${size}`;
+    if (name_surnames) url += `&name_surnames=${encodeURIComponent(name_surnames)}`;
+    if (documentid) url += `&documentid=${encodeURIComponent(documentid)}`;
+    if (status) url += `&status=${encodeURIComponent(status)}`;
+    if (order) url += `&order=${encodeURIComponent(order)}`;
+    if (orderasc) url += `&orderasc=${encodeURIComponent(orderasc)}`;
+    return this.http.get<any>(url, {});
+  }
+  
+  saveRelative(relative: any) {
+    const form = new FormData();
+  
+    if (relative.id) form.append('id', relative.id);
+    if (relative.name) form.append('name', relative.name);
+    if (relative.surname1) form.append('surname1', relative.surname1);
+    if (relative.surname2) form.append('surname2', relative.surname2);
+    if (relative.email) form.append('email', relative.email);
+    if (relative.phone) form.append('phone', relative.phone);
+    if (relative.documentid) form.append('documentid', relative.documentid);
+    if (relative.documenttype) form.append('documenttype', relative.documenttype);
+  
+    if (relative.postaladdress) form.append('postaladdress', relative.postaladdress);
+    if (relative.idcity) form.append('idcity', relative.idcity.toString());
+    if (relative.idstate) form.append('idstate', relative.idstate.toString());
+    if (relative.idcountry) form.append('idcountry', relative.idcountry.toString());
+    if (relative.postalcode) form.append('postalcode', relative.postalcode);
+  
+    return this.http.post<any>(ENV.url.members + '/saveRelative', form);
+  }
+  
+  deleteRelative(id: string) {
+    const form = new FormData();
+    form.append('id', id);
+    return this.http.post<any>(ENV.url.members + '/deleteRelative', form);
+  }
+  
 }

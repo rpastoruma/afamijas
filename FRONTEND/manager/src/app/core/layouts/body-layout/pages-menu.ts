@@ -196,6 +196,18 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
     }
   ];  
 
+    //MENÚ FAMILIARES
+    export const MENU_RELATIVES: NbMenuItem[] = [
+      {
+        title: 'Familiares',
+        icon: { icon: 'fa-user-shield', pack: 'fas' },
+        link: '/relatives',
+        data: 'menu.relatives',
+        expanded: false,
+      }
+    ];  
+  
+
   //MENÚ STAFF
   export const MENU_STAFF: NbMenuItem[] = [
     {
@@ -235,46 +247,56 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
 
 
 
+// MENÚ PSICOLOGÍA
+export const MENU_PSICO: NbMenuItem[] = [
+  {
+    title: 'Psicología',
+    icon: { icon: 'fa-brain', pack: 'fas' },
+    data: 'menu.psicologia',
+    expanded: false,
+    children: [
+      {
+        title: 'Documentos',
+        icon: { icon: 'fa-file-contract', pack: 'fas' },
+        link: '/worker-docs/psico',
+        data: 'menu.worker-psico',
+      },
+      {
+        title: 'PAI Psicología',
+        icon: { icon: 'fa-file-circle-check', pack: 'fas' },
+        link: '/pai-psico',
+        data: 'menu.pai-psico',
+      }
+    ],
+  }
+];
 
-  //MENÜ PSICOLOGÍA
-  export const MENU_PSICO: NbMenuItem[] = [
-    {
-      title: 'Docs Psico',
-      icon: { icon: 'fa-file-contract', pack: 'fas' },
-      link: '/worker-docs/psico',
-      data: 'menu.worker-psico',
-      expanded: false,
-    },
-    {
-      title: 'PAI Psicología',
-      icon: { icon: 'fa-file-circle-check', pack: 'fas' },
-      link: '/pai-psico',
-      data: 'menu.pai-psico',
-      expanded: false,
-    }
-  ];  
 
 
-  
 
-  //MENÜ TRABSOCIAL
   export const MENU_SOCIAL_WORKER: NbMenuItem[] = [
     {
       title: 'Trab. Social',
       icon: { icon: 'fa-people-arrows', pack: 'fas' },
-      link: '/social-worker-docs',
       data: 'menu.social-worker',
       expanded: false,
-    },
-    {
-      title: 'PAI Trab. Social',
-      icon: { icon: 'fa-file-circle-check', pack: 'fas' },
-      link: '/pai-social',
-      data: 'menu.pai-social',
-      expanded: false,
+      children: [
+        {
+          title: 'Documentos',
+          icon: { icon: 'fa-folder', pack: 'fas' },
+          link: '/social-worker-docs',
+          data: 'menu.social-worker-docs',
+        },
+        {
+          title: 'PAI Trab. Social',
+          icon: { icon: 'fa-file-circle-check', pack: 'fas' },
+          link: '/pai-social',
+          data: 'menu.pai-social',
+        },
+      ],
     }
-  ];  
-
+  ];
+  
 
    
 

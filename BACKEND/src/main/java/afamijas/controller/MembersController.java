@@ -241,5 +241,89 @@ public class MembersController extends AbstractBaseController
 
 
 
+	@RequestMapping(method=RequestMethod.GET, value="getRelatives", produces="application/json")
+	public ResponseEntity<?> getRelatives(
+			@RequestParam(value = "name_surnames", required = false) String name_surnames,
+			@RequestParam(value = "documentid", required = false) String documentid,
+			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "page", required = true) Integer page,
+			@RequestParam(value = "size", required = true) Integer size,
+			@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "orderasc", required = false) String orderasc,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			if(order==null) order = "name";
+			if(orderasc==null) orderasc = "ASC";
+			return new ResponseEntity<>(this.membersService.getRelatives(name_surnames, documentid, status, page, size, order, orderasc), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
+	@RequestMapping(method=RequestMethod.POST, value="saveRelative", produces="application/json")
+	public ResponseEntity<?> saveRelative(
+			@RequestParam(value = "id", required = false) String id,
+
+			@RequestParam(value = "name", required = false) String name,
+			@RequestParam(value = "surname1", required = false) String surname1,
+			@RequestParam(value = "surname2", required = false) String surname2,
+			@RequestParam(value = "email", required = false) String email,
+			@RequestParam(value = "phone", required = false) String phone,
+			@RequestParam(value = "documentid", required = false) String documentid,
+			@RequestParam(value = "documenttype", required = false) String documenttype,
+
+			@RequestParam(value = "postaladdress", required = false) String postaladdress,
+			@RequestParam(value = "idcity", required = false) Integer idcity,
+			@RequestParam(value = "idstate", required = false) Integer idstate,
+			@RequestParam(value = "idcountry", required = false) Integer idcountry,
+			@RequestParam(value = "postalcode", required = false) String postalcode,
+
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+			return new ResponseEntity<>(this.membersService.saveRelative(id, name, surname1, surname2, email, phone, documentid, documenttype, postaladdress, idcity, idstate, idcountry, postalcode), HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@RequestMapping(method=RequestMethod.POST, value="deleteRelative", produces="application/json")
+	public ResponseEntity<?> deleteRelative(
+			@RequestParam(value = "id", required = true) String id,
+			HttpServletRequest request
+	)
+	{
+		try
+		{
+			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			this.membersService.deleteRelative(id);
+			return new ResponseEntity<>("", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			this.errorsService.sendError(e, this.getParameters(request));
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+
 }
 

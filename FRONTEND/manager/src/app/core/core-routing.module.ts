@@ -226,6 +226,13 @@ const routes: Routes = [
       loadChildren: () => import('../modules/members/members.module').then(m => m.MembersModule) 
     },
     {
+      path : 'relatives', 
+      component: BodyLayoutComponent,
+      canActivate : [canAccessMembersGuard],
+      loadChildren: () => import('../modules/relatives/relatives.module').then(m => m.RelativesModule) 
+    }
+    ,
+    {
       path : 'agenda', 
       component: BodyLayoutComponent,
       canActivate : [canAccessMembersGuard],

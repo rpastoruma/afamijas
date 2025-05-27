@@ -13,7 +13,6 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -80,7 +79,7 @@ public class MembersServiceImpl implements MembersService
 		if(documentid!=null) query.addCriteria(Criteria.where("documentid").is(documentid));
 		if(status!=null) query.addCriteria(Criteria.where("status").is(status));
 
-		if(debug_queries) System.out.println("findMyNotifications: " + query.getQueryObject().toJson());
+		if(debug_queries) System.out.println("getMembers: " + query.getQueryObject().toJson());
 		List<MemberDTO> list = this.mongoTemplate.find(query, User.class).stream().map(x -> new MemberDTO(x, null, null, null)).toList();
 
 		Query finalQuery = query;
@@ -263,4 +262,115 @@ public class MembersServiceImpl implements MembersService
 	}
 
 
+
+
+	@Override
+	public Page<RelativeDTO> getRelatives(String name_surnames, String documentid, String status, Integer page, Integer size, String order, String orderasc)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+
+		Query query = new Query().addCriteria(Criteria.where("roles").in("RELATIVE")).with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, order));
+
+		if(name_surnames!=null)
+		{
+			Criteria names_or_criteria = new Criteria();
+			names_or_criteria.orOperator(Criteria.where("name").regex(".*"+name_surnames+".*", "i"),
+					Criteria.where("surname1").regex(".*"+name_surnames+".*", "i"),
+					Criteria.where("surname2").regex(".*"+name_surnames+".*", "i"));
+
+			query.addCriteria(names_or_criteria);
+		}
+		if(documentid!=null) query.addCriteria(Criteria.where("documentid").is(documentid));
+		if(status!=null) query.addCriteria(Criteria.where("status").is(status));
+
+		if(debug_queries) System.out.println("getRelatives: " + query.getQueryObject().toJson());
+		List<RelativeDTO> list = this.mongoTemplate.find(query, User.class).stream().map(x -> new RelativeDTO(x, null, null, null)).toList();
+
+		Query finalQuery = query;
+		return PageableExecutionUtils.getPage(
+				list,
+				pageable,
+				() -> this.mongoTemplate.count(Query.of(finalQuery).limit(-1).skip(-1), User.class));
+	}
+
+
+	@Override
+	public RelativeDTO saveRelative(String id, String name, String surname1, String surname2, String email, String phone, String documentid, String documenttype, String postaladdress, Integer idcity, Integer idstate, Integer idcountry, String postalcode)
+	{
+		User relative = null;
+		if(id!=null)
+		{
+			relative = this.usersRepository.findOne(id);
+			if(relative==null) return null;
+		}
+		else
+		{
+			relative = new User();
+			relative.setMembernumber(this.getLastMemberNumber()+1);
+
+			relative.setUnregister_document_url("");
+			relative.setUnregister_document_url_signed("");
+
+			relative.setRegister_document_url("");
+			relative.setRegister_document_url_signed("");
+		}
+
+		relative.setRoles(Arrays.asList("RELATIVE"));
+		relative.setStatus("A");
+
+		relative.setName(name);
+		relative.setSurname1(surname1);
+		relative.setSurname2(surname2);
+		relative.setEmail(email);
+		relative.setPhone(phone);
+		relative.setDocumentid(documentid);
+		relative.setDocumenttype(documenttype);
+
+		relative.setIdcity(idcity);
+		relative.setIdstate(idstate);
+		relative.setIdcountry(idcountry);
+		relative.setPostaladdress(postaladdress);
+		relative.setPostalcode(postalcode);
+
+		relative = this.usersRepository.save(relative);
+
+		//ACTUALIZAMOS AGENDA
+		try
+		{
+			List<AddressBook> addressBooks = this.addressBookRepository.findByIduser(relative.get_id());
+			if(addressBooks!=null && addressBooks.size()>0)
+				for(AddressBook addressBook:addressBooks)
+				{
+					addressBook.setFullname(relative.getFullname());
+					addressBook.setPhone(relative.getPhone());
+					addressBook.setEmail(relative.getEmail());
+					this.addressBookRepository.save(addressBook);
+				}
+			else
+			{
+				AddressBook addressBook = new AddressBook(relative);
+				this.addressBookRepository.save(addressBook);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return new RelativeDTO(relative, this.citiesRepository.findOne(idcity), this.statesRepository.findOne(idstate), this.countriesRepository.findOne(idcountry));
+	}
+
+
+
+	@Override
+	public void deleteRelative(String id)
+	{
+		User relative = this.usersRepository.findOne(id);
+		if(relative !=null)
+		{
+			relative.setStatus("D");
+			this.usersRepository.save(relative);
+		}
+
+	}
 }

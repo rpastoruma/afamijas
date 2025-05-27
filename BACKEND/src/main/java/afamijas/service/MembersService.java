@@ -34,4 +34,10 @@ public interface MembersService
     void signDocumentRegister(String idmember, String registerDocumentUrlSigned);
 
     void signDocumentUnRegister(String idmember, String unregisterDocumentUrlSigned);
+
+    Page<RelativeDTO> getRelatives(String nameSurnames, String documentid, String status, Integer page, Integer size, String order, String orderasc);
+
+    void deleteRelative(String id);
+
+    RelativeDTO saveRelative(String id, String name, String surname1, String surname2, String email, String phone, String documentid, String documenttype, String postaladdress, Integer idcity, Integer idstate, Integer idcountry, String postalcode);
 }

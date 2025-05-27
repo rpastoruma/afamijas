@@ -781,8 +781,17 @@ export interface RelativeDTO {
     surname1 : string;
     surname2 : string;
     documentid : string;
+    documenttype : string;
+    phone : string;
     fullname : string;
-
+    idcity : number;
+    idstate : number;
+    idcountry : number;
+    cityname: string;
+    statename: string;
+    countryname: string;
+    postalcode: string;
+    postaladdress : string;
 }
 
 
