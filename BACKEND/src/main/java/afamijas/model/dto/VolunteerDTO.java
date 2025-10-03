@@ -5,15 +5,10 @@ import afamijas.model.Country;
 import afamijas.model.State;
 import afamijas.model.User;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-public class MemberDTO
+public class VolunteerDTO
 {
 
     private String id;
-
-    private Integer membernumber;
 
     private String email;
 
@@ -48,20 +43,6 @@ public class MemberDTO
 
     private String postalcode;
 
-    private Double fee_euros;
-
-    private String fee_period;  //mes, trimestre...
-
-    private String fee_payment; // pago en sede / domiciliación
-
-    private String bank_name;
-
-    private String bank_account_holder_fullname; // titular
-
-    private String bank_account_holder_dni;
-
-    private String bank_account_iban;
-
     private String register_document_url;
 
     private String unregister_document_url;
@@ -76,10 +57,9 @@ public class MemberDTO
 
 
 
-    public MemberDTO(User user, City city, State state, Country country)
+    public VolunteerDTO(User user, City city, State state, Country country)
     {
         this.id = user.get_id();
-        this.membernumber = user.getMembernumber();
         this.email = user.getEmail();
         this.name = user.getName();
         this.surname1 = user.getSurname1();
@@ -98,13 +78,6 @@ public class MemberDTO
         if(country!=null) this.countryname = country.getName();
         this.postalcode = user.getPostalcode();
 
-        this.fee_euros = user.getFee_euros();
-        this.fee_period = user.getFee_period();
-        this.fee_payment = user.getFee_payment();
-        this.bank_name = user.getBank_name();
-        this.bank_account_holder_fullname = user.getBank_account_holder_fullname();
-        this.bank_account_holder_dni = user.getBank_account_holder_dni();
-        this.bank_account_iban = user.getBank_account_iban();
         this.register_document_url = user.getRegister_document_url();
         this.unregister_document_url = user.getUnregister_document_url();
         this.register_document_url_signed = user.getRegister_document_url_signed();
@@ -251,61 +224,6 @@ public class MemberDTO
         this.postalcode = postalcode;
     }
 
-    public Double getFee_euros() {
-        return fee_euros;
-    }
-
-    public void setFee_euros(Double fee_euros) {
-        this.fee_euros = fee_euros;
-    }
-
-    public String getFee_period() {
-        return fee_period;
-    }
-
-    public void setFee_period(String fee_period) {
-        this.fee_period = fee_period;
-    }
-
-    public String getFee_payment() {
-        return fee_payment;
-    }
-
-    public void setFee_payment(String fee_payment) {
-        this.fee_payment = fee_payment;
-    }
-
-    public String getBank_name() {
-        return bank_name;
-    }
-
-    public void setBank_name(String bank_name) {
-        this.bank_name = bank_name;
-    }
-
-    public String getBank_account_holder_fullname() {
-        return bank_account_holder_fullname;
-    }
-
-    public void setBank_account_holder_fullname(String bank_account_holder_fullname) {
-        this.bank_account_holder_fullname = bank_account_holder_fullname;
-    }
-
-    public String getBank_account_holder_dni() {
-        return bank_account_holder_dni;
-    }
-
-    public void setBank_account_holder_dni(String bank_account_holder_dni) {
-        this.bank_account_holder_dni = bank_account_holder_dni;
-    }
-
-    public String getBank_account_iban() {
-        return bank_account_iban;
-    }
-
-    public void setBank_account_iban(String bank_account_iban) {
-        this.bank_account_iban = bank_account_iban;
-    }
 
     public String getUnregister_reason() {
         return unregister_reason;
@@ -329,14 +247,6 @@ public class MemberDTO
 
     public void setUnregister_document_url(String unregister_document_url) {
         this.unregister_document_url = unregister_document_url;
-    }
-
-    public Integer getMembernumber() {
-        return membernumber;
-    }
-
-    public void setMembernumber(Integer membernumber) {
-        this.membernumber = membernumber;
     }
 
     public String getRegister_document_url_signed() {
