@@ -20,6 +20,7 @@ export const environment = {
       workers : ADMIN_URL + 'workers',
       users : ADMIN_URL + 'users',
       members : ADMIN_URL + 'members',
+      volunteers : ADMIN_URL + 'volunteers',
       patients : ADMIN_URL + 'patients',
       invoices : ADMIN_URL + 'invoices',
       media : ADMIN_URL + 'media'

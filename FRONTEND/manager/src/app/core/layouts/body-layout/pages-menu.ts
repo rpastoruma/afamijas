@@ -185,6 +185,19 @@ export const MENU_RELATIVE_ITEMS: NbMenuItem[] = [
     }
   ];  
 
+
+      
+  //MENÚ VOLUNTARIOS
+  export const MENU_VOLUNTEERS: NbMenuItem[] = [
+    {
+      title: 'Voluntarios',
+      icon: { icon: 'fa-people-carry', pack: 'fas' },
+      link: '/volunteers',
+      data: 'menu.volunteers',
+      expanded: false,
+    }
+  ];  
+
   //MENÚ USUARIOS (PACIENTES)
   export const MENU_PATIENTS: NbMenuItem[] = [
     {

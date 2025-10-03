@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { hasRole, RoleCode, } from 'src/app/shared/models/models';
 import { AuthService } from '../../services/auth.service'; 
-import { MENU_CLEANING, MENU_DOCS, MENU_FEEDINGS, MENU_FOODS, MENU_HEALTH, MENU_INVOICES, MENU_ITEMS, MENU_LEGIONELLA, MENU_MEDICATION, MENU_MEMBERS, MENU_PATIENTS, MENU_RECEIPTS, MENU_RELATIVE_ITEMS, MENU_TEMP, MENU_PSICO, MENU_SOCIAL_WORKER, MENU_ATENCIONES, MENU_FISIO, MENU_TOCUPA, MENU_ENFER, MENU_PAI, MENU_STAFF, MENU_AGENDA, MENU_TRANSPORT, MENU_PROJECTS, MENU_RELATIVES } from './pages-menu';
+import { MENU_CLEANING, MENU_DOCS, MENU_FEEDINGS, MENU_FOODS, MENU_HEALTH, MENU_INVOICES, MENU_ITEMS, MENU_LEGIONELLA, MENU_MEDICATION, MENU_MEMBERS, MENU_PATIENTS, MENU_RECEIPTS, MENU_RELATIVE_ITEMS, MENU_TEMP, MENU_PSICO, MENU_SOCIAL_WORKER, MENU_ATENCIONES, MENU_FISIO, MENU_TOCUPA, MENU_ENFER, MENU_PAI, MENU_STAFF, MENU_AGENDA, MENU_TRANSPORT, MENU_PROJECTS, MENU_RELATIVES, MENU_VOLUNTEERS } from './pages-menu';
 
 @Component({
   selector: 'app-body-layout',
@@ -115,6 +115,7 @@ export class BodyLayoutComponent implements OnInit {
       {
         this.menu = this.menu.concat(MENU_MEMBERS);
         this.menu = this.menu.concat(MENU_RECEIPTS);
+        this.menu = this.menu.concat(MENU_VOLUNTEERS);
         this.menu = this.menu.concat(MENU_INVOICES);
         this.menu = this.menu.concat(MENU_PSICO);
         this.menu = this.menu.concat(MENU_SOCIAL_WORKER);

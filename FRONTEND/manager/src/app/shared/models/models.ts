@@ -836,6 +836,39 @@ export interface MemberDTO {
     status : string
 }
 
+
+
+export interface VolunteerDTO {
+    id : string;
+    email : string;
+    name : string;
+    surname1 : string;
+    surname2 : string;
+    fullname : string;
+    documentid : string;
+    documenttype : string;
+    phone : string;
+    postaladdress : string;
+    idcity : number;
+    cityname : string;
+    idstate : number;
+    statename : string;
+    idcountry : number;
+    countryname : string;
+    postalcode : string;
+
+    register_document_url : string;
+    register_document_url_signed : string;
+
+    unregister_document_url : string;
+    unregister_document_url_signed : string;
+
+    unregister_reason : string;
+
+    status : string
+}
+
+
 export interface WorkerDTO {
     id: string;
     email: string;

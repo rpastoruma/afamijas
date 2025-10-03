@@ -226,6 +226,12 @@ const routes: Routes = [
       loadChildren: () => import('../modules/members/members.module').then(m => m.MembersModule) 
     },
     {
+      path : 'volunteers', 
+      component: BodyLayoutComponent,
+      canActivate : [canAccessMembersGuard],
+      loadChildren: () => import('../modules/volunteers/volunteers.module').then(m => m.VolunteersModule) 
+    },
+    {
       path : 'relatives', 
       component: BodyLayoutComponent,
       canActivate : [canAccessMembersGuard],
