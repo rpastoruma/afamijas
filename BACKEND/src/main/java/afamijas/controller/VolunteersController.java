@@ -67,8 +67,6 @@ public class VolunteersController extends AbstractBaseController
 
 
 
-
-
 	@RequestMapping(method=RequestMethod.POST, value="uploadRegisterDocument", produces="application/json")
 	public ResponseEntity<?> uploadRegisterDocument(
 			@RequestParam(value = "idvolunteer", required = true) String idvolunteer,
