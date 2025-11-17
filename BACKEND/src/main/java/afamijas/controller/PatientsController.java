@@ -249,6 +249,7 @@ public class PatientsController extends AbstractBaseController
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			this.errorsService.sendError(e, this.getParameters(request));
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
