@@ -66,7 +66,7 @@ public class PatientsController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isADMIN() && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isWORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			if(order==null) order = "name";
 			if(orderasc==null) orderasc = "ASC";
@@ -88,7 +88,7 @@ public class PatientsController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isADMIN() && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isWORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			return new ResponseEntity<>(this.relativesService.getAllRelatives(), HttpStatus.OK);
 		}
 		catch(Exception e)
