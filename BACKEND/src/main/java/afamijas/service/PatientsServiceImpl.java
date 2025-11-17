@@ -154,7 +154,8 @@ public class PatientsServiceImpl implements PatientsService
 
 		FileUtils.string2File(body, wholePath, "UTF-8");
 
-		try { cdnurl = this.mediaService.uploadFileFTP( documenttemplate + "-" + patient_id, fileName,  new FileInputStream(wholePath)); } catch (Exception e) { throw new Exception("ERROR: Cannot upload the file " + fileName);  }
+		try { cdnurl = this.mediaService.uploadFileFTP( documenttemplate + "-" + patient_id, fileName,  new FileInputStream(wholePath)); } catch (Exception e) { e.printStackTrace();
+			throw new Exception("ERROR: Cannot upload the file " + fileName);  }
 
 		try { File f = new File(wholePath); f.delete(); } catch (Exception e) { e.printStackTrace(); }
 
