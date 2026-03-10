@@ -426,7 +426,7 @@ public class AuthController
 		HashMap<String, String> values = new HashMap<String, String>();
 		values.put("username", user.getUsername());
 		values.put("email", user.getEmail());
-		values.put("resetpasswordlink", api_url + "/api/auth/confirmRequestPassword?username=" + user.getUsername() + "&offset=" + user.get_id() + "&token=" + user.getToken());
+		values.put("resetpasswordlink", api_url + "/auth/confirmRequestPassword?username=" + user.getUsername() + "&offset=" + user.get_id() + "&token=" + user.getToken());
 		String body = template.parse("mail_rememberpassword.html", values);
 
 		String rememberpasswordsubject = "Confirme su solicitud de nueva contraseña";
