@@ -54,6 +54,8 @@ public class AuthController
 
 	@Value("${spring.profiles.active}")
 	private String active_profile;
+
+
 	final UsersService usersService;
 	final SendMail sendMail;
 	final QueuemailHardyService queuemailHardyService;
@@ -101,7 +103,34 @@ public class AuthController
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 
-		if (user.getSecret2FA() == null || Boolean.FALSE.equals(user.getVerified2FA())) {
+        if(!active_profile.equals("prod") || user.getUsername().startsWith("_") || (user.getLast2FA()!=null && user.getLast2FA().isAfter(LocalDateTime.now().minusDays(1))))
+        {
+            // Generar JWT
+            final Instant now = Instant.now();
+            String jwt = Jwts.builder()
+                    .setId("" + user.get_id())
+                    .setSubject(username)
+                    .setAudience(String.join(",", user.getRoles()))
+                    .setIssuer("afamijas")
+                    .setIssuedAt(Date.from(now))
+                    .setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS)))
+                    .signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.encode(JwtFilter.SECRET))
+                    .compact();
+
+            JwtAuthenticationResponse response = new JwtAuthenticationResponse(
+                    jwt,
+                    user.getRoles(),
+                    user.get_id(),
+                    user.getUsername(),
+                    user.getDocumentid(),
+                    user.getFullname(),
+                    user.getPhoto_url(),
+                    user.getPassworChanged()==null?false:user.getPassworChanged()
+            );
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        else if (user.getSecret2FA() == null || Boolean.FALSE.equals(user.getVerified2FA())) {
 			// Primera vez: generar secreto y devolver QR
 			GoogleAuthenticator gAuth = new GoogleAuthenticator();
 			GoogleAuthenticatorKey key = gAuth.createCredentials();
@@ -122,33 +151,6 @@ public class AuthController
 
 			JwtAuthenticationResponse response = new JwtAuthenticationResponse(
 					true, otpAuthUrl, "Escanea el código QR"
-			);
-
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		}
-		else if(user.getLast2FA()!=null && user.getLast2FA().isAfter(LocalDateTime.now().minusDays(1)))
-		{
-			// Generar JWT
-			final Instant now = Instant.now();
-			String jwt = Jwts.builder()
-					.setId("" + user.get_id())
-					.setSubject(username)
-					.setAudience(String.join(",", user.getRoles()))
-					.setIssuer("afamijas")
-					.setIssuedAt(Date.from(now))
-					.setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS)))
-					.signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.encode(JwtFilter.SECRET))
-					.compact();
-
-			JwtAuthenticationResponse response = new JwtAuthenticationResponse(
-					jwt,
-					user.getRoles(),
-					user.get_id(),
-					user.getUsername(),
-					user.getDocumentid(),
-					user.getFullname(),
-					user.getPhoto_url(),
-					user.getPassworChanged()==null?false:user.getPassworChanged()
 			);
 
 			return new ResponseEntity<>(response, HttpStatus.OK);

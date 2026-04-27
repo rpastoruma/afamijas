@@ -351,13 +351,14 @@
             GUARDAR CAMBIOS
         </button>
 
+        
         <button [disabled]="processing || !modalData?.event.title || !modalData?.event.start ||(modalData?.event.end && modalData?.event.end<modalData?.event.start)" *ngIf="canModifyEvent() && !modalData?.event.id" nbButton status="primary" type="button" class="btn btn-outline-secondary" (click)="saveCalendarEvent(modalData?.event); close();">
             CREAR EVENTO
         </button>
     </div>
 
 
-    
+      
 
   </ng-template>
   

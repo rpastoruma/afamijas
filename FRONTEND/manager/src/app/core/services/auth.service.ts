@@ -108,6 +108,11 @@ export class AuthService {
   {
     return hasRole(this.getRoles(),  RoleCode.KITCHEN);
   }
+    
+  isSocialWorker()
+  {
+    return hasRole(this.getRoles(),  RoleCode.SOCIAL_WORKER);
+  }
 
 
     

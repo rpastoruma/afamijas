@@ -7,6 +7,7 @@ import { StaffRoutingModule } from './staff.routing.module';
 import { FormsModule } from '@angular/forms';
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { StaffNominasListComponent } from './staff-nominas-list/staff-nominas-list.component';
+import { StaffContratosListComponent } from './staff-contratos-list/staff-contratos-list.component';
 
 
 
@@ -14,7 +15,8 @@ import { StaffNominasListComponent } from './staff-nominas-list/staff-nominas-li
 @NgModule({
   declarations: [
     StaffListComponent,
-    StaffNominasListComponent
+    StaffNominasListComponent,
+    StaffContratosListComponent
   ],
   imports: [
     CommonModule,

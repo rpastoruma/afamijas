@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
-import { parseDataExport, ActionDTO, rolName, ReceiptDTO, MemberDTO, NominaDTO, WorkerDTO } from 'src/app/shared/models/models';
+import { parseDataExport, ActionDTO, rolName, WorkerDTO, ContratoDTO } from 'src/app/shared/models/models';
 import { UsersService } from 'src/app/core/services/users.service';
 import { PdfService } from 'src/app/core/services/pdf-service.service';
 import { ExcelService } from 'src/app/core/services/excel-service.service';
@@ -10,15 +10,15 @@ import { flatpickrFactory } from '../../calendar/mycalendar.module';
 import { Subscription, finalize } from 'rxjs';
 import { MediaService } from 'src/app/core/services/media.service';
 import { HttpEventType } from '@angular/common/http';
-import { NominasService } from 'src/app/core/services/nominas.service';
+import { ContratosService } from 'src/app/core/services/contratos.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-staff-nominas-list',
-  templateUrl: './staff-nominas-list.component.html',
-  styleUrls: ['./staff-nominas-list.component.scss']
+  selector: 'app-staff-contratos-list',
+  templateUrl: './staff-contratos-list.component.html',
+  styleUrls: ['./staff-contratos-list.component.scss']
 })
-export class StaffNominasListComponent implements OnInit {
+export class StaffContratosListComponent implements OnInit {
 
   
 
@@ -36,26 +36,22 @@ export class StaffNominasListComponent implements OnInit {
   
   requiredFileType:string  = ".png,.jpg,.jpeg,.webp,.gif,.pdf,.doc,.docx,.xsl,.xslx";
   fileName = '';
-  uploadProgressNomina: number;
-  uploadSubNomina: Subscription;
+  uploadProgress:number;
+  uploadSub: Subscription;
 
-  uploadProgressJustificante: number;
-  uploadSubJustificante: Subscription;
-
-  theNomina : NominaDTO = {
-    id: '',
-    idworker: '',
-    worker_fullname: '',
-    url: '',
-    url_justificante: '',
-    duedate: undefined,
-    status: 'A'
-  };
-
+theContrato: ContratoDTO = {
+  id: '',
+  idworker: '',
+  worker_fullname: '',
+  url: '',
+  startdate: undefined,
+  enddate: undefined,
+  status: 'A'
+};
   allWorkers : WorkerDTO[] = [];
   
-  nominas: any[]  = []; // any => formato del listado
-  nominasObjects: NominaDTO[]  = [];
+  contratos: any[]  = []; // any => formato del listado
+  contratosObjects: ContratoDTO[]  = [];
 
   loadingExcel : boolean = false;
   loadingPDF : boolean = false;
@@ -75,7 +71,7 @@ export class StaffNominasListComponent implements OnInit {
     private excelService : ExcelService,
     private authService : AuthService,
     private modal: NgbModal, 
-    private nominasService : NominasService,
+    private contratosService : ContratosService,
     private usersService : UsersService,
     private router: Router,
     private route: ActivatedRoute
@@ -114,7 +110,7 @@ export class StaffNominasListComponent implements OnInit {
           if(this.allWorkers && this.allWorkers.length>0) 
           {
             if(idworkerparam) this.idworker = idworkerparam;
-            this.getNominas(0);
+            this.getContratos(0);
           }
           else
             this.isProcessing = false;
@@ -131,31 +127,38 @@ export class StaffNominasListComponent implements OnInit {
   }
 
 
-  getNominas(page :number) 
-  {
-    this.isProcessing = true;
-    //if(!this.dayfrom) this.dayfrom = null;
-    //if(!this.dayto) this.dayto = null;
-    this.page = page
-    this.nominasService.getNominas(this.page, this.size, this.idworker, this.dayfrom, this.dayto).subscribe(
-      res => {
-        this.isProcessing = false;
-        this.nominas = res.content.map(item => { return {id: item.id, values: [item.worker_fullname, this.date2Text1(item.duedate),  item.url_justificante?(item.url + ' | ' + item.url_justificante):item.url ] }; });
-        this.nominasObjects = res.content;
+getContratos(page: number) {
+  this.isProcessing = true;
+  this.page = page;
 
-        this.totalPages = res.totalPages;
-      },
-      error => {
-        this.isProcessing = false;
-        console.error("getNominas():"+JSON.stringify(error));
-        this.toastService.show("No se han podido obtener las nóminas.",
-          "¡Ups!", 
-          { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-         );
-      }
-    );
-  }
+  this.contratosService.getContratos(
+    this.page,
+    this.size,
+    this.idworker,
+    this.dayfrom,
+    this.dayto
+  ).subscribe(
+    res => {
+      this.isProcessing = false;
 
+      this.contratos = res.content.map(item => ({
+        id: item.id,
+        values: [
+          item.worker_fullname,
+          this.date2Text1(item.startdate),
+          this.date2Text1(item.enddate)
+        ]
+      }));
+
+      this.contratosObjects = res.content;
+      this.totalPages = res.totalPages;
+    },
+    error => {
+      this.isProcessing = false;
+      console.error(error);
+    }
+  );
+}
 
   
 
@@ -168,15 +171,15 @@ export class StaffNominasListComponent implements OnInit {
     if(!this.dayfrom) this.dayfrom = new Date();
     if(!this.dayto) this.dayto = new Date();
 
-    this.nominasService.getNominas(0, 100000000, this.idworker, this.dayfrom, this.dayto).subscribe(
+    this.contratosService.getContratos(0, 100000000, this.idworker, this.dayfrom, this.dayto).subscribe(
       res => {
         const header = {};
-        const keys = ['Trabajador:', 'Fecha:'];
-        const fields = ['worker_fullname', 'paiddate'];
+        const keys = ['Trabajador:', 'Inicio:', 'Fin:'];
+        const fields = ['worker_fullname', 'startdate', 'enddate'];
         fields.forEach((key, i) => header[key] = keys[i]);
-        this.exportData = res && res.content ? res.content.map(item => [item.worker_fullname, this.date2Text1(item.duedate) ]) : null;
+        this.exportData = res && res.content ? res.content.map(item => [item.worker_fullname, this.date2Text1(item.startdate), this.date2Text1(item.enddate) ]) : null;
         const final = parseDataExport(fields, this.exportData);
-        const title = 'Nóminas';
+        const title = 'Contratos';
 
         if (format === 'excel') 
         {
@@ -201,29 +204,29 @@ export class StaffNominasListComponent implements OnInit {
 
 
   filter(page: number) {
-    this.getNominas(page);
+    this.getContratos(page);
   }
 
 
   setPage(event) {
     this.page = event;
-    this.getNominas(this.page);
+    this.getContratos(this.page);
   }
 
   action(event) 
   {
     if (event && event[0] === 'edit') 
     {
-      const selected = { ...this.nominasObjects.find(item => item.id === event[1])};
-      this.openAddNominaModal(selected);
+      const selected = { ...this.contratosObjects.find(item => item.id === event[1])};
+      this.openAddContratoModal(selected);
     } 
     else if (event && event[0] === 'delete') 
     {
-      this.deleteNomina(event[1]);
+      this.deleteContrato(event[1]);
     }
     else if (event && event[0] === 'show') 
     {
-      const selected =  {...this.nominasObjects.find(item => item.id === event[1])};
+      const selected =  {...this.contratosObjects.find(item => item.id === event[1])};
       window.open(selected.url);
     } 
 
@@ -232,28 +235,28 @@ export class StaffNominasListComponent implements OnInit {
 
   canModify() : boolean
   {
-    return this.authService.isManager() || this.authService.isAdmin() || this.authService.isSocialWorker();
+    return this.authService.isManager() || this.authService.isAdmin()  || this.authService.isSocialWorker();
   }
-  
 
 
 
-  openAddNominaModal(selected? : NominaDTO)
+  openAddContratoModal(selected? : ContratoDTO)
   {
     console.warn(JSON.stringify(selected));
     if(!selected)
     {
       this.fileName = undefined;
-      this.theNomina.id =''; 
-      this.theNomina.url =''; 
-      this.theNomina.url_justificante = '';
-      this.theNomina.duedate = new Date();
-      this.theNomina.idworker = this.idworker;
+      this.theContrato.id =''; 
+      this.theContrato.url =''; 
+      this.theContrato.startdate = new Date();
+      this.theContrato.enddate = new Date();
+      this.theContrato.idworker = this.idworker;
     }
     else
     {
-      this.theNomina = selected;
-      this.theNomina.duedate = this.localDateTime2Date(this.theNomina.duedate);
+      this.theContrato = selected;
+      this.theContrato.startdate = this.localDateTime2Date(this.theContrato.startdate);
+      this.theContrato.enddate = this.localDateTime2Date(this.theContrato.enddate );
     }
 
 
@@ -261,11 +264,11 @@ export class StaffNominasListComponent implements OnInit {
     this.modal.open(this.modalContent, { size: 'lg' });
   }
 
-  saveNomina()
+  saveContrato()
   {
 
     
-    if(this.theNomina.idworker == '') 
+    if(this.theContrato.idworker == '') 
       {
         this.toastService.show("Debes seleccionar el trabajador primero.",
           "¡Ups!", 
@@ -274,7 +277,7 @@ export class StaffNominasListComponent implements OnInit {
         return;
       }
 
-    if(this.theNomina.url == '') 
+    if(this.theContrato.url == '') 
     {
       this.toastService.show("Debes seleccionar la nómina a subir.",
         "¡Ups!", 
@@ -284,21 +287,20 @@ export class StaffNominasListComponent implements OnInit {
     }
 
 
-
-    this.nominasService.saveNomina(this.theNomina).subscribe(
+    this.contratosService.saveContrato(this.theContrato).subscribe(
       res => {
         this.isProcessing = false;
-        this.toastService.show("Nómina grabada correctamente.",
+        this.toastService.show("Contrato grabado correctamente.",
             "¡Ok!", 
             { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );
-        this.getNominas(this.page);
+        this.getContratos(this.page);
         this.modal.dismissAll();
       },
       error => {
         this.isProcessing = false;
         console.error("saveReceipt():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido grabar la nómina.",
+        this.toastService.show("No se ha podido grabar el contrato.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
@@ -307,21 +309,21 @@ export class StaffNominasListComponent implements OnInit {
   }
 
 
-  deleteNomina(id : string)
+  deleteContrato(id : string)
   {
-    this.nominasService.deleteNomina(id).subscribe(
+    this.contratosService.deleteContrato(id).subscribe(
       res => {
         this.isProcessing = false;
-        this.toastService.show("Nómina eliminada correctamente.",
+        this.toastService.show("Contrato eliminado correctamente.",
             "¡Ok!", 
             { status: 'success', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
           );
-        this.getNominas(this.page);
+        this.getContratos(this.page);
       },
       error => {
         this.isProcessing = false;
         console.error("deleteFeeding():"+JSON.stringify(error));
-        this.toastService.show("No se ha podido eliminar la nómina.",
+        this.toastService.show("No se ha podido eliminar el contrato.",
           "¡Ups!", 
           { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
          );
@@ -340,21 +342,21 @@ async onFileSelected(event) {
 
   if (file) 
   {
-    const upload$ = this.mediaService.uploadFile("nomina", file).pipe(finalize(() => this.resetNomina())
+    const upload$ = this.mediaService.uploadFile("contrato", file).pipe(finalize(() => this.reset())
   )
   ;
 
 
-  this.uploadSubNomina  = upload$.subscribe(event => {
+  this.uploadSub = upload$.subscribe(event => {
         if (event.type == HttpEventType.UploadProgress) 
         {
-          this.uploadProgressNomina  = Math.round(100 * (event.loaded / event.total));
+          this.uploadProgress = Math.round(100 * (event.loaded / event.total));
         }
         else if(event.type == HttpEventType.Response && event.status == 200 )
         {
           if(event.url && event.url.startsWith("https://") )
           {
-            this.theNomina.url = event.url;
+            this.theContrato.url = event.url;
           }
           else
             console.error("onFileSelected1():"+JSON.stringify(event));
@@ -370,7 +372,7 @@ async onFileSelected(event) {
         else 
         {
           if(event.url && event.url.startsWith("https://") ) 
-            this.theNomina.url = event.url;
+            this.theContrato.url = event.url;
           else
             console.error("onFileSelected3():"+JSON.stringify(event));
         }
@@ -380,72 +382,17 @@ async onFileSelected(event) {
 }
 
 
-
-async onFileSelectedJustificante(event) {
-
-  const file:File = event.target.files[0];
-
-  if (file) 
-  {
-    const upload$ = this.mediaService.uploadFile("nomina_justificante", file).pipe(finalize(() => this.resetJustificante())
-  )
-  ;
-
-
-  this.uploadSubJustificante  = upload$.subscribe(event => {
-        if (event.type == HttpEventType.UploadProgress) 
-        {
-          this.uploadProgressJustificante  = Math.round(100 * (event.loaded / event.total));
-        }
-        else if(event.type == HttpEventType.Response && event.status == 200 )
-        {
-          if(event.url && event.url.startsWith("https://") )
-          {
-            this.theNomina.url_justificante = event.url;
-          }
-          else
-            console.error("onFileSelectedJustificante1():"+JSON.stringify(event));
-        }
-        else if(event.type == HttpEventType.Response && (event.status == 403 || event.status == 500) ) //mod_evasive
-        {
-          console.error("onFileSelectedJustificante2():"+JSON.stringify(event));
-          this.toastService.show("No se ha podido subir el fichero.",
-            "¡Ups!", 
-            { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
-          );
-        }
-        else 
-        {
-          if(event.url && event.url.startsWith("https://") ) 
-            this.theNomina.url_justificante = event.url;
-          else
-            console.error("onFileSelectedJustificante3():"+JSON.stringify(event));
-        }
-      }
-    )
-  }
+cancelUpload() {
+this.uploadSub.unsubscribe();
+this.reset();
 }
 
+reset() {
+this.uploadProgress = null;
+this.uploadSub = null;
 
-
-cancelUploadNomina() {
-  this.uploadSubNomina?.unsubscribe();
-  this.resetNomina();
 }
 
-cancelUploadJustificante() {
-  this.uploadSubJustificante?.unsubscribe();
-  this.resetJustificante();
-}
-resetNomina() {
-  this.uploadProgressNomina = null;
-  this.uploadSubNomina = null;
-}
-
-resetJustificante() {
-  this.uploadProgressJustificante = null;
-  this.uploadSubJustificante = null;
-}
 
   disabledDay(date) {
     return false;

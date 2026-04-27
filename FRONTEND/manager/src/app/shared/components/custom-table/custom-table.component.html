@@ -89,6 +89,10 @@
                                     <nb-icon icon="book-open-outline" (click)="actionEvent('book', value.id, value)"></nb-icon>
                                 </a>
 
+                                <a class="buttonDuplicate" *ngIf="duplicateAction" nbTooltip="{{duplicateAction.text}}">
+                                    <nb-icon icon="file-text-outline" (click)="actionEvent('duplicate', value.id, value)"></nb-icon>
+                                </a>                                
+
                                 <a class="buttonEdit" *ngIf="editAction && !value.noedit" nbTooltip="{{editAction.text}}">
                                     <nb-icon icon="edit-2-outline" id="edit" (click)="actionEvent('edit', value.id)"></nb-icon>
                                 </a>

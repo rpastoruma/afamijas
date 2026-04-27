@@ -86,6 +86,7 @@ export class BodyLayoutComponent implements OnInit {
       if (hasRole(roles, RoleCode.SOCIAL_WORKER) ) 
       {
         this.menu = this.menu.concat(MENU_SOCIAL_WORKER);
+        this.menu = this.menu.concat(MENU_STAFF);
         this.menu = this.menu.concat(MENU_ATENCIONES);
       } 
 

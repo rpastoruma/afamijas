@@ -90,6 +90,7 @@ public class WorkersServiceImpl implements WorkersService
 	final AtencionesRepository atencionesRepository;
 
 	final NominasRepository nominasRepository;
+    final ContratosRepository contratosRepository;
 
 
 
@@ -107,7 +108,7 @@ public class WorkersServiceImpl implements WorkersService
 
 
 	@Autowired
-	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, DocsRepository docsRepository, ReceiptsRepository receiptsRepository, InvoicesRepository invoicesRepository, MediaService mediaService, NotificationsService notificationsService, DocsPsicoRepository docsPsicoRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, CountriesRepository countriesRepository, AtencionesRepository atencionesRepository, NominasRepository nominasRepository, UsersService usersService, SendMail sendMail, QueuemailHardyService queuemailHardyService, ConfigurationService configurationService, Template template, ErrorsService errorsService, AddressBookRepository addressBookRepository, ProjectsRepository projectsRepository)
+	public WorkersServiceImpl(MongoTemplate mongoTemplate, UsersRepository usersRepository, FeedingRepository feedingRepository, TempFridgeRepository tempFridgeRepository, TempServicesRepository tempServicesRepository, MealSamplesRepository mealSamplesRepository, LegionellaLogRepository legionellaLogRepository, WCLogRepository wcLogRepository, RouteStopsRepository routeStopsRepository, WorkersAbsencesRepository workersAbsencesRepository, CalendarEventsRepository calendarEventsRepository, MenusRepository menusRepository, HealthLogRepository healthLogRepository, DocsRepository docsRepository, ReceiptsRepository receiptsRepository, InvoicesRepository invoicesRepository, MediaService mediaService, NotificationsService notificationsService, DocsPsicoRepository docsPsicoRepository, CitiesRepository citiesRepository, StatesRepository statesRepository, CountriesRepository countriesRepository, AtencionesRepository atencionesRepository, NominasRepository nominasRepository, ContratosRepository contratosRepository, UsersService usersService, SendMail sendMail, QueuemailHardyService queuemailHardyService, ConfigurationService configurationService, Template template, ErrorsService errorsService, AddressBookRepository addressBookRepository, ProjectsRepository projectsRepository)
 	{
 		this.mongoTemplate = mongoTemplate;
 		this.usersRepository = usersRepository;
@@ -133,6 +134,7 @@ public class WorkersServiceImpl implements WorkersService
 		this.countriesRepository = countriesRepository;
 		this.atencionesRepository = atencionesRepository;
         this.nominasRepository = nominasRepository;
+        this.contratosRepository = contratosRepository;
         this.usersService = usersService;
 		this.sendMail = sendMail;
 		this.queuemailHardyService = queuemailHardyService;
@@ -1769,7 +1771,7 @@ public class WorkersServiceImpl implements WorkersService
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void saveNomina(String id, String idworker, String url, LocalDate duedate)
+	public void saveNomina(String id, String idworker, String url,  String url_justificante, LocalDate duedate)
 	{
 		Nomina nomina;
 		String oldurl = null;
@@ -1782,7 +1784,8 @@ public class WorkersServiceImpl implements WorkersService
 		else
 		{
 			nomina = new Nomina();
-			nomina.setUrl(url);
+            nomina.setUrl(url);
+            nomina.setUrl_justificante(url_justificante);
 			nomina.setIdworker(idworker);
 		}
 
@@ -1806,6 +1809,94 @@ public class WorkersServiceImpl implements WorkersService
 	}
 
 
+    @Override
+    public Page<ContratoDTO> getContratos(User user, String idworker, LocalDate dayfrom, LocalDate dayto,
+                                          Integer page, Integer size, String orderby, String orderasc)
+    {
+        Pageable pageable = PageRequest.of(page, size);
+        Query query = new Query();
+
+        if(idworker != null)
+            query.addCriteria(Criteria.where("idworker").is(idworker));
+
+        // lógica fechas (contratos activos en rango)
+        if(dayfrom != null && dayto != null)
+        {
+            query.addCriteria(new Criteria().andOperator(
+                    Criteria.where("startdate").lte(dayto),
+                    new Criteria().orOperator(
+                            Criteria.where("enddate").gte(dayfrom),
+                            Criteria.where("enddate").is(null)
+                    )
+            ));
+        }
+        else if(dayfrom != null)
+        {
+            query.addCriteria(new Criteria().orOperator(
+                    Criteria.where("enddate").gte(dayfrom),
+                    Criteria.where("enddate").is(null)
+            ));
+        }
+        else if(dayto != null)
+        {
+            query.addCriteria(Criteria.where("startdate").lte(dayto));
+        }
+
+        query.addCriteria(Criteria.where("status").is("A"));
+
+        long total = this.mongoTemplate.count(query, Contrato.class);
+
+        query = query.with(pageable).with(
+                Sort.by(orderasc.equals("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC, orderby)
+        );
+
+        try { if(debug_queries) System.out.println("getContratos: " + query.getQueryObject().toJson()); } catch (Exception e) {}
+
+        List<ContratoDTO> list = this.mongoTemplate.find(query, Contrato.class)
+                .stream()
+                .map(x -> new ContratoDTO(x, this.usersRepository.findOne(x.getIdworker())))
+                .toList();
+
+        return new PageImpl<>(list, pageable, total);
+    }
+
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void saveContrato(String id, String idworker, String url, LocalDate startdate, LocalDate enddate)
+    {
+        Contrato contrato;
+
+        if(id != null)
+        {
+            contrato = this.contratosRepository.findOne(id);
+            if(contrato == null) return;
+        }
+        else
+        {
+            contrato = new Contrato();
+            contrato.setUrl(url);
+            contrato.setIdworker(idworker);
+        }
+
+        contrato.setStartdate(startdate);
+        contrato.setEnddate(enddate);
+        contrato.setStatus("A");
+
+        this.contratosRepository.save(contrato);
+    }
+
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteContrato(String id)
+    {
+        Contrato contrato = this.contratosRepository.findOne(id);
+        if(contrato != null)
+            this.contratosRepository.delete(contrato);
+    }
+
+
 
 
 	@Override
@@ -1819,29 +1910,77 @@ public class WorkersServiceImpl implements WorkersService
 	}
 
 
-	@Override
-	public Page<WorkerAbsenceDTO> getWorkerAbsences(String idpatient, LocalDateTime from, LocalDateTime to, int page, int size, String orderby, String orderasc)
-	{
-		Pageable pageable = PageRequest.of(page, size);
-		Query query = new Query();
+    @Override
+    public Page<WorkerAbsenceDTO> getWorkerAbsences(
+            String idpatient,
+            LocalDateTime from,
+            LocalDateTime to,
+            int page,
+            int size,
+            String orderby,
+            String orderasc)
+    {
+        Pageable pageable = PageRequest.of(page, size);
+        Query query = new Query();
 
-		Criteria criteria1 = new Criteria().where("idpatient").is(idpatient);
-		if(from!=null) query.addCriteria(Criteria.where("when").gte(from));
-		if(to!=null) query.addCriteria(Criteria.where("when").lte(to));
+        // Base criteria
+        Criteria criteria = Criteria.where("idpatient").is(idpatient);
 
-		//Criteria criteria2 = new Criteria().where("to").gte(LocalDateTime.now());
+        // Filtro de fechas (cuando)
+        if (from != null && to != null)
+        {
+            criteria = new Criteria().andOperator(
+                    criteria,
+                    Criteria.where("when").gte(from).lte(to)
+            );
+        }
+        else if (from != null)
+        {
+            criteria = new Criteria().andOperator(
+                    criteria,
+                    Criteria.where("when").gte(from)
+            );
+        }
+        else if (to != null)
+        {
+            criteria = new Criteria().andOperator(
+                    criteria,
+                    Criteria.where("when").lte(to)
+            );
+        }
 
-		//Criteria criteria = new Criteria().andOperator(criteria1, criteria2);
-		query.addCriteria(criteria1);
+        query.addCriteria(criteria);
 
-		long total = this.mongoTemplate.count(query, WorkerAbsence.class);
-		query = query.with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, orderby));
-		try { if(debug_queries) System.out.println("getWorkerAbsences: " + query.getQueryObject().toJson()); } catch (Exception e) { System.out.println("{X}"); }
-		List<WorkerAbsenceDTO> list = this.mongoTemplate.find(query, WorkerAbsence.class).stream().map(x -> new WorkerAbsenceDTO(x, this.usersRepository.findOne(x.getIdpatient()), this.usersRepository.findOne(x.getIdworker()), this.routeStopsRepository.findOne(x.getIdroutestop())  )).toList();
+        // Total
+        long total = this.mongoTemplate.count(query, WorkerAbsence.class);
 
-		return new PageImpl<>(list, pageable, total);
-	}
+        // Ordenación
+        Sort.Direction direction = orderasc != null && orderasc.equalsIgnoreCase("ASC")
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
 
+        query.with(pageable).with(Sort.by(direction, orderby));
+
+        try {
+            if (debug_queries)
+                System.out.println("getWorkerAbsences: " + query.getQueryObject().toJson());
+        } catch (Exception e) {
+            System.out.println("{X}");
+        }
+
+        // Query final
+        List<WorkerAbsenceDTO> list = this.mongoTemplate.find(query, WorkerAbsence.class)
+                .stream()
+                .map(x -> new WorkerAbsenceDTO(
+                        x,
+                        this.usersRepository.findOne(x.getIdpatient()),
+                        this.usersRepository.findOne(x.getIdworker()),
+                        this.routeStopsRepository.findOne(x.getIdroutestop())
+                ))
+                .toList();
+
+        return new PageImpl<>(list, pageable, total);
+    }
 
 
 

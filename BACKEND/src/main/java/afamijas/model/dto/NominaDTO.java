@@ -17,6 +17,9 @@ public class NominaDTO
 
     private String url;
 
+
+    private String url_justificante;
+
     private LocalDate duedate;
 
     private String status;
@@ -29,6 +32,7 @@ public class NominaDTO
         this.idworker = nomina.getIdworker();
         if(worker!=null) this.worker_fullname = worker.getFullname();
         this.url = nomina.getUrl();
+        this.url_justificante= nomina.getUrl_justificante();
         this.duedate = nomina.getDuedate();
         this.status = nomina.getStatus();
     }
@@ -80,4 +84,13 @@ public class NominaDTO
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getUrl_justificante() {
+        return url_justificante;
+    }
+
+    public void setUrl_justificante(String url_justificante) {
+        this.url_justificante = url_justificante;
+    }
+
 }

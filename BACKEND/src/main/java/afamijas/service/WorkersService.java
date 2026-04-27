@@ -187,9 +187,16 @@ public interface WorkersService
 
     Page<NominaDTO>  getNominas(User user, String idworker, LocalDate dayfrom, LocalDate dayto, Integer page, Integer size, String order, String orderasc);
 
-    void saveNomina(String id, String idworker, String url, LocalDate duedate);
+    void saveNomina(String id, String idworker, String url, String url_justificante, LocalDate duedate);
 
     void deleteNomina(String id);
+
+    Page<ContratoDTO> getContratos(User user, String idworker, LocalDate dayfrom, LocalDate dayto,
+                                   Integer page, Integer size, String orderby, String orderasc);
+
+    void saveContrato(String id, String idworker, String url, LocalDate startdate, LocalDate enddate);
+
+    void deleteContrato(String id);
 
     List<WorkerDTO> getAllWorkers();
 

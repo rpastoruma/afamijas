@@ -1301,11 +1301,22 @@ export interface NominaDTO
 
     url : string;
 
+    url_justificante : string; 
+
     duedate : Date;
 
     status : string;
 }
 
+export interface ContratoDTO {
+  id: string;
+  idworker: string;
+  worker_fullname: string;
+  url: string;
+  startdate?: any;
+  enddate?: any;
+  status: string;
+}
 
 export interface InvoiceDTO
 {

@@ -18,7 +18,11 @@ public class Nomina
 
 	private String url;
 
-	private LocalDate duedate;
+
+    private String url_justificante;
+
+
+    private LocalDate duedate;
 
 	private String status;
 
@@ -67,13 +71,23 @@ public class Nomina
 		this.status = status;
 	}
 
-	public LocalDateTime getCreated() {
+    public String getUrl_justificante() {
+        return url_justificante;
+    }
+
+    public void setUrl_justificante(String url_justificante) {
+        this.url_justificante = url_justificante;
+    }
+
+    public LocalDateTime getCreated() {
 		return created;
 	}
 
 	public void setCreated(LocalDateTime created) {
 		this.created = created;
 	}
+
+
 
 	@Override
 	public boolean equals(Object o) {

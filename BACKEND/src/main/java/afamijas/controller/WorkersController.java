@@ -1515,7 +1515,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isADMIN() && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isADMIN() && !isMANAGER() && !isSOCIAL_WORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			if(order==null) order = "name";
 			if(orderasc==null) orderasc = "ASC";
@@ -1562,7 +1562,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isADMIN() && !this.isMANAGER() && !this.isSOCIAL_WORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			return new ResponseEntity<>(this.workersService.saveWorker(id, roles, name, surname1, surname2, email, password, phone, documentid, documenttype, postaladdress, idcity, idstate, idcountry, postalcode,
 					nss, categoria_profesional, tipo_contrato, jornada_laboral, horario), HttpStatus.OK);
@@ -1585,7 +1585,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isADMIN() && !this.isMANAGER() && !this.isSOCIAL_WORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			this.workersService.unregisterWorker(id);
 			return new ResponseEntity<>("", HttpStatus.OK);
 		}
@@ -1617,7 +1617,9 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(order==null) order = "created";
+            if(!this.isADMIN()  && !isMANAGER() && !this.isSOCIAL_WORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+            if(order==null) order = "created";
 			if(orderasc==null) orderasc = "DESC";
 
 			return new ResponseEntity<>(this.workersService.getNominas(this.getUser(), idworker, dayfrom, dayto, page, size, order, orderasc), HttpStatus.OK);
@@ -1635,16 +1637,17 @@ public class WorkersController extends AbstractBaseController
 	public ResponseEntity<?> saveNomina(
 			@RequestParam(value = "id", required = false) String id,
 			@RequestParam(value = "idworker", required = false) String idworker,
-			@RequestParam(value = "url", required = true) String url,
+            @RequestParam(value = "url", required = true) String url,
+            @RequestParam(value = "url_justificante", required = false) String url_justificante,
 			@RequestParam(value = "duedate", required = true)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate duedate,
 			HttpServletRequest request
 	)
 	{
 		try
 		{
-			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isADMIN()  && !isMANAGER() && !this.isSOCIAL_WORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-			this.workersService.saveNomina(id, idworker, url, duedate);
+			this.workersService.saveNomina(id, idworker, url, url_justificante, duedate);
 			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
@@ -1666,7 +1669,8 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            if(!this.isADMIN()  && !isMANAGER() && !this.isSOCIAL_WORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
 
 			this.workersService.deleteNomina(id);
 			return new ResponseEntity<>("", HttpStatus.OK);
@@ -1679,6 +1683,87 @@ public class WorkersController extends AbstractBaseController
 	}
 
 
+    @RequestMapping(method=RequestMethod.GET, value="getContratos", produces="application/json")
+    public ResponseEntity<?> getContratos(
+            @RequestParam(value = "idworker", required = false) String idworker,
+            @RequestParam(value = "dayfrom", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayfrom,
+            @RequestParam(value = "dayto", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayto,
+            @RequestParam(value = "page", required = true) Integer page,
+            @RequestParam(value = "size", required = true) Integer size,
+            @RequestParam(value = "order", required = false) String order,
+            @RequestParam(value = "orderasc", required = false) String orderasc,
+            HttpServletRequest request
+    )
+    {
+        try
+        {
+            if(!this.isADMIN() && !isMANAGER() && !this.isSOCIAL_WORKER())
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+            if(order==null) order = "created";
+            if(orderasc==null) orderasc = "DESC";
+
+            return new ResponseEntity<>(
+                    this.workersService.getContratos(this.getUser(), idworker, dayfrom, dayto, page, size, order, orderasc),
+                    HttpStatus.OK
+            );
+        }
+        catch(Exception e)
+        {
+            this.errorsService.sendError(e, this.getParameters(request));
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @RequestMapping(method=RequestMethod.POST, value="saveContrato", produces="application/json")
+    public ResponseEntity<?> saveContrato(
+            @RequestParam(value = "id", required = false) String id,
+            @RequestParam(value = "idworker", required = false) String idworker,
+            @RequestParam(value = "url", required = true) String url,
+            @RequestParam(value = "startdate", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startdate,
+            @RequestParam(value = "enddate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate enddate,
+            HttpServletRequest request
+    )
+    {
+        try
+        {
+            if(!this.isADMIN() && !isMANAGER() && !this.isSOCIAL_WORKER())
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+            this.workersService.saveContrato(id, idworker, url, startdate, enddate);
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            this.errorsService.sendError(e, this.getParameters(request));
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @RequestMapping(method=RequestMethod.POST, value="deleteContrato", produces="application/json")
+    public ResponseEntity<?> deleteContrato(
+            @RequestParam(value = "id", required = true) String id,
+            HttpServletRequest request
+    )
+    {
+        try
+        {
+            if(!this.isADMIN() && !isMANAGER() && !this.isSOCIAL_WORKER())
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+            this.workersService.deleteContrato(id);
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            this.errorsService.sendError(e, this.getParameters(request));
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
 	@RequestMapping(method=RequestMethod.GET, value="getAllWorkers", produces="application/json")
 	public ResponseEntity<?> getAllWorkers(
@@ -1687,8 +1772,8 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			//PARA ADMIN Y DIRECTOR
-			if(!this.isMANAGER() && !this.isADMIN()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            if(!this.isADMIN()  && !isMANAGER() && !this.isSOCIAL_WORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
 
 			return new ResponseEntity<>(this.workersService.getAllWorkers(), HttpStatus.OK);
 		}

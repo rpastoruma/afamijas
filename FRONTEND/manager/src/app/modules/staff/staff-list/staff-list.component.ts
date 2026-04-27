@@ -130,7 +130,7 @@ export class StaffListComponent  implements OnInit{
 
   ngOnInit(): void {
     this.getWorkers(0);
-    this.actions = [  {action: 'show', text: 'Eventos del trabajador'},  {action: 'book', text: 'Nóminas del trabajador'},  {action: 'edit', text: 'Modificar datos del trabajador'},   {action: 'delete', text: 'Eliminar al trabajador'}  ];
+    this.actions = [  {action: 'show', text: 'Eventos del trabajador'},  {action: 'duplicate', text: 'Contratos del trabajador'},  {action: 'book', text: 'Nóminas del trabajador'},  {action: 'edit', text: 'Modificar datos del trabajador'},   {action: 'delete', text: 'Eliminar al trabajador'}  ];
   }
 
   getWorkers(page? : number)
@@ -357,6 +357,13 @@ export class StaffListComponent  implements OnInit{
       this.theWorker = selected;
 
       window.open('/staff/nominas?idworker=' + this.theWorker.id);
+    } 
+    else if (event && event[0] === 'duplicate') 
+    {
+      const selected = this.workersObjects.find(item => item.id === event[1]);
+      this.theWorker = selected;
+
+      window.open('/staff/contratos?idworker=' + this.theWorker.id);
     } 
     else if (event && event[0] === 'edit') 
     {
