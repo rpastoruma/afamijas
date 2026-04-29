@@ -1,7 +1,9 @@
 package afamijas.service;
 
+import afamijas.dao.CalendarEventsRepository;
 import afamijas.dao.NotificationsRepository;
 import afamijas.dao.UsersRepository;
+import afamijas.model.CalendarEvent;
 import afamijas.model.Notification;
 import afamijas.model.User;
 import afamijas.queuemail.model.dto.SendingResultDTO;
@@ -14,11 +16,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,9 +50,11 @@ public class NotificationsServiceImpl implements NotificationsService
     final Template template;
     final QueuemailHardyService queuemailHardyService;
 
+    final CalendarEventsRepository calendarEventsRepository;
+
 
     @Autowired
-    public NotificationsServiceImpl(MongoTemplate mongoTemplate, NotificationsRepository notificationsRepository, UsersRepository usersRepository, ErrorsService errorsService, SendMail sendMail, Template template, QueuemailHardyService queuemailHardyService)
+    public NotificationsServiceImpl(MongoTemplate mongoTemplate, NotificationsRepository notificationsRepository, UsersRepository usersRepository, ErrorsService errorsService, SendMail sendMail, Template template, QueuemailHardyService queuemailHardyService, CalendarEventsRepository calendarEventsRepository)
     {
         this.mongoTemplate = mongoTemplate;
         this.notificationsRepository = notificationsRepository;
@@ -56,6 +63,7 @@ public class NotificationsServiceImpl implements NotificationsService
         this.sendMail = sendMail;
         this.template = template;
         this.queuemailHardyService = queuemailHardyService;
+        this.calendarEventsRepository = calendarEventsRepository;
     }
 
     @Override
@@ -72,7 +80,7 @@ public class NotificationsServiceImpl implements NotificationsService
 
 
     @Override
-    @Transactional(propagation= Propagation.REQUIRES_NEW)
+    @Transactional
     public void create(String iduser, List<String> roles, String title, String type, String message, String url)
     {
         try
@@ -82,7 +90,7 @@ public class NotificationsServiceImpl implements NotificationsService
                 User user = this.usersRepository.findOne(iduser);
                 if(user==null || !user.getStatus().equals("A")) return;
                 this.notificationsRepository.save(new Notification(iduser, null, title, type, message, url));
-                if(type.equals("EMAIL") && user.getEmail_notifications()!=null && user.getEmail_notifications()==true)
+                if(type.equals("EMAIL") && Boolean.TRUE.equals(user.getEmail_notifications()))
                     this.sendNotificationByEmail(user, title, message);
             }
             else if(roles != null)
@@ -91,7 +99,7 @@ public class NotificationsServiceImpl implements NotificationsService
                 for(User user: users)
                 {
                     this.notificationsRepository.save(new Notification(user.get_id(), null, title, type, message, url));
-                    if(type.equals("EMAIL") && user.getEmail_notifications()!=null && user.getEmail_notifications()==true)
+                    if(type.equals("EMAIL") && Boolean.TRUE.equals(user.getEmail_notifications()))
                         this.sendNotificationByEmail(user, title, message);
                 }
             }
@@ -101,7 +109,7 @@ public class NotificationsServiceImpl implements NotificationsService
                 for(User user : userstonotify)
                 {
                     this.notificationsRepository.save(new Notification(user.get_id(), null, title, type, message, url));
-                    if(type.equals("EMAIL") && user.getEmail_notifications()!=null && user.getEmail_notifications()==true)
+                    if(type.equals("EMAIL") && Boolean.TRUE.equals(user.getEmail_notifications()))
                         this.sendNotificationByEmail(user, title, message);
                 }
             }
@@ -143,9 +151,105 @@ public class NotificationsServiceImpl implements NotificationsService
         try
         {
             HashMap<String, String> values = new HashMap<String, String>();
+            values.put("title", title);
+            values.put("message", message);
+
+            String subject = "Nueva notificación: " + title;
+            String body = template.parse("mail_notification.html", values);
+
+            if(use_queuemail.equals("true"))
+            {
+                //ENVIAMOS POR QUEUEMAIL CON SERVICIO REBUSTO QUE IMPLEMENTA COLA LOCAL DE EMAILS FALLIDOS
+                SendingResultDTO sendingResultDTO = this.queuemailHardyService.sendEmail(null, "info@afamijas.org", "AFA Mijas",  user.getEmail(), user.getEmail(), null, null, "info@afamijas.org",
+                        subject, "UTF-8", body, "UTF-8", "text/html",
+                        null, null, null,
+                        true, false,
+                        true, null);
+
+                if(sendingResultDTO==null || (sendingResultDTO.getLocalqueued()!=null && sendingResultDTO.getLocalqueued()==false) )
+                {
+                    this.errorsService.sendWarning("Email local-queuing failed", sendingResultDTO==null?"NULL":sendingResultDTO.getError());
+                    this.sendMail.send("info@afamijas.org", user.getEmail(), "AFA Mijas", user.getEmail(), null, null, "info@afamijas.org", subject, "UTF-8", body, "UTF-8", null, "html");
+                }
+            }
+            else
+            {
+                this.sendMail.send("info@afamijas.org", user.getEmail(), "AFA Mijas", user.getEmail(), null, null, "info@afamijas.org", subject, "UTF-8", body, "UTF-8", null, "html");
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Scheduled(fixedDelay = 60000) // cada 1 minuto
+    @Transactional
+    public void processAlerts() {
+
+        LocalDateTime now = LocalDateTime.now().plusMinutes(1); //para adelantarlas un minuto
+
+        List<CalendarEvent> emailEvents = calendarEventsRepository.findPendingAlerts(now);
+
+        for (CalendarEvent event : emailEvents) {
+
+            try {
+
+                // EMAIL
+                if (!Boolean.TRUE.equals(event.getEmailsent())) {
+                    sendAlertByEmal(event);
+                    event.setEmailsent(true);
+                }
+
+                // NOTIFICATION
+                if (!Boolean.TRUE.equals(event.getNotificationsent())) {
+                    if (event.getIdworker() != null) {
+                        this.create(
+                                event.getIdworker(),
+                                null,
+                                event.getTitle(),
+                                "NORMAL",
+                                event.getDescription(),
+                                event.getUrl()
+                        );
+                    }
+                    event.setNotificationsent(true);
+                }
+
+                calendarEventsRepository.save(event);
+
+            } catch (Exception e) {
+                System.err.println("Error event " + event.get_id() + ": " + e.getMessage());
+            }
+        }
+
+
+    }
+
+
+    private void sendAlertByEmal(CalendarEvent calendarEvent)
+    {
+        try
+        {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+            if(calendarEvent.getIdworker()==null) return;
+            User user = this.usersRepository.findOne(calendarEvent.getIdworker());
+            if(user==null) return;
+
+            String subject = "Recordatorio: " + calendarEvent.getTitle();
+
+            String message = "Tienes un evento programado:<br/>"
+                    + "<b>" + calendarEvent.getTitle() + "</b><br/>"
+                    + "Desde: " + calendarEvent.getStart().format(formatter) + "<br/><br/>";
+            if(calendarEvent.getEnd()!=null) message +=  "Hasta: " + calendarEvent.getStart().format(formatter) + "<br/><br/>";
+            message += (calendarEvent.getDescription() != null ? calendarEvent.getDescription() : "");
+
+            HashMap<String, String> values = new HashMap<String, String>();
+            values.put("title", subject);
             values.put("message", message);
             String body = template.parse("mail_notification.html", values);
-            String subject = user.getUsername() + ": " + title;
 
             if(use_queuemail.equals("true"))
             {

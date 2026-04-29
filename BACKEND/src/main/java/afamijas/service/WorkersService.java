@@ -33,7 +33,7 @@ public interface WorkersService
 
     void deleteAbsence(String idpatient, String idabsence);
 
-    void saveCalendarEvent(String idworker, String idcalendarevent, LocalDateTime start, LocalDateTime end, Boolean allDay, String title, Boolean dayoff, String description, List<String> roles, List<String> idsusers, LocalDateTime publishdate, String url);
+    void saveCalendarEvent(String idworker, String idcalendarevent, LocalDateTime start, LocalDateTime end, Boolean allDay, String title, Boolean dayoff, String description, List<String> roles, List<String> idsusers, LocalDateTime publishdate, String url, LocalDateTime alertdate);
 
     List<CalendarEventDTO> getCalendarEvents(String idworker, List<String> roles, Boolean admin);
 

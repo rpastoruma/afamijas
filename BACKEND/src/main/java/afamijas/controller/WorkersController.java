@@ -1,6 +1,7 @@
 package afamijas.controller;
 
 
+import afamijas.dao.CalendarEventsRepository;
 import afamijas.model.AddressBook;
 import afamijas.model.CalendarEvent;
 import afamijas.model.dto.AddressBookDTO;
@@ -41,14 +42,17 @@ public class WorkersController extends AbstractBaseController
 
 	final AddressBookService addressBookService;
 
+    final CalendarEventsRepository calendarEventsRepository;
+
 	@Autowired
-	public WorkersController(UsersService usersService, ErrorsService errorsService, WorkersService workersService, MediaService mediaService, AddressBookService addressBookService)
+	public WorkersController(UsersService usersService, ErrorsService errorsService, WorkersService workersService, MediaService mediaService, AddressBookService addressBookService, CalendarEventsRepository calendarEventsRepository)
 	{
 		super(usersService);
 		this.errorsService = errorsService;
 		this.workersService = workersService;
 		this.mediaService = mediaService;
         this.addressBookService = addressBookService;
+        this.calendarEventsRepository = calendarEventsRepository;
     }
 
 	@RequestMapping(method=RequestMethod.GET, value="getActivePatients", produces="application/json")
@@ -144,6 +148,9 @@ public class WorkersController extends AbstractBaseController
 
 			@RequestParam(value = "publishdate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime publishdate,
 
+            @RequestParam(value = "alertdate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alertdate,
+
+
 			HttpServletRequest request
 	)
 	{
@@ -173,7 +180,14 @@ public class WorkersController extends AbstractBaseController
 
 			if(idsusers!=null && idsusers.size()>0) roles = null; //SI ES PARA USUARIOS ESPECÍFICOS NO SE PONE ROL
 
-			this.workersService.saveCalendarEvent(this.getId(), idcalendarevent, start, end, allDay, title, dayoff, description, roles, idsusers, publishdate, null);
+            if(idcalendarevent!=null)
+            {
+                CalendarEvent calendarEvent = this.calendarEventsRepository.findOne(idcalendarevent);
+                if(calendarEvent!=null && !this.getId().equals(calendarEvent.getIdworker()))
+                    return new ResponseEntity<>("Solo puedes modificar los eventos que tú has creado.", HttpStatus.BAD_REQUEST);
+            }
+
+			this.workersService.saveCalendarEvent(this.getId(), idcalendarevent, start, end, allDay, title, dayoff, description, roles, idsusers, publishdate, null, alertdate);
 			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
@@ -195,7 +209,11 @@ public class WorkersController extends AbstractBaseController
 		{
 			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-			this.workersService.deleteCalendarEvent(idcalendarevent);
+            CalendarEvent calendarEvent = this.calendarEventsRepository.findOne(idcalendarevent);
+            if(calendarEvent!=null && !this.getId().equals(calendarEvent.getIdworker()))
+                return new ResponseEntity<>("Solo puedes eliminar los eventos que tú has creado.", HttpStatus.BAD_REQUEST);
+
+            this.workersService.deleteCalendarEvent(idcalendarevent);
 			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)

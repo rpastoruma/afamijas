@@ -615,8 +615,71 @@
                 </div>     
 
 
+                
+
+                <div *ngIf="thePatient.register24_document_url && thePatient.register24_document_url!='' && !(thePatient.register24_document_url_signed && thePatient.register24_document_url_signed!='') " matTooltip="Autorización toma de medicación" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register24_document_url, 'autorizacion-toma-medicacion-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Autorización toma de medicación SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione autorización toma de medicación para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione autorización toma de medicación firmada</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister24SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register24_document_url_signed && thePatient.register24_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register24_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Autorización toma de medicación FIRMADA</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register24_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
+
+
+
+                <div *ngIf="thePatient.register25_document_url && thePatient.register25_document_url!='' && !(thePatient.register25_document_url_signed && thePatient.register25_document_url_signed!='') " matTooltip="Consentimiento uso datos personales" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register25_document_url, 'consentimiento-uso-datos-personales-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Consentimiento uso datos personales SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione consentimiento uso datos personales para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione consentimiento uso datos personales firmado</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister25SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register25_document_url_signed && thePatient.register25_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register25_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Consentimiento uso datos personales FIRMADO</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register25_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
 
                 
+
+                <div *ngIf="thePatient.register26_document_url && thePatient.register26_document_url!='' && !(thePatient.register26_document_url_signed && thePatient.register26_document_url_signed!='') " matTooltip="Declaración responsable" class="file-upload">
+                    <a class="form-control" style="cursor:pointer;" (click)="openDocumentRegisterHTML(thePatient.register26_document_url, 'declaracion-responsable-' + thePatient.documentid)" ><i class="fa-solid fa-paperclip"></i> Declaración responsable SIN FIRMAR</a>
+
+                    <div style="margin-top: 15px;" matTooltip="Seleccione declaración responsable para subir" class="file-upload">
+                        <button [disabled]="isProcessing 
+                        || thePatient.name=='' || thePatient.surname1=='' || !thePatient.birthdate || !validDocumentId(thePatient.documentid, thePatient.documenttype) || !validRelative(thePatient) 
+                        || !validPostalAddress(thePatient) 
+                        || !validService(thePatient) 
+                        " mat-mini-fab color="primary" class="form-control upload-btn" (click)="fileUpload.click()"><i class="fa-solid fa-paperclip"></i>&nbsp;Seleccione declaración responsable firmada</button>
+                        <input style="display:none" type="file" class="file-input" [accept]="requiredFileType" (change)="onFileRegister26SignedSelected($event)" #fileUpload>
+                        &nbsp;&nbsp;<i  (click)="cancelUpload()" *ngIf="uploadProgress" class="fa-solid fa-paperclip"></i>
+                    </div>       
+                </div>       
+
+                <div *ngIf="thePatient.register26_document_url_signed && thePatient.register26_document_url_signed!=''" class="file-upload">
+                    <a class="form-control" target="_blank" href="{{thePatient.register26_document_url_signed}}"><i class="fa-solid fa-paperclip"></i> Declaración responsable FIRMADA</a>&nbsp;<a style="cursor:pointer;" (click)="removeDocument('register26_document_url_signed');">Eliminar documento firmado <i  class="fa-solid fa-trash"></i></a> 
+                    <br/>
+                </div>     
+
+
+               
 
 
 

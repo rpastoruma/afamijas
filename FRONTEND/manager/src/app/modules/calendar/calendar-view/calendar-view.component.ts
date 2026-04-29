@@ -292,6 +292,7 @@ export class CalendarViewComponent implements OnInit {
     wrapped.start = new Date(x.start);
     if(x.end) wrapped.end = new Date(x.end);
     if(x.publishdate) wrapped.publishdate = new Date(x.publishdate);
+    if(x.alertdate) wrapped.alertdate = new Date(x.alertdate);
 
     if(wrapped.dayoff == true) 
       for (var d = new Date(wrapped.start); d <= wrapped.end; d.setDate(d.getDate() + 1)) 
@@ -304,6 +305,9 @@ export class CalendarViewComponent implements OnInit {
 
   saveCalendarEvent(event : CalendarEvent)
   {
+    console.log("FRONT START:", event.start);
+console.log("MINUTES:", event.start.getMinutes());
+
     if(!event.title || event.title.trim() == "")
     { 
       this.toastService.show("Debes indicar un título para el evento.",
@@ -325,6 +329,7 @@ export class CalendarViewComponent implements OnInit {
     let fstart : string = this.formatDate2(event.start);
     let fend : string = event.end?this.formatDate2(event.end):null;
     let fpublishdate : string = event.publishdate?this.formatDate2(event.publishdate):null;
+    let falertdate : string = event.alertdate ? this.formatDate2(event.alertdate) : null;
 
     if(event.end && event.end < event.start) 
     { 
@@ -338,7 +343,7 @@ export class CalendarViewComponent implements OnInit {
     this.processing = true;
 
 
-    this.calendarService.saveCalendarEvent(event.id, fstart, fend, event.title, event.description, event.dayoff, event.roles, event.idsusers, fpublishdate).subscribe(
+    this.calendarService.saveCalendarEvent(event.id, fstart, fend, event.title, event.description, event.dayoff, event.roles, event.idsusers, fpublishdate, falertdate).subscribe(
     {
         next : (res) => {
           console.log("RES=" + res);
@@ -484,7 +489,8 @@ export class CalendarViewComponent implements OnInit {
       end: endOfDay(new Date()),
       dayoff : false,
       description: '',
-      url : undefined
+      url : undefined,
+      alertdate : undefined
     };
 
     this.handleEvent('Clicked', newevent);

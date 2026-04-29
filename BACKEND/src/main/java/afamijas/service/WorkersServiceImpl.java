@@ -277,7 +277,7 @@ public class WorkersServiceImpl implements WorkersService
 
 	@Override
 	@Transactional(propagation= Propagation.REQUIRES_NEW)
-	public void saveCalendarEvent(String idworker, String idcalendarevent, LocalDateTime start, LocalDateTime end, Boolean allDay, String title, Boolean dayoff, String description, List<String> roles, List<String> idsusers, LocalDateTime publishdate, String url)
+	public void saveCalendarEvent(String idworker, String idcalendarevent, LocalDateTime start, LocalDateTime end, Boolean allDay, String title, Boolean dayoff, String description, List<String> roles, List<String> idsusers, LocalDateTime publishdate, String url, LocalDateTime alertdate)
 	{
 		CalendarEvent calendarEvent = null;
 
@@ -293,9 +293,13 @@ public class WorkersServiceImpl implements WorkersService
 		{
 			calendarEvent= this.calendarEventsRepository.findOne(idcalendarevent);
 			if(calendarEvent==null) return;
+            if(!idworker.equals(calendarEvent.getIdworker())) return; //solo puedes modificar los tuyos
 		}
-		else 
-			calendarEvent = new CalendarEvent();
+		else
+        {
+            calendarEvent = new CalendarEvent();
+            calendarEvent.setIdworker(idworker);
+        }
 
 		if(publishdate==null) publishdate = LocalDateTime.now();
 		
@@ -309,6 +313,10 @@ public class WorkersServiceImpl implements WorkersService
 		calendarEvent.setIdsusers(idsusers);
 		calendarEvent.setPublishdate(publishdate);
 		calendarEvent.setUrl(url);
+        calendarEvent.setAlertdate(alertdate);
+        calendarEvent.setEmailsent(false); //si se modifica se resetea
+        calendarEvent.setNotificationsent(false); //si se modifica se resetea
+
 
 		this.calendarEventsRepository.save(calendarEvent);
 
@@ -1204,7 +1212,7 @@ public class WorkersServiceImpl implements WorkersService
 		}
 
 		if(isAdmin && createEvent)
-			this.saveCalendarEvent(idworker, null, doc.getDayfrom().atStartOfDay(), doc.getDayto().equals(LocalDate.of(2100, 1, 1))?null:doc.getDayto().atTime(23, 59, 59), false, doc.getTitle(), false, doc.getDescription() , doc.getRoles(), null, doc.getDayfrom().atStartOfDay(), doc.getUrl());
+			this.saveCalendarEvent(idworker, null, doc.getDayfrom().atStartOfDay(), doc.getDayto().equals(LocalDate.of(2100, 1, 1))?null:doc.getDayto().atTime(23, 59, 59), false, doc.getTitle(), false, doc.getDescription() , doc.getRoles(), null, doc.getDayfrom().atStartOfDay(), doc.getUrl(), null);
 
 		return doc;
 	}

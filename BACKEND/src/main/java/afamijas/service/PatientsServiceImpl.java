@@ -300,6 +300,7 @@ public class PatientsServiceImpl implements PatientsService
 			patient.setRegister19_document_url(register19_document_url);
 			patient.setRegister19_document_url_signed(register19_document_url_signed);
 
+            /*
 			if(register20_document_url==null || register20_document_url.equals(""))
 			{
 				register20_document_url_signed = null;
@@ -310,6 +311,7 @@ public class PatientsServiceImpl implements PatientsService
 			}
 			patient.setRegister20_document_url(register20_document_url);
 			patient.setRegister20_document_url_signed(register20_document_url_signed);
+             */
 
 			if(register24_document_url==null || register24_document_url.equals(""))
 			{
@@ -392,6 +394,41 @@ public class PatientsServiceImpl implements PatientsService
 			patient.setRegister23_document_url(register23_document_url);
 			patient.setRegister23_document_url_signed(register23_document_url_signed);
 
+
+            if(register24_document_url==null || register24_document_url.equals(""))
+            {
+                register24_document_url_signed = null;
+
+                HashMap<String, String> values = new HashMap<String, String>();
+                //values.put("var", var);
+                register24_document_url = this.getCDNURL("register24", patient.get_id(), values);
+            }
+            patient.setRegister24_document_url(register24_document_url);
+            patient.setRegister24_document_url_signed(register24_document_url_signed);
+
+
+            if(register25_document_url==null || register25_document_url.equals(""))
+            {
+                register25_document_url_signed = null;
+
+                HashMap<String, String> values = new HashMap<String, String>();
+                //values.put("var", var);
+                register25_document_url = this.getCDNURL("register25", patient.get_id(), values);
+            }
+            patient.setRegister25_document_url(register25_document_url);
+            patient.setRegister25_document_url_signed(register25_document_url_signed);
+
+
+            if(register26_document_url==null || register26_document_url.equals(""))
+            {
+                register26_document_url_signed = null;
+
+                HashMap<String, String> values = new HashMap<String, String>();
+                //values.put("var", var);
+                register26_document_url = this.getCDNURL("register26", patient.get_id(), values);
+            }
+            patient.setRegister26_document_url(register26_document_url);
+            patient.setRegister26_document_url_signed(register26_document_url_signed);
 
 			if(register28_document_url==null || register28_document_url.equals(""))
 			{

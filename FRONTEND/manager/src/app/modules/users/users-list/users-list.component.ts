@@ -2230,13 +2230,15 @@ validDoc(thePatient : PatientDTO)
       return (thePatient.register_document_url_signed && thePatient.register_document_url_signed.startsWith("https://") )  &&
             (thePatient.register21_document_url_signed && thePatient.register21_document_url_signed.startsWith("https://") )  &&
             //(thePatient.register22_document_url_signed && thePatient.register22_document_url_signed.startsWith("https://") )  &&
-            (thePatient.register23_document_url_signed && thePatient.register23_document_url_signed.startsWith("https://") )  &&
-            (thePatient.register28_document_url_signed && thePatient.register28_document_url_signed.startsWith("https://") )  
+            //(thePatient.register23_document_url_signed && thePatient.register23_document_url_signed.startsWith("https://") )  &&
+             (thePatient.register25_document_url_signed && thePatient.register25_document_url_signed.startsWith("https://") )  &&
+            (thePatient.register26_document_url_signed && thePatient.register26_document_url_signed.startsWith("https://") )  
+            //(thePatient.register28_document_url_signed && thePatient.register28_document_url_signed.startsWith("https://") )  
     else if(thePatient.servicetype == 'CENTRO_DIA_CONCERTADO')
       return (thePatient.register_document_url_signed && thePatient.register_document_url_signed.startsWith("https://") )  &&
              (thePatient.register19_document_url_signed && thePatient.register19_document_url_signed.startsWith("https://") )  &&
              //(thePatient.register20_document_url_signed && thePatient.register20_document_url_signed.startsWith("https://") )  &&
-             (thePatient.register24_document_url_signed && thePatient.register24_document_url_signed.startsWith("https://") )  &&
+             //(thePatient.register24_document_url_signed && thePatient.register24_document_url_signed.startsWith("https://") )  &&
              (thePatient.register25_document_url_signed && thePatient.register25_document_url_signed.startsWith("https://") )  &&
              (thePatient.register26_document_url_signed && thePatient.register26_document_url_signed.startsWith("https://") )  &&
              (thePatient.register27_document_url_signed && thePatient.register27_document_url_signed.startsWith("https://") )  

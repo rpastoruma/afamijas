@@ -14,6 +14,8 @@ public class CalendarEvent
 	@Id
 	private String _id;
 
+    private String idworker;    //creador del evento
+
 	private LocalDateTime start;
 
 	private LocalDateTime end;
@@ -37,6 +39,13 @@ public class CalendarEvent
 	private LocalDateTime modified;
 
 	private String url;
+
+    private LocalDateTime alertdate;
+
+    private Boolean emailsent = false;
+
+    private Boolean notificationsent = false;
+
 
 
 	public CalendarEvent() { this.created = this.modified = LocalDateTime.now();  }
@@ -148,7 +157,40 @@ public class CalendarEvent
 		this.url = url;
 	}
 
-	@Override
+    public Boolean getEmailsent() {
+        return emailsent;
+    }
+
+    public void setEmailsent(Boolean emailsent) {
+        this.emailsent = emailsent;
+    }
+
+    public Boolean getNotificationsent() {
+        return notificationsent;
+    }
+
+    public void setNotificationsent(Boolean notificationsent) {
+        this.notificationsent = notificationsent;
+    }
+
+
+    public String getIdworker() {
+        return idworker;
+    }
+
+    public void setIdworker(String idworker) {
+        this.idworker = idworker;
+    }
+
+    public LocalDateTime getAlertdate() {
+        return alertdate;
+    }
+
+    public void setAlertdate(LocalDateTime alertdate) {
+        this.alertdate = alertdate;
+    }
+
+    @Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;

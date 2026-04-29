@@ -35,8 +35,8 @@ export class CalendarService {
     dayoff : boolean, 
     roles : string[] | null, 
     idsusers : string[] | null,
-    publishdate : string | null, 
-
+    publishdate : string | null,
+    alertdate : string | null,
     ) 
    {
      const form = new FormData();
@@ -49,6 +49,7 @@ export class CalendarService {
      if(roles) form.append('roles', roles.toString());
      if(idsusers) form.append('idsusers', idsusers.toString());
      if(publishdate) form.append('publishdate', publishdate);
+     if(alertdate) form.append('alertdate', alertdate);
  
      return this.http.post<any>(ENV.url.workers + '/saveCalendarEvent', form);
 

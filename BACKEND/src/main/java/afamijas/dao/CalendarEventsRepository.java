@@ -30,4 +30,9 @@ public interface CalendarEventsRepository extends MongoRepository<CalendarEvent,
 	//List<CalendarEvent> findUpcomingByUserAndTitlePrefix(String iduser, LocalDateTime now, String titleRegex);
 
 	List<CalendarEvent> findByIdsusersContainingOrderByStartDesc(String iduser);
+
+    @Query("{ 'alertdate': { $lte: ?0 }, $or: [ { 'emailsent': { $ne: true } }, { 'notificationsent': { $ne: true } } ] }")
+    List<CalendarEvent> findPendingAlerts(LocalDateTime now);
+
+
 }

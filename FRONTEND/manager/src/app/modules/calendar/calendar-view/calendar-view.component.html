@@ -255,7 +255,7 @@
                 [altInput]="true"
                 [convertModelValue]="true"
                 [enableTime]="true"
-                dateFormat="YY-m-dTH:i"
+                dateFormat="Y-m-dTH:i"
                 altFormat="d/m/Y H:i"
                 placeholder="Indique cuando empieza el evento"
                 required
@@ -273,7 +273,7 @@
                 [altInput]="true"
                 [convertModelValue]="true"
                 [enableTime]="true"
-                dateFormat="YY-m-dTH:i"
+                dateFormat="Y-m-dTH:i"
                 altFormat="d/m/Y H:i"
                 placeholder="Si abarca más de un día indique cuando finaliza el evento"
                 [disabled]="!canModifyEvent()"
@@ -301,13 +301,32 @@
                     [altInput]="true"
                     [convertModelValue]="true"
                     [enableTime]="true"
-                    dateFormat="YY-m-dTH:i"
+                    dateFormat="Y-m-dTH:i"
                     altFormat="d/m/Y H:i"
                     placeholder="Ahora mismo"
                     [disabled]="!canModifyEvent()"
                     [defaultHour]="0"
                     [time24hr]="true"
                     />
+
+                    Fecha/hora de aviso (opcional): 
+                    <input
+                    class="form-control"
+                    type="text"
+                    mwlFlatpickr
+                    [(ngModel)]="modalData?.event.alertdate"
+                    (ngModelChange)="refresh.next()"
+                    [altInput]="true"
+                    [convertModelValue]="true"
+                    [enableTime]="true"
+                    dateFormat="Y-m-dTH:i"
+                    altFormat="d/m/Y H:i"
+                    placeholder="Cuando se enviará el aviso"
+                    [disabled]="!canModifyEvent()"
+                    [defaultHour]="9"
+                    [time24hr]="true"
+                    />
+
 
                     Tipos de usuario que pueden ver este evento:
                     <ng-select [multiple]="true" [(ngModel)]="modalData?.event.roles" name="roles" placeholder="Para todos los tipos de usuario" notFoundText="Tipo de usuario no encontrado" #roles="ngModel" (change)="modalData?.event.idsusers=[]; getAllUsers()">

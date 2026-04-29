@@ -47,6 +47,8 @@ public class CalendarEventDTO {
 
     private String url;
 
+    private String alertdate;
+
     public CalendarEventDTO(CalendarEvent calendarEvent)
     {
         this.id = calendarEvent.get_id();
@@ -79,6 +81,7 @@ public class CalendarEventDTO {
         this.idsusers = calendarEvent.getIdsusers();
 
         this.publishdate = formatDate(calendarEvent.getPublishdate());
+        this.alertdate = formatDate(calendarEvent.getAlertdate());
 
         this.url = calendarEvent.getUrl();
     }
@@ -224,5 +227,13 @@ public class CalendarEventDTO {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getAlertdate() {
+        return alertdate;
+    }
+
+    public void setAlertdate(String alertdate) {
+        this.alertdate = alertdate;
     }
 }
