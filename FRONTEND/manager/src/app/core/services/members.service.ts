@@ -23,6 +23,7 @@ export class MembersService {
 
   saveMember(theMember: MemberDTO, is_document_signed : boolean) 
   {
+    console.log('theMember', theMember);
     const form = new FormData();
     if(theMember.id && theMember.id!='') form.append('id', theMember.id);
     form.append('name', theMember.name);
@@ -30,6 +31,7 @@ export class MembersService {
     form.append('email', theMember.email);
     form.append('documentid', theMember.documentid);
     form.append('documenttype', theMember.documenttype);
+    if(theMember.membernumber) form.append('membernumber', theMember.membernumber);
 
     if(theMember.surname2 && theMember.surname2!='') form.append('surname2', theMember.surname2);
     if(theMember.phone && theMember.phone!='') form.append('phone', theMember.phone);
@@ -58,7 +60,7 @@ export class MembersService {
     if(theMember.bank_account_holder_dni && theMember.bank_account_holder_dni!='') form.append('bank_account_holder_dni', theMember.bank_account_holder_dni);
     if(theMember.bank_account_iban && theMember.bank_account_iban!='') form.append('bank_account_iban', theMember.bank_account_iban);
 
- 
+
     return this.http.post<any>(ENV.url.members + '/saveMember', form);
   }
 

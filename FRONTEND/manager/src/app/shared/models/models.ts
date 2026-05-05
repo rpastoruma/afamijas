@@ -595,6 +595,8 @@ export interface PatientDTO {
     pai_tocupa_propios_objetivos: string;
     pai_tocupa_participa_actividades: string;
     pai_tocupa_actividades_iniciativa_propia: string;
+    pai_tocupa_objetivos: string;
+    pai_tocupa_instrumentos: string;
     pai_tocupa_valoraciones : string;
     pai_tocupa_actuaciones : string;
     pai_tocupa_incidencias : string;

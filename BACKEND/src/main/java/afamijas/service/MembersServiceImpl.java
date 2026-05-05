@@ -64,7 +64,12 @@ public class MembersServiceImpl implements MembersService
 	{
 		Pageable pageable = PageRequest.of(page, size);
 
-		Query query = new Query().addCriteria(Criteria.where("roles").in("MEMBER")).with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, order));
+		//Query query = new Query().addCriteria(Criteria.where("roles").in("MEMBER")).with(pageable).with(Sort.by(orderasc.equals("ASC")?Sort.Direction.ASC:Sort.Direction.DESC, order));
+
+        Query query = new Query()
+                .addCriteria(Criteria.where("roles").in("MEMBER"))
+                .with(pageable)
+                .with(Sort.by(Sort.Direction.ASC, "membernumber"));
 
 		if(name_surnames!=null)
 		{
@@ -93,7 +98,7 @@ public class MembersServiceImpl implements MembersService
 	public MemberDTO saveMember(String id, String name, String surname1, String surname2, String email, String phone, String documentid, String documenttype,
 								String postaladdress, Integer idcity, Integer idstate, Integer idcountry, String postalcode,
 								Double fee_euros, String fee_period, String fee_payment,
-								String bank_name, String bank_account_holder_fullname, String bank_account_holder_dni, String bank_account_iban, String register_document_url, Boolean is_document_signed)
+								String bank_name, String bank_account_holder_fullname, String bank_account_holder_dni, String bank_account_iban, String register_document_url, Boolean is_document_signed, Integer membernumber)
 	{
 		User member = null;
 		if(id!=null)
@@ -104,7 +109,6 @@ public class MembersServiceImpl implements MembersService
 		else
 		{
 			member = new User();
-			member.setMembernumber(this.getLastMemberNumber()+1);
 
 			member.setUnregister_document_url("");
 			member.setUnregister_document_url_signed("");
@@ -112,6 +116,12 @@ public class MembersServiceImpl implements MembersService
 			member.setRegister_document_url("");
 			member.setRegister_document_url_signed("");
 		}
+
+
+        if(membernumber==null)
+            member.setMembernumber(this.getLastMemberNumber()+1);
+        else
+            member.setMembernumber(membernumber);
 
 		if(register_document_url!=null)
 		{

@@ -427,7 +427,42 @@
 
 
             
-            <b>Resumen:</b><br/>
+            <b>Resumen Terapia Ocupacional:</b><br/>
+
+            Objetivos:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_tocupa_objetivos" >
+                 </textarea>
+            </div>
+
+            Instrumentos:
+            <div style="margin-top:10px">
+                 <textarea class="form-control" [(ngModel)]="thePatient.pai_tocupa_instrumentos" >
+                 </textarea>
+            </div>
+
+
+            <div style="margin-top:30px; width: 100%; text-align: right;"> 
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step6');">
+                    &lt;&lt; ANTERIOR
+                </button>
+             &nbsp;&nbsp;
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step8');">
+                    SIGUIENTE &gt;&gt;
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+                
+        <div style="display: none;" id="step8">
+
+
+            
+            <b>Resumen:</b>&nbsp;<small>(esta sección aparecerá únicamente en el cuadro resumen)</small><br/>
 
             Valoración necesidades:
             <div style="margin-top:10px">
@@ -448,7 +483,7 @@
             </div>
     
             <div style="margin-top:30px; width: 100%; text-align: right;"> 
-                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step6');">
+                <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step7');">
                     &lt;&lt; ANTERIOR
                 </button>
 

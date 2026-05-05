@@ -440,6 +440,8 @@ export class PsicoDocumentsListComponent implements OnInit {
     pai_tocupa_participa_actividades: '',
     pai_tocupa_actividades_iniciativa_propia: '',
     pai_tocupa_url: '',
+    pai_tocupa_objetivos: '',
+    pai_tocupa_instrumentos: '',
     pai_tocupa_valoraciones: '',
     pai_tocupa_actuaciones: '',
     pai_tocupa_incidencias: '',

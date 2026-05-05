@@ -340,6 +340,8 @@ public interface PatientsService
             String paiTocupaPropiosObjetivos,
             String paiTocupaParticipaActividades,
             String paiTocupaActividadesIniciativaPropia,
+            String pai_tocupa_objetivos,
+            String pai_tocupa_instrumentos,
             String pai_tocupa_valoraciones,
             String pai_tocupa_actuaciones,
             String pai_tocupa_incidencias

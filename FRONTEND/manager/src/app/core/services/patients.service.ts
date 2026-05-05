@@ -514,6 +514,8 @@ export class PatientsService {
     if (thePatient.pai_tocupa_propios_objetivos) form.append('pai_tocupa_propios_objetivos', thePatient.pai_tocupa_propios_objetivos);
     if (thePatient.pai_tocupa_participa_actividades) form.append('pai_tocupa_participa_actividades', thePatient.pai_tocupa_participa_actividades);
     if (thePatient.pai_tocupa_actividades_iniciativa_propia) form.append('pai_tocupa_actividades_iniciativa_propia', thePatient.pai_tocupa_actividades_iniciativa_propia);
+    if (thePatient.pai_tocupa_objetivos) form.append('pai_tocupa_objetivos', thePatient.pai_tocupa_objetivos);
+    if (thePatient.pai_tocupa_instrumentos) form.append('pai_tocupa_instrumentos', thePatient.pai_tocupa_instrumentos);
     if (thePatient.pai_tocupa_valoraciones) form.append('pai_tocupa_valoraciones', thePatient.pai_tocupa_valoraciones);
     if (thePatient.pai_tocupa_actuaciones) form.append('pai_tocupa_actuaciones', thePatient.pai_tocupa_actuaciones);
     if (thePatient.pai_tocupa_incidencias) form.append('pai_tocupa_incidencias', thePatient.pai_tocupa_incidencias);

@@ -291,7 +291,7 @@ public class PatientsController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isADMIN() && !this.isMANAGER() && !this.isSOCIAL_WORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			return new ResponseEntity<>(this.patientsService.savePatientFichaSocial(id, transportservice,
 
@@ -437,7 +437,7 @@ public class PatientsController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isADMIN() && !this.isMANAGER() && !this.isSOCIAL_WORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			return new ResponseEntity<>(this.patientsService.savePatientHistoriaSocial(
 					id,
@@ -557,7 +557,7 @@ public class PatientsController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isADMIN() && !this.isMANAGER() && !this.isSOCIAL_WORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			return new ResponseEntity<>(this.patientsService.savePatientInformeSocial(
 					id,
@@ -751,7 +751,7 @@ public class PatientsController extends AbstractBaseController
 
 			HttpServletRequest request) {
 		try {
-			if (!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if (!this.isADMIN() && !this.isMANAGER() && !this.isSOCIAL_WORKER() && !this.isPSYCHOLOGIST()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			return new ResponseEntity<>(this.patientsService.saveInformeNeuroPsicologico(
 					id, ins_fecha_informe, ins_motivo_consulta, ins_antecedentes, ins_diagnostico, ins_texto_pre_puntuaciones,
@@ -789,7 +789,7 @@ public class PatientsController extends AbstractBaseController
 
 			HttpServletRequest request) {
 		try {
-			if (!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if (!this.isADMIN() && !this.isMANAGER() && !this.isSOCIAL_WORKER() && !this.isPSYCHOLOGIST()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			return new ResponseEntity<>(this.patientsService.saveInformePsicoSocial(
 					id, ips_fecha_informe, ips_sanitarios, ips_sociofamiliar, ips_evalcognitiva, ips_evalconductual,
@@ -839,7 +839,7 @@ public class PatientsController extends AbstractBaseController
 			HttpServletRequest request)
 	{
 		try {
-			if (!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if (!this.isADMIN() && !this.isMANAGER()  && !this.isPHYSIOTHERAPIST()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			return new ResponseEntity<>(this.patientsService.savePAIFisio(
 					id, pai_fisio_fecha_valoracion, pai_fisio_prob_salud, pai_fisio_dolres, pai_fisio_duerme,
@@ -897,7 +897,7 @@ public class PatientsController extends AbstractBaseController
 
 			HttpServletRequest request) {
 		try {
-			if (!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if (!this.isADMIN() && !this.isMANAGER() && !this.isPSYCHOLOGIST()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			return new ResponseEntity<>(this.patientsService.savePAIPsico(
 					id, pai_psico_acude, pai_psico_sintomas, pai_psico_diagnostico, pai_psico_quien_diagnostica,
@@ -946,12 +946,14 @@ public class PatientsController extends AbstractBaseController
 			@RequestParam(value = "pai_tocupa_propios_objetivos", required = false) String paiTocupaPropiosObjetivos,
 			@RequestParam(value = "pai_tocupa_participa_actividades", required = false) String paiTocupaParticipaActividades,
 			@RequestParam(value = "pai_tocupa_actividades_iniciativa_propia", required = false) String paiTocupaActividadesIniciativaPropia,
-			@RequestParam(value = "pai_tocupa_valoraciones", required = false) String pai_tocupa_valoraciones,
+            @RequestParam(value = "pai_tocupa_objetivos", required = false) String pai_tocupa_objetivos,
+            @RequestParam(value = "pai_tocupa_instrumentos", required = false) String pai_tocupa_instrumentos,
+            @RequestParam(value = "pai_tocupa_valoraciones", required = false) String pai_tocupa_valoraciones,
 			@RequestParam(value = "pai_tocupa_actuaciones", required = false) String pai_tocupa_actuaciones,
 			@RequestParam(value = "pai_tocupa_incidencias", required = false) String pai_tocupa_incidencias,
 			HttpServletRequest request) {
 		try {
-			if (!this.isADMIN() && !this.isMANAGER()) {
+			if (!this.isADMIN() && !this.isMANAGER() && !this.isOCCUPATIONAL_THERAPIST()) {
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			}
 
@@ -961,7 +963,7 @@ public class PatientsController extends AbstractBaseController
 					paiTocupaEscalones, paiTocupaEsfinteres, paiTocupaDinero, paiTocupaCompras, paiTocupaTelefono,
 					paiTocupaCasa, paiTocupaCalle, paiTocupaMedicacion, paiTocupaIndiceBarthel, paiTocupaEscalaActividad,
 					paiTocupaDisfrutaTiempo, paiTocupaEspaciosOcio, paiTocupaDisfrutaOcio, paiTocupaRelacionOtros,
-					paiTocupaPropiosObjetivos, paiTocupaParticipaActividades, paiTocupaActividadesIniciativaPropia, pai_tocupa_valoraciones,pai_tocupa_actuaciones ,pai_tocupa_incidencias),
+					paiTocupaPropiosObjetivos, paiTocupaParticipaActividades, paiTocupaActividadesIniciativaPropia, pai_tocupa_objetivos, pai_tocupa_instrumentos, pai_tocupa_valoraciones,pai_tocupa_actuaciones ,pai_tocupa_incidencias),
 					HttpStatus.OK);
 		} catch (Exception e) {
 			this.errorsService.sendError(e, this.getParameters(request));
@@ -1024,7 +1026,7 @@ public class PatientsController extends AbstractBaseController
 			@RequestParam(value = "pai_enfer_incidencias", required = false) String pai_enfer_incidencias,
 			HttpServletRequest request) {
 		try {
-			if (!this.isADMIN() && !this.isMANAGER()) {
+			if (!this.isADMIN() && !this.isMANAGER() && !this.isNURSING()) {
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			}
 
@@ -1167,7 +1169,7 @@ public class PatientsController extends AbstractBaseController
 			@RequestParam(value = "pai_social_incidencias", required = false) String pai_social_incidencias,
 			HttpServletRequest request) {
 		try {
-			if (!this.isADMIN() && !this.isMANAGER()) {
+			if (!this.isADMIN() && !this.isMANAGER() && !this.isSOCIAL_WORKER()) {
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			}
 
@@ -1289,7 +1291,7 @@ public class PatientsController extends AbstractBaseController
 			@RequestParam(value = "pai_portada_categoria_5", required = false) String pai_portada_categoria_5,
 			HttpServletRequest request) {
 		try {
-			if (!this.isADMIN() && !this.isMANAGER()) {
+			if (!this.isADMIN() && !this.isMANAGER() && !this.isSOCIAL_WORKER() && !this.isOCCUPATIONAL_THERAPIST() && !this.isNURSING() && !this.isPSYCHOLOGIST() && !this.isPHYSIOTHERAPIST()) {
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			}
 
@@ -1337,7 +1339,8 @@ public class PatientsController extends AbstractBaseController
 
 			HttpServletRequest request) {
 		try {
-			if (!this.isADMIN() && !this.isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if (!this.isADMIN() && !this.isMANAGER() && !this.isSOCIAL_WORKER() && !this.isOCCUPATIONAL_THERAPIST() && !this.isNURSING() && !this.isPSYCHOLOGIST() && !this.isPHYSIOTHERAPIST())
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			return new ResponseEntity<>(this.patientsService.generatePAIResumen(id), HttpStatus.OK);
 		} catch (Exception e) {

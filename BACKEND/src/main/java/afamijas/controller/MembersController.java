@@ -148,6 +148,8 @@ public class MembersController extends AbstractBaseController
 			@RequestParam(value = "register_document_url", required = false) String register_document_url,
 			@RequestParam(value = "is_document_signed", required = false) Boolean is_document_signed,
 
+            @RequestParam(value = "membernumber", required = false) Integer membernumber,
+
 			HttpServletRequest request
 	)
 	{
@@ -158,7 +160,7 @@ public class MembersController extends AbstractBaseController
 			if(is_document_signed==null) is_document_signed = false;
 
 			return new ResponseEntity<>(this.membersService.saveMember(id, name, surname1, surname2, email, phone, documentid, documenttype, postaladdress, idcity, idstate, idcountry, postalcode,
-					fee_euros, fee_period, fee_payment, bank_name, bank_account_holder_fullname, bank_account_holder_dni, bank_account_iban, register_document_url, is_document_signed), HttpStatus.OK);
+					fee_euros, fee_period, fee_payment, bank_name, bank_account_holder_fullname, bank_account_holder_dni, bank_account_iban, register_document_url, is_document_signed, membernumber), HttpStatus.OK);
 		}
 		catch(Exception e)
 		{

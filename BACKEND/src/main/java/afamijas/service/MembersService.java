@@ -21,7 +21,7 @@ public interface MembersService
     MemberDTO saveMember(String id, String name, String surname1, String surname2, String email, String phone, String documentid, String documenttype,
                          String postaladdress, Integer idcity, Integer idstate,  Integer idcountry,  String postalcode,
                          Double fee_euros, String fee_period, String fee_payment,
-                         String bank_name, String bank_account_holder_fullname, String bank_account_holder_dni, String bank_account_iban, String unregister_document_url, Boolean is_document_signed);
+                         String bank_name, String bank_account_holder_fullname, String bank_account_holder_dni, String bank_account_iban, String unregister_document_url, Boolean is_document_signed, Integer membernumber);
 
 
     void unregisterMember(String id, String unregister_reason, String unregister_document_url, boolean is_document_signed);

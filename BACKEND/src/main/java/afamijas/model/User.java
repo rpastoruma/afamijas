@@ -778,8 +778,11 @@ public class User
 
 	private String pai_tocupa_actividades_iniciativa_propia;
 
+    private String pai_tocupa_objetivos;
+    private String pai_tocupa_instrumentos;
 
-	private String pai_tocupa_valoraciones; //CUADRO RESUMEN
+
+    private String pai_tocupa_valoraciones; //CUADRO RESUMEN
 
 	private String pai_tocupa_actuaciones; //CUADRO RESUMEN
 
@@ -5554,7 +5557,24 @@ public class User
 		this.passwordGenerated = passwordGenerated;
 	}
 
-	@Override
+
+    public String getPai_tocupa_objetivos() {
+        return pai_tocupa_objetivos;
+    }
+
+    public void setPai_tocupa_objetivos(String pai_tocupa_objetivos) {
+        this.pai_tocupa_objetivos = pai_tocupa_objetivos;
+    }
+
+    public String getPai_tocupa_instrumentos() {
+        return pai_tocupa_instrumentos;
+    }
+
+    public void setPai_tocupa_instrumentos(String pai_tocupa_instrumentos) {
+        this.pai_tocupa_instrumentos = pai_tocupa_instrumentos;
+    }
+
+    @Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;

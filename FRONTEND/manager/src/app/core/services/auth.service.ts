@@ -90,6 +90,11 @@ export class AuthService {
     return hasRole(this.getRoles(),  RoleCode.MANAGER);
   }
 
+
+  isPischo()
+  {
+    return hasRole(this.getRoles(),  RoleCode.PSYCHOLOGIST);
+  }
   
   isNursingAssitant()
   {
@@ -129,7 +134,7 @@ export class AuthService {
 
   isWorker()
   {
-    return this.isAdmin() || this.isManager() || this.isNursing() || this.isNursingAssitant() || this.isKitchen() || this.isLegionellaLog() || this.isCleaning();
+    return this.isAdmin() || this.isManager() || this.isNursing() || this.isNursingAssitant() || this.isKitchen() || this.isLegionellaLog() || this.isCleaning() || this.isPischo();
   }
 
 

@@ -742,6 +742,9 @@ public class PatientDTO
     private String pai_tocupa_participa_actividades;
 
     private String pai_tocupa_actividades_iniciativa_propia;
+    private String pai_tocupa_objetivos;
+    private String pai_tocupa_instrumentos;
+
 
     private String pai_tocupa_valoraciones; //CUADRO RESUMEN
 
@@ -1510,6 +1513,8 @@ public class PatientDTO
         this.pai_tocupa_propios_objetivos = user.getPai_tocupa_propios_objetivos();
         this.pai_tocupa_participa_actividades = user.getPai_tocupa_participa_actividades();
         this.pai_tocupa_actividades_iniciativa_propia = user.getPai_tocupa_actividades_iniciativa_propia();
+        this.pai_tocupa_objetivos = user.getPai_tocupa_objetivos();
+        this.pai_tocupa_instrumentos = user.getPai_tocupa_instrumentos();
         this.pai_tocupa_valoraciones = user.getPai_tocupa_valoraciones();
         this.pai_tocupa_actuaciones = user.getPai_tocupa_actuaciones();
         this.pai_tocupa_incidencias = user.getPai_tocupa_incidencias();
@@ -5888,5 +5893,21 @@ public class PatientDTO
 
     public void setPai_portada_url(String pai_portada_url) {
         this.pai_portada_url = pai_portada_url;
+    }
+
+    public String getPai_tocupa_objetivos() {
+        return pai_tocupa_objetivos;
+    }
+
+    public void setPai_tocupa_objetivos(String pai_tocupa_objetivos) {
+        this.pai_tocupa_objetivos = pai_tocupa_objetivos;
+    }
+
+    public String getPai_tocupa_instrumentos() {
+        return pai_tocupa_instrumentos;
+    }
+
+    public void setPai_tocupa_instrumentos(String pai_tocupa_instrumentos) {
+        this.pai_tocupa_instrumentos = pai_tocupa_instrumentos;
     }
 }

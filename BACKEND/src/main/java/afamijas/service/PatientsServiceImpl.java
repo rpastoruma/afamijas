@@ -1855,6 +1855,8 @@ public class PatientsServiceImpl implements PatientsService
 			String paiTocupaPropiosObjetivos,
 			String paiTocupaParticipaActividades,
 			String paiTocupaActividadesIniciativaPropia,
+            String pai_tocupa_objetivos,
+            String pai_tocupa_instrumentos,
 			String pai_tocupa_valoraciones,
 			String pai_tocupa_actuaciones,
 			String pai_tocupa_incidencias
@@ -1892,6 +1894,8 @@ public class PatientsServiceImpl implements PatientsService
 		patient.setPai_tocupa_propios_objetivos(paiTocupaPropiosObjetivos);
 		patient.setPai_tocupa_participa_actividades(paiTocupaParticipaActividades);
 		patient.setPai_tocupa_actividades_iniciativa_propia(paiTocupaActividadesIniciativaPropia);
+        patient.setPai_tocupa_objetivos(pai_tocupa_objetivos);
+        patient.setPai_tocupa_instrumentos(pai_tocupa_instrumentos);
 		patient.setPai_tocupa_valoraciones(pai_tocupa_valoraciones);
 		patient.setPai_tocupa_actuaciones(pai_tocupa_actuaciones);
 		patient.setPai_tocupa_incidencias(pai_tocupa_incidencias);
@@ -1943,7 +1947,9 @@ public class PatientsServiceImpl implements PatientsService
 		values.put("pai_tocupa_propios_objetivos", paiTocupaPropiosObjetivos);
 		values.put("pai_tocupa_participa_actividades", paiTocupaParticipaActividades);
 		values.put("pai_tocupa_actividades_iniciativa_propia", paiTocupaActividadesIniciativaPropia);
-		values.put("pai_tocupa_valoraciones", pai_tocupa_valoraciones);
+        values.put("pai_tocupa_objetivos", pai_tocupa_objetivos);
+        values.put("pai_tocupa_instrumentos", pai_tocupa_instrumentos);
+        values.put("pai_tocupa_valoraciones", pai_tocupa_valoraciones);
 		values.put("pai_tocupa_actuaciones", pai_tocupa_actuaciones);
 		values.put("pai_tocupa_incidencias", pai_tocupa_incidencias);
 

@@ -1115,7 +1115,7 @@ public class WorkersController extends AbstractBaseController
 			if(!this.isWORKER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			if(createEvent==null) createEvent = false;
 
-			this.workersService.saveDoc(id, this.getId(), title, description, url, dayfrom, dayto, roles, this.isADMIN() || this.isMANAGER(), createEvent);
+			this.workersService.saveDoc(id, this.getId(), title, description, url, dayfrom, dayto, roles, this.isADMIN() || this.isMANAGER() || this.isPSYCHOLOGIST(), createEvent);
 			return new ResponseEntity<>("", HttpStatus.OK);
 		}
 		catch(Exception e)
@@ -1137,7 +1137,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(this.isADMIN() || isMANAGER())
+			if(this.isADMIN() || isMANAGER() || this.isPSYCHOLOGIST())
 				this.workersService.deleteAdminDoc(id);
 			else if(this.isWORKER())
 				this.workersService.deleteWorkerDoc(id, this.getId());

@@ -192,12 +192,12 @@ export class WorkerDocumentsListComponent implements OnInit {
 
   canModify() : boolean
   {
-    return this.authService.isWorker();
+    return this.authService.isWorker() || this.authService.isPischo();
   }
 
   canAdmin() : boolean
   {
-    return this.authService.isManager() || this.authService.isAdmin();
+    return this.authService.isManager() || this.authService.isAdmin() || this.authService.isPischo() ;
   }
 
 
