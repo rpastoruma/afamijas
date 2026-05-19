@@ -1096,15 +1096,28 @@ public class PatientsServiceImpl implements PatientsService
 		values.put("hs_grado_minusvalia_tipo", patient.getHs_grado_minusvalia_tipo());
 		values.put("hs_grado_minusvalia_cuando", patient.getHs_grado_minusvalia_cuando());
 
-		values.put("hs_patologias", patient.getHs_patologias());
-		values.put("hs_ayuda_abd", patient.getHs_ayuda_abd()?"SÍ":"NO");
-		values.put("hs_alimenta_bien", patient.getHs_alimenta_bien()?"SÍ":"NO");
-		values.put("hs_duerme_bien", patient.getHs_duerme_bien()?"SÍ":"NO");
-		values.put("hs_fuma_bebe", patient.getHs_fuma_bebe()?"SÍ":"NO");
-		values.put("hs_drogas", patient.getHs_drogas()?"SÍ":"NO");
-		values.put("hs_drogas_text", patient.getHs_drogas_text());
-		values.put("hs_valoracion_salud", patient.getHs_valoracion_salud());
+		values.put("hs_patologias", patient.getHs_patologias()==null?"":patient.getHs_patologias());
+        values.put("hs_ayuda_abd",
+                patient.getHs_ayuda_abd() == null ? "" :
+                        patient.getHs_ayuda_abd() ? "SÍ" : "NO");
 
+        values.put("hs_alimenta_bien",
+                patient.getHs_alimenta_bien() == null ? "" :
+                        patient.getHs_alimenta_bien() ? "SÍ" : "NO");
+
+        values.put("hs_duerme_bien",
+                patient.getHs_duerme_bien() == null ? "" :
+                        patient.getHs_duerme_bien() ? "SÍ" : "NO");
+
+        values.put("hs_fuma_bebe",
+                patient.getHs_fuma_bebe() == null ? "" :
+                        patient.getHs_fuma_bebe() ? "SÍ" : "NO");
+
+        values.put("hs_drogas",
+                patient.getHs_drogas() == null ? "" :
+                        patient.getHs_drogas() ? "SÍ" : "NO");
+		values.put("hs_drogas_text", patient.getHs_drogas_text()==null?"":patient.getHs_drogas_text());
+		values.put("hs_valoracion_salud", patient.getHs_valoracion_salud()==null?"":patient.getHs_valoracion_salud());
 
 		values.put("hs_tiene_pareja", patient.getHs_tiene_pareja()?"SÍ":"NO");
 		values.put("fs_estado_civil", patient.getFs_estado_civil());
