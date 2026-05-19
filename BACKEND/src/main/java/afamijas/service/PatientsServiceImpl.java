@@ -959,10 +959,10 @@ public class PatientsServiceImpl implements PatientsService
 		values.put("hs_parentesco3", patient.getHs_parentesco3());
 		values.put("hs_parentesco4", patient.getHs_parentesco4());
 
-		if(patient.getHs_edad1()>0) values.put("hs_edad1", patient.getHs_edad1()+" años"); else  values.put("hs_edad1", "");
-		if(patient.getHs_edad1()>0) values.put("hs_edad2", patient.getHs_edad1()+" años"); else  values.put("hs_edad2", "");
-		if(patient.getHs_edad1()>0) values.put("hs_edad3", patient.getHs_edad1()+" años"); else  values.put("hs_edad3", "");
-		if(patient.getHs_edad1()>0) values.put("hs_edad4", patient.getHs_edad1()+" años"); else  values.put("hs_edad4", "");
+		if(patient.getHs_edad1()!=null && patient.getHs_edad1()>0) values.put("hs_edad1", patient.getHs_edad1()+" años"); else  values.put("hs_edad1", "");
+		if(patient.getHs_edad2()!=null && patient.getHs_edad2()>0) values.put("hs_edad2", patient.getHs_edad2()+" años"); else  values.put("hs_edad2", "");
+		if(patient.getHs_edad3()!=null && patient.getHs_edad3()>0) values.put("hs_edad3", patient.getHs_edad3()+" años"); else  values.put("hs_edad3", "");
+		if(patient.getHs_edad4()!=null && patient.getHs_edad4()>0) values.put("hs_edad4", patient.getHs_edad4()+" años"); else  values.put("hs_edad4", "");
 
 		values.put("hs_profesion1", patient.getHs_profesion1());
 		values.put("hs_profesion2", patient.getHs_profesion2());
