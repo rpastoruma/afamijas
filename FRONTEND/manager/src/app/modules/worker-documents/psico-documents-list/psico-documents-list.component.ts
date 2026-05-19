@@ -754,7 +754,7 @@ export class PsicoDocumentsListComponent implements OnInit {
         fields.forEach((key, i) => header[key] = keys[i]);
         this.exportData = res && res.content ? res.content.map(item => [item.patient_fullname, this.translateType(item.type), item.description, this.date2Text1(item.created), item.worker_fullname  ]) : null;
         const final = parseDataExport(fields, this.exportData);
-        const title = 'Documentos Psicología';
+        const title = 'Evaluaciones Psicología';
 
         if (format === 'excel') 
         {
@@ -810,7 +810,7 @@ export class PsicoDocumentsListComponent implements OnInit {
 
   canModify() : boolean
   {
-    return this.authService.isManager() || this.authService.isAdmin();
+    return this.authService.isManager() || this.authService.isAdmin() || this.authService.isPischo();
   }
 
 

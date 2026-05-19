@@ -1389,7 +1389,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isADMIN()  && !isMANAGER() && !isPSYCHOLOGIST()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.saveDocPsico(id, this.getId(), idpatient, type, description, url);
 			return new ResponseEntity<>("", HttpStatus.OK);
@@ -1412,7 +1412,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!this.isADMIN()  && !isMANAGER()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!this.isADMIN()  && !isMANAGER() && !isPSYCHOLOGIST()) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			this.workersService.deleteDocPsico(id);
 			return new ResponseEntity<>("", HttpStatus.OK);

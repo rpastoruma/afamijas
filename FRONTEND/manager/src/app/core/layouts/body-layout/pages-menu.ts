@@ -269,7 +269,7 @@ export const MENU_PSICO: NbMenuItem[] = [
     expanded: false,
     children: [
       {
-        title: 'Documentos',
+        title: 'Evaluaciones',
         icon: { icon: 'fa-file-contract', pack: 'fas' },
         link: '/worker-docs/psico',
         data: 'menu.worker-psico',
@@ -295,7 +295,7 @@ export const MENU_PSICO: NbMenuItem[] = [
       expanded: false,
       children: [
         {
-          title: 'Documentos',
+          title: 'Informes',
           icon: { icon: 'fa-folder', pack: 'fas' },
           link: '/social-worker-docs',
           data: 'menu.social-worker-docs',
