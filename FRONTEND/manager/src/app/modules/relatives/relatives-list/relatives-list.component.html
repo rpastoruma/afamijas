@@ -57,7 +57,7 @@
 <ng-template #modalContent let-close="close">
     <div class="modal-header"> 
         <h6 *ngIf="theRelative.id!=''" >Modificar datos para familiar {{theRelative.fullname}}</h6>
-        <h6 *ngIf="theRelative.id==''" >Alta de nuevo socio</h6>
+        <h6 *ngIf="theRelative.id==''" >Alta de nuevo familiar</h6>
         <nb-icon (click)="close()" class="sidebar-toggle" icon="close-circle-outline" title="Cerrar"></nb-icon>
     </div>
 

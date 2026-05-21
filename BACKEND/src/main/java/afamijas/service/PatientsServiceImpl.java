@@ -24,10 +24,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import afamijas.utils.Template;
 import org.springframework.web.multipart.MultipartFile;
@@ -587,107 +584,211 @@ public class PatientsServiceImpl implements PatientsService
 											 String fs_ayudas_externas_text
 
 	) throws Exception
-	{
-		User patient = this.usersRepository.findOne(id);
-		if(patient==null) return null;
+    {
+        User patient = this.usersRepository.findOne(id);
+        if (patient == null) return null;
 
-		patient.setTransportservice(transportservice);
-		patient.setFs_talleres_estimulacion(fs_talleres_estimulacion==null?false:fs_talleres_estimulacion);
-		patient.setFs_gradior_stimmulus(fs_gradior_stimmulus==null?false:fs_gradior_stimmulus);
-		patient.setFs_sad(fs_sad==null?false:fs_sad);
-		patient.setFs_other(fs_other==null?false:fs_other);
+        patient.setTransportservice(Boolean.TRUE.equals(transportservice));
+        patient.setFs_talleres_estimulacion(Boolean.TRUE.equals(fs_talleres_estimulacion));
+        patient.setFs_gradior_stimmulus(Boolean.TRUE.equals(fs_gradior_stimmulus));
+        patient.setFs_sad(Boolean.TRUE.equals(fs_sad));
+        patient.setFs_other(Boolean.TRUE.equals(fs_other));
 
-		patient.setFs_other_text(fs_other_text);
+        patient.setFs_other_text(
+                fs_other_text != null ? fs_other_text : ""
+        );
 
-		patient.setFs_comer_solo(fs_comer_solo==null?false:fs_comer_solo);
-		patient.setFs_lavarse_solo(fs_lavarse_solo==null?false:fs_lavarse_solo);
-		patient.setFs_salir_sin_perderse(fs_salir_sin_perderse==null?false:fs_salir_sin_perderse);
-		patient.setFs_reconocer_caras(fs_reconocer_caras==null?false:fs_reconocer_caras);
-		patient.setFs_leer_y_escribir(fs_leer_y_escribir==null?false:fs_leer_y_escribir);
-		patient.setFs_incontenencia_urinaria(fs_incontenencia_urinaria==null?false:fs_incontenencia_urinaria);
-		patient.setFs_conversar(fs_conversar==null?false:fs_conversar);
-		patient.setFs_reconocer_objetos_cotidianos(fs_reconocer_objetos_cotidianos==null?false:fs_reconocer_objetos_cotidianos);
-		patient.setFs_sufrir_alucinaciones(fs_sufrir_alucinaciones==null?false:fs_sufrir_alucinaciones);
-		patient.setFs_fases_agitacion(fs_fases_agitacion==null?false:fs_fases_agitacion);
-		patient.setFs_dificultad_orientarse(fs_dificultad_orientarse==null?false:fs_dificultad_orientarse);
+        patient.setFs_comer_solo(Boolean.TRUE.equals(fs_comer_solo));
+        patient.setFs_lavarse_solo(Boolean.TRUE.equals(fs_lavarse_solo));
+        patient.setFs_salir_sin_perderse(Boolean.TRUE.equals(fs_salir_sin_perderse));
+        patient.setFs_reconocer_caras(Boolean.TRUE.equals(fs_reconocer_caras));
+        patient.setFs_leer_y_escribir(Boolean.TRUE.equals(fs_leer_y_escribir));
+        patient.setFs_incontenencia_urinaria(Boolean.TRUE.equals(fs_incontenencia_urinaria));
+        patient.setFs_conversar(Boolean.TRUE.equals(fs_conversar));
+        patient.setFs_reconocer_objetos_cotidianos(Boolean.TRUE.equals(fs_reconocer_objetos_cotidianos));
+        patient.setFs_sufrir_alucinaciones(Boolean.TRUE.equals(fs_sufrir_alucinaciones));
+        patient.setFs_fases_agitacion(Boolean.TRUE.equals(fs_fases_agitacion));
+        patient.setFs_dificultad_orientarse(Boolean.TRUE.equals(fs_dificultad_orientarse));
 
-		patient.setFs_movilizarse(fs_movilizarse);
-		patient.setFs_datos_medicos(fs_datos_medicos);
+        patient.setFs_movilizarse(
+                fs_movilizarse != null ? fs_movilizarse : ""
+        );
 
-		patient.setFs_grado_minusvalia(fs_grado_minusvalia==null?false:fs_grado_minusvalia);
-		patient.setFs_grado_minusvalia_text(fs_grado_minusvalia_text);
-		patient.setFs_grado_dependencia(fs_grado_dependencia==null?false:fs_grado_dependencia);
-		patient.setFs_grado_dependencia_text(fs_grado_dependencia_text);
-		patient.setFs_incapacitacion_judicial(fs_incapacitacion_judicial==null?false:fs_incapacitacion_judicial);
-		patient.setFs_ayudas_externas(fs_ayudas_externas==null?false:fs_ayudas_externas);
-		patient.setFs_ayudas_externas_text(fs_ayudas_externas_text);
+        patient.setFs_datos_medicos(
+                fs_datos_medicos != null ? fs_datos_medicos : ""
+        );
 
+        patient.setFs_grado_minusvalia(Boolean.TRUE.equals(fs_grado_minusvalia));
+        patient.setFs_grado_minusvalia_text(
+                fs_grado_minusvalia_text != null ? fs_grado_minusvalia_text : ""
+        );
 
-		patient = this.usersRepository.save(patient);
-		User relative = this.usersRepository.findOne(patient.getIdrelative());
-		City city = this.citiesRepository.findOne(patient.getIdcity());
-		State state = this.statesRepository.findOne(patient.getIdstate());
-		Country country = this.countriesRepository.findOne(patient.getIdcountry());
+        patient.setFs_grado_dependencia(Boolean.TRUE.equals(fs_grado_dependencia));
+        patient.setFs_grado_dependencia_text(
+                fs_grado_dependencia_text != null ? fs_grado_dependencia_text : ""
+        );
 
-		HashMap<String, String> values = new HashMap<String, String>();
+        patient.setFs_incapacitacion_judicial(Boolean.TRUE.equals(fs_incapacitacion_judicial));
 
-		values.put("FS_NUM_EXPEDIENTE", patient.getFs_num_expediente());
-		values.put("FS_FECHA_INSCRIPCION", patient.getFs_fecha_inscripcion().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		values.put("NAME", patient.getName());
-		values.put("SURNAME1", patient.getSurname1());
-		values.put("SURNAME2", patient.getSurname2());
+        patient.setFs_ayudas_externas(Boolean.TRUE.equals(fs_ayudas_externas));
+        patient.setFs_ayudas_externas_text(
+                fs_ayudas_externas_text != null ? fs_ayudas_externas_text : ""
+        );
 
-		values.put("BIRTHDATE", patient.getBirthdate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		values.put("AGE", Period.between(patient.getBirthdate(), LocalDate.now()).getYears()+"");
-		values.put("DOCUMENTID", patient.getDocumentid());
-		values.put("FS_NUM_SS", patient.getFs_num_ss());
-		values.put("FS_ESTADO_CIVIL", patient.getFs_estado_civil());
-		values.put("RELATIVEFULLNAME", relative!=null?relative.getFullname() + " (" + patient.getRelativerelation() + ")":"");
-		values.put("POSTALADDRESS", patient.getPostaladdress());
-		values.put("POSTALCODE", patient.getPostalcode());
-		values.put("CITYNAME", city!=null?city.getName():"");
-		values.put("STATENAME", state!=null?state.getName():"");
-		values.put("PHONE", patient.getPhone());
+        patient = this.usersRepository.save(patient);
 
-		String services = "";
-		if(patient.getFs_talleres_estimulacion()) services += "<li>Talleres de Psicoestimulación</li>";
-		if(patient.getTransportservice()) services += "<li>Servicio de Transporte</li>";
-		if(patient.getFs_gradior_stimmulus()) services += "<li>Gradior/Stimmulus</li>";
-		if(patient.getFs_sad()) services += "<li>S.A.D.</li>";
-		if(patient.getFs_other()) services += "<li>Otros: " + patient.getFs_other_text() + "</li>";
-		values.put("SERVICES", services);
+        User relative = patient.getIdrelative() != null
+                ? this.usersRepository.findOne(patient.getIdrelative())
+                : null;
 
-		String user_evaluation = "";
-		if(patient.getFs_comer_solo()) user_evaluation += "<li>Puede comer sólo</li>";
-		if(patient.getFs_lavarse_solo()) user_evaluation += "<li>Puede lavarse sólo  </li>";
-		if(patient.getFs_salir_sin_perderse()) user_evaluation += "<li>Puede salir sin perderse</li>";
-		if(patient.getFs_reconocer_caras()) user_evaluation += "<li>Puede reconocer caras</li>";
-		if(patient.getFs_leer_y_escribir()) user_evaluation += "<li>Puede escribir y leer</li>";
-		if(patient.getFs_conversar()) user_evaluation += "<li>Puede conversar</li>";
-		if(patient.getFs_reconocer_objetos_cotidianos()) user_evaluation += "<li>Puede reconocer objetos cotidianos</li>";
-		if(patient.getFs_incontenencia_urinaria()) user_evaluation += "<li>Tiene incontinencia urinaria</li>";
-		if(patient.getFs_dificultad_orientarse()) user_evaluation += "<li>Tiene dificultad para orientarse en espacio tiempo</li>";
-		if(patient.getFs_sufrir_alucinaciones()) user_evaluation += "<li>Ha sufrido alucinaciones</li>";
-		if(patient.getFs_fases_agitacion()) user_evaluation += "<li>Ha pasado por fases de agitación y/o conducta violenta (Verbal o Física)</li>";
-		if(!patient.getFs_movilizarse().equals("")) user_evaluation += "<li>Puede movilizarse como: " + patient.getFs_movilizarse() + "</li>";
-		values.put("USER_EVALUATION", user_evaluation);
+        City city = patient.getIdcity() != null
+                ? this.citiesRepository.findOne(patient.getIdcity())
+                : null;
 
-		values.put("FS_DATOS_MEDICOS", patient.getFs_datos_medicos());
+        State state = patient.getIdstate() != null
+                ? this.statesRepository.findOne(patient.getIdstate())
+                : null;
 
-		String user_social_procedures = "";
-		if(patient.getFs_grado_minusvalia()) user_social_procedures += "<li>Grado de minusvalía: " + patient.getFs_grado_minusvalia_text() + "</li>";
-		if(patient.getFs_grado_dependencia()) user_social_procedures += "<li>Grado de dependencia: " + patient.getFs_grado_dependencia_text() + "</li>";
-		if(patient.getFs_incapacitacion_judicial()) user_social_procedures += "<li>Tiene incapacitación judicial</li>";
-		if(patient.getFs_ayudas_externas()) user_social_procedures += "<li>Ayudas externas: " + patient.getFs_ayudas_externas_text() + "</li>";
-		values.put("USER_SOCIAL_PROCEDURES", user_social_procedures);
+        Country country = patient.getIdcountry() != null
+                ? this.countriesRepository.findOne(patient.getIdcountry())
+                : null;
 
-		//fs_url no va a ser un campo de la entidad si no una variable del DTO
-		String fs_url = this.getCDNURL("ficha_social", patient.get_id(), values);
-		PatientDTO res = new PatientDTO(patient, city, state, country, relative, null);
+        HashMap<String, String> values = new HashMap<>();
 
-		res.setFs_url(fs_url);
-		return res;
-	}
+        values.put("FS_NUM_EXPEDIENTE",
+                Objects.toString(patient.getFs_num_expediente(), ""));
+
+        values.put("FS_FECHA_INSCRIPCION",
+                patient.getFs_fecha_inscripcion() != null
+                        ? patient.getFs_fecha_inscripcion().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                        : "");
+
+        values.put("NAME", Objects.toString(patient.getName(), ""));
+        values.put("SURNAME1", Objects.toString(patient.getSurname1(), ""));
+        values.put("SURNAME2", Objects.toString(patient.getSurname2(), ""));
+
+        values.put("BIRTHDATE",
+                patient.getBirthdate() != null
+                        ? patient.getBirthdate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                        : "");
+
+        values.put("AGE",
+                patient.getBirthdate() != null
+                        ? String.valueOf(Period.between(patient.getBirthdate(), LocalDate.now()).getYears())
+                        : "");
+
+        values.put("DOCUMENTID", Objects.toString(patient.getDocumentid(), ""));
+        values.put("FS_NUM_SS", Objects.toString(patient.getFs_num_ss(), ""));
+        values.put("FS_ESTADO_CIVIL", Objects.toString(patient.getFs_estado_civil(), ""));
+
+        values.put("RELATIVEFULLNAME",
+                relative != null
+                        ? Objects.toString(relative.getFullname(), "") +
+                        " (" + Objects.toString(patient.getRelativerelation(), "") + ")"
+                        : "");
+
+        values.put("POSTALADDRESS", Objects.toString(patient.getPostaladdress(), ""));
+        values.put("POSTALCODE", Objects.toString(patient.getPostalcode(), ""));
+        values.put("CITYNAME", city != null ? Objects.toString(city.getName(), "") : "");
+        values.put("STATENAME", state != null ? Objects.toString(state.getName(), "") : "");
+        values.put("PHONE", Objects.toString(patient.getPhone(), ""));
+
+        StringBuilder services = new StringBuilder();
+
+        if (Boolean.TRUE.equals(patient.getFs_talleres_estimulacion()))
+            services.append("<li>Talleres de Psicoestimulación</li>");
+
+        if (Boolean.TRUE.equals(patient.getTransportservice()))
+            services.append("<li>Servicio de Transporte</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_gradior_stimmulus()))
+            services.append("<li>Gradior/Stimmulus</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_sad()))
+            services.append("<li>S.A.D.</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_other()))
+            services.append("<li>Otros: ")
+                    .append(Objects.toString(patient.getFs_other_text(), ""))
+                    .append("</li>");
+
+        values.put("SERVICES", services.toString());
+
+        StringBuilder userEvaluation = new StringBuilder();
+
+        if (Boolean.TRUE.equals(patient.getFs_comer_solo()))
+            userEvaluation.append("<li>Puede comer sólo</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_lavarse_solo()))
+            userEvaluation.append("<li>Puede lavarse sólo</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_salir_sin_perderse()))
+            userEvaluation.append("<li>Puede salir sin perderse</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_reconocer_caras()))
+            userEvaluation.append("<li>Puede reconocer caras</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_leer_y_escribir()))
+            userEvaluation.append("<li>Puede escribir y leer</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_conversar()))
+            userEvaluation.append("<li>Puede conversar</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_reconocer_objetos_cotidianos()))
+            userEvaluation.append("<li>Puede reconocer objetos cotidianos</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_incontenencia_urinaria()))
+            userEvaluation.append("<li>Tiene incontinencia urinaria</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_dificultad_orientarse()))
+            userEvaluation.append("<li>Tiene dificultad para orientarse en espacio tiempo</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_sufrir_alucinaciones()))
+            userEvaluation.append("<li>Ha sufrido alucinaciones</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_fases_agitacion()))
+            userEvaluation.append("<li>Ha pasado por fases de agitación y/o conducta violenta (Verbal o Física)</li>");
+
+        if (patient.getFs_movilizarse() != null && !patient.getFs_movilizarse().trim().isEmpty())
+            userEvaluation.append("<li>Puede movilizarse como: ")
+                    .append(patient.getFs_movilizarse())
+                    .append("</li>");
+
+        values.put("USER_EVALUATION", userEvaluation.toString());
+
+        values.put("FS_DATOS_MEDICOS",
+                Objects.toString(patient.getFs_datos_medicos(), ""));
+
+        StringBuilder userSocialProcedures = new StringBuilder();
+
+        if (Boolean.TRUE.equals(patient.getFs_grado_minusvalia()))
+            userSocialProcedures.append("<li>Grado de minusvalía: ")
+                    .append(Objects.toString(patient.getFs_grado_minusvalia_text(), ""))
+                    .append("</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_grado_dependencia()))
+            userSocialProcedures.append("<li>Grado de dependencia: ")
+                    .append(Objects.toString(patient.getFs_grado_dependencia_text(), ""))
+                    .append("</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_incapacitacion_judicial()))
+            userSocialProcedures.append("<li>Tiene incapacitación judicial</li>");
+
+        if (Boolean.TRUE.equals(patient.getFs_ayudas_externas()))
+            userSocialProcedures.append("<li>Ayudas externas: ")
+                    .append(Objects.toString(patient.getFs_ayudas_externas_text(), ""))
+                    .append("</li>");
+
+        values.put("USER_SOCIAL_PROCEDURES", userSocialProcedures.toString());
+
+        String fs_url = this.getCDNURL("ficha_social", patient.get_id(), values);
+
+        PatientDTO res = new PatientDTO(patient, city, state, country, relative, null);
+
+        res.setFs_url(fs_url);
+
+        return res;
+    }
 
 
 
