@@ -25,7 +25,7 @@ export class WorkerFoodListComponent implements OnInit{
   idpatient : string = '';
 
   allPatients : PatientDTO[] = [];
-  allMenuTypes : string[] = ['BASAL', 'DIABÉTICO', 'TRITURADO', 'HIPOSÓDICO', 'ALÉRGICO']
+  allMenuTypes : string[] = ['BASAL', 'DIABÉTICO', 'TRITURADO', 'ALÉRGICO', 'HIPOCALÓRICO', 'HIPOSÓDICO', 'DIETA HIPOCALÓRICA', 'DIETA HIPOSÓDICA'];
 
   theFood : FoodDTO = {
     idpatient: '',
