@@ -95,7 +95,10 @@ export class PatientsService {
     if (thePatient.comedorservice) form.append('comedorservice', thePatient.comedorservice.toString());
     if (thePatient.ayudadomicilioservice) form.append('ayudadomicilioservice', thePatient.ayudadomicilioservice.toString());
     if (thePatient.duchaservice) form.append('duchaservice', thePatient.duchaservice.toString());
-    
+
+    if (thePatient.groupcode) form.append('groupcode', thePatient.groupcode);
+
+
     if (thePatient.transportservice_text && thePatient.transportservice_text != '') form.append('transportservice_text', thePatient.transportservice_text);
     if (thePatient.comedorservice_text && thePatient.comedorservice_text != '') form.append('comedorservice_text', thePatient.comedorservice_text);
     if (thePatient.ayudadomicilioservice_text && thePatient.ayudadomicilioservice_text != '') form.append('ayudadomicilioservice_text', thePatient.ayudadomicilioservice_text);

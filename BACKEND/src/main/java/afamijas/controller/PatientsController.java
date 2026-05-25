@@ -185,7 +185,10 @@ public class PatientsController extends AbstractBaseController
 			@RequestParam(value = "ayudadomicilioservice_text", required = false) String ayudadomicilioservice_text,
 
 			@RequestParam(value = "duchaservice", required = false) Boolean duchaservice,
-			@RequestParam(value = "duchaservice_text", required = false) String duchaservice_text,
+            @RequestParam(value = "duchaservice_text", required = false) String duchaservice_text,
+
+            @RequestParam(value = "groupcode", required = false) String groupcode,
+
 
 			@RequestParam(value = "register_document_url", required = false) String register_document_url,
 			@RequestParam(value = "register_document_url_signed", required = false) String register_document_url_signed,
@@ -232,7 +235,7 @@ public class PatientsController extends AbstractBaseController
 					idrelative, relativerelation,
 					postaladdress, idcity, idstate, idcountry, postalcode,
 					num_contrato, fs_num_expediente, fs_fecha_inscripcion, fs_num_ss, fs_estado_civil, phone,
-					servicetype, tallerpsico, transportservice, transportservice_text, comedorservice, comedorservice_text, ayudadomicilioservice, ayudadomicilioservice_text, duchaservice, duchaservice_text,
+					servicetype, tallerpsico, transportservice, transportservice_text, comedorservice, comedorservice_text, ayudadomicilioservice, ayudadomicilioservice_text, duchaservice, duchaservice_text, groupcode,
 					register_document_url,  register_document_url_signed,
 					register19_document_url,  register19_document_url_signed,
 					register20_document_url,  register20_document_url_signed,

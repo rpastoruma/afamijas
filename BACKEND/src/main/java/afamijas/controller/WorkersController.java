@@ -1967,7 +1967,7 @@ public class WorkersController extends AbstractBaseController
 			if(order==null) order = "created";
 			if(orderasc==null) orderasc = "DESC";
 
-			if(!(this.isADMIN() || isMANAGER())) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!(this.isADMIN() || isMANAGER() || isSOCIAL_WORKER())) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			return new ResponseEntity<>(this.workersService.getProjects(text, dayfrom, dayto, subvencion_concedida, page, size, order, orderasc), HttpStatus.OK);
 		}
@@ -1995,7 +1995,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(!(this.isADMIN() || isMANAGER())) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			if(!(this.isADMIN() || isMANAGER() || isSOCIAL_WORKER())) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
 			if(subvencion_concedida==null) subvencion_concedida = false;
 
@@ -2021,7 +2021,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(this.isADMIN() || isMANAGER())
+			if(this.isADMIN() || isMANAGER() || isSOCIAL_WORKER())
 				this.workersService.deleteProject(id);
 			else
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -2074,7 +2074,7 @@ public class WorkersController extends AbstractBaseController
 	{
 		try
 		{
-			if(this.isADMIN() || isMANAGER())
+			if(this.isADMIN() || isMANAGER() || isSOCIAL_WORKER())
 				this.workersService.deleteDocProject(id, idproject);
 			else
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

@@ -73,6 +73,7 @@ public class AfamijasApplication extends SpringBootServletInitializer implements
 	public void run(ApplicationArguments args) throws Exception
 	{
 
+        System.out.println("AFA_2018 ====> " + new BCryptPasswordEncoder().encode("AFA_2018"));
 		/* FIRST RUN
     	User admin = this.usersService.findByUsername("rootafa");
 		if(admin==null)

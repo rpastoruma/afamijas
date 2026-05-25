@@ -368,6 +368,18 @@
             </div>
            
 
+            <div style="margin-top:10px">
+                Grupo: 
+                <ng-select [searchable]="false" [multiple]="false" [(ngModel)]="thePatient.groupcode" name="thePatient-groupcode" [clearable]="false">
+                    <ng-option value="">(no asignado)</ng-option>
+                    <ng-option value="GRUPO 1">GRUPO 1</ng-option>
+                    <ng-option value="GRUPO 2">GRUPO 2</ng-option>
+                    <ng-option value="GRUPO 3">GRUPO 3</ng-option>
+                </ng-select>
+            </div>
+
+
+
 
             <div style="margin-top:30px; width: 100%; text-align: right;"> 
                 <button  nbButton status="accent" type="button" class="btn btn-outline-secondary" (click)="goStep('step2');">

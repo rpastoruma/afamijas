@@ -25,7 +25,7 @@ export class WorkerFoodListComponent implements OnInit{
   idpatient : string = '';
 
   allPatients : PatientDTO[] = [];
-  allMenuTypes : string[] = ['BASAL', 'DIABÉTICO', 'TRITURADO', 'ALÉRGICO', 'HIPOCALÓRICO', 'HIPOSÓDICO', 'DIETA HIPOCALÓRICA', 'DIETA HIPOSÓDICA'];
+  allMenuTypes : string[] = ['BASAL', 'DIABÉTICO', 'TRITURADO', 'ALÉRGICO', 'HIPOCALÓRICO', 'HIPOSÓDICO', 'DIETA HIPOCALÓRICA', 'DIETA HIPOSÓDICA', 'DIETA BAJA POTASIO'];
 
   theFood : FoodDTO = {
     idpatient: '',
@@ -34,7 +34,7 @@ export class WorkerFoodListComponent implements OnInit{
     breakfast_description: ''
   };
   
-  foods: any[]  = []; // amy => formato del listado
+  foods: any[]  = []; // any => formato del listado
   foodsObjects: FoodDTO[]  = [];
 
   loadingExcel : boolean = false;
