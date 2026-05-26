@@ -144,7 +144,7 @@ export class WorkerHealthLogListComponent implements OnInit {
     this.healthLogsService.getHealthLogs(0, 100000000, this.groupcode, this.idpatient, this.dayfrom, this.dayto).subscribe(
       res => {
         const header = {};
-        const keys = ['Usuario:', 'Día:', 'Tensión sistólica (alta):', 'Tensión diastólica (baja):', 'Hora tensión:', 'Nivel de azúcar (mg/dl):', 'Hora azúcar:', 'Registrado por:'];
+        const keys = ['Usuario:', 'Día:', 'Tensión sistólica (alta):', 'Tensión diastólica (baja):', 'Hora tensión:', 'Nivel de glucemia (mg/dl):', 'Hora glucemia:', 'Registrado por:'];
         const fields = ['patient_fullname', 'day', 'high_pressure', 'low_pressure', 'hour_pressure', 'sugar', 'hour_sugar', 'worker_fullname'];
         fields.forEach((key, i) => header[key] = keys[i]);
         this.exportData = res && res.content ? res.content.map(item => [item.patient_fullname, this.date2Text1(item.day), item.daymeal, item.dish, item.result, item.indications, item.incidences, item.worker_fullname]) : null;
@@ -232,9 +232,11 @@ export class WorkerHealthLogListComponent implements OnInit {
       return;
     }
 
+    
+
     if(this.theHealthLog.low_pressure == 0 && this.theHealthLog.high_pressure == 0 && this.theHealthLog.sugar == 0)
     {
-      this.toastService.show("Debes indicar la presión arterial y/o la medición del azúcar en sangre.",
+      this.toastService.show("Debes indicar la presión arterial y/o la medición del nivel de glucemia en sangre.",
         "¡Ups!", 
         { status: 'danger', destroyByClick: true, duration: 3000,  hasIcon: true, position: NbGlobalPhysicalPosition.TOP_RIGHT, preventDuplicates: false  }
       );

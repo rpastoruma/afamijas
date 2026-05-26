@@ -994,110 +994,188 @@ public class PatientsServiceImpl implements PatientsService
 		values.put("STATENAME", state!=null?state.getName():"");
 		values.put("NATIONALITY", patient.getNationality());
 
-		values.put("fs_grado_minusvalia", patient.getFs_grado_minusvalia()?"SÍ":"NO");
-		values.put("fs_grado_minusvalia_text", patient.getFs_grado_minusvalia_text());
+        values.put("fs_grado_minusvalia", patient.getFs_grado_minusvalia() != null ? (patient.getFs_grado_minusvalia() ? "SÍ" : "NO") : "");
+        values.put("fs_grado_minusvalia_text", patient.getFs_grado_minusvalia_text() != null ? patient.getFs_grado_minusvalia_text() : "");
 
-		values.put("hs_beca", patient.getHs_beca()?"SÍ":"NO");
-		values.put("hs_diagnostico", patient.getHs_diagnostico());
-		values.put("hs_autonomia", patient.getHs_autonomia()?"SÍ":"NO");
-		values.put("hs_ayuda_abd", patient.getHs_ayuda_abd()?"SÍ":"NO");
-		values.put("RELATIVEFULLNAME", relative!=null?relative.getFullname() + " (" + patient.getRelativerelation() + ")":"");
+        values.put("hs_beca", patient.getHs_beca() != null ? (patient.getHs_beca() ? "SÍ" : "NO") : "");
+        values.put("hs_diagnostico", patient.getHs_diagnostico() != null ? patient.getHs_diagnostico() : "");
 
-		String unidad_covivencia = "";
-		if(patient.getHs_uc_solo()) unidad_covivencia += "<li>Solo/a</li>";
-		if(patient.getHs_uc_conyuge()) unidad_covivencia += "<li>Cónyuge</li>";
-		if(patient.getHs_uc_hijos()) unidad_covivencia += "<li>Hijos u otros parientes</li>";
-		if(patient.getHs_uc_other()) unidad_covivencia += "<li>Otros: " + patient.getHs_uc_other_text() + "</li>";
-		values.put("unidad_covivencia", unidad_covivencia);
+        values.put("hs_autonomia", patient.getHs_autonomia() != null ? (patient.getHs_autonomia() ? "SÍ" : "NO") : "");
+        values.put("hs_ayuda_abd", patient.getHs_ayuda_abd() != null ? (patient.getHs_ayuda_abd() ? "SÍ" : "NO") : "");
 
-		values.put("hs_nivel_formativo", patient.getHs_nivel_formativo());
+        values.put(
+                "RELATIVEFULLNAME",
+                relative != null
+                        ? ((relative.getFullname() != null ? relative.getFullname() : "") +
+                        (patient.getRelativerelation() != null ? " (" + patient.getRelativerelation() + ")" : ""))
+                        : ""
+        );
 
-		values.put("hs_interaccion_demas", patient.getHs_interaccion_demas());
-		values.put("hs_interaccion_profesioneales", patient.getHs_interaccion_profesioneales());
-		values.put("hs_participacion_actividades", patient.getHs_participacion_actividades());
-		values.put("hs_integracion_dinamica", patient.getHs_integracion_dinamica());
-		values.put("hs_grado_minusvalia_tipo", patient.getHs_grado_minusvalia_tipo());
-		values.put("hs_grado_minusvalia_cuando", patient.getHs_grado_minusvalia_cuando());
+        String unidad_covivencia = "";
 
-		values.put("hs_ley_dependencia_solicitada", patient.getHs_ley_dependencia_solicitada()?"SÍ":"NO");
-		values.put("hs_ley_dependencia_grado", patient.getHs_ley_dependencia_grado());
+        if (patient.getHs_uc_solo() != null && patient.getHs_uc_solo()) {
+            unidad_covivencia += "<li>Solo/a</li>";
+        }
 
-		values.put("hs_recibe_servicio_administracion", patient.getHs_recibe_servicio_administracion()?"SÍ":"NO");
-		values.put("hs_patologias", patient.getHs_patologias());
-		values.put("hs_diabetico", patient.getHs_diabetico()?"SÍ":"NO");
-		values.put("hs_hipertenso", patient.getHs_hipertenso()?"SÍ":"NO");
-		values.put("hs_alimenta_bien", patient.getHs_alimenta_bien()?"SÍ":"NO");
-		values.put("hs_duerme_bien", patient.getHs_duerme_bien()?"SÍ":"NO");
-		values.put("hs_fuma_bebe", patient.getHs_fuma_bebe()?"SÍ":"NO");
-		values.put("hs_drogas", patient.getHs_drogas()?"SÍ":"NO");
-		values.put("hs_drogas_text", patient.getHs_drogas_text());
-		values.put("hs_valoracion_salud", patient.getHs_valoracion_salud());
+        if (patient.getHs_uc_conyuge() != null && patient.getHs_uc_conyuge()) {
+            unidad_covivencia += "<li>Cónyuge</li>";
+        }
+
+        if (patient.getHs_uc_hijos() != null && patient.getHs_uc_hijos()) {
+            unidad_covivencia += "<li>Hijos u otros parientes</li>";
+        }
+
+        if (patient.getHs_uc_other() != null && patient.getHs_uc_other()) {
+            unidad_covivencia += "<li>Otros: " +
+                    (patient.getHs_uc_other_text() != null ? patient.getHs_uc_other_text() : "") +
+                    "</li>";
+        }
+
+        values.put("unidad_covivencia", unidad_covivencia);
+
+        values.put("hs_nivel_formativo", patient.getHs_nivel_formativo() != null ? patient.getHs_nivel_formativo() : "");
+
+        values.put("hs_interaccion_demas", patient.getHs_interaccion_demas() != null ? patient.getHs_interaccion_demas() : "");
+        values.put("hs_interaccion_profesioneales", patient.getHs_interaccion_profesioneales() != null ? patient.getHs_interaccion_profesioneales() : "");
+        values.put("hs_participacion_actividades", patient.getHs_participacion_actividades() != null ? patient.getHs_participacion_actividades() : "");
+        values.put("hs_integracion_dinamica", patient.getHs_integracion_dinamica() != null ? patient.getHs_integracion_dinamica() : "");
+
+        values.put("hs_grado_minusvalia_tipo", patient.getHs_grado_minusvalia_tipo() != null ? patient.getHs_grado_minusvalia_tipo() : "");
+        values.put("hs_grado_minusvalia_cuando", patient.getHs_grado_minusvalia_cuando() != null ? patient.getHs_grado_minusvalia_cuando() : "");
+
+        values.put("hs_ley_dependencia_solicitada", patient.getHs_ley_dependencia_solicitada() != null ? (patient.getHs_ley_dependencia_solicitada() ? "SÍ" : "NO") : "");
+        values.put("hs_ley_dependencia_grado", patient.getHs_ley_dependencia_grado() != null ? patient.getHs_ley_dependencia_grado() : "");
+
+        values.put("hs_recibe_servicio_administracion", patient.getHs_recibe_servicio_administracion() != null ? (patient.getHs_recibe_servicio_administracion() ? "SÍ" : "NO") : "");
+
+        values.put("hs_patologias", patient.getHs_patologias() != null ? patient.getHs_patologias() : "");
+
+        values.put("hs_diabetico", patient.getHs_diabetico() != null ? (patient.getHs_diabetico() ? "SÍ" : "NO") : "");
+        values.put("hs_hipertenso", patient.getHs_hipertenso() != null ? (patient.getHs_hipertenso() ? "SÍ" : "NO") : "");
+        values.put("hs_alimenta_bien", patient.getHs_alimenta_bien() != null ? (patient.getHs_alimenta_bien() ? "SÍ" : "NO") : "");
+        values.put("hs_duerme_bien", patient.getHs_duerme_bien() != null ? (patient.getHs_duerme_bien() ? "SÍ" : "NO") : "");
+        values.put("hs_fuma_bebe", patient.getHs_fuma_bebe() != null ? (patient.getHs_fuma_bebe() ? "SÍ" : "NO") : "");
+
+        values.put("hs_drogas", patient.getHs_drogas() != null ? (patient.getHs_drogas() ? "SÍ" : "NO") : "");
+        values.put("hs_drogas_text", patient.getHs_drogas_text() != null ? patient.getHs_drogas_text() : "");
+
+        values.put("hs_valoracion_salud", patient.getHs_valoracion_salud() != null ? patient.getHs_valoracion_salud() : "");
 
 
-		String user_familiar = "";
-		if(patient.getHs_fam_dificultades_convivencia()) user_familiar += "<li>Dificultades para la convivencia</li>";
-		if(patient.getHs_fam_dificultades_economicas()) user_familiar += "<li>Dificultades económicas</li>";
-		if(patient.getHs_fam_dificultad_cuidados()) user_familiar += "<li>Dificultad de cuidados por problemas de salud del cuidador/a</li>";
-		if(patient.getHs_fam_sin_apoyo()) user_familiar += "<li>Sin apoyo de otros familiares u otro apoyo social</li>";
-		if(patient.getHs_fam_agotamiento_cuidador()) user_familiar += "<li>Agotamiento cuidador </li>";
-		values.put("user_familiar", user_familiar);
+        String user_familiar = "";
+        if (patient.getHs_fam_dificultades_convivencia() != null && patient.getHs_fam_dificultades_convivencia()) {
+            user_familiar += "<li>Dificultades para la convivencia</li>";
+        }
+        if (patient.getHs_fam_dificultades_economicas() != null && patient.getHs_fam_dificultades_economicas()) {
+            user_familiar += "<li>Dificultades económicas</li>";
+        }
+        if (patient.getHs_fam_dificultad_cuidados() != null && patient.getHs_fam_dificultad_cuidados()) {
+            user_familiar += "<li>Dificultad de cuidados por problemas de salud del cuidador/a</li>";
+        }
+        if (patient.getHs_fam_sin_apoyo() != null && patient.getHs_fam_sin_apoyo()) {
+            user_familiar += "<li>Sin apoyo de otros familiares u otro apoyo social</li>";
+        }
+        if (patient.getHs_fam_agotamiento_cuidador() != null && patient.getHs_fam_agotamiento_cuidador()) {
+            user_familiar += "<li>Agotamiento cuidador</li>";
+        }
+        values.put("user_familiar", user_familiar);
 
-		String user_vivienda = "";
-		if(patient.getHs_viv_sin_domicilio()) user_vivienda += "<li>Sin domicilio</li>";
-		if(patient.getHs_viv_ruinas()) user_vivienda += "<li>En ruinas o desahucio</li>";
-		if(patient.getHs_viv_barreras()) user_vivienda += "<li>Barreras arquitectónicas</li>";
-		if(patient.getHs_viv_inhabitabilidad()) user_vivienda += "<li>Inhabilitabilidad</li>";
-		if(patient.getHs_alquiler_elevado()) user_vivienda += "<li>Alquiler elevado</li>";
-		if(patient.getHs_escaleras_exteriores()) user_vivienda += "<li>Escaleras exteriores</li>";
-		if(patient.getHs_escaleras_interiores()) user_vivienda += "<li>Escaleras interiores para acceso a patio</li>";
-		if(patient.getHs_banera()) user_vivienda += "<li>Bañera</li>";
-		if(patient.getHs_alfombras()) user_vivienda += "<li>Alfombras</li>";
-		if(patient.getHs_otros()) user_vivienda += "<li>Otros: " + patient.getHs_otros_text() + "</li>";
-		values.put("user_vivienda", user_vivienda);
+        String user_vivienda = "";
+        if (patient.getHs_viv_sin_domicilio() != null && patient.getHs_viv_sin_domicilio()) {
+            user_vivienda += "<li>Sin domicilio</li>";
+        }
+        if (patient.getHs_viv_ruinas() != null && patient.getHs_viv_ruinas()) {
+            user_vivienda += "<li>En ruinas o desahucio</li>";
+        }
+        if (patient.getHs_viv_barreras() != null && patient.getHs_viv_barreras()) {
+            user_vivienda += "<li>Barreras arquitectónicas</li>";
+        }
+        if (patient.getHs_viv_inhabitabilidad() != null && patient.getHs_viv_inhabitabilidad()) {
+            user_vivienda += "<li>Inhabilitabilidad</li>";
+        }
+        if (patient.getHs_alquiler_elevado() != null && patient.getHs_alquiler_elevado()) {
+            user_vivienda += "<li>Alquiler elevado</li>";
+        }
+        if (patient.getHs_escaleras_exteriores() != null && patient.getHs_escaleras_exteriores()) {
+            user_vivienda += "<li>Escaleras exteriores</li>";
+        }
+        if (patient.getHs_escaleras_interiores() != null && patient.getHs_escaleras_interiores()) {
+            user_vivienda += "<li>Escaleras interiores para acceso a patio</li>";
+        }
+        if (patient.getHs_banera() != null && patient.getHs_banera()) {
+            user_vivienda += "<li>Bañera</li>";
+        }
+        if (patient.getHs_alfombras() != null && patient.getHs_alfombras()) {
+            user_vivienda += "<li>Alfombras</li>";
+        }
+        if (patient.getHs_otros() != null && patient.getHs_otros()) {
+            user_vivienda += "<li>Otros: " +
+                    (patient.getHs_otros_text() != null ? patient.getHs_otros_text() : "") +
+                    "</li>";
+        }
+        values.put("user_vivienda", user_vivienda);
 
-		values.put("hs_nombre1", patient.getHs_nombre1());
-		values.put("hs_nombre2", patient.getHs_nombre2());
-		values.put("hs_nombre3", patient.getHs_nombre3());
-		values.put("hs_nombre4", patient.getHs_nombre4());
+        values.put("hs_nombre1", patient.getHs_nombre1() != null ? patient.getHs_nombre1() : "");
+        values.put("hs_nombre2", patient.getHs_nombre2() != null ? patient.getHs_nombre2() : "");
+        values.put("hs_nombre3", patient.getHs_nombre3() != null ? patient.getHs_nombre3() : "");
+        values.put("hs_nombre4", patient.getHs_nombre4() != null ? patient.getHs_nombre4() : "");
 
-		values.put("hs_parentesco1", patient.getHs_parentesco1());
-		values.put("hs_parentesco2", patient.getHs_parentesco2());
-		values.put("hs_parentesco3", patient.getHs_parentesco3());
-		values.put("hs_parentesco4", patient.getHs_parentesco4());
+        values.put("hs_parentesco1", patient.getHs_parentesco1() != null ? patient.getHs_parentesco1() : "");
+        values.put("hs_parentesco2", patient.getHs_parentesco2() != null ? patient.getHs_parentesco2() : "");
+        values.put("hs_parentesco3", patient.getHs_parentesco3() != null ? patient.getHs_parentesco3() : "");
+        values.put("hs_parentesco4", patient.getHs_parentesco4() != null ? patient.getHs_parentesco4() : "");
 
-		if(patient.getHs_edad1()!=null && patient.getHs_edad1()>0) values.put("hs_edad1", patient.getHs_edad1()+" años"); else  values.put("hs_edad1", "");
-		if(patient.getHs_edad2()!=null && patient.getHs_edad2()>0) values.put("hs_edad2", patient.getHs_edad2()+" años"); else  values.put("hs_edad2", "");
-		if(patient.getHs_edad3()!=null && patient.getHs_edad3()>0) values.put("hs_edad3", patient.getHs_edad3()+" años"); else  values.put("hs_edad3", "");
-		if(patient.getHs_edad4()!=null && patient.getHs_edad4()>0) values.put("hs_edad4", patient.getHs_edad4()+" años"); else  values.put("hs_edad4", "");
+        values.put("hs_edad1",
+                patient.getHs_edad1() != null && patient.getHs_edad1() > 0
+                        ? patient.getHs_edad1() + " años"
+                        : "");
 
-		values.put("hs_profesion1", patient.getHs_profesion1());
-		values.put("hs_profesion2", patient.getHs_profesion2());
-		values.put("hs_profesion3", patient.getHs_profesion3());
-		values.put("hs_profesion4", patient.getHs_profesion4());
+        values.put("hs_edad2",
+                patient.getHs_edad2() != null && patient.getHs_edad2() > 0
+                        ? patient.getHs_edad2() + " años"
+                        : "");
 
-		values.put("hs_tiene_pareja", patient.getHs_tiene_pareja()?"SÍ":"NO");
-		values.put("fs_estado_civil", patient.getFs_estado_civil());
-		values.put("hs_relacion_pareja", patient.getHs_relacion_pareja());
-		values.put("hs_tiene_hijos", patient.getHs_tiene_hijos()?"SÍ":"NO");
-		values.put("hs_relacion_hijos", patient.getHs_relacion_hijos());
-		values.put("hs_tiene_hermanos", patient.getHs_tiene_hermanos()?"SÍ":"NO");
-		values.put("hs_relacion_hermanos", patient.getHs_relacion_hermanos());
+        values.put("hs_edad3",
+                patient.getHs_edad3() != null && patient.getHs_edad3() > 0
+                        ? patient.getHs_edad3() + " años"
+                        : "");
 
-		values.put("hs_visitas_familiares", patient.getHs_visitas_familiares()?"SÍ":"NO");
-		values.put("hs_visitas_cuanto", patient.getHs_visitas_cuanto());
+        values.put("hs_edad4",
+                patient.getHs_edad4() != null && patient.getHs_edad4() > 0
+                        ? patient.getHs_edad4() + " años"
+                        : "");
 
-		values.put("hs_apoyo_amigos", patient.getHs_apoyo_amigos()?"SÍ":"NO");
-		values.put("hs_relacion_familia", patient.getHs_relacion_familia()?"SÍ":"NO");
-		values.put("hs_acude_otras", patient.getHs_acude_otras()?"SÍ":"NO");
+        values.put("hs_profesion1", patient.getHs_profesion1() != null ? patient.getHs_profesion1() : "");
+        values.put("hs_profesion2", patient.getHs_profesion2() != null ? patient.getHs_profesion2() : "");
+        values.put("hs_profesion3", patient.getHs_profesion3() != null ? patient.getHs_profesion3() : "");
+        values.put("hs_profesion4", patient.getHs_profesion4() != null ? patient.getHs_profesion4() : "");
 
-		values.put("hs_recibe_pension", patient.getHs_recibe_pension()?"SÍ":"NO");
-		values.put("hs_cuantia_pension", patient.getHs_cuantia_pension()+"");
+        values.put("hs_tiene_pareja", patient.getHs_tiene_pareja() != null ? (patient.getHs_tiene_pareja() ? "SÍ" : "NO") : "");
+        values.put("fs_estado_civil", patient.getFs_estado_civil() != null ? patient.getFs_estado_civil() : "");
+        values.put("hs_relacion_pareja", patient.getHs_relacion_pareja() != null ? patient.getHs_relacion_pareja() : "");
 
-		values.put("hs_otros_ingresos", patient.getHs_otros_ingresos());
-		values.put("hs_otra_prestacion", patient.getHs_otra_prestacion());
-		values.put("hs_otros_recursos", patient.getHs_otros_recursos());
-		values.put("hs_valoracion_profesional", patient.getHs_valoracion_profesional());
-		values.put("hs_observaciones", patient.getHs_observaciones());
+        values.put("hs_tiene_hijos", patient.getHs_tiene_hijos() != null ? (patient.getHs_tiene_hijos() ? "SÍ" : "NO") : "");
+        values.put("hs_relacion_hijos", patient.getHs_relacion_hijos() != null ? patient.getHs_relacion_hijos() : "");
+
+        values.put("hs_tiene_hermanos", patient.getHs_tiene_hermanos() != null ? (patient.getHs_tiene_hermanos() ? "SÍ" : "NO") : "");
+        values.put("hs_relacion_hermanos", patient.getHs_relacion_hermanos() != null ? patient.getHs_relacion_hermanos() : "");
+
+        values.put("hs_visitas_familiares", patient.getHs_visitas_familiares() != null ? (patient.getHs_visitas_familiares() ? "SÍ" : "NO") : "");
+        values.put("hs_visitas_cuanto", patient.getHs_visitas_cuanto() != null ? patient.getHs_visitas_cuanto() : "");
+
+        values.put("hs_apoyo_amigos", patient.getHs_apoyo_amigos() != null ? (patient.getHs_apoyo_amigos() ? "SÍ" : "NO") : "");
+        values.put("hs_relacion_familia", patient.getHs_relacion_familia() != null ? (patient.getHs_relacion_familia() ? "SÍ" : "NO") : "");
+        values.put("hs_acude_otras", patient.getHs_acude_otras() != null ? (patient.getHs_acude_otras() ? "SÍ" : "NO") : "");
+
+        values.put("hs_recibe_pension", patient.getHs_recibe_pension() != null ? (patient.getHs_recibe_pension() ? "SÍ" : "NO") : "");
+
+        values.put("hs_cuantia_pension", patient.getHs_cuantia_pension() != null ? String.valueOf(patient.getHs_cuantia_pension()) : "");
+
+        values.put("hs_otros_ingresos", patient.getHs_otros_ingresos() != null ? patient.getHs_otros_ingresos() : "");
+        values.put("hs_otra_prestacion", patient.getHs_otra_prestacion() != null ? patient.getHs_otra_prestacion() : "");
+        values.put("hs_otros_recursos", patient.getHs_otros_recursos() != null ? patient.getHs_otros_recursos() : "");
+        values.put("hs_valoracion_profesional", patient.getHs_valoracion_profesional() != null ? patient.getHs_valoracion_profesional() : "");
+        values.put("hs_observaciones", patient.getHs_observaciones() != null ? patient.getHs_observaciones() : "");
 
 		//fs_url no va a ser un campo de la entidad si no una variable del DTO
 		String hs_url = this.getCDNURL("historia_social", patient.get_id(), values);
@@ -1178,31 +1256,41 @@ public class PatientsServiceImpl implements PatientsService
 		values.put("STATENAME", state!=null?state.getName():"");
 		values.put("NATIONALITY", patient.getNationality());
 
-		values.put("is_tiempo_conoce_usuario", patient.getIs_tiempo_conoce_usuario());
-		values.put("is_servicios_prestados", patient.getIs_servicios_prestados());
-		values.put("is_como_adaptado", patient.getIs_como_adaptado());
-		values.put("is_acudio_voluntad_propia", patient.getIs_acudio_voluntad_propia()?"SÍ":"NO");
-		values.put("is_quien_influyo_decision", patient.getIs_quien_influyo_decision());
-		values.put("is_que_actividades", patient.getIs_que_actividades());
-		values.put("is_como_relaciona", patient.getIs_como_relaciona());
-		values.put("is_como_pasa_dia", patient.getIs_como_pasa_dia());
-		values.put("is_problemas_psico", patient.getIs_problemas_psico()?"SÍ":"NO");
-		values.put("is_problemas_psico_text", patient.getIs_problemas_psico_text());
-		values.put("is_familia_estru", patient.getIs_familia_estru()?"SÍ":"NO");
-		values.put("is_familia_estru_text", patient.getIs_familia_estru_text());
-		values.put("is_recibe_ingresos_actividad_laboral", patient.getIs_recibe_ingresos_actividad_laboral()?"SÍ":"NO");
-		values.put("is_esta_buscando_empleo", patient.getIs_esta_buscando_empleo()?"SÍ":"NO");
-		values.put("is_vive_en", patient.getIs_vive_en());
-		values.put("is_cubiertas_necesidades_diarias", patient.getIs_cubiertas_necesidades_diarias()?"SÍ":"NO");
-		values.put("is_valoracion_profesional", patient.getIs_valoracion_profesional());
-		values.put("is_propuesta", patient.getIs_propuesta());
+        values.put("is_tiempo_conoce_usuario", patient.getIs_tiempo_conoce_usuario() != null ? patient.getIs_tiempo_conoce_usuario() : "");
+        values.put("is_servicios_prestados", patient.getIs_servicios_prestados() != null ? patient.getIs_servicios_prestados() : "");
+        values.put("is_como_adaptado", patient.getIs_como_adaptado() != null ? patient.getIs_como_adaptado() : "");
 
-		values.put("fs_grado_minusvalia", patient.getFs_grado_minusvalia()?"SÍ":"NO");
-		values.put("fs_grado_minusvalia_text", patient.getFs_grado_minusvalia_text());
-		values.put("hs_grado_minusvalia_tipo", patient.getHs_grado_minusvalia_tipo());
-		values.put("hs_grado_minusvalia_cuando", patient.getHs_grado_minusvalia_cuando());
+        values.put("is_acudio_voluntad_propia", patient.getIs_acudio_voluntad_propia() != null ? (patient.getIs_acudio_voluntad_propia() ? "SÍ" : "NO") : "");
+        values.put("is_quien_influyo_decision", patient.getIs_quien_influyo_decision() != null ? patient.getIs_quien_influyo_decision() : "");
 
-		values.put("hs_patologias", patient.getHs_patologias()==null?"":patient.getHs_patologias());
+        values.put("is_que_actividades", patient.getIs_que_actividades() != null ? patient.getIs_que_actividades() : "");
+        values.put("is_como_relaciona", patient.getIs_como_relaciona() != null ? patient.getIs_como_relaciona() : "");
+        values.put("is_como_pasa_dia", patient.getIs_como_pasa_dia() != null ? patient.getIs_como_pasa_dia() : "");
+
+        values.put("is_problemas_psico", patient.getIs_problemas_psico() != null ? (patient.getIs_problemas_psico() ? "SÍ" : "NO") : "");
+        values.put("is_problemas_psico_text", patient.getIs_problemas_psico_text() != null ? patient.getIs_problemas_psico_text() : "");
+
+        values.put("is_familia_estru", patient.getIs_familia_estru() != null ? (patient.getIs_familia_estru() ? "SÍ" : "NO") : "");
+        values.put("is_familia_estru_text", patient.getIs_familia_estru_text() != null ? patient.getIs_familia_estru_text() : "");
+
+        values.put("is_recibe_ingresos_actividad_laboral", patient.getIs_recibe_ingresos_actividad_laboral() != null ? (patient.getIs_recibe_ingresos_actividad_laboral() ? "SÍ" : "NO") : "");
+        values.put("is_esta_buscando_empleo", patient.getIs_esta_buscando_empleo() != null ? (patient.getIs_esta_buscando_empleo() ? "SÍ" : "NO") : "");
+
+        values.put("is_vive_en", patient.getIs_vive_en() != null ? patient.getIs_vive_en() : "");
+
+        values.put("is_cubiertas_necesidades_diarias", patient.getIs_cubiertas_necesidades_diarias() != null ? (patient.getIs_cubiertas_necesidades_diarias() ? "SÍ" : "NO") : "");
+
+        values.put("is_valoracion_profesional", patient.getIs_valoracion_profesional() != null ? patient.getIs_valoracion_profesional() : "");
+        values.put("is_propuesta", patient.getIs_propuesta() != null ? patient.getIs_propuesta() : "");
+
+        values.put("fs_grado_minusvalia", patient.getFs_grado_minusvalia() != null ? (patient.getFs_grado_minusvalia() ? "SÍ" : "NO") : "");
+        values.put("fs_grado_minusvalia_text", patient.getFs_grado_minusvalia_text() != null ? patient.getFs_grado_minusvalia_text() : "");
+
+        values.put("hs_grado_minusvalia_tipo", patient.getHs_grado_minusvalia_tipo() != null ? patient.getHs_grado_minusvalia_tipo() : "");
+        values.put("hs_grado_minusvalia_cuando", patient.getHs_grado_minusvalia_cuando() != null ? patient.getHs_grado_minusvalia_cuando() : "");
+
+        values.put("hs_patologias", patient.getHs_patologias() != null ? patient.getHs_patologias() : "");
+
         values.put("hs_ayuda_abd",
                 patient.getHs_ayuda_abd() == null ? "" :
                         patient.getHs_ayuda_abd() ? "SÍ" : "NO");
@@ -1222,28 +1310,31 @@ public class PatientsServiceImpl implements PatientsService
         values.put("hs_drogas",
                 patient.getHs_drogas() == null ? "" :
                         patient.getHs_drogas() ? "SÍ" : "NO");
+
 		values.put("hs_drogas_text", patient.getHs_drogas_text()==null?"":patient.getHs_drogas_text());
 		values.put("hs_valoracion_salud", patient.getHs_valoracion_salud()==null?"":patient.getHs_valoracion_salud());
 
-		values.put("hs_tiene_pareja", patient.getHs_tiene_pareja()?"SÍ":"NO");
-		values.put("fs_estado_civil", patient.getFs_estado_civil());
-		values.put("hs_relacion_pareja", patient.getHs_relacion_pareja());
-		values.put("hs_tiene_hijos", patient.getHs_tiene_hijos()?"SÍ":"NO");
-		values.put("hs_relacion_hijos", patient.getHs_relacion_hijos());
-		values.put("hs_tiene_hermanos", patient.getHs_tiene_hermanos()?"SÍ":"NO");
-		values.put("hs_relacion_hermanos", patient.getHs_relacion_hermanos());
+        values.put("hs_tiene_pareja", patient.getHs_tiene_pareja() != null ? (patient.getHs_tiene_pareja() ? "SÍ" : "NO") : "");
+        values.put("fs_estado_civil", patient.getFs_estado_civil() != null ? patient.getFs_estado_civil() : "");
+        values.put("hs_relacion_pareja", patient.getHs_relacion_pareja() != null ? patient.getHs_relacion_pareja() : "");
 
-		values.put("hs_visitas_familiares", patient.getHs_visitas_familiares()?"SÍ":"NO");
-		values.put("hs_visitas_cuanto", patient.getHs_visitas_cuanto());
+        values.put("hs_tiene_hijos", patient.getHs_tiene_hijos() != null ? (patient.getHs_tiene_hijos() ? "SÍ" : "NO") : "");
+        values.put("hs_relacion_hijos", patient.getHs_relacion_hijos() != null ? patient.getHs_relacion_hijos() : "");
 
-		values.put("hs_apoyo_amigos", patient.getHs_apoyo_amigos()?"SÍ":"NO");
-		values.put("hs_relacion_familia", patient.getHs_relacion_familia()?"SÍ":"NO");
-		values.put("hs_acude_otras", patient.getHs_acude_otras()?"SÍ":"NO");
+        values.put("hs_tiene_hermanos", patient.getHs_tiene_hermanos() != null ? (patient.getHs_tiene_hermanos() ? "SÍ" : "NO") : "");
+        values.put("hs_relacion_hermanos", patient.getHs_relacion_hermanos() != null ? patient.getHs_relacion_hermanos() : "");
 
-		values.put("hs_nivel_formativo", patient.getHs_nivel_formativo());
-		values.put("hs_otros_ingresos", patient.getHs_otros_ingresos());
-		values.put("hs_otra_prestacion", patient.getHs_otra_prestacion());
-		values.put("hs_otros_recursos", patient.getHs_otros_recursos());
+        values.put("hs_visitas_familiares", patient.getHs_visitas_familiares() != null ? (patient.getHs_visitas_familiares() ? "SÍ" : "NO") : "");
+        values.put("hs_visitas_cuanto", patient.getHs_visitas_cuanto() != null ? patient.getHs_visitas_cuanto() : "");
+
+        values.put("hs_apoyo_amigos", patient.getHs_apoyo_amigos() != null ? (patient.getHs_apoyo_amigos() ? "SÍ" : "NO") : "");
+        values.put("hs_relacion_familia", patient.getHs_relacion_familia() != null ? (patient.getHs_relacion_familia() ? "SÍ" : "NO") : "");
+        values.put("hs_acude_otras", patient.getHs_acude_otras() != null ? (patient.getHs_acude_otras() ? "SÍ" : "NO") : "");
+
+        values.put("hs_nivel_formativo", patient.getHs_nivel_formativo() != null ? patient.getHs_nivel_formativo() : "");
+        values.put("hs_otros_ingresos", patient.getHs_otros_ingresos() != null ? patient.getHs_otros_ingresos() : "");
+        values.put("hs_otra_prestacion", patient.getHs_otra_prestacion() != null ? patient.getHs_otra_prestacion() : "");
+        values.put("hs_otros_recursos", patient.getHs_otros_recursos() != null ? patient.getHs_otros_recursos() : "");
 
 		//is_url no va a ser un campo de la entidad si no una variable del DTO
 		String is_url = this.getCDNURL("informe_social", patient.get_id(), values);

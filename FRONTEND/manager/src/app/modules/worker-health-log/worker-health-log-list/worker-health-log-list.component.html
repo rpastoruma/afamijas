@@ -60,7 +60,7 @@
 
         <app-custom-table
             [actions]="actions"
-            [keys]="['Usuario:', 'Día:', 'Tensión sistólica (alta):', 'Tensión diastólica (baja):', 'Hora tensión:', 'Nivel de azúcar (mg/dl):', 'Hora azúcar:', 'Registrado por:']"
+            [keys]="['Usuario:', 'Día:', 'Tensión sistólica (alta):', 'Tensión diastólica (baja):', 'Hora tensión:', 'Nivel de glucemia (mg/dl):', 'Hora glucemia:', 'Registrado por:']"
             [values]="healthlogs"
             [align]="['left', 'left', 'left', 'left', 'left', 'left', 'left', 'left']"
             [filters]="[false, false, false, false, false, false, false, false]"
@@ -121,7 +121,7 @@
                 
             <br/>
                 
-            Azúcar en sangre (mg/dl):
+            Nivel de glucemia (mg/dl):
             <input style="margin-bottom: 15px" class="form-control" [(ngModel)]="theHealthLog.sugar" name="theHealthLog-sugar" type="number"  step="1" >
                 
         </div>
