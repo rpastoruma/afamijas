@@ -472,7 +472,7 @@ public class WorkersServiceImpl implements WorkersService
 		Pageable pageable = PageRequest.of(page, size);
 		Query query = new Query();
 
-		Criteria criteria = new Criteria().where("roles").is(Arrays.asList("PATIENT"));
+		Criteria criteria = new Criteria().where("roles").is(Arrays.asList("PATIENT")).and("status").is("A");
 		if(idpatient!=null) criteria.and("_id").is(idpatient);
 		query.addCriteria(criteria);
 		long total = this.mongoTemplate.count(query, User.class);

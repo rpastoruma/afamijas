@@ -34,8 +34,12 @@
                     </div>
                     <div class="col ml-n3" (click)="redirect(notification, $event)">
                       <span class="card-title h5" style="font-size: 1rem !important; line-height: 1.5rem !important;">{{notification.title}}</span>
-                      <p class="card-text font-size-sm" style="font-size:12px; line-height: 13px; margin-bottom: 0;">{{notification?.message.substring(0,130) + "..."}}</p>
-                      <div style="width: 100%; text-align: right"><p class="card-text font-size-sm" style="font-size:10px;">{{notification.created}}</p></div>
+                      <p class="card-text font-size-sm" style="font-size:12px; line-height: 13px; margin-bottom: 0;">
+                        {{ (notification.message ?? '').length > 130
+                            ? (notification.message ?? '').substring(0,130) + '...'
+                            : (notification.message ?? '') }}
+                        </p>
+                    <div style="width: 100%; text-align: right"><p class="card-text font-size-sm" style="font-size:10px;">{{notification.created}}</p></div>
                     </div>
                     
                 </div>
