@@ -33,7 +33,7 @@ export class WorkerHealthLogListComponent implements OnInit {
   totalPages : number = 0;
 
   allPatients : PatientDTO[] = [];
-  allGroups : string[] = ['GRUPO 1', 'GRUPO 2', 'GRUPO 3']
+  allGroups : string[] = ['GRUPO 1', 'GRUPO 2', 'GRUPO 3', 'GRUPO 4', 'GRUPO 5', 'GRUPO 6', 'GRUPO 7'];
 
   theHealthLog : HealthLogDTO = {
     id: '',

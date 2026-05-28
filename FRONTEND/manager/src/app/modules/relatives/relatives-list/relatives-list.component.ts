@@ -389,7 +389,7 @@ export class RelativesListComponent  implements OnInit{
 
   validEmail(email :string)
   {
-    return EmailValidator.validate(email);
+    return !email || email ==='' || EmailValidator.validate(email);
   }
   
   validPhone(phone : string)

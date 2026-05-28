@@ -130,6 +130,7 @@ export class BodyLayoutComponent implements OnInit {
         this.menu = this.menu.concat(MENU_STAFF);
         this.menu = this.menu.concat(MENU_AGENDA);
         this.menu = this.menu.concat(MENU_PROJECTS);
+          this.menu = this.menu.concat(MENU_TRANSPORT);
 
         
       } 
